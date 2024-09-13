@@ -6,7 +6,7 @@
 
 ## Authors
 
-- [@duongnthe186310]([https://github.com/PhamPhong137](https://github.com/Duongo16)): Ngô Tùng Dương - Project Manager, Developer
+- [@duongnthe186310](https://github.com/Duongo16): Ngô Tùng Dương - Project Manager, Developer
 
 
 
@@ -26,7 +26,7 @@
     
 ## Documentation
 
-[Project Tracking]([https://docs.google.com/spreadsheets/d/1vL9QKK387SE75bN7GbXMAthdtcuKK1wBNlLSj-6Takg/edit#gid=0](https://docs.google.com/spreadsheets/d/1IRypidMR8ILDgPhFcTXJUoOIbEuxCYTHPghC5UgnMPY/edit?pli=1&gid=1820044993#gid=1820044993))
+[Project Tracking](https://docs.google.com/spreadsheets/d/1IRypidMR8ILDgPhFcTXJUoOIbEuxCYTHPghC5UgnMPY/edit?pli=1&gid=1820044993#gid=1820044993)
 
 [Requirement & Design Specification]()
 
