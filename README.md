@@ -7,6 +7,10 @@
 ## Authors
 
 - [@duongnthe186310](https://github.com/Duongo16): Ngô Tùng Dương - Project Manager, Developer
+- [@quangpmhe186201](https://github.com/PhungMinhQuang-HE186201): Phùng Minh Quang - Developer
+- [@quanhthe187097](https://github.com/trjv): Hồ Trần Quân - Developer
+- [@khoapvhe182378](https://github.com/Zankhoa): Phạm Văn Khoa - Developer
+- [@quangdnhe180789](https://github.com/dongquang123): Đồng Nhật Quang - Developer
 
 
 
