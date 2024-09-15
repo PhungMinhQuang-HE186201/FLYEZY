@@ -16,69 +16,50 @@ import java.sql.SQLException;
 public class LoginDAO extends DBConnect {
 
     public boolean checkUsername(String emailOrPhoneNumber) {
-        // Câu lệnh SQL kiểm tra tồn tại tài khoản với email hoặc số điện thoại
         String sql = "SELECT * FROM Accounts WHERE email = ? OR phoneNumber = ?";
-
-        try (PreparedStatement st = conn.prepareStatement(sql) // Đảm bảo phương thức getConnection() trả về kết nối hợp lệ
-                ) {
-
-            st.setString(1, emailOrPhoneNumber); // Đặt giá trị cho email
-            st.setString(2, emailOrPhoneNumber); // Đặt giá trị cho phoneNumber
-
+        try (PreparedStatement st = conn.prepareStatement(sql)) {
+            st.setString(1, emailOrPhoneNumber); 
+            st.setString(2, emailOrPhoneNumber); 
             ResultSet rs = st.executeQuery();
 
             if (rs.next()) {
-                return true; // Tài khoản tồn tại
+                return true; 
             } else {
-                return false; // Tài khoản không tồn tại
+                return false; 
             }
         } catch (SQLException e) {
-            e.printStackTrace(); // Xử lý lỗi nếu có
         }
 
-        return false; // Trả về false nếu có lỗi xảy ra
+        return false; 
     }
 
-    public Accounts checkPassword(String emailOrPhoneNumber, String password) {
+    public boolean checkPassword(String emailOrPhoneNumber, String password) {
         String sql = "SELECT * FROM accounts WHERE (email=? OR phoneNumber=?) AND password=?";
 
         try {
-            PreparedStatement st = conn.prepareStatement(sql); // 'conn' should be 'connection'
-            st.setString(1, emailOrPhoneNumber); // Đặt giá trị cho email
-            st.setString(2, emailOrPhoneNumber); // Đặt giá trị cho phoneNumber
-            st.setString(3, password); // Đặt giá trị cho password
-
+            PreparedStatement st = conn.prepareStatement(sql); 
+            st.setString(1, emailOrPhoneNumber);
+            st.setString(2, emailOrPhoneNumber); 
+            st.setString(3, password); 
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
-                Accounts a = new Accounts(
-                        rs.getInt("id"),
-                        rs.getString("name"),
-                        rs.getString("email"),
-                        rs.getString("password"),
-                        rs.getString("phoneNumber"), // Use getString for phoneNumber
-                        rs.getString("address"),
-                        rs.getString("image"),
-                        rs.getDate("dob")
-                );
-                return a;
+                return true; 
+            } else {
+                return false; 
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        return null;
+        return false;
     }
 
     public static void main(String[] args) {
-        // Tạo đối tượng AccountDAO
         LoginDAO a = new LoginDAO();
 
-        // Thay thế emailOrPhoneNumber bằng email hoặc số điện thoại bạn muốn kiểm tra
-        String emailOrPhoneNumber = "duongnthe186310@fpt.edu.vn"; // Hoặc "1234567890"
+        String emailOrPhoneNumber = "duongnthe186310@fpt.edu.vn"; 
 
-        // Kiểm tra tài khoản tồn tại
-        boolean exists = a.checkUsername(emailOrPhoneNumber);
+        boolean exists = a.checkPassword(emailOrPhoneNumber,"1");
 
-        // In kết quả ra console
         if (exists) {
             System.out.println("Tài khoản tồn tại với email hoặc số điện thoại: " + emailOrPhoneNumber);
         } else {

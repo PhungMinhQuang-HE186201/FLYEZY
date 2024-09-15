@@ -1,5 +1,5 @@
 :root {
-  --tripoveMainColor: rgb(71, 143, 192);
+  --flyezyMainColor: rgb(60, 110, 87);
 }
 
 * {
@@ -9,7 +9,7 @@
 }
 
 body {
-  background-image: url("../image/background.png");
+  background-image: url("../img/flyezy-bg.png");
   font-family: "Reddit Sans", sans-serif;
 }
 
@@ -52,7 +52,7 @@ label {
 }z
 
 .form-group input:focus {
-  border: 2px solid var(--tripoveMainColor);
+  border: 2px solid var(--flyezyMainColor);
 }
 
 .form-group input:focus + label,
@@ -60,13 +60,13 @@ label {
   top: 0px;
   font-size: 12px;
   font-weight: 500;
-  color: var(--tripoveMainColor);
+  color: var(--flyezyMainColor);
 }
 
 #forgetPassword {
   float: right;
   text-decoration: none;
-  color: var(--tripoveMainColor);
+  color: var(--flyezyMainColor);
 }
 
 .capslock-warning {
@@ -80,7 +80,7 @@ label {
   width: 100%;
   border-radius: 5px;
   color: white;
-  background-color: var(--tripoveMainColor);
+  background-color: var(--flyezyMainColor);
   border: 1px solid white;
   font-size: inherit;
   cursor: pointer
@@ -92,7 +92,7 @@ label {
 
 .letDoIt {
   text-decoration: none;
-  color: var(--tripoveMainColor);
+  color: var(--flyezyMainColor);
 }
 
 #wrongAccount {

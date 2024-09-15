@@ -18,11 +18,14 @@ public class Accounts {
     private String address;
     private String image;
     private Date dob;
+    private int roleId;
+    private int airlineId;
+    
 
     public Accounts() {
     }
 
-    public Accounts(int id, String name, String email, String password, String phoneNumber, String address, String image, Date dob) {
+    public Accounts(int id, String name, String email, String password, String phoneNumber, String address, String image, Date dob, int roleId, int airlineId) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -31,7 +34,11 @@ public class Accounts {
         this.address = address;
         this.image = image;
         this.dob = dob;
+        this.roleId = roleId;
+        this.airlineId = airlineId;
     }
+
+   
 
     public Accounts(String name, String email, String password, String phoneNumber) {
         this.name = name;
@@ -102,6 +109,22 @@ public class Accounts {
 
     public void setDob(Date dob) {
         this.dob = dob;
+    }
+    
+    public int getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(int roleId) {
+        this.roleId = roleId;
+    }
+
+    public int getAirlineId() {
+        return airlineId;
+    }
+
+    public void setAirlineId(int airlineId) {
+        this.airlineId = airlineId;
     }
     
     

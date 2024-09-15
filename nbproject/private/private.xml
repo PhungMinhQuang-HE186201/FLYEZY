@@ -3,7 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group name="PRJ301">
-            <file>file:/F:/2.%20WORK/IT-WORKSPACE/FLYEZY/src/java/dal/DBConnect.java</file>
+            <file>file:/F:/2.%20WORK/IT-WORKSPACE/FLYEZY/src/java/controller/HomeServlet.java</file>
+            <file>file:/F:/2.%20WORK/IT-WORKSPACE/FLYEZY/web/header.jsp</file>
+            <file>file:/F:/2.%20WORK/IT-WORKSPACE/FLYEZY/src/java/controller/LoginServlet.java</file>
+            <file>file:/F:/2.%20WORK/IT-WORKSPACE/FLYEZY/web/test.jsp</file>
+            <file>file:/F:/2.%20WORK/IT-WORKSPACE/FLYEZY/src/java/model/Accounts.java</file>
+            <file>file:/F:/2.%20WORK/IT-WORKSPACE/FLYEZY/src/java/dal/AccountsDAO.java</file>
+            <file>file:/F:/2.%20WORK/IT-WORKSPACE/FLYEZY/src/java/dal/LoginDAO.java</file>
+            <file>file:/F:/2.%20WORK/IT-WORKSPACE/FLYEZY/src/java/controller/RegisterServlet.java</file>
         </group>
     </open-files>
 </project-private>

@@ -1,6 +1,6 @@
 <%-- 
-    Document   : Home
-    Created on : Sep 14, 2024, 10:08:31 PM
+    Document   : test
+    Created on : Sep 15, 2024, 8:42:02 PM
     Author     : Admin
 --%>
 
@@ -12,7 +12,6 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <%@include file="header.jsp" %> 
         <h1>Hello World!</h1>
     </body>
 </html>

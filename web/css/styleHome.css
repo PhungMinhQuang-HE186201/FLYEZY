@@ -3,7 +3,7 @@ body {
     border-color: white !important;
 }
 :root {
-    --tripoveMainColor: rgb(71, 143, 192);
+    --flyezyMainColor: rgb(60, 110, 87);
 }
 
 
@@ -82,7 +82,7 @@ input {
 }
 
 .result-box ul li:hover{
-    background: rgb(71, 143, 192);
+    background: rgb(60, 110, 87);
     color: white
 }
 
@@ -111,7 +111,7 @@ input {
     width: 75px;
     height: 75px;
     border: 15px solid white;
-    border-top-color: var(--tripoveMainColor);
+    border-top-color: var(--flyezyMainColor);
     border-radius: 50%;
     animation: loading 0.75s ease infinite;
 }
@@ -127,7 +127,7 @@ input {
 
 #introduction {
     padding: 20px;
-    background-image: linear-gradient(rgb(71, 143, 192), white);
+    background-image: linear-gradient(rgb(60, 110, 87), white);
     text-align: center;
     color: white;
     height: 150px;
@@ -145,7 +145,7 @@ input {
 }
 
 #promotion h3 {
-    color: rgb(71, 143, 192)
+    color: rgb(60, 110, 87)
 }
 
 #promotion p {
@@ -169,7 +169,7 @@ input {
 }
 #statistics {
     padding: 50px 20px;
-    background: linear-gradient(135deg, rgb(71, 143, 192), rgb(28, 98, 169));
+    background: linear-gradient(135deg, rgb(60, 110, 87), rgb(28, 98, 169));
     text-align: center;
     color: white;
     display: flex;

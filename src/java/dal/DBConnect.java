@@ -7,13 +7,9 @@ package dal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.List;
 import model.Accounts;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 
 /**
  *
@@ -40,7 +36,7 @@ public class DBConnect {
     }
 
     public DBConnect() {
-        this("jdbc:mysql://localhost:3306/flyezy", "root", "123456789");
+        this("jdbc:mysql://localhost:3306/flyezy", "root", "root");
     }
 
     public ResultSet getData(String sql) {

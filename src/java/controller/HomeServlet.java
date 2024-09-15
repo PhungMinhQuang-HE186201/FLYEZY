@@ -5,21 +5,22 @@
 package controller;
 
 import dal.AccountsDAO;
-import dal.LoginDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import model.Accounts;
 
 /**
  *
  * @author Admin
  */
-public class LoginServlet extends HttpServlet {
+@WebServlet(name = "HomeServlet", urlPatterns = {"/home"})
+public class HomeServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,10 +39,10 @@ public class LoginServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet LoginServlet</title>");
+            out.println("<title>Servlet HomeServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet LoginServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet HomeServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -59,7 +60,17 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("login.jsp").forward(request, response);
+        AccountsDAO ad = new AccountsDAO();
+        HttpSession session = request.getSession();
+
+        Integer idd = (Integer) session.getAttribute("id");
+        int i = (idd != null) ? idd : -1;
+        if(i==-1){
+            request.getRequestDispatcher("test.jsp").forward(request, response);
+        }
+        Accounts acc = ad.getAccountsById(i);
+        request.setAttribute("account", acc);
+        request.getRequestDispatcher("home.jsp").forward(request, response);
     }
 
     /**
@@ -73,41 +84,7 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        String u = request.getParameter("user").trim().replace(" ", ""); // xu ly neu nguoi dung nhap vao space
-        String p = request.getParameter("pass");
-        String r = request.getParameter("rem");
-        Cookie cu = new Cookie("cuser", u);
-        Cookie cp = new Cookie("cpass", p);
-        Cookie cr = new Cookie("crem", r);
-        if (r != null) {
-            cu.setMaxAge(60 * 60 * 24 * 7);//7 days
-            cp.setMaxAge(60 * 60 * 24 * 7);
-            cr.setMaxAge(60 * 60 * 24 * 7);
-        } else {
-            cu.setMaxAge(0);
-            cp.setMaxAge(0);
-            cr.setMaxAge(0);
-        }
-        //save to browser
-        response.addCookie(cu);
-        response.addCookie(cp);
-        response.addCookie(cr);
-        LoginDAO ld = new LoginDAO();
-        AccountsDAO ad = new AccountsDAO();
-        HttpSession session = request.getSession();
-        if (!ld.checkUsername(u)) {
-            request.setAttribute("error", "Tài khoản của bạn không tồn tại!");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
-        } else if (ld.checkPassword(u, p)) {
-            request.setAttribute("error", "Mật khẩu của bạn không chính xác!");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
-        } else {
-            int id = ad.getIdByEmailOrPhoneNumber(u);
-            session.setAttribute("id", id);
-            response.sendRedirect("home");
-        }
-
+        processRequest(request, response);
     }
 
     /**

@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -18,7 +19,7 @@
          <div id="header">
         <div id="header-logo">
             <a href="home">
-                <img src="image/logo2.png" />
+                <img src="img/flyezy-logo2.png" alt=""/>
             </a>
         </div>
         <ul id="header-nav1" style="font-weight: 520">
@@ -43,7 +44,7 @@
                 </div>
                 <ul id="header-subnav" style="display: none;">
                     <li><a href="info">Thông tin cá nhân</a></li>
-                        <c:if test="${requestScope.account.getRole().equals('admin')}">
+                        <c:if test="${requestScope.account.getRoleId()==1}">
                         <li><a href="accountController">Quản lý</a></li>
                         </c:if>
                     <li><a href="buyingHistory">Lịch sử mua vé</a></li>

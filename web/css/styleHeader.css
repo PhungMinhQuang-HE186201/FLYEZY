@@ -5,13 +5,13 @@
   font-family: "Reddit Sans", sans-serif;
 }
 :root {
-  --tripoveMainColor: rgb(71, 143, 192);
+  --flyezyMainColor: rgb(60, 110, 87);
 }
 #header {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  background-color: var(--tripoveMainColor);
+  background-color: var(--flyezyMainColor);
   position: fixed;
   top: 0;
   left: 0;
@@ -43,7 +43,7 @@
 }
 
 #header-nav1 li:hover a, .current-page a{
-  color: var(--tripoveMainColor)!important;
+  color: var(--flyezyMainColor)!important;
 }
 
 #header-nav1 a {
@@ -65,7 +65,7 @@
 }
 
 #login-button {
-  background: var(--tripoveMainColor);
+  background: var(--flyezyMainColor);
   color: #fff;
   border: none;
 }
@@ -78,7 +78,7 @@
   background: white;
   border-radius: 99px;
   border-color: white;
-  color: var(--tripoveMainColor);
+  color: var(--flyezyMainColor);
 }
 
 #register-button:hover {
