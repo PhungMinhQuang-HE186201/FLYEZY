@@ -40,7 +40,7 @@ public class DBConnect {
     }
 
     public DBConnect() {
-        this("jdbc:mysql://localhost:3306/flyezy", "root", "root");
+        this("jdbc:mysql://localhost:3306/flyezy", "root", "123456789");
     }
 
     public ResultSet getData(String sql) {

@@ -6,6 +6,7 @@ package dal;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import model.Accounts;
@@ -33,5 +34,30 @@ public class AccountsDAO extends DBConnect {
         } catch (Exception e) {
         }
         return null;
+    }
+
+    public int getIdByUsername(String username) {
+        String sql = "SELECT id FROM accounts WHERE email = ?";
+        int userId = -1; // Giá trị mặc định nếu không tìm thấy
+
+        try (PreparedStatement st = conn.prepareStatement(sql)) {
+
+            st.setString(1, username); // Đặt giá trị cho tên người dùng
+
+            ResultSet rs = st.executeQuery();
+
+            if (rs.next()) {
+                userId = rs.getInt("id"); // Lấy ID từ kết quả
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Xử lý lỗi nếu có
+        }
+
+        return userId; // Trả về ID, hoặc -1 nếu không tìm thấy
+    }
+
+    public static void main(String[] args) {
+        AccountsDAO a = new AccountsDAO();
+        System.out.println(a.getIdByUsername("Ngo Tung Duong"));
     }
 }
