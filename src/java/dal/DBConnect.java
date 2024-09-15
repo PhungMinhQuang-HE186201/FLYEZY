@@ -9,15 +9,14 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
  * @author PMQUANG
  */
 public class DBConnect {
-        public Connection conn = null;
+
+    public Connection conn = null;
 
     public DBConnect(String url, String username, String pass) {
         try {
@@ -36,20 +35,21 @@ public class DBConnect {
     }
 
     public DBConnect() {
-        this("jdbc:mysql://localhost:3306/flyezy", "root", "pass123");
+        this("jdbc:mysql://localhost:3306/flyezy", "root", "root");
     }
 
     public ResultSet getData(String sql) {
         Statement state;
         ResultSet rs = null;
         try {
-            state =conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            state = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             rs = state.executeQuery(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-       return rs;
+        return rs;
     }
+    
 
     public static void main(String[] args) {
         new DBConnect();
