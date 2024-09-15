@@ -9,6 +9,11 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.List;
+import model.Accounts;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 
 /**
  *
@@ -50,8 +55,10 @@ public class DBConnect {
         return rs;
     }
     
-
     public static void main(String[] args) {
-        new DBConnect();
+        AccountsDAO db = new AccountsDAO();
+        for(Accounts a : db.getAllAccounts()){
+            System.out.println(a.getName());
+        }
     }
 }
