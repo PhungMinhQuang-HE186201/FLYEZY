@@ -74,7 +74,7 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        String u = request.getParameter("user").trim().replace(" ", ""); // xu ly neu nguoi dung nhap vao space
+        String u = request.getParameter("user"); // xu ly neu nguoi dung nhap vao space
         String p = request.getParameter("pass");
         String r = request.getParameter("rem");
         Cookie cu = new Cookie("cuser", u);
@@ -99,7 +99,7 @@ public class LoginServlet extends HttpServlet {
         if (!ld.checkUsername(u)) {
             request.setAttribute("error", "Tài khoản của bạn không tồn tại!");
             request.getRequestDispatcher("login.jsp").forward(request, response);
-        } else if (ld.checkPassword(u, p)) {
+        } else if (!ld.checkPassword(u, p)) {
             request.setAttribute("error", "Mật khẩu của bạn không chính xác!");
             request.getRequestDispatcher("login.jsp").forward(request, response);
         } else {
