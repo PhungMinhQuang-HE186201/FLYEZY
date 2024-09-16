@@ -89,8 +89,8 @@ public class RegisterServlet extends HttpServlet {
             request.setAttribute("existedUsername", "Gmail đã được đăng ký!");
             request.getRequestDispatcher("register.jsp").forward(request, response);
         } else {
-            Accounts a = new Accounts(name, email, pass, phoneNumber);
-            d.addNew(a);
+            Accounts a = new Accounts(name, email, pass, phoneNumber, 2);
+            d.addNewAccount(a);
             HttpSession session = request.getSession();
             AccountsDAO ad = new AccountsDAO();
             int id = ad.getIdByEmailOrPhoneNumber(a.getEmail()); 

@@ -40,11 +40,12 @@ public class Accounts {
 
    
 
-    public Accounts(String name, String email, String password, String phoneNumber) {
+    public Accounts(String name, String email, String password, String phoneNumber, int roleId) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
+        this.roleId = roleId;
     }
 
     public int getId() {
