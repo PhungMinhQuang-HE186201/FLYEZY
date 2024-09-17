@@ -12,8 +12,12 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import dal.AccountsDAO;
+import dal.RolesDAO;
+import jakarta.servlet.http.HttpSession;
+import java.sql.Date;
 import java.util.List;
 import model.Accounts;
+import model.Roles;
 
 /**
  *
@@ -52,41 +56,34 @@ public class AccountControllerServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        AccountsDAO ad = new AccountsDAO();
+        HttpSession session = request.getSession();
+
+        Integer idd = (Integer) session.getAttribute("id");
+        int i = (idd != null) ? idd : -1;
+        Accounts acc = ad.getAccountsById(i);
+        request.setAttribute("account", acc);
         String action = request.getParameter("action");
-        AccountsDAO AccountsDAO = new AccountsDAO();
+        RolesDAO rd = new RolesDAO();
+        List<Roles> rolesList = rd.getAllRoles();
+        request.setAttribute("rolesList", rolesList);
         if (action == null) {
-            List<Accounts> accountList = AccountsDAO.getAllAccounts();
+            List<Accounts> accountList = ad.getAllAccounts();
+            request.setAttribute("accountList", accountList);   
+            request.getRequestDispatcher("admin.jsp").forward(request, response);
+        } else if (action.equals("remove")) { //ok
+            int id = Integer.parseInt(request.getParameter("idAcc"));
+            ad.removeAccount(id);
+            response.sendRedirect("accountController");
+        } else if (action.equals("search")) {
+            String fRole = request.getParameter("fRole");
+            String fName = request.getParameter("fName");
+            String fPhoneNumber = request.getParameter("fPhoneNumber");
+            List<Accounts> accountList = ad.searchAccounts(fRole, fName, fPhoneNumber);
             request.setAttribute("accountList", accountList);
             request.getRequestDispatcher("admin.jsp").forward(request, response);
-        } else {
-            if (action.equals("change")) {
-                int id = Integer.parseInt(request.getParameter("id"));
-                int roleId = Integer.parseInt(request.getParameter("roleId"));
-                String name = request.getParameter("name");
-                String email = request.getParameter("email");
-                String password = request.getParameter("password");
-                String phoneNumber = request.getParameter("phoneNumber");
-                String address = request.getParameter("address");
-                request.setAttribute("roleId", roleId);
-                Accounts newAcc = new Accounts(id, name, email, password, phoneNumber, address, email, roleId);
-                AccountsDAO.updateAccount(newAcc);
-                List<Accounts> accountList = AccountsDAO.getAllAccounts();
-                request.setAttribute("accountList", accountList);
-                request.getRequestDispatcher("admin.jsp").forward(request, response);
-            } else if (action.equals("remove")) {
-                int id = Integer.parseInt(request.getParameter("idAcc"));
-                int n = AccountsDAO.removeAccount(id);
-                response.sendRedirect("accountController");
-            } else if (action.equals("search")) {
-                String fName = request.getParameter("fName");
-                String fPhoneNumber = request.getParameter("fPhoneNumber");
-                List<Accounts> accountList = AccountsDAO.getAccountByName(fName, fPhoneNumber);
-                request.setAttribute("accountList", accountList);
-                request.setAttribute("fName", fName);
-                request.setAttribute("fPhoneNumber", fPhoneNumber);
-                request.getRequestDispatcher("admin.jsp").forward(request, response);
-            }
         }
+
     }
 
     /**
@@ -100,7 +97,35 @@ public class AccountControllerServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String action = request.getParameter("action");
+        AccountsDAO ad = new AccountsDAO();
+        if (action.equals("update")) {
+            String idStr = request.getParameter("id");
+            String roleIdStr = request.getParameter("roleId");
+            String dobStr = request.getParameter("dob");
+            String name = request.getParameter("name");
+            String email = request.getParameter("email");
+            String password = request.getParameter("password");
+            String phoneNumber = request.getParameter("phoneNumber");
+            String address = request.getParameter("address");
+            String image = "img/" + request.getParameter("image");
+
+            try {
+                int id = Integer.parseInt(idStr);
+                int roleId = Integer.parseInt(roleIdStr);
+                Date dob = Date.valueOf(dobStr);
+                int airlineId = 1;
+                //Integer.parseInt(request.getParameter("airlineId"));
+                if(image.equals("img/")){
+                    image = ad.getAccountsById(id).getImage();
+                }
+                Accounts newAcc = new Accounts(id, name, email, password, phoneNumber, address, image, dob, roleId, airlineId);
+                ad.updateAccount(newAcc);
+                response.sendRedirect("accountController");
+            } catch (Exception e) {
+
+            }
+        }
     }
 
     /**

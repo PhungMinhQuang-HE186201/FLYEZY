@@ -37,8 +37,19 @@ public class Accounts {
         this.roleId = roleId;
         this.airlineId = airlineId;
     }
+    
+    public Accounts(String name, String email, String password, String phoneNumber, String address, String image, Date dob, int roleId, int airlineId) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.image = image;
+        this.dob = dob;
+        this.roleId = roleId;
+        this.airlineId = airlineId;
+    }
 
-   
 
     public Accounts(String name, String email, String password, String phoneNumber, int roleId) {
         this.name = name;

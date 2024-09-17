@@ -8,7 +8,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
 */
 
 :root {
-    --tripoveMainColor: rgb(71, 143, 192);
+    --flyezyMainColor: rgb(60, 110, 87);
   }
 #sidebar {
     width: 210px; 
@@ -43,7 +43,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
 
 #sidebar ul li a {
     text-decoration: none;
-    color: var(--tripoveMainColor);
+    color: var(--flyezyMainColor);
     font-size: 15px; 
     font-weight: 600;
     display: block; 
@@ -52,6 +52,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
 }
 
 #sidebar ul li a:hover, .current-page{
-    background-color: var(--tripoveMainColor);
+    background-color: var(--flyezyMainColor);
     color: white !important
 }

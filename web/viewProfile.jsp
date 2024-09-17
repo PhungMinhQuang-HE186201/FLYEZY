@@ -2,6 +2,13 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
+<%@page import="model.Roles" %>
+<%@page import="model.Accounts" %>
+<%@page import="dal.RolesDAO" %>
+<%
+    RolesDAO rd = new RolesDAO();
+    Accounts a = (Accounts)request.getAttribute("account");
+%>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -20,14 +27,14 @@
                     <div id="info-avatar" style="display: flex; position: relative;">
                         <img id="info-avatar-pic" style="height: 220px; width: 216px;" src="${requestScope.account.image}" />
                         <p>${requestScope.account.name}
-                        <p style="font-size: 20px; opacity: 0.6; margin-top: 165px;">#</p>
+                        <p style="font-size: 20px; opacity: 0.6; margin-top: 165px;">#<%=rd.getNameById(a.getRoleId())%></p>
                         </p>
                     </div>
                 </div>
 
                 <div id="info-in4" class="row">
                     <div class="info-in4-1 col-md-4">
-                        Tham gia Tripove từ
+                        Khách hàng thân thiết
                         <strong></strong>
                     </div>
                     <div class="col-md-1"></div>
