@@ -4,6 +4,8 @@
  */
 package controller;
 
+import dal.AccountsDAO;
+import dal.PlaneCategoryDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -11,20 +13,17 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import dal.AccountsDAO;
-import dal.RolesDAO;
 import jakarta.servlet.http.HttpSession;
-import java.sql.Date;
 import java.util.List;
 import model.Accounts;
-import model.Roles;
+import model.PlaneCategory;
 
 /**
  *
  * @author Admin
  */
-@WebServlet(name = "AccountControllerServlet", urlPatterns = {"/accountController"})
-public class AccountControllerServlet extends HttpServlet {
+@WebServlet(name = "PlaneCategoryControllerServlet", urlPatterns = {"/planeCategoryController"})
+public class PlaneCategoryControllerServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,7 +39,15 @@ public class AccountControllerServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet PlaneCategoryControllerServlet</title>");
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet PlaneCategoryControllerServlet at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
         }
     }
 
@@ -57,35 +64,30 @@ public class AccountControllerServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         AccountsDAO ad = new AccountsDAO();
-        RolesDAO rd = new RolesDAO();
+        PlaneCategoryDAO pcd = new PlaneCategoryDAO();
         HttpSession session = request.getSession();
 
+        // DuongNT: Retrieve the account information of the currently logged-in user using session
         Integer idd = (Integer) session.getAttribute("id");
         int i = (idd != null) ? idd : -1;
         Accounts acc = ad.getAccountsById(i);
         request.setAttribute("account", acc);
 
-        List<Roles> rolesList = rd.getAllRoles();
-        request.setAttribute("rolesList", rolesList);
-
         String action = request.getParameter("action");
         if (action == null) {
-            List<Accounts> accountList = ad.getAllAccounts();
-            request.setAttribute("accountList", accountList);
-            request.getRequestDispatcher("admin.jsp").forward(request, response);
+            List<PlaneCategory> planeCategoryList = pcd.getAllPlaneCategoryByAirlineId(acc.getAirlineId());
+            request.setAttribute("planeCategoryList", planeCategoryList);
+            request.getRequestDispatcher("planeCategoryController.jsp").forward(request, response);
         } else if (action.equals("remove")) { //ok
-            int id = Integer.parseInt(request.getParameter("idAcc"));
-            ad.removeAccount(id);
-            response.sendRedirect("accountController");
+            int id = Integer.parseInt(request.getParameter("id"));
+            pcd.deletePlaneCategoryById(id);
+            response.sendRedirect("planeCategoryController");
         } else if (action.equals("search")) {
-            String fRole = request.getParameter("fRole");
             String fName = request.getParameter("fName");
-            String fPhoneNumber = request.getParameter("fPhoneNumber");
-            List<Accounts> accountList = ad.searchAccounts(fRole, fName, fPhoneNumber);
-            request.setAttribute("accountList", accountList);
-            request.getRequestDispatcher("admin.jsp").forward(request, response);
+            List<PlaneCategory> accountList = pcd.searchPlaneCategory(fName);
+            request.setAttribute("planeCategoryList", accountList);
+            request.getRequestDispatcher("planeCategoryController.jsp").forward(request, response);
         }
-
     }
 
     /**
@@ -99,33 +101,32 @@ public class AccountControllerServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        AccountsDAO ad = new AccountsDAO();
+        PlaneCategoryDAO pcd = new PlaneCategoryDAO();
         String idStr = request.getParameter("id");
-        String roleIdStr = request.getParameter("roleId");
-        String dobStr = request.getParameter("dob");
         String name = request.getParameter("name");
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-        String phoneNumber = request.getParameter("phoneNumber");
-        String address = request.getParameter("address");
         String image = "img/" + request.getParameter("image");
-        
-        //insert
-
+        String airlineIdStr = request.getParameter("airlineId");
+        int airlineId = 0;
         try {
-            int id = Integer.parseInt(idStr);
-            int roleId = Integer.parseInt(roleIdStr);
-            Date dob = Date.valueOf(dobStr);
-            int airlineId = 1;
-            //Integer.parseInt(request.getParameter("airlineId"));
-            if (image.equals("img/")) {
-                image = ad.getAccountsById(id).getImage();
-            }
-            Accounts newAcc = new Accounts(id, name, email, password, phoneNumber, address, image, dob, roleId, airlineId);
-            ad.updateAccount(newAcc);
-            response.sendRedirect("accountController");
+            airlineId = Integer.parseInt(airlineIdStr);
         } catch (Exception e) {
-
+        }
+        if (idStr == null) {
+            PlaneCategory pc = new PlaneCategory(name, image, airlineId);
+            pcd.addPlaneCategory(pc);
+            response.sendRedirect("planeCategoryController");
+        } else {
+            try {
+                int id = Integer.parseInt(idStr);
+                if (image.equals("img/")) {
+                    image = pcd.getPlaneCategoryById(id).getImage();
+                }
+                PlaneCategory pc = new PlaneCategory(id, name, image, airlineId);
+                pcd.updatePlaneCategoryById(pc);
+                response.sendRedirect("planeCategoryController");
+            } catch (Exception e) {
+                response.sendRedirect("home");
+            }
         }
     }
 

@@ -87,8 +87,8 @@
                         <td><%= rd.getNameById(list.getRoleId()) %></td>
                         <td><%= list.getAirlineId() %></td>
                         <td>
-                            <a class="btn btn-info" id="myBtn<%= list.getId() %>" onclick="openModal(<%= list.getId() %>)">Update</a>
-                            <a class="btn btn-danger" onclick="doDelete('<%= list.getId() %>', '<%= list.getName() %>')">Delete</a>
+                            <a class="btn btn-info" style="text-decoration: none" id="myBtn<%= list.getId() %>" onclick="openModal(<%= list.getId() %>)">Update</a>
+                            <a class="btn btn-danger" style="text-decoration: none" onclick="doDelete('<%= list.getId() %>', '<%= list.getName() %>')">Delete</a>
                             <!-- Modal -->
                             <div class="modal fade" id="myModal<%= list.getId() %>" role="dialog">
                                 <div class="modal-dialog">

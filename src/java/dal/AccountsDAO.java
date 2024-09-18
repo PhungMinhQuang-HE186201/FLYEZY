@@ -74,37 +74,7 @@ public class AccountsDAO extends DBConnect {
         }
         return null;
     }
-
-//    public List<Accounts> getAccountByName(String name, String phone) {
-//        String sql = "";
-//        if (name != null && !name.isEmpty()) {
-//            sql += "select * from Accounts where name Like '%" + name + "%'";
-//            if (phone != null && !phone.isEmpty()) {
-//                sql += "And phoneNumber = '" + phone + "'";
-//            }
-//        } else {
-//            sql += "select * from Accounts where phoneNumber = '" + phone + "'";
-//        }
-//        List<Accounts> la = new ArrayList<>();
-//        Accounts account = null;
-//        try {
-//            PreparedStatement st = conn.prepareStatement(sql);
-//            ResultSet rs = st.executeQuery(sql);
-//
-//            while (rs.next()) {
-//                String name1 = rs.getString(2);
-//                String email = rs.getString(3);
-//                String password = rs.getString(4);
-//                String phoneNumber = rs.getString(5);
-//                String address = rs.getString(6);
-//                account = new Accounts(name1, email, password, phoneNumber, address, email);
-//                la.add(account);
-//            }
-//        } catch (SQLException ex) {
-//            ex.printStackTrace();
-//        }
-//        return la;
-//    }
+    
     public void updateAccount(Accounts account) {
         String sql = "UPDATE Accounts\n"
                 + "   SET name = ?\n"

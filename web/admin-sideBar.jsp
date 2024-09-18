@@ -15,11 +15,20 @@ Admin --%> <%@page contentType="text/html" pageEncoding="UTF-8"%>
                     <a href="accountController" class="<%= currentPage.equals("/flyezy/admin.jsp") ? "current-page" : "" %>">
                         Quản lý tài khoản 
                     </a>
-                        <a href="airlineController" class="<%= currentPage.equals("/flyezy/airline.jsp") ? "current-page" : "" %>">
+                </li>
+                <li>
+                    <a href="airlineController" class="<%= currentPage.equals("/flyezy/airline.jsp") ? "current-page" : "" %>">
                         Quản lý hãng hàng không
                     </a>
                 </li>
-                
+                <li>
+                    <a href="planeCategoryController" class="<%= currentPage.equals("/flyezy/planeCategoryController.jsp") ? "current-page" : "" %>">
+                        Quản lý loại máy bay
+                    </a>
+                </li>
+
+
+
             </ul>
         </div>
     </body>
