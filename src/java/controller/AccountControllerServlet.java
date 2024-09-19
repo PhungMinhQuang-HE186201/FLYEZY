@@ -100,6 +100,7 @@ public class AccountControllerServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         AccountsDAO ad = new AccountsDAO();
+        String action = request.getParameter("action");
         String idStr = request.getParameter("id");
         String roleIdStr = request.getParameter("roleId");
         String dobStr = request.getParameter("dob");
@@ -109,21 +110,40 @@ public class AccountControllerServlet extends HttpServlet {
         String phoneNumber = request.getParameter("phoneNumber");
         String address = request.getParameter("address");
         String image = "img/" + request.getParameter("image");
-        
-        //insert
 
+        //insert
         try {
-            int id = Integer.parseInt(idStr);
-            int roleId = Integer.parseInt(roleIdStr);
-            Date dob = Date.valueOf(dobStr);
-            int airlineId = 1;
-            //Integer.parseInt(request.getParameter("airlineId"));
-            if (image.equals("img/")) {
-                image = ad.getAccountsById(id).getImage();
+            if (action.equals("update")) {
+                int id = Integer.parseInt(idStr);
+                int roleId = Integer.parseInt(roleIdStr);
+                Date dob = Date.valueOf(dobStr);
+                int airlineId = 1;
+                //Integer.parseInt(request.getParameter("airlineId"));
+                if (image.equals("img/")) {
+                    image = ad.getAccountsById(id).getImage();
+                }
+                Accounts newAcc = new Accounts(id, name, email, password, phoneNumber, address, image, dob, roleId, airlineId);
+                ad.updateAccount(newAcc);
+                response.sendRedirect("accountController");
+            } else if (action.equals("create")) {
+                int roleId = Integer.parseInt(roleIdStr);
+                Date dob = Date.valueOf(dobStr);
+                int airlineId = 1;
+                //Integer.parseInt(request.getParameter("airlineId"));
+
+                Accounts newAcc = new Accounts(name, email, password, phoneNumber, address, image, dob, roleId, airlineId);
+                boolean check = ad.checkAccount(newAcc);
+                if (check==true) {
+                    int n = ad.createAccount(newAcc);
+                    response.sendRedirect("accountController");
+                } else {
+                    String message = "Account already exists";
+                    List<Accounts> accountList = ad.getAllAccounts();
+                    request.setAttribute("accountList", accountList);
+                    request.setAttribute("message", message);
+                    request.getRequestDispatcher("admin.jsp").forward(request, response);
+                }
             }
-            Accounts newAcc = new Accounts(id, name, email, password, phoneNumber, address, image, dob, roleId, airlineId);
-            ad.updateAccount(newAcc);
-            response.sendRedirect("accountController");
         } catch (Exception e) {
 
         }

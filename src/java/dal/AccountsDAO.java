@@ -74,7 +74,7 @@ public class AccountsDAO extends DBConnect {
         }
         return null;
     }
-    
+
     public void updateAccount(Accounts account) {
         String sql = "UPDATE Accounts\n"
                 + "   SET name = ?\n"
@@ -160,6 +160,55 @@ public class AccountsDAO extends DBConnect {
             e.printStackTrace();
         }
         return ls;
+    }
+
+    public boolean checkAccount(Accounts accounts) {
+        String sql = "Select * from accounts where email='" + accounts.getEmail() + "'";
+        try {
+            PreparedStatement st = conn.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return false;
+            }
+            sql = "Select * from accounts where phoneNumber='" + accounts.getPhoneNumber() + "'";
+            st = conn.prepareStatement(sql);
+            rs = st.executeQuery();
+            if (rs.next()) {
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return true;
+    }
+
+    public int createAccount(Accounts accounts) {
+        int n = 0;
+        String sql = """
+                 INSERT INTO Accounts 
+                     (name, email, password, phoneNumber, address, image, dob, Rolesid) 
+                 VALUES 
+                 (?,?,?,?,?,?,?,?)""";
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            // Set các giá trị vào PreparedStatement
+            ps.setString(1, accounts.getName());
+            ps.setString(2, accounts.getEmail());
+            ps.setString(3, accounts.getPassword());
+            ps.setString(4, accounts.getPhoneNumber());
+            ps.setString(5, accounts.getAddress());
+            ps.setString(6, accounts.getImage());
+            ps.setDate(7, accounts.getDob());
+            ps.setInt(8, accounts.getRoleId());
+
+            // Chuyển đổi java.util.Date thành java.sql.Date nếu cần
+            n = ps.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return n;
     }
 
     public static void main(String[] args) {

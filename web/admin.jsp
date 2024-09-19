@@ -26,6 +26,13 @@
             .modal-body span{
                 margin-right: 5px
             }
+            #myBtn{
+                display: flex;
+                flex:left
+            }
+            #main-content{
+                
+            }
         </style>
 
     </head>
@@ -33,7 +40,7 @@
         <%@include file="header.jsp" %>
         <%@include file="admin-sideBar.jsp" %>
         <div id="main-content" style="padding: 15vh 16vw; margin: 0">
-            <div class="filterController" style="display: flex">
+            <div class="filterController col-md-12" style="display: flex">
                 <form action="accountController" method="get" style="margin-bottom: 20px;">
                     <input type="hidden" name="action" value="search">
                     <strong class="filterElm">Role:</strong>
@@ -53,8 +60,82 @@
                     </button>
                     <a class="btn btn-danger" href="accountController">Huỷ</a>
                 </form>
-            </div>
 
+
+            </div>
+              
+            <button type="button" class="btn btn-success" id="myBtn">Add new User</button>
+            <!-- Update Modal -->
+            <div class="container">
+                <!-- Modal -->
+                <div class="modal fade" id="myModal" role="dialog">
+                    <div class="modal-dialog">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header" style="padding:5px 5px;">
+                                <button type="button" class="close" style="font-size: 30px; margin-right: 12px;" data-dismiss="modal">&times;</button>
+                                <h4 style="margin-left: 12px">Create</h4>
+                            </div>
+                            <div class="modal-body" style="padding:40px 50px;">
+                                <form role="form" action="accountController" method="Post">
+                                    <input type="hidden" name="action" value="create"/>
+
+                                    <div class="row">
+
+                                        <div class="form-group col-md-6">
+                                            <label for="image"><span class="glyphicon glyphicon-picture"></span>Avatar:</label>
+                                            <input type="file" class="form-control" name="image">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Role:</label></div>
+                                            <select name="roleId" value="" style="height:  34px">
+                                                <option value="1">Admin</option>
+                                                <option value="2">Member</option>
+                                                <option value="3">Airline staff</option>
+                                                <option value="4">Service staff</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-9">
+                                            <label for="name"><span class="glyphicon glyphicon-user"></span>Name:</label>
+                                            <input type="text" class="form-control" name="name" value="">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-6">
+                                            <label for="dob"><span class="glyphicon glyphicon-calendar"></span>Date of birth:</label>
+                                            <input type="date" class="form-control" name="dob" value="">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="phoneNumber"><span class="glyphicon glyphicon-earphone"></span>Phone number:</label>
+                                            <input type="text" class="form-control" name="phoneNumber" value="">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="email"><span class="glyphicon glyphicon-envelope"></span>Email:</label>
+                                        <input type="email" class="form-control" name="email" value="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password"><span class="glyphicon glyphicon-eye-open"></span>Password:</label>
+                                        <input type="password" class="form-control" name="password" value="">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="address"><span class="glyphicon glyphicon-home"></span>Address:</label>
+                                        <input type="text" class="form-control" name="address" value="">
+                                    </div>
+                                    <button type="submit" class="btn btn-success btn-block">
+                                        Confirm
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+            <h4 style="color : red">${message}</h4>
             <table class="entity" >
                 <thead>
                     <tr>
@@ -169,6 +250,7 @@
                     %>
                 </tbody>
             </table>
+            
         </div>
 
         <script>
@@ -180,6 +262,11 @@
                     window.location = "accountController?action=remove&idAcc=" + id;
                 }
             }
+            $(document).ready(function () {
+                $("#myBtn").click(function () {
+                    $("#myModal").modal();
+                });
+            });
         </script>
     </body>
 </html>
