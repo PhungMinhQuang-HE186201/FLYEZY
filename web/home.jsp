@@ -9,10 +9,12 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <link rel="shortcut icon" type="image/png" href="img/flyezy-logo3.png" />
+
+        <title>Trang chủ</title>
     </head>
     <body>
         <%@include file="header.jsp" %> 
-        <h1>Hello World!</h1>
+        <h1>Hello World! 123</h1>
     </body>
 </html>

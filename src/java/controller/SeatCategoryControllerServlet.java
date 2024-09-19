@@ -4,8 +4,7 @@
  */
 package controller;
 
-import dal.AccountsDAO;
-import dal.RegisterDAO;
+import dal.SeatCategoryDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,17 +12,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import java.sql.Timestamp;
-import java.util.Date;
-import model.Accounts;
+import model.SeatCategory;
 
 /**
  *
  * @author Admin
  */
-@WebServlet(name = "RegisterServlet", urlPatterns = {"/register"})
-public class RegisterServlet extends HttpServlet {
+@WebServlet(name = "SeatCategoryControllerServlet", urlPatterns = {"/seatCategoryController"})
+public class SeatCategoryControllerServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,10 +38,10 @@ public class RegisterServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet RegisterServlet</title>");
+            out.println("<title>Servlet SeatCategoryControllerServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet RegisterServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet SeatCategoryControllerServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -63,7 +59,13 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("register.jsp").forward(request, response);
+        String action = request.getParameter("action");
+        SeatCategoryDAO scd = new SeatCategoryDAO();
+        if (action.equals("remove")) { //ok
+            int id = Integer.parseInt(request.getParameter("id"));
+            scd.deleteSeatCategory(id);
+            response.sendRedirect("planeCategoryController");
+        }
     }
 
     /**
@@ -77,26 +79,36 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        SeatCategoryDAO scd = new SeatCategoryDAO();
+
+        String idStr = request.getParameter("id");
+        String image = "img/" + request.getParameter("image");
         String name = request.getParameter("name");
-        String email = request.getParameter("email");
-        String phoneNumber = request.getParameter("phoneNumber");
-        String pass = request.getParameter("pass");
-        RegisterDAO d = new RegisterDAO();
-        if (d.checkPhoneNumberExisted(phoneNumber)) {
-            request.setAttribute("existedUsername", "Số điện thoại đã được đăng ký!");
-            request.getRequestDispatcher("register.jsp").forward(request, response);
-        } else if (d.checkEmailExisted(email)) {
-            request.setAttribute("existedUsername", "Gmail đã được đăng ký!");
-            request.getRequestDispatcher("register.jsp").forward(request, response);
-        } else {
-            Accounts a = new Accounts(name, email, pass, phoneNumber, 2);
-            d.addNewAccount(a);
-            HttpSession session = request.getSession();
-            AccountsDAO ad = new AccountsDAO();
-            int id = ad.getIdByEmailOrPhoneNumber(a.getEmail()); 
-            session.setAttribute("id", id);
-            response.sendRedirect("home");
+        String numberOfSeatStr = request.getParameter("numberOfSeat");
+        String planeCategoryIdStr = request.getParameter("planeCategoryId");
+        int numberOfSeat = 0;
+        int planeCategoryId = 0;
+        try {
+            numberOfSeat = Integer.parseInt(numberOfSeatStr);
+            planeCategoryId = Integer.parseInt(planeCategoryIdStr);
+        } catch (Exception e) {
         }
+
+        if (idStr != null && !idStr.isEmpty()) {
+            try {
+                int id = Integer.parseInt(idStr);
+                if (image.equals("img/")) {
+                    image = scd.getSeatCategoryById(id).getImage();
+                }
+                scd.updateSeatCategory(new SeatCategory(id, name, numberOfSeat, image, planeCategoryId));
+                response.sendRedirect("planeCategoryController");
+            } catch (Exception e) {
+            }
+        } else {
+            scd.addSeatCategory(new SeatCategory(name, numberOfSeat, image, planeCategoryId));
+            response.sendRedirect("planeCategoryController");
+        }
+
     }
 
     /**

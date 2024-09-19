@@ -1,5 +1,5 @@
 :root {
-    --tripoveMainColor: rgb(71, 143, 192);
+    --flyezyMainColor: rgb(60, 110, 87);
 }
 
 table.entity {
@@ -24,7 +24,7 @@ table.entity td {
 }
 
 table.entity th {
-    background-color: var(--tripoveMainColor);
+    background-color: var(--flyezyMainColor);
     color: white;
 }
 
@@ -42,47 +42,7 @@ table.entity td a {
 table.entity td a:hover {
     text-decoration: underline;
 }
-#left-column{
-    text-align: center;
-}
-#left-column table{
-    display: inline-block;
-    margin: 0 auto;
-}
-#right-column{
-    font-size: 14px
-}
 
-#right-column form{
-    float:right;
-}
-
-.entity-update {
-    padding: 8px;
-    border-radius: 6px;
-    border-color: white;
-    color: white;
-    background-color: #04aa6d;
-    cursor: pointer
-}
-
-.entity-delete {
-    padding: 8px;
-    border-radius: 6px;
-    border-color: white;
-    color: white;
-    background-color: #f44336;
-    cursor: pointer
-}
-
-.entity-detail {
-    padding: 8px;
-    border-radius: 6px;
-    border-color: white;
-    color: white;
-    background-color: #f7d017;
-    cursor: pointer
-}
 
 .filterController{
     font-size: 14px;
@@ -106,3 +66,5 @@ table.entity td a:hover {
     font-size: 16px;
     width: max-content;
 }
+
+

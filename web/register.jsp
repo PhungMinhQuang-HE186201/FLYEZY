@@ -9,8 +9,8 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Register</title>
-        <link rel="shortcut icon" type="image/jpg" href="image/logo-icon.png" />
+        <title>Đăng ký</title>
+        <link rel="shortcut icon" type="image/png" href="img/flyezy-logo3.png" />
         <link rel="stylesheet" href="css/styleLoginAndRegister.css" />
         <link rel="stylesheet" href="icon/themify-icons/themify-icons.css" />
     </head>

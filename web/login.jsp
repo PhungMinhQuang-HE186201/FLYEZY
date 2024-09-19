@@ -10,7 +10,8 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="css/styleLoginAndRegister.css" />
-        <title>Login</title>
+        <link rel="shortcut icon" type="image/png" href="img/flyezy-logo3.png" />
+        <title>Đăng nhập</title>
 
     </head>
     <body>

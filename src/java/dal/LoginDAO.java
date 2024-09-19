@@ -34,7 +34,7 @@ public class LoginDAO extends DBConnect {
     }
 
     public boolean checkPassword(String emailOrPhoneNumber, String password) {
-        String sql = "SELECT * FROM accounts WHERE (email=? OR phoneNumber=?) AND password=?";
+        String sql = "SELECT * FROM Accounts WHERE (email=? OR phoneNumber=?) AND password=?";
 
         try {
             PreparedStatement st = conn.prepareStatement(sql); 
