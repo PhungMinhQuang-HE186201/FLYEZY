@@ -4,8 +4,6 @@
  */
 package controller;
 
-import dal.AccountsDAO;
-import dal.PlaneCategoryDAO;
 import dal.SeatCategoryDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,17 +12,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import java.util.List;
-import model.Accounts;
-import model.PlaneCategory;
+import model.SeatCategory;
 
 /**
  *
  * @author Admin
  */
-@WebServlet(name = "PlaneCategoryControllerServlet", urlPatterns = {"/planeCategoryController"})
-public class PlaneCategoryControllerServlet extends HttpServlet {
+@WebServlet(name = "SeatCategoryControllerServlet", urlPatterns = {"/seatCategoryController"})
+public class SeatCategoryControllerServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,10 +38,10 @@ public class PlaneCategoryControllerServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet PlaneCategoryControllerServlet</title>");
+            out.println("<title>Servlet SeatCategoryControllerServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet PlaneCategoryControllerServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet SeatCategoryControllerServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -64,32 +59,12 @@ public class PlaneCategoryControllerServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        AccountsDAO ad = new AccountsDAO();
-        PlaneCategoryDAO pcd = new PlaneCategoryDAO();
-        SeatCategoryDAO scd = new SeatCategoryDAO();
-        HttpSession session = request.getSession();
-
-        // DuongNT: Retrieve the account information of the currently logged-in user using session
-        Integer idd = (Integer) session.getAttribute("id");
-        int i = (idd != null) ? idd : -1;
-        Accounts acc = ad.getAccountsById(i);
-        request.setAttribute("account", acc);
-
         String action = request.getParameter("action");
-        if (action == null) {
-            List<PlaneCategory> planeCategoryList = pcd.getAllPlaneCategoryByAirlineId(acc.getAirlineId());
-            request.setAttribute("planeCategoryList", planeCategoryList);
-            request.getRequestDispatcher("planeCategoryController.jsp").forward(request, response);
-        } else if (action.equals("remove")) { //ok
+        SeatCategoryDAO scd = new SeatCategoryDAO();
+        if (action.equals("remove")) { //ok
             int id = Integer.parseInt(request.getParameter("id"));
-            scd.deleteAllSeatCategoryByPlaneCategoryId(id);
-            pcd.deletePlaneCategoryById(id);
+            scd.deleteSeatCategory(id);
             response.sendRedirect("planeCategoryController");
-        } else if (action.equals("search")) {
-            String fName = request.getParameter("fName");
-            List<PlaneCategory> accountList = pcd.searchPlaneCategory(fName);
-            request.setAttribute("planeCategoryList", accountList);
-            request.getRequestDispatcher("planeCategoryController.jsp").forward(request, response);
         }
     }
 
@@ -104,33 +79,36 @@ public class PlaneCategoryControllerServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        PlaneCategoryDAO pcd = new PlaneCategoryDAO();
+        SeatCategoryDAO scd = new SeatCategoryDAO();
+
         String idStr = request.getParameter("id");
-        String name = request.getParameter("name");
         String image = "img/" + request.getParameter("image");
-        String airlineIdStr = request.getParameter("airlineId");
-        int airlineId = 0;
+        String name = request.getParameter("name");
+        String numberOfSeatStr = request.getParameter("numberOfSeat");
+        String planeCategoryIdStr = request.getParameter("planeCategoryId");
+        int numberOfSeat = 0;
+        int planeCategoryId = 0;
         try {
-            airlineId = Integer.parseInt(airlineIdStr);
+            numberOfSeat = Integer.parseInt(numberOfSeatStr);
+            planeCategoryId = Integer.parseInt(planeCategoryIdStr);
         } catch (Exception e) {
         }
+
         if (idStr != null && !idStr.isEmpty()) {
             try {
                 int id = Integer.parseInt(idStr);
                 if (image.equals("img/")) {
-                    image = pcd.getPlaneCategoryById(id).getImage();
+                    image = scd.getSeatCategoryById(id).getImage();
                 }
-                PlaneCategory pc = new PlaneCategory(id, name, image, airlineId);
-                pcd.updatePlaneCategoryById(pc);
+                scd.updateSeatCategory(new SeatCategory(id, name, numberOfSeat, image, planeCategoryId));
                 response.sendRedirect("planeCategoryController");
             } catch (Exception e) {
-                response.sendRedirect("home");
             }
         } else {
-            PlaneCategory pc = new PlaneCategory(name, image, airlineId);
-            pcd.addPlaneCategory(pc);
+            scd.addSeatCategory(new SeatCategory(name, numberOfSeat, image, planeCategoryId));
             response.sendRedirect("planeCategoryController");
         }
+
     }
 
     /**
