@@ -97,7 +97,7 @@
                     %>
                     <tr>
                         <td><%= pc.getName() %></td>
-                        <td><img src="<%= pc.getImage() %>" alt="<%= pc.getName() %>"></td>
+                        <td><img style="width: 100%" src="<%= pc.getImage() %>" alt="<%= pc.getName() %>"></td>
                         <td>
                             <a class="btn btn-info" style="text-decoration: none" onclick="openModal(<%= pc.getId() %>)">Update</a>
                             <a class="btn btn-danger" style="text-decoration: none" onclick="doDelete('<%= pc.getId() %>', '<%= pc.getName() %>')">Delete</a>
