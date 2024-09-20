@@ -15,6 +15,7 @@ import dal.AccountsDAO;
 import dal.RolesDAO;
 import jakarta.servlet.http.HttpSession;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 import model.Accounts;
 import model.Roles;
@@ -103,6 +104,7 @@ public class AccountControllerServlet extends HttpServlet {
         String action = request.getParameter("action");
         String idStr = request.getParameter("id");
         String roleIdStr = request.getParameter("roleId");
+        String airlineIDStr = request.getParameter("airlineID");
         String dobStr = request.getParameter("dob");
         String name = request.getParameter("name");
         String email = request.getParameter("email");
@@ -110,28 +112,29 @@ public class AccountControllerServlet extends HttpServlet {
         String phoneNumber = request.getParameter("phoneNumber");
         String address = request.getParameter("address");
         String image = "img/" + request.getParameter("image");
-
+        String create_at = request.getParameter("create_at");
         //insert
         try {
             if (action.equals("update")) {
                 int id = Integer.parseInt(idStr);
                 int roleId = Integer.parseInt(roleIdStr);
+                int airlineID = Integer.parseInt(airlineIDStr);
                 Date dob = Date.valueOf(dobStr);
-                int airlineId = 1;
+                Timestamp ca = Timestamp.valueOf(create_at);
                 //Integer.parseInt(request.getParameter("airlineId"));
                 if (image.equals("img/")) {
                     image = ad.getAccountsById(id).getImage();
                 }
-                Accounts newAcc = new Accounts(id, name, email, password, phoneNumber, address, image, dob, roleId, airlineId);
+                Accounts newAcc = new Accounts(id, name, email, password, phoneNumber, address, image, dob, roleId, airlineID,ca,new Timestamp(System.currentTimeMillis()));
                 ad.updateAccount(newAcc);
                 response.sendRedirect("accountController");
             } else if (action.equals("create")) {
                 int roleId = Integer.parseInt(roleIdStr);
+                int airlineID = Integer.parseInt(airlineIDStr);
                 Date dob = Date.valueOf(dobStr);
-                int airlineId = 1;
                 //Integer.parseInt(request.getParameter("airlineId"));
 
-                Accounts newAcc = new Accounts(name, email, password, phoneNumber, address, image, dob, roleId, airlineId);
+                Accounts newAcc = new Accounts(name, email, password, phoneNumber, address, image, dob, roleId, airlineID,new Timestamp(System.currentTimeMillis()));
                 boolean check = ad.checkAccount(newAcc);
                 if (check==true) {
                     int n = ad.createAccount(newAcc);

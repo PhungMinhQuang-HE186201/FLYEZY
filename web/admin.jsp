@@ -9,6 +9,7 @@
 <%@page import="dal.RolesDAO"%>
 <%@page import="java.util.List"%>
 <%@page import="model.Accounts"%>
+<%@page import="dal.AirlineManageDAO"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -31,7 +32,7 @@
                 flex:left
             }
             #main-content{
-                
+
             }
         </style>
 
@@ -63,7 +64,7 @@
 
 
             </div>
-              
+
             <button type="button" class="btn btn-success" id="myBtn">Add new User</button>
             <!-- Update Modal -->
             <div class="container">
@@ -88,7 +89,7 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="form-group col-md-3">
+                                        <div class="form-group col-md-6">
                                             <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Role:</label></div>
                                             <select name="roleId" value="" style="height:  34px">
                                                 <option value="1">Admin</option>
@@ -97,10 +98,21 @@
                                                 <option value="4">Service staff</option>
                                             </select>
                                         </div>
-                                        <div class="form-group col-md-9">
-                                            <label for="name"><span class="glyphicon glyphicon-user"></span>Name:</label>
-                                            <input type="text" class="form-control" name="name" value="">
+
+                                        <div class="form-group col-md-6">
+                                            <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Airline:</label></div>
+                                            <select name="airlineID" value="" style="height:  34px">
+                                                <option value="1">Empty</option>
+                                                <option value="2">Vietnam Airline</option>
+                                                <option value="3">Bamboo Airway</option>
+                                                <option value="4">Vietjet Air</option>
+                                            </select>
                                         </div>
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="name"><span class="glyphicon glyphicon-user"></span>Name:</label>
+                                        <input type="text" class="form-control" name="name" value="">
                                     </div>
                                     <div class="row">
                                         <div class="form-group col-md-6">
@@ -148,6 +160,8 @@
                         <th>Image</th>
                         <th>Role</th>
                         <th>Airline</th>
+                        <th>Create at</th>
+                        <th>Update at</th>
                         <th style="padding: 0 55px; min-width: 156px">Actions</th>
                     </tr>
                 </thead>
@@ -155,6 +169,7 @@
                     <%
                     List<Accounts> accountList = (List<Accounts>) request.getAttribute("accountList");
                     RolesDAO rd = new RolesDAO();
+                    AirlineManageDAO amd = new AirlineManageDAO();
                     for (Accounts list : accountList) {
                     %>
                     <tr>
@@ -166,7 +181,9 @@
                         <td><%= list.getAddress() %></td>
                         <td><img src="<%= list.getImage() %>" alt="<%= list.getName() %>"></td>
                         <td><%= rd.getNameById(list.getRoleId()) %></td>
-                        <td><%= list.getAirlineId() %></td>
+                        <td><%= amd.getNameById(list.getAirlineId()) %></td>
+                        <td><%= list.getCreated_at() %></td>
+                        <td><%= list.getUpdated_at() %></td>
                         <td>
                             <a class="btn btn-info" style="text-decoration: none" id="myBtn<%= list.getId() %>" onclick="openModal(<%= list.getId() %>)">Update</a>
                             <a class="btn btn-danger" style="text-decoration: none" onclick="doDelete('<%= list.getId() %>', '<%= list.getName() %>')">Delete</a>
@@ -192,12 +209,16 @@
                                                         <label for="image<%= list.getId() %>"><span class="glyphicon glyphicon-picture"></span>Avatar:</label>
                                                         <input type="file" class="form-control" name="image">
                                                     </div>
+                                                    <div class="form-group col-md-9">
+                                                        <label for="name<%= list.getId() %>"><span class="glyphicon glyphicon-user"></span>Create At:</label>
+                                                        <input type="text" class="form-control" name="create_at" value="<%= list.getCreated_at() %>" readonly="">
+                                                    </div>
                                                     <div class="form-group col-md-4">
                                                         <img src="<%= list.getImage() %>" alt="Avatar" class="img-thumbnail" style="width: 100px; height: 100px; float: right;">
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="form-group col-md-3">
+                                                    <div class="form-group col-md-6">
                                                         <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Role:</label></div>
                                                         <select name="roleId" value="<%= list.getRoleId() %>" style="height:  34px">
                                                             <option value="1" <%= (list.getRoleId() == 1) ? "selected" : "" %>>Admin</option>
@@ -206,10 +227,20 @@
                                                             <option value="4" <%= (list.getRoleId() == 4) ? "selected" : "" %>>Service staff</option>
                                                         </select>
                                                     </div>
-                                                    <div class="form-group col-md-9">
-                                                        <label for="name<%= list.getId() %>"><span class="glyphicon glyphicon-user"></span>Name:</label>
-                                                        <input type="text" class="form-control" name="name" value="<%= list.getName() %>">
+                                                    <div class="form-group col-md-6">
+                                                        <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Role:</label></div>
+                                                        <select name="airlineID" value="<%= list.getAirlineId() %>" style="height:  34px">
+                                                            <option value="1" <%= (list.getAirlineId() == 1) ? "selected" : "" %>>Empty</option>
+                                                            <option value="2" <%= (list.getAirlineId() == 2) ? "selected" : "" %>>Vietnam Airline</option>
+                                                            <option value="3" <%= (list.getAirlineId() == 3) ? "selected" : "" %>>Bamboo Airway</option>
+                                                            <option value="4" <%= (list.getAirlineId() == 4) ? "selected" : "" %>>Vietjet Air</option>
+                                                        </select>
                                                     </div>
+
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="name<%= list.getId() %>"><span class="glyphicon glyphicon-user"></span>Name:</label>
+                                                    <input type="text" class="form-control" name="name" value="<%= list.getName() %>">
                                                 </div>
                                                 <div class="row">
                                                     <div class="form-group col-md-6">
@@ -250,7 +281,7 @@
                     %>
                 </tbody>
             </table>
-            
+
         </div>
 
         <script>
