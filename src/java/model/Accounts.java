@@ -9,7 +9,10 @@ package model;
  * @author Admin
  */
 import java.sql.Date;
+import java.sql.Timestamp;
+
 public class Accounts {
+
     private int id;
     private String name;
     private String email;
@@ -20,9 +23,38 @@ public class Accounts {
     private Date dob;
     private int roleId;
     private int airlineId;
-    
+    private Timestamp created_at;
+    private Timestamp updated_at;
 
     public Accounts() {
+    }
+
+    public Accounts(String name, String email, String password, String phoneNumber, String address, String image, Date dob, int roleId, int airlineId, Timestamp created_at) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.image = image;
+        this.dob = dob;
+        this.roleId = roleId;
+        this.airlineId = airlineId;
+        this.created_at = created_at;
+    }
+
+    public Accounts(int id, String name, String email, String password, String phoneNumber, String address, String image, Date dob, int roleId, int airlineId, Timestamp created_at, Timestamp updated_at) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.image = image;
+        this.dob = dob;
+        this.roleId = roleId;
+        this.airlineId = airlineId;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
     }
 
     public Accounts(int id, String name, String email, String password, String phoneNumber, String address, String image, Date dob, int roleId, int airlineId) {
@@ -37,7 +69,7 @@ public class Accounts {
         this.roleId = roleId;
         this.airlineId = airlineId;
     }
-    
+
     public Accounts(String name, String email, String password, String phoneNumber, String address, String image, Date dob, int roleId, int airlineId) {
         this.name = name;
         this.email = email;
@@ -50,13 +82,42 @@ public class Accounts {
         this.airlineId = airlineId;
     }
 
-
     public Accounts(String name, String email, String password, String phoneNumber, int roleId) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.roleId = roleId;
+    }
+
+    public Accounts(int id, String name, String email, String password, String phoneNumber, String address, String image, Date dob, int roleId, int airlineId, Timestamp created_at) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.image = image;
+        this.dob = dob;
+        this.roleId = roleId;
+        this.airlineId = airlineId;
+        this.created_at = created_at;
+    }
+
+    public Timestamp getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(Timestamp created_at) {
+        this.created_at = created_at;
+    }
+
+    public Timestamp getUpdated_at() {
+        return updated_at;
+    }
+
+    public void setUpdated_at(Timestamp updated_at) {
+        this.updated_at = updated_at;
     }
 
     public int getId() {
@@ -122,7 +183,7 @@ public class Accounts {
     public void setDob(Date dob) {
         this.dob = dob;
     }
-    
+
     public int getRoleId() {
         return roleId;
     }
@@ -138,6 +199,5 @@ public class Accounts {
     public void setAirlineId(int airlineId) {
         this.airlineId = airlineId;
     }
-    
-    
+
 }

@@ -36,7 +36,7 @@ public class DBConnect {
     }
 
     public DBConnect() {
-        this("jdbc:mysql://localhost:3306/flyezy", "root", "pass123");
+        this("jdbc:mysql://localhost:3306/flyezy", "root", "1234");
     }
 
     public ResultSet getData(String sql) {
