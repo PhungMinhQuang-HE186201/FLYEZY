@@ -21,7 +21,7 @@ public class AirlineManageDAO extends DBConnect {
 
     public List<Airline> getAllAirline() {
         List<Airline> list = new ArrayList<>();
-        String sql = "select * from airline";
+        String sql = "select * from Airline";
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
             ResultSet resultSet = prepare.executeQuery();
@@ -39,7 +39,7 @@ public class AirlineManageDAO extends DBConnect {
 
     public Airline getAirlineById(int id) {
         List<Airline> list = new ArrayList<>();
-        String sql = "select * from airline where id = ?";
+        String sql = "select * from Airline where id = ?";
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
             prepare.setInt(1, id);
@@ -58,7 +58,7 @@ public class AirlineManageDAO extends DBConnect {
 
     public List<Airline> getAirlineByName(String name) {
         List<Airline> list = new ArrayList<>();
-        String sql = "SELECT * FROM airline WHERE name LIKE ?";
+        String sql = "SELECT * FROM Airline WHERE name LIKE ?";
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
             // Sử dụng ? để chèn tham số an toàn
@@ -84,7 +84,7 @@ public class AirlineManageDAO extends DBConnect {
 
     public List<Baggages> getAirlineBaggages(int airlineId) {
         List<Baggages> list = new ArrayList<>();
-        String sql = "select id,weight,price from baggages\n"
+        String sql = "select id,weight,price from Baggages\n"
                 + "where airlineid = ?";
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
@@ -104,7 +104,7 @@ public class AirlineManageDAO extends DBConnect {
 
     public int getMaxAirlineId() {
 
-        String sql = "select max(id) as maxId from airline";
+        String sql = "select max(id) as maxId from Airline";
         int id = 0;
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
@@ -119,7 +119,7 @@ public class AirlineManageDAO extends DBConnect {
     }
 
     public int createAirline(Airline airline) {
-        String sql = "INSERT INTO airline (name, image) VALUES (?, ?)";
+        String sql = "INSERT INTO Airline (name, image) VALUES (?, ?)";
         int generatedId = -1;  // Giá trị mặc định cho trường hợp không thể lấy được ID
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, airline.getName());
@@ -142,7 +142,7 @@ public class AirlineManageDAO extends DBConnect {
     }
 
     public void deleteAirline(int id) {
-        String sql = "DELETE FROM `flyezy`.`airline`\n"
+        String sql = "DELETE FROM `flyezy`.`Airline`\n"
                 + "WHERE id = " + id;
         try {
 
@@ -155,7 +155,7 @@ public class AirlineManageDAO extends DBConnect {
     }
 
     public void updateAirline(Airline airline) {
-        String sql = "UPDATE `flyezy`.`airline`\n"
+        String sql = "UPDATE `flyezy`.`Airline`\n"
                 + "SET\n"
                 + "`name` =?,\n"
                 + "`image` = ?\n"

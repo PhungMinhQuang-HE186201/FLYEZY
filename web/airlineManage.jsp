@@ -23,24 +23,9 @@
 
     </head>
     <body>
+        <%@include file="header.jsp" %>
+        <%@include file="admin-sideBar.jsp" %>
 
-        <div class="container" style="display: flex; justify-content: space-between; align-items: center; margin-top: 2%;">
-            <!-- Search bar -->
-            <div style="flex: 1; max-width: 60%; display: flex; align-items: center; margin-right: 5%;">
-                <form action="airlineController" method="GET" style="display: flex; width: 50%; align-items: center;">
-                    <input type="hidden" name="search" value="searchByName">
-                    <input type="text" placeholder="Airline Name..." name="keyword" style="flex: 1; padding: 2%; border-radius: 0.5%; border: 0.1% solid #ddd;"/>
-                    <input type="submit" name="submit" value="Search">
-                    <input type="reset" value="Clear">
-                    <input type="hidden" name="service" value="listStaff">
-                </form>
-            </div>
-
-            <!-- Trigger the modal with a button -->
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addAirline" style="flex-shrink: 0;">
-                Add Airline
-            </button>
-        </div>
 
         <!-- Modal -->
         <div class="modal fade" id="addAirline" tabindex="-1" role="dialog" aria-labelledby="addModal" aria-hidden="true">
@@ -99,9 +84,27 @@
         </div>
 
         <div id="main-content">
-            <div class="row" style="padding: 50px 0; margin: 0">
+            <div>
+                <!-- Search bar -->
+                <div style="max-width: 60%;">
+                    <form action="airlineController" method="GET" style="display: flex; width: 50%; align-items: center;">
+                        <input type="hidden" name="search" value="searchByName">
+                        <strong>Name: </strong>
+                        <input class="filterElm" type="text" placeholder="Airline Name ..." name="keyword" style="margin-left:5px"/>
+                        <input type="submit" class="btn btn-info" name="submit" value="Search" style="margin-right: 5px">
+                        <input type="reset" class="btn btn-danger" value="Cancle">
+                        <input type="hidden" name="service" value="listStaff">
+                    </form>
+                </div>
 
-                <div class="col-md-10" id="left-column">
+                <!-- Trigger the modal with a button -->
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addAirline" style="margin-top: 20px;flex-shrink: 0;">
+                    Add New Airline
+                </button>
+            </div>
+            <div class="row" style="margin: 0">
+
+                <div class="col-md-10" id="left-column" style="padding: 0; margin-top: 10px">
                     <table class="entity">
                         <thead>
                             <tr>

@@ -19,7 +19,7 @@ public class BaggageManageDAO extends DBConnect {
 
     public List<Baggages> getAllBaggages() {
         List<Baggages> list = new ArrayList<>();
-        String sql = "select * from baggages";
+        String sql = "select * from Baggages";
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
             ResultSet resultSet = prepare.executeQuery();
@@ -38,7 +38,7 @@ public class BaggageManageDAO extends DBConnect {
 
     public List<Baggages> getAllBaggagesByAirline(int airlineId) {
         List<Baggages> list = new ArrayList<>();
-        String sql = "select * from baggages\n"
+        String sql = "select * from Baggages\n"
                 + "where airlineid= " + airlineId;
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
@@ -57,7 +57,7 @@ public class BaggageManageDAO extends DBConnect {
     }
 
     public void createBaggages(Baggages baggage) {
-        String sql = "INSERT INTO `flyezy`.`baggages` (`id`, `weight`, `price`, `Airlineid`)\n"
+        String sql = "INSERT INTO `flyezy`.`Baggages` (`id`, `weight`, `price`, `Airlineid`)\n"
                 + "VALUES (?, ?, ?, ?)";
         try {
 
@@ -74,7 +74,7 @@ public class BaggageManageDAO extends DBConnect {
     }
 
     public void deleteBaggage(int id) {
-        String sql = "DELETE FROM `flyezy`.`baggages`\n"
+        String sql = "DELETE FROM `flyezy`.`Baggages`\n"
                 + "WHERE id = " + id;
         try {
 
@@ -87,7 +87,7 @@ public class BaggageManageDAO extends DBConnect {
     }
 
     public void deleteAllBaggageByAirline(int airlineId) {
-        String sql = "DELETE FROM `flyezy`.`baggages`\n"
+        String sql = "DELETE FROM `flyezy`.`Baggages`\n"
                 + "WHERE airlineid = " + airlineId;
         try {
 
@@ -100,7 +100,7 @@ public class BaggageManageDAO extends DBConnect {
     }
 
     public void updateBaggage(Baggages baggage) {
-        String sql = "UPDATE `flyezy`.`baggages`\n"
+        String sql = "UPDATE `flyezy`.`Baggages`\n"
                 + "SET\n"
                 + "`weight` =?,\n"
                 + "`price` = ?\n"

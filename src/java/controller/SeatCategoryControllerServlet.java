@@ -85,6 +85,7 @@ public class SeatCategoryControllerServlet extends HttpServlet {
         String image = "img/" + request.getParameter("image");
         String name = request.getParameter("name");
         String numberOfSeatStr = request.getParameter("numberOfSeat");
+        String info = request.getParameter("info");
         String planeCategoryIdStr = request.getParameter("planeCategoryId");
         int numberOfSeat = 0;
         int planeCategoryId = 0;
@@ -100,12 +101,12 @@ public class SeatCategoryControllerServlet extends HttpServlet {
                 if (image.equals("img/")) {
                     image = scd.getSeatCategoryById(id).getImage();
                 }
-                scd.updateSeatCategory(new SeatCategory(id, name, numberOfSeat, image, planeCategoryId));
+                scd.updateSeatCategory(new SeatCategory(id, name, numberOfSeat, image, info, planeCategoryId));
                 response.sendRedirect("planeCategoryController");
             } catch (Exception e) {
             }
         } else {
-            scd.addSeatCategory(new SeatCategory(name, numberOfSeat, image, planeCategoryId));
+            scd.addSeatCategory(new SeatCategory(name, numberOfSeat, image, info, planeCategoryId));
             response.sendRedirect("planeCategoryController");
         }
 

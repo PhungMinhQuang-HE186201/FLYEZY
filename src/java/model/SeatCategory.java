@@ -13,23 +13,26 @@ public class SeatCategory {
     private String name;
     private int numberOfSeat;
     private String image;
+    private String info;
     private int Plane_Categoryid;
 
     public SeatCategory() {
     }
-    
-    public SeatCategory(String name, int numberOfSeat, String image, int Plane_Categoryid) {
+
+    public SeatCategory(String name, int numberOfSeat, String image, String info, int Plane_Categoryid) {
         this.name = name;
         this.numberOfSeat = numberOfSeat;
         this.image = image;
+        this.info = info;
         this.Plane_Categoryid = Plane_Categoryid;
     }
 
-    public SeatCategory(int id, String name, int numberOfSeat, String image, int Plane_Categoryid) {
+    public SeatCategory(int id, String name, int numberOfSeat, String image, String info, int Plane_Categoryid) {
         this.id = id;
         this.name = name;
         this.numberOfSeat = numberOfSeat;
         this.image = image;
+        this.info = info;
         this.Plane_Categoryid = Plane_Categoryid;
     }
 
@@ -72,6 +75,15 @@ public class SeatCategory {
     public void setPlane_Categoryid(int Plane_Categoryid) {
         this.Plane_Categoryid = Plane_Categoryid;
     }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+    
     
     
 }

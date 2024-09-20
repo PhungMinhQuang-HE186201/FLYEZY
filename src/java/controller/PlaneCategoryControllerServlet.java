@@ -108,6 +108,7 @@ public class PlaneCategoryControllerServlet extends HttpServlet {
         String idStr = request.getParameter("id");
         String name = request.getParameter("name");
         String image = "img/" + request.getParameter("image");
+        String info = request.getParameter("info");
         String airlineIdStr = request.getParameter("airlineId");
         int airlineId = 0;
         try {
@@ -120,14 +121,14 @@ public class PlaneCategoryControllerServlet extends HttpServlet {
                 if (image.equals("img/")) {
                     image = pcd.getPlaneCategoryById(id).getImage();
                 }
-                PlaneCategory pc = new PlaneCategory(id, name, image, airlineId);
+                PlaneCategory pc = new PlaneCategory(id, name, image, info, airlineId);
                 pcd.updatePlaneCategoryById(pc);
                 response.sendRedirect("planeCategoryController");
             } catch (Exception e) {
                 response.sendRedirect("home");
             }
         } else {
-            PlaneCategory pc = new PlaneCategory(name, image, airlineId);
+            PlaneCategory pc = new PlaneCategory(name, image, info, airlineId);
             pcd.addPlaneCategory(pc);
             response.sendRedirect("planeCategoryController");
         }

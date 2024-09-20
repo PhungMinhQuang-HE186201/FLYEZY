@@ -39,8 +39,8 @@
     <body>
         <%@include file="header.jsp" %>
         <%@include file="admin-sideBar.jsp" %>
-        <div id="main-content" style="padding: 15vh 16vw; margin: 0">
-            <div class="filterController col-md-12" style="display: flex">
+        <div id="main-content" style="padding:15vh 0vw 15vh 16vw; margin: 0">
+            <div class="filterController col-md-12" style="width: 100%">
                 <form action="accountController" method="get" style="margin-bottom: 20px;">
                     <input type="hidden" name="action" value="search">
                     <strong class="filterElm">Role:</strong>
@@ -54,11 +54,10 @@
                     <input class="filterElm" type="text" name="fName" value="${param.fName}" placeholder="Enter name">
                     <strong>Phone number: </strong>
                     <input class="filterElm" type="number" name="fPhoneNumber" value="${param.fPhoneNumber}" placeholder="Enter phone number">
-                    <button class="btn btn-info" type="submit" style="width: 60px" >
-                        <i class="ti-search"></i>
-                        Lọc
+                    <button class="btn btn-info" type="submit">
+                        Search
                     </button>
-                    <a class="btn btn-danger" href="accountController">Huỷ</a>
+                    <a class="btn btn-danger" href="accountController">Cancle</a>
                 </form>
 
 
@@ -148,7 +147,7 @@
                         <th>Image</th>
                         <th>Role</th>
                         <th>Airline</th>
-                        <th style="padding: 0 55px; min-width: 156px">Actions</th>
+                        <th style="padding: 0 55px; min-width: 180px">Actions</th>
                     </tr>
                 </thead>
                 <tbody>

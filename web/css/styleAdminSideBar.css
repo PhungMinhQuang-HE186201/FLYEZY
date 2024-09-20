@@ -23,9 +23,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
 }
 
 #main-content {
-    margin-left: 195px; 
-    margin-top: 35px;
-    padding: 20px; 
+    margin:12vh 0vw 15vh 16vw;
 }
 
 #sidebar h2 {

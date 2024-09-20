@@ -60,8 +60,10 @@ public class AirlineManagementServlet extends HttpServlet {
                 break;
             case "delete":
                 removeAirline(request);
+                break;
             case "update":
                 updateAirline(request);
+                break;
             default:
 
         }
