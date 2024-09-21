@@ -105,7 +105,7 @@
                                     <div class="row">
                                         <div class="form-group col-md-6">
                                             <label for="dob"><span class="glyphicon glyphicon-calendar"></span>Date of birth:</label>
-                                            <input type="date" class="form-control" name="dob" value="">
+                                            <input type="date" class="form-control" name="dob" required>
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label for="phoneNumber"><span class="glyphicon glyphicon-earphone"></span>Phone number:</label>
@@ -140,7 +140,6 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Password</th>
                         <th>Date of birth</th>
                         <th>Phone</th>
                         <th>Email</th>
@@ -159,7 +158,6 @@
                     %>
                     <tr>
                         <td><%= list.getName() %></td>
-                        <td><%= list.getPassword() %></td>
                         <td><%= list.getDob() %></td>
                         <td><%= list.getPhoneNumber() %></td>
                         <td><%= list.getEmail() %></td>
@@ -214,7 +212,7 @@
                                                 <div class="row">
                                                     <div class="form-group col-md-6">
                                                         <label for="dob<%= list.getId() %>"><span class="glyphicon glyphicon-calendar"></span>Date of birth:</label>
-                                                        <input type="date" class="form-control" name="dob" value="<%= list.getDob() %>">
+                                                        <input type="date" class="form-control" name="dob" value="<%= list.getDob() %>" required>
                                                     </div>
                                                     <div class="form-group col-md-6">
                                                         <label for="phoneNumber<%= list.getId() %>"><span class="glyphicon glyphicon-earphone"></span>Phone number:</label>

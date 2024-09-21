@@ -91,8 +91,12 @@ public class AccountsDAO extends DBConnect {
         try {
             PreparedStatement pre = conn.prepareStatement(sql);
             pre.setString(1, account.getName());
+
+            String encode = encryptAES(account.getPassword(), "maiyeudomdomjj97");
+
             pre.setString(2, account.getEmail());
-            pre.setString(3, account.getPassword());
+
+            pre.setString(3, encode);
             pre.setString(4, account.getPhoneNumber());
             pre.setString(5, account.getAddress());
             pre.setInt(6, account.getRoleId());
@@ -102,7 +106,7 @@ public class AccountsDAO extends DBConnect {
             pre.setInt(10, account.getId());
             pre.executeUpdate();
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             System.out.println(ex);
         }
     }
@@ -196,7 +200,10 @@ public class AccountsDAO extends DBConnect {
             // Set các giá trị vào PreparedStatement
             ps.setString(1, accounts.getName());
             ps.setString(2, accounts.getEmail());
-            ps.setString(3, accounts.getPassword());
+
+            String encode = encryptAES(accounts.getPassword(), "maiyeudomdomjj97");
+            ps.setString(3, encode);
+
             ps.setString(4, accounts.getPhoneNumber());
             ps.setString(5, accounts.getAddress());
             ps.setString(6, accounts.getImage());
@@ -205,7 +212,7 @@ public class AccountsDAO extends DBConnect {
 
             // Chuyển đổi java.util.Date thành java.sql.Date nếu cần
             n = ps.executeUpdate();
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         return n;

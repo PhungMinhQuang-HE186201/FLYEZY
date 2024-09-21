@@ -14,6 +14,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.Base64;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  *
@@ -72,44 +77,76 @@ public class LoginServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        
-        String u = request.getParameter("user"); // xu ly neu nguoi dung nhap vao space
-        String p = request.getParameter("pass");
-        String r = request.getParameter("rem");
-        Cookie cu = new Cookie("cuser", u);
-        Cookie cp = new Cookie("cpass", p);
-        Cookie cr = new Cookie("crem", r);
-        if (r != null) {
-            cu.setMaxAge(60 * 60 * 24 * 7);//7 days
-            cp.setMaxAge(60 * 60 * 24 * 7);
-            cr.setMaxAge(60 * 60 * 24 * 7);
-        } else {
-            cu.setMaxAge(0);
-            cp.setMaxAge(0);
-            cr.setMaxAge(0);
-        }
-        //save to browser
-        response.addCookie(cu);
-        response.addCookie(cp);
-        response.addCookie(cr);
-        LoginDAO ld = new LoginDAO();
-        AccountsDAO ad = new AccountsDAO();
-        HttpSession session = request.getSession();
-        if (!ld.checkUsername(u)) {
-            request.setAttribute("error", "Tài khoản của bạn không tồn tại!");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
-        } else if (!ld.checkPassword(u, p)) {
-            request.setAttribute("error", "Mật khẩu của bạn không chính xác!");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
-        } else {
-            int id = ad.getIdByEmailOrPhoneNumber(u);
-            session.setAttribute("id", id);
-            response.sendRedirect("home");
+            throws ServletException, IOException{
+        //quanHT: encode password before checkpass
+        try {
+            String u = request.getParameter("user"); // xu ly neu nguoi dung nhap vao space
+            String p = request.getParameter("pass");
+            String r = request.getParameter("rem");
+            
+            String encode = encryptAES(p, "maiyeudomdomjj97");
+            
+            Cookie cu = new Cookie("cuser", u);
+            Cookie cp = new Cookie("cpass", p);
+            Cookie cr = new Cookie("crem", r);
+            if (r != null) {
+                cu.setMaxAge(60 * 60 * 24 * 7);//7 days
+                cp.setMaxAge(60 * 60 * 24 * 7);
+                cr.setMaxAge(60 * 60 * 24 * 7);
+            } else {
+                cu.setMaxAge(0);
+                cp.setMaxAge(0);
+                cr.setMaxAge(0);
+            }
+            //save to browser
+            response.addCookie(cu);
+            response.addCookie(cp);
+            response.addCookie(cr);
+            LoginDAO ld = new LoginDAO();
+            AccountsDAO ad = new AccountsDAO();
+            HttpSession session = request.getSession();
+            if (!ld.checkUsername(u)) {
+                request.setAttribute("error", "Tài khoản của bạn không tồn tại!");
+                request.getRequestDispatcher("login.jsp").forward(request, response);
+            } else if (!ld.checkPassword(u, encode)) {
+                request.setAttribute("error", "Mật khẩu của bạn không chính xác!");
+                request.getRequestDispatcher("login.jsp").forward(request, response);
+            } else {
+                int id = ad.getIdByEmailOrPhoneNumber(u);
+                session.setAttribute("id", id);
+                response.sendRedirect("home");
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
+    //quanHT: encode and decode function
+    public static String encryptAES(String str, String key) throws Exception {
+        // str chuỗi cần mã hóa còn key là khóa ta truyền vào
+        SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(), "AES");
 
+        // Thiết lập Cipher cho mã hóa
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+        //encrypt thành byte
+        byte[] encryptedBytes = cipher.doFinal(str.getBytes());
+        // chuyển nó thành String để đọc
+        return Base64.getEncoder().encodeToString(encryptedBytes);
+    }
+
+    public static String decryptAES(String str, String key) throws Exception {
+
+        SecretKeySpec secretkey = new SecretKeySpec(key.getBytes(), "AES");
+
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.DECRYPT_MODE, secretkey);
+
+        byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(str));
+
+        return new String(decryptedBytes);
+    }
+//------------------------------------------------------------------------------------------------------------------
     /**
      * Returns a short description of the servlet.
      *

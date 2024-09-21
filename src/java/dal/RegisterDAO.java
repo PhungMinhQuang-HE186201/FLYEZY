@@ -7,7 +7,10 @@ package dal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Base64;
 import java.util.Date;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 import model.Accounts;
 
 /**
@@ -39,27 +42,32 @@ public class RegisterDAO extends DBConnect {
             return false;
         }
     }
-
+    //QuanHT
     public void addNewAccount(Accounts a) {
         String sql = "INSERT INTO Accounts (name, password, email, phoneNumber, address, image, dob, Rolesid, Airlineid)\n"
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, NULL);";
         try (PreparedStatement st = conn.prepareStatement(sql)) {
             st.setString(1, a.getName());
-            st.setString(2, a.getPassword());
-            st.setString(3, a.getEmail()); 
-            st.setString(4, a.getPhoneNumber()); 
-            st.setString(5, a.getAddress()); 
-            st.setString(6, a.getImage()); 
+            
+            String encode = encryptAES(a.getPassword(), "maiyeudomdomjj97");
+            st.setString(2, encode);
+            
+            
+            st.setString(3, a.getEmail());
+            st.setString(4, a.getPhoneNumber());
+            st.setString(5, a.getAddress());
+            st.setString(6, a.getImage());
             st.setDate(7, a.getDob());
-            st.setInt(8, a.getRoleId()); 
+            st.setInt(8, a.getRoleId());
             st.executeUpdate();
         } catch (Exception e) {
             System.out.println(e);
         }
     }
+    
 
-  public static void main(String[] args) {
-       RegisterDAO rd = new RegisterDAO();
-       rd.addNewAccount(new Accounts("Quaan", "123@gmail.com", "1", "0123", 2));
+    public static void main(String[] args) {
+        RegisterDAO rd = new RegisterDAO();
+        rd.addNewAccount(new Accounts("Quaan", "123@gmail.com", "1", "0123", 2));
     }
 }
