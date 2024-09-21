@@ -17,7 +17,8 @@
         <link rel="stylesheet" href="css/styleAdminController.css">
         <link rel="stylesheet" href="css/bootstrap.css">
         <link rel="stylesheet" href="css/bootstrap.min.css">
-
+        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
@@ -55,6 +56,14 @@
                             </div>
                             <img id="previewImage" src="#" alt="Preview"
                                  style="display: none; max-width: 300px; max-height: 300px;">
+
+                            <!-- Information -->
+                            <div class="form-group">
+                                <label><span class="glyphicon glyphicon-info-sign"></span>Information:</label>
+                                <div class="editor-container">
+                                    <textarea class="editor" name="airlineInfo"></textarea>
+                                </div>
+                            </div>  
 
                             <!-- Baggage Checkbox -->
                             <div class="form-group">
@@ -111,6 +120,7 @@
                                 <th>Airline Id</th>
                                 <th>Name</th>
                                 <th>Image</th>
+                                <th>Information</th>
                                 <th style="min-width: 156px">Actions</th>
                             </tr>
                         </thead>
@@ -122,6 +132,11 @@
                                     <td name="name">${airline.getName()}</td>
                                     <td name="image">
                                         <img src="${airline.getImage()}" width="100" height="100" alt="airline" class="primary" />                                      
+                                    </td>
+                                    <td>
+                                        <div style="max-height:  100px; text-align: left;padding-left: 20px; overflow-y: scroll;">
+                                            ${airline.getInfo()}
+                                        </div>
                                     </td>
                                     <td>
                                         <button class="btn btn-success" data-toggle="modal" data-target="#update-airline-${airline.getId()}">Update</button>
@@ -186,6 +201,14 @@
                                                 <!-- Preview Image -->
                                                 <img id="hideImage" src="${airline.getImage()}" alt="Preview" style="display: block; max-width: 300px; max-height: 300px;">
                                                 <img id="preImage2" src="#" alt="Preview" style="display: none; max-width: 300px; max-height: 300px;">
+
+                                                <!-- Information -->
+                                                <div class="form-group">
+                                                    <label><span class="glyphicon glyphicon-info-sign"></span>Information:</label>
+                                                    <div class="editor-container">
+                                                        <textarea class="editor" name="airlineInfo">${airline.getInfo()}</textarea>
+                                                    </div>
+                                                </div>  
 
 
 
@@ -443,6 +466,42 @@
                 reader.readAsDataURL(file);
             }
 
+        </script>
+        <script type="importmap">
+            {
+            "imports": {
+            "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.js",
+            "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.1.0/"
+            }
+            }
+        </script>
+        <script type="module">
+            import {
+            ClassicEditor,
+                    Essentials,
+                    Paragraph,
+                    Bold,
+                    Italic,
+                    Font,
+                    List
+            } from 'ckeditor5';
+            document.querySelectorAll('.editor').forEach((editorElement) => {
+                ClassicEditor
+                        .create(editorElement, {
+                            plugins: [Essentials, Paragraph, Bold, Italic, Font, List],
+                            toolbar: [
+                                'undo', 'redo', '|', 'bold', 'italic', '|',
+                                'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
+                                '|', 'bulletedList', 'numberedList'
+                            ]
+                        })
+                        .then(editor => {
+                            console.log('Editor initialized:', editor);
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+            });
         </script>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>

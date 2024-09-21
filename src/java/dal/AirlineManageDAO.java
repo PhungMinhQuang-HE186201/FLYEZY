@@ -29,7 +29,8 @@ public class AirlineManageDAO extends DBConnect {
                 int id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
                 String image = resultSet.getString("image");
-                list.add(new Airline(id, name, image));
+                String info = resultSet.getString("info");
+                list.add(new Airline(id, name, image,info));
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -60,7 +61,8 @@ public class AirlineManageDAO extends DBConnect {
                 id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
                 String image = resultSet.getString("image");
-                list.add(new Airline(id, name, image));
+                String info = resultSet.getString("info");
+                list.add(new Airline(id, name, image,info));
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -80,7 +82,8 @@ public class AirlineManageDAO extends DBConnect {
                 int id = resultSet.getInt("id");
                 String airlineName = resultSet.getString("name");
                 String image = resultSet.getString("image");
-                list.add(new Airline(id, airlineName, image));
+                String info = resultSet.getString("info");
+                list.add(new Airline(id, airlineName, image,info));
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -131,11 +134,12 @@ public class AirlineManageDAO extends DBConnect {
     }
 
     public int createAirline(Airline airline) {
-        String sql = "INSERT INTO Airline (name, image) VALUES (?, ?)";
+        String sql = "INSERT INTO Airline (name, image,info) VALUES (?, ?, ?)";
         int generatedId = -1;  // Giá trị mặc định cho trường hợp không thể lấy được ID
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, airline.getName());
             preparedStatement.setString(2, airline.getImage());
+            preparedStatement.setString(3, airline.getInfo());
             preparedStatement.executeUpdate();
 
             // Lấy airlineId vừa được tạo
@@ -170,14 +174,16 @@ public class AirlineManageDAO extends DBConnect {
         String sql = "UPDATE `flyezy`.`Airline`\n"
                 + "SET\n"
                 + "`name` =?,\n"
-                + "`image` = ?\n"
+                + "`image` = ?,\n"
+                + "`info` = ?\n"
                 + "WHERE `id` = ?";
         try {
 
             PreparedStatement pre = conn.prepareStatement(sql);
             pre.setString(1, airline.getName());
             pre.setString(2, airline.getImage());
-            pre.setInt(3, airline.getId());
+             pre.setString(3, airline.getInfo());
+            pre.setInt(4, airline.getId());
             pre.executeUpdate();
 
         } catch (SQLException ex) {
@@ -189,15 +195,15 @@ public class AirlineManageDAO extends DBConnect {
         AirlineManageDAO dao = new AirlineManageDAO();
 
 //        // Create Airline and Baggage objects
-//        Airline airline = new Airline("abc", "abc");
+//        Airline airline = new Airline(5, "ab", "ab.jpg","abc");
 //        int n = dao.createAirline(airline);
 //        System.out.println("n= " + n);
 //        dao.deleteAirline(228);
-        //dao.updateAirline(new Airline(1, "ab", "ab.jpg"));
-//        for (Airline airline1 : dao.getAllAirline()) {
-//            System.out.println(airline1);
-//        }
-        System.out.println(dao.getAirlineById(3));
+        dao.updateAirline(new Airline(5, "abccc", "ab.jpg","abcccccc"));
+        for (Airline airline1 : dao.getAllAirline()) {
+            System.out.println(airline1);
+        }
+//        System.out.println(dao.getAirlineById(3));
 //        System.out.println(dao.getAirlineBaggages(3));
 
         //System.out.println(dao.getMaxAirlineId() + 1);

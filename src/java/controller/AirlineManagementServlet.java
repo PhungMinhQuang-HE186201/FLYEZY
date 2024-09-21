@@ -11,8 +11,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.Part;
-import java.io.File;
 import model.Airline;
 import model.Baggages;
 
@@ -86,8 +84,10 @@ public class AirlineManagementServlet extends HttpServlet {
             String airlineName = request.getParameter("airlineName");
             //get image path
             String airlineImage = "img/" + request.getParameter("airlineImage");
+            //get info
+            String airlineInfo = request.getParameter("airlineInfo");
 
-            Airline airline = new Airline(airlineName, airlineImage);
+            Airline airline = new Airline(airlineName, airlineImage,airlineInfo);
 
             // Thêm airline vào cơ sở dữ liệu
             // Lấy airlineId
@@ -134,11 +134,12 @@ public class AirlineManagementServlet extends HttpServlet {
             int airlineId = Integer.parseInt(request.getParameter("airlineId"));
             String airlineName = request.getParameter("airlineName");
             String airlineImage = "img/" + request.getParameter("airlineImage");
+            String airlineInfo = request.getParameter("airlineInfo");
             if (airlineImage.equals("img/")) {
                 airlineImage = airlineManageDao.getAirlineById(airlineId).getImage();
             }
 
-            Airline airline = new Airline(airlineId, airlineName, airlineImage);
+            Airline airline = new Airline(airlineId, airlineName, airlineImage,airlineInfo);
             airlineManageDao.updateAirline(airline);
         } catch (Exception e) {
             // Xử lý lỗi khác
