@@ -13,6 +13,10 @@ import java.util.Base64;
  * @author Admin
  */
 public class EncodeController {
+
+    public EncodeController() {
+    }
+    
     //QuanHT: create encode function
     public static String encryptAES(String str, String key) throws Exception {
         // str chuỗi cần mã hóa còn key là khóa ta truyền vào
@@ -40,7 +44,7 @@ public class EncodeController {
     }
 
     public static void main(String[] args) throws Exception {
-        String str_en = "Ho tran quan";
+        String str_en = "12";
         String key = "maiyeudomdomjj97";
 
         String encode = encryptAES(str_en, key);

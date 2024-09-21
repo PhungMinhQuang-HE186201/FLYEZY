@@ -38,7 +38,7 @@ public class AirlineManageDAO extends DBConnect {
         return list;
     }
     public String getNameById(int id){
-        String sql = "select * from airline where id = ?";
+        String sql = "select * from Airline where id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);

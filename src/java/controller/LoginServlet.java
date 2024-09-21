@@ -78,13 +78,14 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException{
+        EncodeController ec = new EncodeController();
         //quanHT: encode password before checkpass
         try {
-            String u = request.getParameter("user"); // xu ly neu nguoi dung nhap vao space
+            String u = request.getParameter("user"); 
             String p = request.getParameter("pass");
             String r = request.getParameter("rem");
             
-            String encode = encryptAES(p, "maiyeudomdomjj97");
+            String encode = ec.encryptAES(p, "maiyeudomdomjj97");
             
             Cookie cu = new Cookie("cuser", u);
             Cookie cp = new Cookie("cpass", p);
@@ -117,35 +118,10 @@ public class LoginServlet extends HttpServlet {
                 response.sendRedirect("home");
             }
         } catch (Exception ex) {
-            Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
-    //quanHT: encode and decode function
-    public static String encryptAES(String str, String key) throws Exception {
-        // str chuỗi cần mã hóa còn key là khóa ta truyền vào
-        SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(), "AES");
-
-        // Thiết lập Cipher cho mã hóa
-        Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-        //encrypt thành byte
-        byte[] encryptedBytes = cipher.doFinal(str.getBytes());
-        // chuyển nó thành String để đọc
-        return Base64.getEncoder().encodeToString(encryptedBytes);
-    }
-
-    public static String decryptAES(String str, String key) throws Exception {
-
-        SecretKeySpec secretkey = new SecretKeySpec(key.getBytes(), "AES");
-
-        Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.DECRYPT_MODE, secretkey);
-
-        byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(str));
-
-        return new String(decryptedBytes);
-    }
+   
 //------------------------------------------------------------------------------------------------------------------
     /**
      * Returns a short description of the servlet.
