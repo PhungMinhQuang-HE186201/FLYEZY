@@ -12,21 +12,24 @@ public class PlaneCategory {
     private int id;
     private String name;
     private String image;
+    private String info;
     private int Airlineid;
 
     public PlaneCategory() {
     }
-    
-    public PlaneCategory(String name, String image, int Airlineid) {
+
+    public PlaneCategory(String name, String image, String info, int Airlineid) {
         this.name = name;
         this.image = image;
+        this.info = info;
         this.Airlineid = Airlineid;
     }
 
-    public PlaneCategory(int id, String name, String image, int Airlineid) {
+    public PlaneCategory(int id, String name, String image, String info, int Airlineid) {
         this.id = id;
         this.name = name;
         this.image = image;
+        this.info = info;
         this.Airlineid = Airlineid;
     }
 
@@ -60,6 +63,14 @@ public class PlaneCategory {
 
     public void setAirlineid(int Airlineid) {
         this.Airlineid = Airlineid;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
     }
     
     

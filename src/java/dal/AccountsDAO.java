@@ -26,7 +26,8 @@ public class AccountsDAO extends DBConnect {
             while (rs.next()) {
                 Accounts a = new Accounts(rs.getInt("id"), rs.getString("name"), rs.getString("email"),
                         rs.getString("password"), rs.getString("phoneNumber"),
-                        rs.getString("address"), rs.getString("image"), rs.getDate("dob"), rs.getInt("Rolesid"), rs.getInt("Airlineid"));
+                        rs.getString("address"), rs.getString("image"), rs.getDate("dob"), rs.getInt("Rolesid"), rs.getInt("Airlineid"),
+                        rs.getTimestamp("created_at"), rs.getTimestamp("updated_at"));
                 ls.add(a);
             }
             return ls;
@@ -66,7 +67,8 @@ public class AccountsDAO extends DBConnect {
             if (rs.next()) {
                 Accounts a = new Accounts(rs.getInt("id"), rs.getString("name"), rs.getString("email"),
                         rs.getString("password"), rs.getString("phoneNumber"),
-                        rs.getString("address"), rs.getString("image"), rs.getDate("dob"), rs.getInt("Rolesid"), rs.getInt("Airlineid"));
+                        rs.getString("address"), rs.getString("image"), rs.getDate("dob"), rs.getInt("Rolesid"), rs.getInt("Airlineid"),
+                        rs.getTimestamp("created_at"), rs.getTimestamp("updated_at"));
                 return a;
             }
         } catch (SQLException e) {
@@ -86,6 +88,7 @@ public class AccountsDAO extends DBConnect {
                 + "      ,Airlineid = ?\n"
                 + "      ,image = ?\n"
                 + "      ,dob = ?\n"
+                + "      ,updated_at = ?\n"
                 + " WHERE id=?";
 
         try {
@@ -103,7 +106,9 @@ public class AccountsDAO extends DBConnect {
             pre.setInt(7, account.getAirlineId());
             pre.setString(8, account.getImage());
             pre.setDate(9, account.getDob());
-            pre.setInt(10, account.getId());
+            pre.setTimestamp(10, account.getUpdated_at());
+            pre.setInt(11, account.getId());
+            
             pre.executeUpdate();
 
         } catch (Exception ex) {
@@ -157,7 +162,8 @@ public class AccountsDAO extends DBConnect {
             while (rs.next()) {
                 Accounts a = new Accounts(rs.getInt("id"), rs.getString("name"), rs.getString("email"),
                         rs.getString("password"), rs.getString("phoneNumber"),
-                        rs.getString("address"), rs.getString("image"), rs.getDate("dob"), rs.getInt("Rolesid"), rs.getInt("Airlineid"));
+                        rs.getString("address"), rs.getString("image"), rs.getDate("dob"), rs.getInt("Rolesid"), rs.getInt("Airlineid"),
+                        rs.getTimestamp("created_at"), rs.getTimestamp("updated_at"));
                 ls.add(a);
             }
         } catch (Exception e) {
@@ -190,9 +196,9 @@ public class AccountsDAO extends DBConnect {
         int n = 0;
         String sql = """
                  INSERT INTO Accounts 
-                     (name, email, password, phoneNumber, address, image, dob, Rolesid) 
+                     (name, email, password, phoneNumber, address, image, dob, Rolesid,created_at,Airlineid) 
                  VALUES 
-                 (?,?,?,?,?,?,?,?)""";
+                 (?,?,?,?,?,?,?,?,?,?)""";
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -209,7 +215,8 @@ public class AccountsDAO extends DBConnect {
             ps.setString(6, accounts.getImage());
             ps.setDate(7, accounts.getDob());
             ps.setInt(8, accounts.getRoleId());
-
+            ps.setTimestamp(9, accounts.getCreated_at());
+            ps.setInt(10, accounts.getAirlineId());
             // Chuyển đổi java.util.Date thành java.sql.Date nếu cần
             n = ps.executeUpdate();
         } catch (Exception ex) {

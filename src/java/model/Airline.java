@@ -6,34 +6,41 @@ package model;
 
 /**
  *
- * @author Admin
+ * @author PMQUANG
  */
-public class SeatCategory {
+public class Airline {
     private int id;
     private String name;
-    private int numberOfSeat;
     private String image;
     private String info;
-    private int Plane_Categoryid;
 
-    public SeatCategory() {
+    public Airline(int id) {
+        this.id = id;
     }
 
-    public SeatCategory(String name, int numberOfSeat, String image, String info, int Plane_Categoryid) {
+    public Airline(String name, String image) {
         this.name = name;
-        this.numberOfSeat = numberOfSeat;
+        this.image = image;
+    }
+
+    public Airline(String name, String image, String info) {
+        this.name = name;
         this.image = image;
         this.info = info;
-        this.Plane_Categoryid = Plane_Categoryid;
     }
 
-    public SeatCategory(int id, String name, int numberOfSeat, String image, String info, int Plane_Categoryid) {
+
+    public Airline(int id, String name, String image) {
         this.id = id;
         this.name = name;
-        this.numberOfSeat = numberOfSeat;
+        this.image = image;
+    }
+
+    public Airline(int id, String name, String image, String info) {
+        this.id = id;
+        this.name = name;
         this.image = image;
         this.info = info;
-        this.Plane_Categoryid = Plane_Categoryid;
     }
 
     public int getId() {
@@ -52,28 +59,12 @@ public class SeatCategory {
         this.name = name;
     }
 
-    public int getNumberOfSeat() {
-        return numberOfSeat;
-    }
-
-    public void setNumberOfSeat(int numberOfSeat) {
-        this.numberOfSeat = numberOfSeat;
-    }
-
     public String getImage() {
         return image;
     }
 
     public void setImage(String image) {
         this.image = image;
-    }
-
-    public int getPlane_Categoryid() {
-        return Plane_Categoryid;
-    }
-
-    public void setPlane_Categoryid(int Plane_Categoryid) {
-        this.Plane_Categoryid = Plane_Categoryid;
     }
 
     public String getInfo() {
@@ -83,7 +74,10 @@ public class SeatCategory {
     public void setInfo(String info) {
         this.info = info;
     }
-    
-    
-    
+
+    @Override
+    public String toString() {
+        return "Airline{" + "id=" + id + ", name=" + name + ", image=" + image + ", info=" + info + '}';
+    }
+
 }
