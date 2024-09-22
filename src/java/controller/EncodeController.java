@@ -44,8 +44,8 @@ public class EncodeController {
     }
 
     public static void main(String[] args) throws Exception {
-        String str_en = "12";
-        String key = "maiyeudomdomjj97";
+        String str_en = "1";
+        String key = "maiyeudomdomjj98";
 
         String encode = encryptAES(str_en, key);
         System.out.println("ma khi duoc ma hoa:" + encode);

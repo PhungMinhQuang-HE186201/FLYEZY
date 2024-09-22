@@ -56,7 +56,7 @@ public class LoginDAO extends DBConnect {
     public static void main(String[] args) {
         LoginDAO a = new LoginDAO();
 
-        System.out.println(a.checkPassword("0862521226", "nZSlcuXNVuSMwxTEplfo2vbYacnzZ/yA4DD87E7SWUE="));
+        System.out.println(a.checkPassword("0966486473", "KIymfC4XfLDNFnygtZuXNQ=="));
     }
 
 }

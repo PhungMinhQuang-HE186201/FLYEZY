@@ -95,7 +95,7 @@ public class AccountsDAO extends DBConnect {
             PreparedStatement pre = conn.prepareStatement(sql);
             pre.setString(1, account.getName());
 
-            String encode = encryptAES(account.getPassword(), "maiyeudomdomjj97");
+            String encode = encryptAES(account.getPassword(), "maiyeudomdomjj98");
 
             pre.setString(2, account.getEmail());
 
@@ -108,7 +108,7 @@ public class AccountsDAO extends DBConnect {
             pre.setDate(9, account.getDob());
             pre.setTimestamp(10, account.getUpdated_at());
             pre.setInt(11, account.getId());
-            
+
             pre.executeUpdate();
 
         } catch (Exception ex) {
@@ -207,7 +207,7 @@ public class AccountsDAO extends DBConnect {
             ps.setString(1, accounts.getName());
             ps.setString(2, accounts.getEmail());
 
-            String encode = encryptAES(accounts.getPassword(), "maiyeudomdomjj97");
+            String encode = encryptAES(accounts.getPassword(), "maiyeudomdomjj98");
             ps.setString(3, encode);
 
             ps.setString(4, accounts.getPhoneNumber());
@@ -226,8 +226,23 @@ public class AccountsDAO extends DBConnect {
     }
 
     public static void main(String[] args) {
-        AccountsDAO a = new AccountsDAO();
-        //a.updateAccount(new Accounts(1, "Ngo 123", "duongnthe186310@fpt.edu.vn", "1", "0862521226", null, "img/flyezy-logo.png", null, 2, 1));
-        System.out.println(a.searchAccounts("1", "Qua", "0123"));
+        AccountsDAO dao = new AccountsDAO();
+
+        // Test hàm getAccountsById với một id cụ thể
+        int accountId = 5; // Thay id này bằng một giá trị có thật trong DB
+        Accounts account = dao.getAccountsById(accountId);
+
+        if (account != null) {
+            System.out.println("Thông tin tài khoản:");
+            System.out.println("ID: " + account.getId());
+            System.out.println("Name: " + account.getName());
+            System.out.println("Email: " + account.getEmail());
+            System.out.println("Phone Number: " + account.getPhoneNumber());
+            System.out.println("Address: " + account.getAddress());
+            System.out.println("Image: " + account.getImage());
+            System.out.println("Date of Birth: " + account.getDob());
+            System.out.println(account.getCreated_at());
+            System.out.println(account.getUpdated_at());
+        }
     }
 }

@@ -103,6 +103,15 @@ public class Accounts {
         this.airlineId = airlineId;
         this.created_at = created_at;
     }
+    public Accounts(String name, String email, String password, String phoneNumber, int roleId, int airlineID, Timestamp created_at) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.roleId = roleId;
+        this.airlineId = airlineID;
+        this.created_at = created_at;
+    }
 
     public Timestamp getCreated_at() {
         return created_at;

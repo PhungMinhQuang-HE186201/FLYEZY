@@ -14,11 +14,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.util.Base64;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
 
 /**
  *
@@ -85,7 +80,7 @@ public class LoginServlet extends HttpServlet {
             String p = request.getParameter("pass");
             String r = request.getParameter("rem");
             
-            String encode = ec.encryptAES(p, "maiyeudomdomjj97");
+            String encode = ec.encryptAES(p, "maiyeudomdomjj98");
             
             Cookie cu = new Cookie("cuser", u);
             Cookie cp = new Cookie("cpass", p);
