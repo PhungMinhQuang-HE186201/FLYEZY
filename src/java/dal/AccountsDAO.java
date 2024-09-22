@@ -95,7 +95,7 @@ public class AccountsDAO extends DBConnect {
             PreparedStatement pre = conn.prepareStatement(sql);
             pre.setString(1, account.getName());
 
-            String encode = encryptAES(account.getPassword(), "maiyeudomdomjj98");
+            String encode = encryptAES(account.getPassword(), SECRET_KEY);
 
             pre.setString(2, account.getEmail());
 
@@ -207,7 +207,7 @@ public class AccountsDAO extends DBConnect {
             ps.setString(1, accounts.getName());
             ps.setString(2, accounts.getEmail());
 
-            String encode = encryptAES(accounts.getPassword(), "maiyeudomdomjj98");
+            String encode = encryptAES(accounts.getPassword(), SECRET_KEY);
             ps.setString(3, encode);
 
             ps.setString(4, accounts.getPhoneNumber());

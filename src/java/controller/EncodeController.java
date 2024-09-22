@@ -13,6 +13,8 @@ import java.util.Base64;
  * @author Admin
  */
 public class EncodeController {
+    
+    public static String SECRET_KEY = "maiyeudomdomjj98";
 
     public EncodeController() {
     }
@@ -45,7 +47,7 @@ public class EncodeController {
 
     public static void main(String[] args) throws Exception {
         String str_en = "1";
-        String key = "maiyeudomdomjj98";
+        String key = "SECRET_KEY";
 
         String encode = encryptAES(str_en, key);
         System.out.println("ma khi duoc ma hoa:" + encode);
