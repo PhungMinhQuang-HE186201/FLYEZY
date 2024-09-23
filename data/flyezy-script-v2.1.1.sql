@@ -42,7 +42,7 @@ CREATE TABLE `Accounts` (
   KEY `FKAccounts898886` (`Airlineid`),
   CONSTRAINT `FKAccounts201294` FOREIGN KEY (`Rolesid`) REFERENCES `Roles` (`id`),
   CONSTRAINT `FKAccounts898886` FOREIGN KEY (`Airlineid`) REFERENCES `Airline` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -51,7 +51,7 @@ CREATE TABLE `Accounts` (
 
 LOCK TABLES `Accounts` WRITE;
 /*!40000 ALTER TABLE `Accounts` DISABLE KEYS */;
-INSERT INTO `Accounts` VALUES (2,'Ngo Tung Duong 2','duongnthe186310@fpt.edu.vn','1','0862521226','null','img/avatar.jpg','2024-02-06',1,1,NULL,NULL),(3,'Ho Tran Quan','quan@gmail.com','1','0123456789','','img/avatar-2.jpg','2024-09-17',2,NULL,NULL,NULL);
+INSERT INTO `Accounts` VALUES (1,'Ngô Tùng Dương','duongnthe186310@fpt.edu.vn','KIymfC4XfLDNFnygtZuXNQ==','0862521226','','img/avatar.jpg','2004-11-16',1,3,'2024-09-23 14:07:56','2024-09-23 14:20:15'),(2,'Hồ Trần Quân','abc@gmail.com','KIymfC4XfLDNFnygtZuXNQ==','0123','','img/jack.png','2024-09-18',2,2,'2024-09-23 14:19:19',NULL);
 /*!40000 ALTER TABLE `Accounts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -68,7 +68,7 @@ CREATE TABLE `Airline` (
   `image` varchar(255) DEFAULT NULL,
   `info` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -77,7 +77,7 @@ CREATE TABLE `Airline` (
 
 LOCK TABLES `Airline` WRITE;
 /*!40000 ALTER TABLE `Airline` DISABLE KEYS */;
-INSERT INTO `Airline` VALUES (1,'Empty',NULL,NULL),(2,'Vietnam Airline',NULL,NULL),(3,'Bamboo Airway',NULL,NULL),(4,'Vietjet Air',NULL,NULL);
+INSERT INTO `Airline` VALUES (1,'Empty','img/empty.jpg',NULL),(2,'Vietnam Airline','img/vietnam-airline.png',NULL),(3,'Bamboo Airway','img/bamboo-airway.png',NULL),(4,'Vietjet Air','img/vietjet.jpg',NULL);
 /*!40000 ALTER TABLE `Airline` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -122,7 +122,7 @@ CREATE TABLE `Baggages` (
   PRIMARY KEY (`id`),
   KEY `FKBaggages227358` (`Airlineid`),
   CONSTRAINT `FKBaggages227358` FOREIGN KEY (`Airlineid`) REFERENCES `Airline` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -422,7 +422,7 @@ CREATE TABLE `Plane_Category` (
   PRIMARY KEY (`id`),
   KEY `FKPlane_Cate276706` (`Airlineid`),
   CONSTRAINT `FKPlane_Cate276706` FOREIGN KEY (`Airlineid`) REFERENCES `Airline` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -431,7 +431,7 @@ CREATE TABLE `Plane_Category` (
 
 LOCK TABLES `Plane_Category` WRITE;
 /*!40000 ALTER TABLE `Plane_Category` DISABLE KEYS */;
-INSERT INTO `Plane_Category` VALUES (1,'Airbus A321CEO','img/Airbus A321CEO.png',3,NULL),(2,'Airbus A320NEO','img/Airbus A320NEO.png',3,NULL),(3,'Airbus A320CEO','img/Airbus A320CEO.png',3,NULL),(4,'Airbus A321','img/vnairline-AIRBUS A321.png',2,NULL),(5,'BOEING 787','img/vnairline-BOEING 787.png',2,NULL),(6,'AIRBUS A350','img/vnairline-AIRBUS A350.png',2,NULL),(7,'AIRBUS A320 NEO','img/vnairline-AIRBUS A320 NEO.png',2,NULL);
+INSERT INTO `Plane_Category` VALUES (1,'Airbus A321CEO','img/Airbus A321CEO.png',3,NULL),(2,'Airbus A320NEO','img/Airbus A320NEO.png',3,NULL),(3,'Airbus A320CEO','img/Airbus A320CEO.png',3,NULL),(4,'Airbus A321','img/vnairline-AIRBUS A321.png',2,'<p>Nhà sản xuất: Airbus</p><p>Khoảng cách tối đa (km): 5.600 km</p><p>Vận tốc (km/h): 950 km/h</p><p>Số ghế (*): 184</p><p>Tổng chiều dài: 44,51 m</p><p>Sải cánh: 34,1 m</p><p>Chiều cao: 11,76 m</p>'),(5,'BOEING 787','img/vnairline-BOEING 787.png',2,'<p>Nhà sản xuất: Boeing</p><p>Khoảng cách tối đa (km): 15.750 km</p><p>Vận tốc (km/h): 954 km/h</p><p>Tổng chiều dài: 63.73 m</p><p>Sải cánh: 60.93 m</p><p>Chiều cao: 18.76 m</p>'),(6,'AIRBUS A350','img/vnairline-AIRBUS A350.png',2,'<p>Nhà sản xuất: Airbus</p><p>Khoảng cách tối đa (km): 14.350 km</p><p>Vận tốc (km/h): 901 km/h</p><p>Tổng chiều dài: 66.89 m</p><p>Sải cánh: 64.75 m</p><p>Chiều cao: 17.05 m</p>'),(7,'AIRBUS A320 NEO','img/vnairline-AIRBUS A320 NEO.png',2,'<p>Nhà sản xuất: Airbus</p><p>Khoảng cách tối đa (km): 6.300 km</p><p>Vận tốc (km/h): 1.005 km/h</p><p>Tổng chiều dài: 37,57 m</p><p>Sải cánh: 35,8 m</p><p>Chiều cao: 11,76 m</p>');
 /*!40000 ALTER TABLE `Plane_Category` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -507,7 +507,7 @@ CREATE TABLE `Seat_Category` (
   PRIMARY KEY (`id`),
   KEY `FKSeat_Categ529738` (`Plane_Categoryid`),
   CONSTRAINT `FKSeat_Categ529738` FOREIGN KEY (`Plane_Categoryid`) REFERENCES `Plane_Category` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -516,7 +516,7 @@ CREATE TABLE `Seat_Category` (
 
 LOCK TABLES `Seat_Category` WRITE;
 /*!40000 ALTER TABLE `Seat_Category` DISABLE KEYS */;
-INSERT INTO `Seat_Category` VALUES (1,'Economy',184,'img/bamboo-economy.jpg',1,NULL,NULL),(2,'Business',8,'img/bamboo-business.jpg',1,NULL,NULL),(3,'Economy',168,'img/bamboo-economy.jpg',2,NULL,NULL),(4,'Business',8,'img/bamboo-business.jpg',2,NULL,NULL),(5,'Economy',162,'img/bamboo-economy.jpg',3,NULL,NULL),(6,'Business',8,'img/bamboo-business.jpg',3,NULL,NULL),(7,'Hạng Thương Gia',16,'img/vnairline-A321-Business.png',4,NULL,NULL),(8,'Hạng Phổ Thông',162,'img/vnairline-A321-GhePhoThong.png',4,NULL,NULL),(9,'Hạng Thương Gia',28,'img/vnairline-B787-GheThuongGia.png',5,NULL,NULL),(10,'Hạng Phổ Thông Đặc Biệt',35,'img/vnairline-B787-GhePhoThongDacBiet.png',5,NULL,NULL),(11,'Hạng Phổ Thông',211,'img/vnairline-B787-GhePhoThong.png',5,NULL,NULL),(12,'Hạng Thương Gia',29,'img/vnairline-A350-GheThuongGia.png',6,NULL,NULL),(13,'Hạng Phổ Thông Đặc Biệt',45,'img/vnairline-A350-GhePhoThongDacBiet.png',6,NULL,NULL),(14,'Hạng Phổ Thông',231,'img/vnairline-A350-GhePhoThong.png',6,NULL,NULL),(15,'Hạng Thương Gia',8,'img/vnairline-A320neo-Thuong gia.png',7,NULL,NULL),(16,'Hạng Phổ Thông',180,'img/vnairline-A320neo-PhoThong.png',7,NULL,NULL);
+INSERT INTO `Seat_Category` VALUES (1,'Economy',184,'img/bamboo-economy.jpg',1,NULL,NULL),(2,'Business',8,'img/bamboo-business.jpg',1,NULL,NULL),(3,'Economy',168,'img/bamboo-economy.jpg',2,NULL,NULL),(4,'Business',8,'img/bamboo-business.jpg',2,NULL,NULL),(5,'Economy',162,'img/bamboo-economy.jpg',3,NULL,NULL),(6,'Business',8,'img/bamboo-business.jpg',3,NULL,NULL),(7,'Hạng Thương Gia',16,'img/vnairline-A321-Business.png',4,'',NULL),(8,'Hạng Phổ Thông',162,'img/vnairline-A321-GhePhoThong.png',4,NULL,NULL),(9,'Hạng Thương Gia',28,'img/vnairline-B787-GheThuongGia.png',5,NULL,NULL),(10,'Hạng Phổ Thông Đặc Biệt',35,'img/vnairline-B787-GhePhoThongDacBiet.png',5,NULL,NULL),(11,'Hạng Phổ Thông',211,'img/vnairline-B787-GhePhoThong.png',5,NULL,NULL),(12,'Hạng Thương Gia',29,'img/vnairline-A350-GheThuongGia.png',6,NULL,NULL),(13,'Hạng Phổ Thông Đặc Biệt',45,'img/vnairline-A350-GhePhoThongDacBiet.png',6,NULL,NULL),(14,'Hạng Phổ Thông',231,'img/vnairline-A350-GhePhoThong.png',6,NULL,NULL),(15,'Hạng Thương Gia',8,'img/vnairline-A320neo-Thuong gia.png',7,NULL,NULL),(16,'Hạng Phổ Thông',180,'img/vnairline-A320neo-PhoThong.png',7,NULL,NULL);
 /*!40000 ALTER TABLE `Seat_Category` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -590,14 +590,6 @@ LOCK TABLES `Ticket` WRITE;
 /*!40000 ALTER TABLE `Ticket` DISABLE KEYS */;
 /*!40000 ALTER TABLE `Ticket` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Dumping events for database 'flyezy'
---
-
---
--- Dumping routines for database 'flyezy'
---
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -608,4 +600,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-19 19:15:29
+-- Dump completed on 2024-09-23 14:22:52
