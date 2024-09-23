@@ -7,6 +7,8 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page import="dal.RolesDAO"%>
+<%@page import="model.Roles"%>
+<%@page import="model.Airline"%>
 <%@page import="static controller.EncodeController.SECRET_KEY" %>
 <%@page import="java.util.List"%>
 <%@page import="java.text.SimpleDateFormat"%>
@@ -93,20 +95,21 @@
                                         <div class="form-group col-md-6">
                                             <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Role:</label></div>
                                             <select name="roleId" value="" style="height:  34px">
-                                                <option value="1">Admin</option>
-                                                <option value="2">Member</option>
-                                                <option value="3">Airline staff</option>
-                                                <option value="4">Service staff</option>
+                                                <%List<Roles> rolesList = (List<Roles>)request.getAttribute("rolesList");
+                                                  for(Roles role : rolesList){%>
+                                                <option value="<%=role.getId()%>"><%=role.getName()%></option>"
+                                                <%}%>
+
                                             </select>
                                         </div>
 
                                         <div class="form-group col-md-6">
                                             <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Airline:</label></div>
                                             <select name="airlineID" value="" style="height:  34px">
-                                                <option value="1">Empty</option>
-                                                <option value="2">Vietnam Airline</option>
-                                                <option value="3">Bamboo Airway</option>
-                                                <option value="4">Vietjet Air</option>
+                                                <%List<Airline> airlineList = (List<Airline>)request.getAttribute("airlineList");
+                                                  for(Airline airline : airlineList){%>
+                                                <option value="<%=airline.getId()%>"><%=airline.getName()%></option>"
+                                                <%}%>
                                             </select>
                                         </div>
 
@@ -218,19 +221,19 @@
                                                     <div class="form-group col-md-6">
                                                         <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Role:</label></div>
                                                         <select name="roleId" value="<%= list.getRoleId() %>" style="height:  34px">
-                                                            <option value="1" <%= (list.getRoleId() == 1) ? "selected" : "" %>>Admin</option>
-                                                            <option value="2" <%= (list.getRoleId() == 2) ? "selected" : "" %>>Member</option>
-                                                            <option value="3" <%= (list.getRoleId() == 3) ? "selected" : "" %>>Airline staff</option>
-                                                            <option value="4" <%= (list.getRoleId() == 4) ? "selected" : "" %>>Service staff</option>
+                                                            <%
+                                                            for(Roles role : rolesList){%>
+                                                               <option value="<%=list.getRoleId()%>" <%= (list.getRoleId() == role.getId()) ? "selected" : "" %>><%=role.getName()%></option>
+                                                            <%}%>
                                                         </select>
                                                     </div>
                                                     <div class="form-group col-md-6">
                                                         <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Role:</label></div>
                                                         <select name="airlineID" value="<%= list.getAirlineId() %>" style="height:  34px">
-                                                            <option value="1" <%= (list.getAirlineId() == 1) ? "selected" : "" %>>Empty</option>
-                                                            <option value="2" <%= (list.getAirlineId() == 2) ? "selected" : "" %>>Vietnam Airline</option>
-                                                            <option value="3" <%= (list.getAirlineId() == 3) ? "selected" : "" %>>Bamboo Airway</option>
-                                                            <option value="4" <%= (list.getAirlineId() == 4) ? "selected" : "" %>>Vietjet Air</option>
+                                                            <%
+                                                            for(Airline airline : airlineList){%>
+                                                               <option value="<%=list.getAirlineId()%>" <%= (list.getAirlineId() == airline.getId()) ? "selected" : "" %>><%=airline.getName()%></option>
+                                                            <%}%>
                                                         </select>
                                                     </div>
 

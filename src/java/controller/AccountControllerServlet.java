@@ -13,13 +13,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import dal.AccountsDAO;
 import dal.RolesDAO;
+import dal.AirlineManageDAO;
 import jakarta.servlet.http.HttpSession;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 import model.Accounts;
 import model.Roles;
-
+import model.Airline;
 /**
  *
  * @author Admin
@@ -59,6 +60,7 @@ public class AccountControllerServlet extends HttpServlet {
             throws ServletException, IOException {
         AccountsDAO ad = new AccountsDAO();
         RolesDAO rd = new RolesDAO();
+        AirlineManageDAO amd = new AirlineManageDAO();
         HttpSession session = request.getSession();
 
         Integer idd = (Integer) session.getAttribute("id");
@@ -68,6 +70,9 @@ public class AccountControllerServlet extends HttpServlet {
 
         List<Roles> rolesList = rd.getAllRoles();
         request.setAttribute("rolesList", rolesList);
+        
+        List<Airline> airlineList = amd.getAllAirline();
+        request.setAttribute("airlineList", airlineList);
 
         String action = request.getParameter("action");
         if (action == null) {
