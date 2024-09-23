@@ -126,13 +126,12 @@
                                     <div class="modal-content">
                                         <div class="modal-header" style="padding:5px 5px;">
                                             <button type="button" class="close" style="font-size: 30px; margin-right: 12px;" data-dismiss="modal">&times;</button>
-                                            <h4 style="margin-left: 12px">Add</h4>
+                                            <h4 style="float:left;margin-left: 12px">Add New Seat Category</h4>
                                         </div>
                                         <div class="modal-body" style="padding:40px 50px;">
                                             <form role="form" action="seatCategoryController" method="post">
                                                 <div class="row">
                                                     <input type="hidden" value="<%= pc.getId() %>" name="planeCategoryId"/>
-                                                    <h1><%= pc.getId() %></h1>
                                                     <div class="form-group col-md-2">
                                                         <label> <span class="glyphicon glyphicon-globe"></span>ID:</label>
                                                         <input type="text" class="form-control" name="id" readonly>

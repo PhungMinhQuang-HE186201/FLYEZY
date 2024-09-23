@@ -16,6 +16,8 @@
         <link rel="shortcut icon" type="image/jpg" href="image/logo-icon.png" />
         <link rel="stylesheet" href="css/styleInfo.css" />
         <link rel="stylesheet" href="icon/themify-icons/themify-icons.css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
     </head>
     <body>
         <%@include file="header.jsp" %>
@@ -39,7 +41,7 @@
                     </div>
                     <div class="col-md-1"></div>
                     <div class="info-in4-1 col-md-7">
-                       
+
                         <strong>Full Name:</strong>
                         <p>${requestScope.account.name}</p>
                         <strong>Day of birth:</strong>
@@ -50,8 +52,8 @@
                         <p>${requestScope.account.phoneNumber}</p>
                         <strong>Address:</strong>
                         <p>${requestScope.account.address}</p>
-                        
-                        <button id="info-update" onclick="window.location.href = 'infoUpdate'">Cập nhật</button>
+
+                        <button id="info-update" data-toggle="modal" data-target="#myModal-${requestScope.account.getId()}" >Cập nhật</button>
                         <button id="info-home" onclick="window.location.href = 'home'">Trở lại</button>
                     </div>
                 </div>
@@ -59,7 +61,56 @@
             <div class="col-md-3"></div>
         </div>
 
-       
+        <!-- Modal -->
+        <div id="myModal-${requestScope.account.getId()}" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title" style="font-weight:bold;">Cập nhật thông tin cá nhân</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form action="infoUpdateServlet" method="post" >
+                            <div class="form-group">
+                                <label for="image" class="control-label">Ảnh đại diện</label>
+                                <input type="file" name="image" class="form-control" style="padding:5px;">
+                            </div>
+                            <input type="hidden" name="id" value="${requestScope.account.id}" />
+                            <!-- Full Name -->
+                            <div class="form-group">
+                                <label for="name" class="control-label">Họ và tên:</label>
+                                <input type="text" name="name" value="${requestScope.account.name}" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="birth" class="control-label">Ngày sinh:</label>
+                                <input type="date" name="birth" value="${requestScope.account.dob}" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="email" class="control-label">Email:</label>
+                                <input type="email" name="email" value="${requestScope.account.email}" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="phone" class="control-label">Số điện thoại:</label>
+                                <input type="text" name="phone" value="${requestScope.account.phoneNumber}" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="address" class="control-label">Địa chỉ:</label>
+                                <textarea name="address" class="form-control" rows="3">${requestScope.account.address}</textarea>
+                            </div>
+                            <div class="form-group text-right">
+                                <button type="submit" class="btn btn-primary">Cập nhật</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Huỷ</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
+
+            </div>
+        </div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     </body>
 </html>

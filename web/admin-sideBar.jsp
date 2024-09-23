@@ -12,7 +12,7 @@ Admin --%> <%@page contentType="text/html" pageEncoding="UTF-8"%>
         <div id="sidebar">
             <ul>
                 <li>
-                    <a href="accountController" class="<%= currentPage.equals("/flyezy/admin.jsp") ? "current-page" : "" %>">
+                    <a href="accountController" class="<%= currentPage.equals("/flyezy/accountController.jsp") ? "current-page" : "" %>">
                         Quản lý tài khoản 
                     </a>
                 </li>

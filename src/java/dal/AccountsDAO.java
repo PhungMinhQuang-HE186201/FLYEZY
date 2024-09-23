@@ -7,8 +7,11 @@ package dal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Accounts;
 
 /**
@@ -76,6 +79,7 @@ public class AccountsDAO extends DBConnect {
         }
         return null;
     }
+
 
     public void updateAccount(Accounts account) {
         String sql = "UPDATE Accounts\n"
@@ -173,14 +177,14 @@ public class AccountsDAO extends DBConnect {
     }
 
     public boolean checkAccount(Accounts accounts) {
-        String sql = "Select * from accounts where email='" + accounts.getEmail() + "'";
+        String sql = "Select * from Accounts where email='" + accounts.getEmail() + "'";
         try {
             PreparedStatement st = conn.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
                 return false;
             }
-            sql = "Select * from accounts where phoneNumber='" + accounts.getPhoneNumber() + "'";
+            sql = "Select * from Accounts where phoneNumber='" + accounts.getPhoneNumber() + "'";
             st = conn.prepareStatement(sql);
             rs = st.executeQuery();
             if (rs.next()) {
@@ -225,6 +229,46 @@ public class AccountsDAO extends DBConnect {
         return n;
     }
 
+    public void changePassword(String idAccount, String newPassword) {
+        String sqlupdate = "UPDATE `flyezy`.`Accounts`\n"
+                + "SET\n"
+                + "`password` = ?\n"
+                + "WHERE `id` = ?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sqlupdate);
+            pre.setString(1, newPassword);
+            pre.setString(2, idAccount);
+            pre.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void infoUpdate(Accounts account) {
+        String sqlUpdate = "UPDATE `flyezy`.`Accounts`\n"
+                + "SET\n"
+                + "`name` = ?,\n"
+                + "`dob` = ?,\n"
+                + "`email` = ?,\n"
+                + "`phoneNumber` = ?,\n"
+                + "`address` = ?,\n"
+                + "`image` = ?\n"
+                + "WHERE `id` = ?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sqlUpdate);
+            pre.setString(1, account.getName());
+            pre.setDate(2, account.getDob());
+            pre.setString(3, account.getEmail());
+            pre.setString(4, account.getPhoneNumber());
+            pre.setString(5, account.getAddress());
+            pre.setString(6, account.getImage());
+            pre.setInt(7,account.getId());
+            pre.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public void deleteAllAccountByAirline(int airlineId) {
         String sql = "DELETE FROM `flyezy`.`Accounts`\n"
                 + "WHERE airlineid = " + airlineId;
@@ -241,6 +285,28 @@ public class AccountsDAO extends DBConnect {
     public static void main(String[] args) {
         AccountsDAO dao = new AccountsDAO();
 
+        // Test hàm getAccountsById với một id cụ thể
+        int accountId = 5; // Thay id này bằng một giá trị có thật trong DB
+        Accounts account = dao.getAccountsById(accountId);
+
+        if (account != null) {
+            System.out.println("Thông tin tài khoản:");
+            System.out.println("ID: " + account.getId());
+            System.out.println("Name: " + account.getName());
+            System.out.println("Email: " + account.getEmail());
+            System.out.println("Phone Number: " + account.getPhoneNumber());
+            System.out.println("Address: " + account.getAddress());
+            System.out.println("Image: " + account.getImage());
+            System.out.println("Date of Birth: " + account.getDob());
+            System.out.println(account.getCreated_at());
+            System.out.println(account.getUpdated_at());
+        }
+        AccountsDAO a = new AccountsDAO();
+//        //a.updateAccount(new Accounts(1, "Ngo 123", "duongnthe186310@fpt.edu.vn", "1", "0862521226", null, "img/flyezy-logo.png", null, 2, 1));
+//        String dateString = "1/1/1";
+//        SimpleDateFormat sdf = new SimpleDateFormat("d/M/yy"); 
+//        Accounts account = new Accounts(1,"khoapv" , "khoapvhe182378@gmail.com", "123", "bac ninh", "", "dateString");
+//        System.out.println(a.infoUpdate(account));
 //        // Test hàm getAccountsById với một id cụ thể
 //        int accountId = 5; // Thay id này bằng một giá trị có thật trong DB
 //        Accounts account = dao.getAccountsById(accountId);

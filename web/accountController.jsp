@@ -8,8 +8,8 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page import="dal.RolesDAO"%>
 <%@page import="static controller.EncodeController.SECRET_KEY" %>
-
 <%@page import="java.util.List"%>
+<%@page import="java.text.SimpleDateFormat"%>
 <%@page import="model.Accounts"%>
 <%@page import="dal.AirlineManageDAO"%>
 <!DOCTYPE html>
@@ -66,8 +66,8 @@
 
             </div>
 
-            <button type="button" class="btn btn-success" id="myBtn">Add new User</button>
-            <!-- Update Modal -->
+            <button type="button" class="btn btn-success" id="myBtn">Add New Account</button>
+            <!-- Update Modal -->   
             <div class="container">
                 <!-- Modal -->
                 <div class="modal fade" id="myModal" role="dialog">
@@ -169,6 +169,7 @@
                     <%
                     List<Accounts> accountList = (List<Accounts>) request.getAttribute("accountList");
                     RolesDAO rd = new RolesDAO();
+                    SimpleDateFormat sdf = new java.text.SimpleDateFormat("HH:mm dd-MM-yyyy");
                     AirlineManageDAO amd = new AirlineManageDAO();
                     for (Accounts list : accountList) {
                     %>
@@ -181,8 +182,8 @@
                         <td><img src="<%= list.getImage() %>" alt="<%= list.getName() %>"></td>
                         <td><%= rd.getNameById(list.getRoleId()) %></td>
                         <td><%= amd.getNameById(list.getAirlineId()) %></td>
-                        <td><%= list.getCreated_at() %></td>
-                        <td><%= list.getUpdated_at() %></td>
+                        <td><%= sdf.format(list.getCreated_at()) %></td>
+                        <td><%= sdf.format(list.getUpdated_at()) %></td>
                         <td>
                             <a class="btn btn-info" style="text-decoration: none" id="myBtn<%= list.getId() %>" onclick="openModal(<%= list.getId() %>)">Update</a>
                             <a class="btn btn-danger" style="text-decoration: none" onclick="doDelete('<%= list.getId() %>', '<%= list.getName() %>')">Delete</a>
@@ -207,11 +208,7 @@
                                                     <div class="form-group col-md-6">
                                                         <label for="image<%= list.getId() %>"><span class="glyphicon glyphicon-picture"></span>Avatar:</label>
                                                         <input type="file" class="form-control" name="image">
-                                                    </div>
-                                                    <div class="form-group col-md-9">
-                                                        <label for="name<%= list.getId() %>"><span class="glyphicon glyphicon-user"></span>Create At:</label>
-                                                        <input type="text" class="form-control" name="create_at" value="<%= list.getCreated_at() %>" readonly="">
-                                                    </div>
+                                                    </div>                      
                                                     <div class="form-group col-md-4">
                                                         <img src="<%= list.getImage() %>" alt="Avatar" class="img-thumbnail" style="width: 100px; height: 100px; float: right;">
                                                     </div>
