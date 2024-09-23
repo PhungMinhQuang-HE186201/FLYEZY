@@ -8,6 +8,7 @@ import dal.AccountsDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,8 +18,10 @@ import model.Accounts;
 
 /**
  *
- * @author user
+ * @author user 
  */
+@WebServlet(name = "InfoUpdateServlet", urlPatterns = {"/infoUpdateServlet"})
+
 public class InfoUpdateServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)

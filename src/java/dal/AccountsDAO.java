@@ -177,14 +177,14 @@ public class AccountsDAO extends DBConnect {
     }
 
     public boolean checkAccount(Accounts accounts) {
-        String sql = "Select * from accounts where email='" + accounts.getEmail() + "'";
+        String sql = "Select * from Accounts where email='" + accounts.getEmail() + "'";
         try {
             PreparedStatement st = conn.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
                 return false;
             }
-            sql = "Select * from accounts where phoneNumber='" + accounts.getPhoneNumber() + "'";
+            sql = "Select * from Accounts where phoneNumber='" + accounts.getPhoneNumber() + "'";
             st = conn.prepareStatement(sql);
             rs = st.executeQuery();
             if (rs.next()) {
@@ -230,7 +230,7 @@ public class AccountsDAO extends DBConnect {
     }
 
     public void changePassword(String idAccount, String newPassword) {
-        String sqlupdate = "UPDATE `flyezy`.`accounts`\n"
+        String sqlupdate = "UPDATE `flyezy`.`Accounts`\n"
                 + "SET\n"
                 + "`password` = ?\n"
                 + "WHERE `id` = ?";
@@ -245,7 +245,7 @@ public class AccountsDAO extends DBConnect {
     }
 
     public void infoUpdate(Accounts account) {
-        String sqlUpdate = "UPDATE `flyezy`.`accounts`\n"
+        String sqlUpdate = "UPDATE `flyezy`.`Accounts`\n"
                 + "SET\n"
                 + "`name` = ?,\n"
                 + "`dob` = ?,\n"

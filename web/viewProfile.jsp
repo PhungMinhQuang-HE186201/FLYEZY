@@ -64,7 +64,6 @@
         <!-- Modal -->
         <div id="myModal-${requestScope.account.getId()}" class="modal fade" role="dialog">
             <div class="modal-dialog">
-
                 <!-- Modal content-->
                 <div class="modal-content">
                     <div class="modal-header">
@@ -72,55 +71,38 @@
                         <h4 class="modal-title" style="font-weight:bold;">Cập nhật thông tin cá nhân</h4>
                     </div>
                     <div class="modal-body">
-                        <!-- Add custom form styling -->
-                        <form action="InfoUpdateServlet" method="post" >
-                            <!-- Avatar Upload -->
+                        <form action="infoUpdateServlet" method="post" >
                             <div class="form-group">
                                 <label for="image" class="control-label">Ảnh đại diện</label>
                                 <input type="file" name="image" class="form-control" style="padding:5px;">
                             </div>
                             <input type="hidden" name="id" value="${requestScope.account.id}" />
-                            <h1>${requestScope.account.id}</h1>
-
                             <!-- Full Name -->
                             <div class="form-group">
                                 <label for="name" class="control-label">Họ và tên:</label>
                                 <input type="text" name="name" value="${requestScope.account.name}" class="form-control" />
                             </div>
-
-                            <!-- Date of Birth -->
                             <div class="form-group">
                                 <label for="birth" class="control-label">Ngày sinh:</label>
                                 <input type="date" name="birth" value="${requestScope.account.dob}" class="form-control" />
                             </div>
-
-                            <!-- Email -->
                             <div class="form-group">
                                 <label for="email" class="control-label">Email:</label>
                                 <input type="email" name="email" value="${requestScope.account.email}" class="form-control" />
                             </div>
-
-                            <!-- Phone Number -->
                             <div class="form-group">
                                 <label for="phone" class="control-label">Số điện thoại:</label>
                                 <input type="text" name="phone" value="${requestScope.account.phoneNumber}" class="form-control" />
                             </div>
-
-                            <!-- Address -->
                             <div class="form-group">
                                 <label for="address" class="control-label">Địa chỉ:</label>
                                 <textarea name="address" class="form-control" rows="3">${requestScope.account.address}</textarea>
                             </div>
-
-                            <!-- Submit and Cancel Buttons -->
                             <div class="form-group text-right">
                                 <button type="submit" class="btn btn-primary">Cập nhật</button>
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Huỷ</button>
                             </div>
                         </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
                     </div>
                 </div>
 
