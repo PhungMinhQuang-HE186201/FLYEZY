@@ -7,8 +7,11 @@ package dal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Accounts;
 
 /**
@@ -76,6 +79,7 @@ public class AccountsDAO extends DBConnect {
         }
         return null;
     }
+
 
     public void updateAccount(Accounts account) {
         String sql = "UPDATE Accounts\n"
@@ -225,6 +229,46 @@ public class AccountsDAO extends DBConnect {
         return n;
     }
 
+    public void changePassword(String idAccount, String newPassword) {
+        String sqlupdate = "UPDATE `flyezy`.`accounts`\n"
+                + "SET\n"
+                + "`password` = ?\n"
+                + "WHERE `id` = ?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sqlupdate);
+            pre.setString(1, newPassword);
+            pre.setString(2, idAccount);
+            pre.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void infoUpdate(Accounts account) {
+        String sqlUpdate = "UPDATE `flyezy`.`accounts`\n"
+                + "SET\n"
+                + "`name` = ?,\n"
+                + "`dob` = ?,\n"
+                + "`email` = ?,\n"
+                + "`phoneNumber` = ?,\n"
+                + "`address` = ?,\n"
+                + "`image` = ?\n"
+                + "WHERE `id` = ?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sqlUpdate);
+            pre.setString(1, account.getName());
+            pre.setDate(2, account.getDob());
+            pre.setString(3, account.getEmail());
+            pre.setString(4, account.getPhoneNumber());
+            pre.setString(5, account.getAddress());
+            pre.setString(6, account.getImage());
+            pre.setInt(7,account.getId());
+            pre.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
         AccountsDAO dao = new AccountsDAO();
 
@@ -244,5 +288,11 @@ public class AccountsDAO extends DBConnect {
             System.out.println(account.getCreated_at());
             System.out.println(account.getUpdated_at());
         }
+        AccountsDAO a = new AccountsDAO();
+//        //a.updateAccount(new Accounts(1, "Ngo 123", "duongnthe186310@fpt.edu.vn", "1", "0862521226", null, "img/flyezy-logo.png", null, 2, 1));
+//        String dateString = "1/1/1";
+//        SimpleDateFormat sdf = new SimpleDateFormat("d/M/yy"); 
+//        Accounts account = new Accounts(1,"khoapv" , "khoapvhe182378@gmail.com", "123", "bac ninh", "", "dateString");
+//        System.out.println(a.infoUpdate(account));
     }
 }

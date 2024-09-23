@@ -57,6 +57,16 @@ public class Accounts {
         this.updated_at = updated_at;
     }
 
+     public Accounts( int id,String name, String email, String phoneNumber, String address, String image, Date dob) {
+          this.id = id;
+         this.name = name;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.image = image;
+        this.dob = dob;
+    }
+     
     public Accounts(int id, String name, String email, String password, String phoneNumber, String address, String image, Date dob, int roleId, int airlineId) {
         this.id = id;
         this.name = name;
@@ -68,7 +78,10 @@ public class Accounts {
         this.dob = dob;
         this.roleId = roleId;
         this.airlineId = airlineId;
+        this.created_at = created_at;
     }
+
+    
 
     public Accounts(String name, String email, String password, String phoneNumber, String address, String image, Date dob, int roleId, int airlineId) {
         this.name = name;
