@@ -4,6 +4,7 @@
  */
 package controller;
 
+import static controller.EncodeController.SECRET_KEY;
 import dal.AccountsDAO;
 import dal.LoginDAO;
 import java.io.IOException;
@@ -80,7 +81,7 @@ public class LoginServlet extends HttpServlet {
             String p = request.getParameter("pass");
             String r = request.getParameter("rem");
             
-            String encode = ec.encryptAES(p, "maiyeudomdomjj98");
+            String encode = ec.encryptAES(p, SECRET_KEY);
             
             Cookie cu = new Cookie("cuser", u);
             Cookie cp = new Cookie("cpass", p);

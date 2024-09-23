@@ -66,8 +66,8 @@
 
             </div>
 
-            <button type="button" class="btn btn-success" id="myBtn">Add new User</button>
-            <!-- Update Modal -->
+            <button type="button" class="btn btn-success" id="myBtn">Add New Account</button>
+            <!-- Update Modal -->   
             <div class="container">
                 <!-- Modal -->
                 <div class="modal fade" id="myModal" role="dialog">
@@ -207,11 +207,7 @@
                                                     <div class="form-group col-md-6">
                                                         <label for="image<%= list.getId() %>"><span class="glyphicon glyphicon-picture"></span>Avatar:</label>
                                                         <input type="file" class="form-control" name="image">
-                                                    </div>
-                                                    <div class="form-group col-md-9">
-                                                        <label for="name<%= list.getId() %>"><span class="glyphicon glyphicon-user"></span>Create At:</label>
-                                                        <input type="text" class="form-control" name="create_at" value="<%= list.getCreated_at() %>" readonly="">
-                                                    </div>
+                                                    </div>                      
                                                     <div class="form-group col-md-4">
                                                         <img src="<%= list.getImage() %>" alt="Avatar" class="img-thumbnail" style="width: 100px; height: 100px; float: right;">
                                                     </div>

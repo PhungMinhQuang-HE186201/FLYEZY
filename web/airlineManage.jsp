@@ -28,7 +28,7 @@
         <%@include file="admin-sideBar.jsp" %>
 
 
-        <!-- Modal -->
+        <!-- Modal add airline -->
         <div class="modal fade" id="addAirline" tabindex="-1" role="dialog" aria-labelledby="addModal" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -43,23 +43,27 @@
                             <input type="hidden" name="action" value="add">
                             <!-- Name -->
                             <div class="form-group">
-                                <label for="nameInput">Airline Name:</label>
+                                <label for="nameInput"><span class="glyphicon glyphicon-plane"></span> Airline Name:</label>
                                 <input type="text" class="form-control" id="nameInput" name="airlineName" required>
                                 <div id="nameError" class="error"></div>
                             </div>
 
                             <!-- Image -->
-                            <div class="form-group">
-                                <label for="imageInput">Image URL:</label>
-                                <input type="file" class="form-control-file" id="image" name="airlineImage" onchange="displayImage(this)" required>
-                                <div id="imageError" class="error"></div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for="imageInput"><span class="glyphicon glyphicon-paperclip"></span> Image URL:</label>
+                                    <input type="file" class="form-control-file" id="image" name="airlineImage" onchange="displayImage(this)" required>
+                                    <div id="imageError" class="error"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <img  id="previewImage" src="#" alt="Preview"
+                                          style="display: none; max-width: 130px; float: left">
+                                </div>
                             </div>
-                            <img id="previewImage" src="#" alt="Preview"
-                                 style="display: none; max-width: 300px; max-height: 300px;">
 
                             <!-- Information -->
                             <div class="form-group">
-                                <label><span class="glyphicon glyphicon-info-sign"></span>Information:</label>
+                                <label><span class="glyphicon glyphicon-info-sign"></span> Information:</label>
                                 <div class="editor-container">
                                     <textarea class="editor" name="airlineInfo"></textarea>
                                 </div>
@@ -117,7 +121,6 @@
                     <table class="entity">
                         <thead>
                             <tr>
-                                <th>Airline Id</th>
                                 <th>Name</th>
                                 <th>Image</th>
                                 <th>Information</th>
@@ -128,7 +131,6 @@
 
                             <c:forEach items="${sessionScope.listAirline}" var="airline">
                                 <tr>
-                                    <td name="airlineId">${airline.getId()}</td>
                                     <td name="name">${airline.getName()}</td>
                                     <td name="image">
                                         <img src="${airline.getImage()}" width="100" height="100" alt="airline" class="primary" />                                      
@@ -139,9 +141,11 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <button class="btn btn-success" data-toggle="modal" data-target="#update-airline-${airline.getId()}">Update</button>
+                                        <button class="btn btn-info" data-toggle="modal" data-target="#update-airline-${airline.getId()}">Update</button>
                                         <button class="btn btn-danger" data-toggle="modal" data-target="#delete-airline-${airline.getId()}">Delete</button>
-                                        <button class="btn btn-warning" onclick="toggleBaggageDetails(${airline.id})">Detail</button>
+                                        <button class="btn btn-warning" onclick="toggleBaggageDetails(${airline.id})">Baggage Detail
+                                            <span id="arrow${airline.id}" style="margin-left: 8px" class="glyphicon glyphicon-menu-down"></span>
+                                        </button>
                                     </td>
                                 </tr>
                                 <!--delete airline modal-->
@@ -186,34 +190,32 @@
                                                 <input type="hidden" name="action" value="update"/>
                                                 <!-- Name -->
                                                 <div class="form-group">
-                                                    <label for="nameInput" style="text-align: left; display: block;">Airline Name:</label>
+                                                    <label for="nameInput" style="text-align: left; display: block;"><span class="glyphicon glyphicon-plane"></span> Airline Name:</label>
                                                     <input type="text" class="form-control" id="nameInput" name="airlineName" value="${airline.getName()}" required>
                                                     <div id="nameError" class="error"></div>
                                                 </div>
 
                                                 <!-- Image Input -->
-                                                <div class="form-group">
-                                                    <label for="imageInput" style="text-align: left; display: block;">Image URL:</label>
-                                                    <input type="file" class="form-control-file" id="image" name="airlineImage" value=${airline.getImage()} onchange="displayImage2(this)">
-                                                    <div id="imageError" class="error"></div>
+                                                <div class="row">
+                                                    <div class="form-group col-md-6">
+                                                        <label for="imageInput"><span class="glyphicon glyphicon-paperclip"></span> Image URL:</label>
+                                                        <input type="file" class="form-control-file" id="image" name="airlineImage" value="${airline.getImage()}" onchange="displayImage2(this,${airline.getId()})">
+                                                        <div id="imageError" class="error"></div>
+                                                    </div>
+                                                    <!-- Preview Image -->
+                                                    <div class="col-md-6">
+                                                        <img id="hideImage${airline.getId()}" src="${airline.getImage()}" alt="Preview" style="display: block; max-width: 130px;"> 
+                                                        <img id="preImage2${airline.getId()}" src="#" alt="Preview" style="display: none; max-width: 130px;">
+                                                    </div>
                                                 </div>
-
-                                                <!-- Preview Image -->
-                                                <img id="hideImage" src="${airline.getImage()}" alt="Preview" style="display: block; max-width: 300px; max-height: 300px;">
-                                                <img id="preImage2" src="#" alt="Preview" style="display: none; max-width: 300px; max-height: 300px;">
-
                                                 <!-- Information -->
                                                 <div class="form-group">
-                                                    <label><span class="glyphicon glyphicon-info-sign"></span>Information:</label>
+                                                    <label><span class="glyphicon glyphicon-info-sign"></span> Information:</label>
                                                     <div class="editor-container">
                                                         <textarea class="editor" name="airlineInfo">${airline.getInfo()}</textarea>
                                                     </div>
                                                 </div>  
-
-
-
                                                 <input type="hidden" value="${airline.getId()}" name="airlineId">
-                                                <h1>${airline.getId()}</h1>
                                                 <div style="text-align: right;">
                                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                                     <button type="submit" class="btn btn-primary" >Update</button>
@@ -231,17 +233,18 @@
                                     <div id="baggage-content-${airline.id}">
                                         <!-- This is where the baggage details will be loaded -->
                                         <!-- Trigger the modal with a button -->
-                                        <div style="display: flex; justify-content: start; margin-bottom: 2%;margin-left: 13%">
-                                            <button type="button" class="btn btn-info btn-lg" 
+                                        <div style="display: flex; justify-content: start; margin-bottom: 2%;">
+                                            <button type="button" class="btn btn-success" 
                                                     data-toggle="modal" 
                                                     data-target="#addBaggages-${airline.id}">
                                                 Add Another Baggage
                                             </button>
+
                                         </div>
                                         <table>
                                             <thead>
                                                 <tr>
-                                                    <th>Baggage Id</th>
+                                                    <th>No</th>
                                                     <th>Weight</th>
                                                     <th>Price</th>
                                                     <th style="min-width: 156px">Actions</th>
@@ -251,14 +254,14 @@
                                                 <c:forEach items="${sessionScope.listBaggage}" var="baggage">
 
                                                     <c:if test="${baggage.airlineId == airline.id}">
-
+                                                        <c:set var="counter" value="0" />
                                                         <tr>
-                                                            <td>${baggage.getId()}</td>
+                                                            <td><c:set var="counter" value="${counter + 1}" />${counter}</td>
                                                             <td>${baggage.getWeight()}</td>
                                                             <td>${baggage.getPrice()}</td>
                                                             <td>
                                                                 <button 
-                                                                    class="btn btn-success"
+                                                                    class="btn btn-info"
                                                                     data-toggle="modal" data-target="#update-baggage-${baggage.id}">Update</button>
                                                                 <button 
                                                                     class="btn btn-danger"
@@ -334,7 +337,7 @@
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="addBookModalLabel" style="text-align: left;">Add Another Baggage</h5>
+                                            <h5 class="modal-title" id="addBookModalLabel" style="text-align: left;">Add New Baggage</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
@@ -355,7 +358,6 @@
                                                     <div id="imageError" class="error"></div>
                                                 </div>
                                                 <input type="hidden" name="airlineIdBaggage" value="${airline.id}">
-                                                <h1>${airline.id}</h1>
                                             </form>
                                         </div>
                                         <div class="modal-footer">
@@ -378,13 +380,16 @@
             function toggleBaggageDetails(airlineId) {
 
                 var detailsRow = document.getElementById('baggage-details-' + airlineId);
-
+                var arrow = document.getElementById("arrow" + airlineId);
 
                 if (detailsRow.style.display === 'table-row') {
                     detailsRow.style.display = 'none';
+                    arrow.classList.remove("glyphicon-menu-up");
+                    arrow.classList.add("glyphicon-menu-down");
                 } else {
-
                     detailsRow.style.display = 'table-row';
+                    arrow.classList.remove("glyphicon-menu-down");
+                    arrow.classList.add("glyphicon-menu-up");
 
 
                     fetch('baggageDetails?airlineId=' + airlineId)
@@ -451,17 +456,20 @@
 
                 reader.readAsDataURL(file);
             }
-            function displayImage2(input) {
-                var hideImage = document.getElementById("hideImage");
-                var previewImage2 = document.getElementById("preImage2");
+            function displayImage2(input, id) {
+                var i = id;
+                var hideImage = document.getElementById(`hideImage` + i);
+                var previewImage2 = document.getElementById(`preImage2` + i);
                 var file = input.files[0];
                 var reader = new FileReader();
+
+                console.log(hideImage, previewImage2);
 
                 reader.onload = function (e) {
                     hideImage.style.display = "none";
                     previewImage2.src = e.target.result;
                     previewImage2.style.display = "block";
-                }
+                };
 
                 reader.readAsDataURL(file);
             }

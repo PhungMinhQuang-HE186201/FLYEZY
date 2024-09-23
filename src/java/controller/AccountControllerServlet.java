@@ -73,7 +73,7 @@ public class AccountControllerServlet extends HttpServlet {
         if (action == null) {
             List<Accounts> accountList = ad.getAllAccounts();
             request.setAttribute("accountList", accountList);
-            request.getRequestDispatcher("admin.jsp").forward(request, response);
+            request.getRequestDispatcher("accountController.jsp").forward(request, response);
         } else if (action.equals("remove")) { //ok
             int id = Integer.parseInt(request.getParameter("idAcc"));
             ad.removeAccount(id);
@@ -84,7 +84,7 @@ public class AccountControllerServlet extends HttpServlet {
             String fPhoneNumber = request.getParameter("fPhoneNumber");
             List<Accounts> accountList = ad.searchAccounts(fRole, fName, fPhoneNumber);
             request.setAttribute("accountList", accountList);
-            request.getRequestDispatcher("admin.jsp").forward(request, response);
+            request.getRequestDispatcher("accountController.jsp").forward(request, response);
         }
 
     }
@@ -144,7 +144,7 @@ public class AccountControllerServlet extends HttpServlet {
                     List<Accounts> accountList = ad.getAllAccounts();
                     request.setAttribute("accountList", accountList);
                     request.setAttribute("message", message);
-                    request.getRequestDispatcher("admin.jsp").forward(request, response);
+                    request.getRequestDispatcher("accountController.jsp").forward(request, response);
                 }
             }
         } catch (Exception e) {

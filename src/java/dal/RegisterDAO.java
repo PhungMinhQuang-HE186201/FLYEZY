@@ -48,7 +48,7 @@ public class RegisterDAO extends DBConnect {
         try (PreparedStatement st = conn.prepareStatement(sql)) {
             st.setString(1, a.getName());
             
-            String encode = encryptAES(a.getPassword(), "maiyeudomdomjj98");
+            String encode = encryptAES(a.getPassword(), SECRET_KEY);
             st.setString(3, encode);
             
             
