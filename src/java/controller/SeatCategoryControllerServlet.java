@@ -4,22 +4,22 @@
  */
 package controller;
 
-import dal.AccountsDAO;
-import dal.LoginDAO;
+import dal.SeatCategoryDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import model.SeatCategory;
 
 /**
  *
  * @author Admin
  */
-public class LoginServlet extends HttpServlet {
+@WebServlet(name = "SeatCategoryControllerServlet", urlPatterns = {"/seatCategoryController"})
+public class SeatCategoryControllerServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,10 +38,10 @@ public class LoginServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet LoginServlet</title>");
+            out.println("<title>Servlet SeatCategoryControllerServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet LoginServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet SeatCategoryControllerServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -59,7 +59,13 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("login.jsp").forward(request, response);
+        String action = request.getParameter("action");
+        SeatCategoryDAO scd = new SeatCategoryDAO();
+        if (action.equals("remove")) { //ok
+            int id = Integer.parseInt(request.getParameter("id"));
+            scd.deleteSeatCategory(id);
+            response.sendRedirect("planeCategoryController");
+        }
     }
 
     /**
@@ -72,52 +78,40 @@ public class LoginServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException{
-        EncodeController ec = new EncodeController();
-        //quanHT: encode password before checkpass
+            throws ServletException, IOException {
+        SeatCategoryDAO scd = new SeatCategoryDAO();
+
+        String idStr = request.getParameter("id");
+        String image = "img/" + request.getParameter("image");
+        String name = request.getParameter("name");
+        String numberOfSeatStr = request.getParameter("numberOfSeat");
+        String info = request.getParameter("info");
+        String planeCategoryIdStr = request.getParameter("planeCategoryId");
+        int numberOfSeat = 0;
+        int planeCategoryId = 0;
         try {
-            String u = request.getParameter("user"); 
-            String p = request.getParameter("pass");
-            String r = request.getParameter("rem");
-            
-            String encode = ec.encryptAES(p, "maiyeudomdomjj98");
-            
-            Cookie cu = new Cookie("cuser", u);
-            Cookie cp = new Cookie("cpass", p);
-            Cookie cr = new Cookie("crem", r);
-            if (r != null) {
-                cu.setMaxAge(60 * 60 * 24 * 7);//7 days
-                cp.setMaxAge(60 * 60 * 24 * 7);
-                cr.setMaxAge(60 * 60 * 24 * 7);
-            } else {
-                cu.setMaxAge(0);
-                cp.setMaxAge(0);
-                cr.setMaxAge(0);
+            numberOfSeat = Integer.parseInt(numberOfSeatStr);
+            planeCategoryId = Integer.parseInt(planeCategoryIdStr);
+        } catch (Exception e) {
+        }
+
+        if (idStr != null && !idStr.isEmpty()) {
+            try {
+                int id = Integer.parseInt(idStr);
+                if (image.equals("img/")) {
+                    image = scd.getSeatCategoryById(id).getImage();
+                }
+                scd.updateSeatCategory(new SeatCategory(id, name, numberOfSeat, image, info, planeCategoryId));
+                response.sendRedirect("planeCategoryController");
+            } catch (Exception e) {
             }
-            //save to browser
-            response.addCookie(cu);
-            response.addCookie(cp);
-            response.addCookie(cr);
-            LoginDAO ld = new LoginDAO();
-            AccountsDAO ad = new AccountsDAO();
-            HttpSession session = request.getSession();
-            if (!ld.checkUsername(u)) {
-                request.setAttribute("error", "Tài khoản của bạn không tồn tại!");
-                request.getRequestDispatcher("login.jsp").forward(request, response);
-            } else if (!ld.checkPassword(u, encode)) {
-                request.setAttribute("error", "Mật khẩu của bạn không chính xác!");
-                request.getRequestDispatcher("login.jsp").forward(request, response);
-            } else {
-                int id = ad.getIdByEmailOrPhoneNumber(u);
-                session.setAttribute("id", id);
-                response.sendRedirect("home");
-            }
-        } catch (Exception ex) {
+        } else {
+            scd.addSeatCategory(new SeatCategory(name, numberOfSeat, image, info, planeCategoryId));
+            response.sendRedirect("planeCategoryController");
         }
 
     }
-   
-//------------------------------------------------------------------------------------------------------------------
+
     /**
      * Returns a short description of the servlet.
      *

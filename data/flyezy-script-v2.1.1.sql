@@ -35,12 +35,14 @@ CREATE TABLE `Accounts` (
   `dob` date DEFAULT NULL,
   `Rolesid` int NOT NULL,
   `Airlineid` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FKAccounts201294` (`Rolesid`),
   KEY `FKAccounts898886` (`Airlineid`),
   CONSTRAINT `FKAccounts201294` FOREIGN KEY (`Rolesid`) REFERENCES `Roles` (`id`),
   CONSTRAINT `FKAccounts898886` FOREIGN KEY (`Airlineid`) REFERENCES `Airline` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -49,7 +51,7 @@ CREATE TABLE `Accounts` (
 
 LOCK TABLES `Accounts` WRITE;
 /*!40000 ALTER TABLE `Accounts` DISABLE KEYS */;
-INSERT INTO `Accounts` VALUES (1,'Ngo Tung Duong','duongnthe186310@fpt.edu.vn','1','0862521226',NULL,NULL,NULL,1,NULL);
+INSERT INTO `Accounts` VALUES (2,'Ngo Tung Duong 2','duongnthe186310@fpt.edu.vn','1','0862521226','null','img/avatar.jpg','2024-02-06',1,1,NULL,NULL),(3,'Ho Tran Quan','quan@gmail.com','1','0123456789','','img/avatar-2.jpg','2024-09-17',2,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `Accounts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -64,8 +66,9 @@ CREATE TABLE `Airline` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `image` varchar(255) DEFAULT NULL,
+  `info` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -74,6 +77,7 @@ CREATE TABLE `Airline` (
 
 LOCK TABLES `Airline` WRITE;
 /*!40000 ALTER TABLE `Airline` DISABLE KEYS */;
+INSERT INTO `Airline` VALUES (1,'Empty',NULL,NULL),(2,'Vietnam Airline',NULL,NULL),(3,'Bamboo Airway',NULL,NULL),(4,'Vietjet Air',NULL,NULL);
 /*!40000 ALTER TABLE `Airline` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -168,6 +172,8 @@ CREATE TABLE `Feedbacks` (
   `date` timestamp NULL DEFAULT NULL,
   `Airlineid` int NOT NULL,
   `Statusid` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FKFeedbacks957463` (`Accountsid`),
   KEY `FKFeedbacks177109` (`Airlineid`),
@@ -197,7 +203,6 @@ DROP TABLE IF EXISTS `Flight`;
 CREATE TABLE `Flight` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` int DEFAULT NULL,
-  `price` int DEFAULT NULL,
   `minutes` int DEFAULT NULL,
   `departureAirportid` int NOT NULL,
   `destinationAirportid` int NOT NULL,
@@ -222,6 +227,37 @@ CREATE TABLE `Flight` (
 LOCK TABLES `Flight` WRITE;
 /*!40000 ALTER TABLE `Flight` DISABLE KEYS */;
 /*!40000 ALTER TABLE `Flight` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Flight_Detail`
+--
+
+DROP TABLE IF EXISTS `Flight_Detail`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Flight_Detail` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `date` timestamp NULL DEFAULT NULL,
+  `time` time(6) DEFAULT NULL,
+  `price` int DEFAULT NULL,
+  `Flightid` int NOT NULL,
+  `Plane_Categoryid` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKFlight_Det484575` (`Flightid`),
+  KEY `FKFlight_Det564449` (`Plane_Categoryid`),
+  CONSTRAINT `FKFlight_Det484575` FOREIGN KEY (`Flightid`) REFERENCES `Flight` (`id`),
+  CONSTRAINT `FKFlight_Det564449` FOREIGN KEY (`Plane_Categoryid`) REFERENCES `Plane_Category` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Flight_Detail`
+--
+
+LOCK TABLES `Flight_Detail` WRITE;
+/*!40000 ALTER TABLE `Flight_Detail` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Flight_Detail` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -382,10 +418,11 @@ CREATE TABLE `Plane_Category` (
   `name` varchar(255) DEFAULT NULL,
   `image` varchar(255) DEFAULT NULL,
   `Airlineid` int NOT NULL,
+  `info` text,
   PRIMARY KEY (`id`),
   KEY `FKPlane_Cate276706` (`Airlineid`),
   CONSTRAINT `FKPlane_Cate276706` FOREIGN KEY (`Airlineid`) REFERENCES `Airline` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -394,6 +431,7 @@ CREATE TABLE `Plane_Category` (
 
 LOCK TABLES `Plane_Category` WRITE;
 /*!40000 ALTER TABLE `Plane_Category` DISABLE KEYS */;
+INSERT INTO `Plane_Category` VALUES (1,'Airbus A321CEO','img/Airbus A321CEO.png',3,NULL),(2,'Airbus A320NEO','img/Airbus A320NEO.png',3,NULL),(3,'Airbus A320CEO','img/Airbus A320CEO.png',3,NULL),(4,'Airbus A321','img/vnairline-AIRBUS A321.png',2,NULL),(5,'BOEING 787','img/vnairline-BOEING 787.png',2,NULL),(6,'AIRBUS A350','img/vnairline-AIRBUS A350.png',2,NULL),(7,'AIRBUS A320 NEO','img/vnairline-AIRBUS A320 NEO.png',2,NULL);
 /*!40000 ALTER TABLE `Plane_Category` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -447,7 +485,7 @@ CREATE TABLE `Roles` (
 
 LOCK TABLES `Roles` WRITE;
 /*!40000 ALTER TABLE `Roles` DISABLE KEYS */;
-INSERT INTO `Roles` VALUES (1,'admin'),(2,'member'),(3,'airline staff'),(4,'service staff');
+INSERT INTO `Roles` VALUES (1,'Admin'),(2,'Airline Staff'),(3,'Member'),(4,'Service Staff');
 /*!40000 ALTER TABLE `Roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -464,10 +502,12 @@ CREATE TABLE `Seat_Category` (
   `numberOfSeat` int DEFAULT NULL,
   `image` varchar(255) DEFAULT NULL,
   `Plane_Categoryid` int NOT NULL,
+  `info` text,
+  `surcharge` float DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FKSeat_Categ529738` (`Plane_Categoryid`),
   CONSTRAINT `FKSeat_Categ529738` FOREIGN KEY (`Plane_Categoryid`) REFERENCES `Plane_Category` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -476,6 +516,7 @@ CREATE TABLE `Seat_Category` (
 
 LOCK TABLES `Seat_Category` WRITE;
 /*!40000 ALTER TABLE `Seat_Category` DISABLE KEYS */;
+INSERT INTO `Seat_Category` VALUES (1,'Economy',184,'img/bamboo-economy.jpg',1,NULL,NULL),(2,'Business',8,'img/bamboo-business.jpg',1,NULL,NULL),(3,'Economy',168,'img/bamboo-economy.jpg',2,NULL,NULL),(4,'Business',8,'img/bamboo-business.jpg',2,NULL,NULL),(5,'Economy',162,'img/bamboo-economy.jpg',3,NULL,NULL),(6,'Business',8,'img/bamboo-business.jpg',3,NULL,NULL),(7,'Hạng Thương Gia',16,'img/vnairline-A321-Business.png',4,NULL,NULL),(8,'Hạng Phổ Thông',162,'img/vnairline-A321-GhePhoThong.png',4,NULL,NULL),(9,'Hạng Thương Gia',28,'img/vnairline-B787-GheThuongGia.png',5,NULL,NULL),(10,'Hạng Phổ Thông Đặc Biệt',35,'img/vnairline-B787-GhePhoThongDacBiet.png',5,NULL,NULL),(11,'Hạng Phổ Thông',211,'img/vnairline-B787-GhePhoThong.png',5,NULL,NULL),(12,'Hạng Thương Gia',29,'img/vnairline-A350-GheThuongGia.png',6,NULL,NULL),(13,'Hạng Phổ Thông Đặc Biệt',45,'img/vnairline-A350-GhePhoThongDacBiet.png',6,NULL,NULL),(14,'Hạng Phổ Thông',231,'img/vnairline-A350-GhePhoThong.png',6,NULL,NULL),(15,'Hạng Thương Gia',8,'img/vnairline-A320neo-Thuong gia.png',7,NULL,NULL),(16,'Hạng Phổ Thông',180,'img/vnairline-A320neo-PhoThong.png',7,NULL,NULL);
 /*!40000 ALTER TABLE `Seat_Category` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -525,6 +566,7 @@ CREATE TABLE `Ticket` (
   `Statusid` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FKTicket527556` (`Accountsid`),
+  KEY `FKTicket704972` (`Flight_Detailid`),
   KEY `FKTicket339557` (`Passenger_Typesid`),
   KEY `FKTicket339803` (`PaymentTypeid`),
   KEY `FKTicket999927` (`Baggagesid`),
@@ -534,6 +576,7 @@ CREATE TABLE `Ticket` (
   CONSTRAINT `FKTicket339803` FOREIGN KEY (`PaymentTypeid`) REFERENCES `Payment_Types` (`id`),
   CONSTRAINT `FKTicket527556` FOREIGN KEY (`Accountsid`) REFERENCES `Accounts` (`id`),
   CONSTRAINT `FKTicket601957` FOREIGN KEY (`Statusid`) REFERENCES `Status` (`id`),
+  CONSTRAINT `FKTicket704972` FOREIGN KEY (`Flight_Detailid`) REFERENCES `Flight_Detail` (`id`),
   CONSTRAINT `FKTicket721068` FOREIGN KEY (`Seat_Categoryid`) REFERENCES `Seat_Category` (`id`),
   CONSTRAINT `FKTicket999927` FOREIGN KEY (`Baggagesid`) REFERENCES `Baggages` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -565,4 +608,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-15 11:22:10
+-- Dump completed on 2024-09-19 19:15:29

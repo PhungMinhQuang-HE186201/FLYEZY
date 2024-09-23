@@ -6,6 +6,7 @@ package controller;
 
 import dal.AccountsDAO;
 import dal.PlaneCategoryDAO;
+import dal.SeatCategoryDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -65,6 +66,7 @@ public class PlaneCategoryControllerServlet extends HttpServlet {
             throws ServletException, IOException {
         AccountsDAO ad = new AccountsDAO();
         PlaneCategoryDAO pcd = new PlaneCategoryDAO();
+        SeatCategoryDAO scd = new SeatCategoryDAO();
         HttpSession session = request.getSession();
 
         // DuongNT: Retrieve the account information of the currently logged-in user using session
@@ -80,6 +82,7 @@ public class PlaneCategoryControllerServlet extends HttpServlet {
             request.getRequestDispatcher("planeCategoryController.jsp").forward(request, response);
         } else if (action.equals("remove")) { //ok
             int id = Integer.parseInt(request.getParameter("id"));
+            scd.deleteAllSeatCategoryByPlaneCategoryId(id);
             pcd.deletePlaneCategoryById(id);
             response.sendRedirect("planeCategoryController");
         } else if (action.equals("search")) {
@@ -105,28 +108,29 @@ public class PlaneCategoryControllerServlet extends HttpServlet {
         String idStr = request.getParameter("id");
         String name = request.getParameter("name");
         String image = "img/" + request.getParameter("image");
+        String info = request.getParameter("info");
         String airlineIdStr = request.getParameter("airlineId");
         int airlineId = 0;
         try {
             airlineId = Integer.parseInt(airlineIdStr);
         } catch (Exception e) {
         }
-        if (idStr == null) {
-            PlaneCategory pc = new PlaneCategory(name, image, airlineId);
-            pcd.addPlaneCategory(pc);
-            response.sendRedirect("planeCategoryController");
-        } else {
+        if (idStr != null && !idStr.isEmpty()) {
             try {
                 int id = Integer.parseInt(idStr);
                 if (image.equals("img/")) {
                     image = pcd.getPlaneCategoryById(id).getImage();
                 }
-                PlaneCategory pc = new PlaneCategory(id, name, image, airlineId);
+                PlaneCategory pc = new PlaneCategory(id, name, image, info, airlineId);
                 pcd.updatePlaneCategoryById(pc);
                 response.sendRedirect("planeCategoryController");
             } catch (Exception e) {
                 response.sendRedirect("home");
             }
+        } else {
+            PlaneCategory pc = new PlaneCategory(name, image, info, airlineId);
+            pcd.addPlaneCategory(pc);
+            response.sendRedirect("planeCategoryController");
         }
     }
 

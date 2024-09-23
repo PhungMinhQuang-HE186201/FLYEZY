@@ -16,6 +16,18 @@
         <servlet-name>LogoutServlet</servlet-name>
         <servlet-class>controller.LogoutServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DashboardAirlineServlet</servlet-name>
+        <servlet-class>controller.DashboardAirlineServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AirlineManagementServlet</servlet-name>
+        <servlet-class>controller.AirlineManagementServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>BaggageManagementServlet</servlet-name>
+        <servlet-class>controller.BaggageManagementServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>AccountControllerServlet</servlet-name>
         <url-pattern>/accountController</url-pattern>
@@ -32,4 +44,19 @@
         <servlet-name>LogoutServlet</servlet-name>
         <url-pattern>/logout</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DashboardAirlineServlet</servlet-name>
+        <url-pattern>/airlineController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AirlineManagementServlet</servlet-name>
+        <url-pattern>/airlineManagement</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BaggageManagementServlet</servlet-name>
+        <url-pattern>/baggageManagement</url-pattern>
+    </servlet-mapping>
+    <welcome-file-list>
+        <welcome-file>home</welcome-file>
+    </welcome-file-list>
 </web-app>

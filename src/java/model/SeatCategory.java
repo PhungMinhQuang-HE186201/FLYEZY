@@ -8,29 +8,32 @@ package model;
  *
  * @author Admin
  */
-public class PlaneCategory {
+public class SeatCategory {
     private int id;
     private String name;
+    private int numberOfSeat;
     private String image;
     private String info;
-    private int Airlineid;
+    private int Plane_Categoryid;
 
-    public PlaneCategory() {
+    public SeatCategory() {
     }
 
-    public PlaneCategory(String name, String image, String info, int Airlineid) {
+    public SeatCategory(String name, int numberOfSeat, String image, String info, int Plane_Categoryid) {
         this.name = name;
+        this.numberOfSeat = numberOfSeat;
         this.image = image;
         this.info = info;
-        this.Airlineid = Airlineid;
+        this.Plane_Categoryid = Plane_Categoryid;
     }
 
-    public PlaneCategory(int id, String name, String image, String info, int Airlineid) {
+    public SeatCategory(int id, String name, int numberOfSeat, String image, String info, int Plane_Categoryid) {
         this.id = id;
         this.name = name;
+        this.numberOfSeat = numberOfSeat;
         this.image = image;
         this.info = info;
-        this.Airlineid = Airlineid;
+        this.Plane_Categoryid = Plane_Categoryid;
     }
 
     public int getId() {
@@ -49,6 +52,14 @@ public class PlaneCategory {
         this.name = name;
     }
 
+    public int getNumberOfSeat() {
+        return numberOfSeat;
+    }
+
+    public void setNumberOfSeat(int numberOfSeat) {
+        this.numberOfSeat = numberOfSeat;
+    }
+
     public String getImage() {
         return image;
     }
@@ -57,12 +68,12 @@ public class PlaneCategory {
         this.image = image;
     }
 
-    public int getAirlineid() {
-        return Airlineid;
+    public int getPlane_Categoryid() {
+        return Plane_Categoryid;
     }
 
-    public void setAirlineid(int Airlineid) {
-        this.Airlineid = Airlineid;
+    public void setPlane_Categoryid(int Plane_Categoryid) {
+        this.Plane_Categoryid = Plane_Categoryid;
     }
 
     public String getInfo() {
@@ -72,6 +83,7 @@ public class PlaneCategory {
     public void setInfo(String info) {
         this.info = info;
     }
+    
     
     
 }

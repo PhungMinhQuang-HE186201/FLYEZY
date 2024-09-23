@@ -4,6 +4,7 @@
  */
 package dal;
 
+import controller.EncodeController;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -15,7 +16,7 @@ import java.sql.ResultSet;
  *
  * @author PMQUANG
  */
-public class DBConnect {
+public class DBConnect extends EncodeController{
 
     public Connection conn = null;
 
@@ -36,7 +37,7 @@ public class DBConnect {
     }
 
     public DBConnect() {
-        this("jdbc:mysql://localhost:3306/flyezy", "root", "root");
+        this("jdbc:mysql://localhost:3306/flyezy", "root", "123456789");
     }
 
     public ResultSet getData(String sql) {

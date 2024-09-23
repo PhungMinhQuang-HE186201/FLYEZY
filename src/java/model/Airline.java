@@ -6,31 +6,41 @@ package model;
 
 /**
  *
- * @author Admin
+ * @author PMQUANG
  */
-public class PlaneCategory {
+public class Airline {
     private int id;
     private String name;
     private String image;
     private String info;
-    private int Airlineid;
 
-    public PlaneCategory() {
+    public Airline(int id) {
+        this.id = id;
     }
 
-    public PlaneCategory(String name, String image, String info, int Airlineid) {
+    public Airline(String name, String image) {
+        this.name = name;
+        this.image = image;
+    }
+
+    public Airline(String name, String image, String info) {
         this.name = name;
         this.image = image;
         this.info = info;
-        this.Airlineid = Airlineid;
     }
 
-    public PlaneCategory(int id, String name, String image, String info, int Airlineid) {
+
+    public Airline(int id, String name, String image) {
+        this.id = id;
+        this.name = name;
+        this.image = image;
+    }
+
+    public Airline(int id, String name, String image, String info) {
         this.id = id;
         this.name = name;
         this.image = image;
         this.info = info;
-        this.Airlineid = Airlineid;
     }
 
     public int getId() {
@@ -57,14 +67,6 @@ public class PlaneCategory {
         this.image = image;
     }
 
-    public int getAirlineid() {
-        return Airlineid;
-    }
-
-    public void setAirlineid(int Airlineid) {
-        this.Airlineid = Airlineid;
-    }
-
     public String getInfo() {
         return info;
     }
@@ -72,6 +74,10 @@ public class PlaneCategory {
     public void setInfo(String info) {
         this.info = info;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return "Airline{" + "id=" + id + ", name=" + name + ", image=" + image + ", info=" + info + '}';
+    }
+
 }

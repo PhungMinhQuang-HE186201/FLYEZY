@@ -7,8 +7,11 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page import="dal.RolesDAO"%>
+<%@page import="static controller.EncodeController.SECRET_KEY" %>
+
 <%@page import="java.util.List"%>
 <%@page import="model.Accounts"%>
+<%@page import="dal.AirlineManageDAO"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -26,14 +29,21 @@
             .modal-body span{
                 margin-right: 5px
             }
+            #myBtn{
+                display: flex;
+                flex:left
+            }
+            #main-content{
+
+            }
         </style>
 
     </head>
     <body>
         <%@include file="header.jsp" %>
         <%@include file="admin-sideBar.jsp" %>
-        <div id="main-content" style="padding: 15vh 16vw; margin: 0">
-            <div class="filterController" style="display: flex">
+        <div id="main-content" style="padding:15vh 0vw 15vh 16vw; margin: 0">
+            <div class="filterController col-md-12" style="width: 100%">
                 <form action="accountController" method="get" style="margin-bottom: 20px;">
                     <input type="hidden" name="action" value="search">
                     <strong class="filterElm">Role:</strong>
@@ -47,19 +57,102 @@
                     <input class="filterElm" type="text" name="fName" value="${param.fName}" placeholder="Enter name">
                     <strong>Phone number: </strong>
                     <input class="filterElm" type="number" name="fPhoneNumber" value="${param.fPhoneNumber}" placeholder="Enter phone number">
-                    <button class="btn btn-info" type="submit" style="width: 60px" >
-                        <i class="ti-search"></i>
-                        Lọc
+                    <button class="btn btn-info" type="submit">
+                        Search
                     </button>
-                    <a class="btn btn-danger" href="accountController">Huỷ</a>
+                    <a class="btn btn-danger" href="accountController">Cancle</a>
                 </form>
+
+
             </div>
 
+            <button type="button" class="btn btn-success" id="myBtn">Add new User</button>
+            <!-- Update Modal -->
+            <div class="container">
+                <!-- Modal -->
+                <div class="modal fade" id="myModal" role="dialog">
+                    <div class="modal-dialog">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header" style="padding:5px 5px;">
+                                <button type="button" class="close" style="font-size: 30px; margin-right: 12px;" data-dismiss="modal">&times;</button>
+                                <h4 style="margin-left: 12px">Create</h4>
+                            </div>
+                            <div class="modal-body" style="padding:40px 50px;">
+                                <form role="form" action="accountController" method="Post">
+                                    <input type="hidden" name="action" value="create"/>
+
+                                    <div class="row">
+
+                                        <div class="form-group col-md-6">
+                                            <label for="image"><span class="glyphicon glyphicon-picture"></span>Avatar:</label>
+                                            <input type="file" class="form-control" name="image">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-6">
+                                            <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Role:</label></div>
+                                            <select name="roleId" value="" style="height:  34px">
+                                                <option value="1">Admin</option>
+                                                <option value="2">Member</option>
+                                                <option value="3">Airline staff</option>
+                                                <option value="4">Service staff</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group col-md-6">
+                                            <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Airline:</label></div>
+                                            <select name="airlineID" value="" style="height:  34px">
+                                                <option value="1">Empty</option>
+                                                <option value="2">Vietnam Airline</option>
+                                                <option value="3">Bamboo Airway</option>
+                                                <option value="4">Vietjet Air</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="name"><span class="glyphicon glyphicon-user"></span>Name:</label>
+                                        <input type="text" class="form-control" name="name" value="">
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-6">
+                                            <label for="dob"><span class="glyphicon glyphicon-calendar"></span>Date of birth:</label>
+                                            <input type="date" class="form-control" name="dob" required>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="phoneNumber"><span class="glyphicon glyphicon-earphone"></span>Phone number:</label>
+                                            <input type="text" class="form-control" name="phoneNumber" value="">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="email"><span class="glyphicon glyphicon-envelope"></span>Email:</label>
+                                        <input type="email" class="form-control" name="email" value="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password"><span class="glyphicon glyphicon-eye-open"></span>Password:</label>
+                                        <input type="password" class="form-control" name="password" value="">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="address"><span class="glyphicon glyphicon-home"></span>Address:</label>
+                                        <input type="text" class="form-control" name="address" value="">
+                                    </div>
+                                    <button type="submit" class="btn btn-success btn-block">
+                                        Confirm
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+            <h4 style="color : red">${message}</h4>
             <table class="entity" >
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Password</th>
                         <th>Date of birth</th>
                         <th>Phone</th>
                         <th>Email</th>
@@ -67,6 +160,8 @@
                         <th>Image</th>
                         <th>Role</th>
                         <th>Airline</th>
+                        <th>Create at</th>
+                        <th>Update at</th>
                         <th style="padding: 0 55px; min-width: 156px">Actions</th>
                     </tr>
                 </thead>
@@ -74,18 +169,20 @@
                     <%
                     List<Accounts> accountList = (List<Accounts>) request.getAttribute("accountList");
                     RolesDAO rd = new RolesDAO();
+                    AirlineManageDAO amd = new AirlineManageDAO();
                     for (Accounts list : accountList) {
                     %>
                     <tr>
                         <td><%= list.getName() %></td>
-                        <td><%= list.getPassword() %></td>
                         <td><%= list.getDob() %></td>
                         <td><%= list.getPhoneNumber() %></td>
                         <td><%= list.getEmail() %></td>
                         <td><%= list.getAddress() %></td>
                         <td><img src="<%= list.getImage() %>" alt="<%= list.getName() %>"></td>
                         <td><%= rd.getNameById(list.getRoleId()) %></td>
-                        <td><%= list.getAirlineId() %></td>
+                        <td><%= amd.getNameById(list.getAirlineId()) %></td>
+                        <td><%= list.getCreated_at() %></td>
+                        <td><%= list.getUpdated_at() %></td>
                         <td>
                             <a class="btn btn-info" style="text-decoration: none" id="myBtn<%= list.getId() %>" onclick="openModal(<%= list.getId() %>)">Update</a>
                             <a class="btn btn-danger" style="text-decoration: none" onclick="doDelete('<%= list.getId() %>', '<%= list.getName() %>')">Delete</a>
@@ -111,12 +208,16 @@
                                                         <label for="image<%= list.getId() %>"><span class="glyphicon glyphicon-picture"></span>Avatar:</label>
                                                         <input type="file" class="form-control" name="image">
                                                     </div>
+                                                    <div class="form-group col-md-9">
+                                                        <label for="name<%= list.getId() %>"><span class="glyphicon glyphicon-user"></span>Create At:</label>
+                                                        <input type="text" class="form-control" name="create_at" value="<%= list.getCreated_at() %>" readonly="">
+                                                    </div>
                                                     <div class="form-group col-md-4">
                                                         <img src="<%= list.getImage() %>" alt="Avatar" class="img-thumbnail" style="width: 100px; height: 100px; float: right;">
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="form-group col-md-3">
+                                                    <div class="form-group col-md-6">
                                                         <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Role:</label></div>
                                                         <select name="roleId" value="<%= list.getRoleId() %>" style="height:  34px">
                                                             <option value="1" <%= (list.getRoleId() == 1) ? "selected" : "" %>>Admin</option>
@@ -125,33 +226,43 @@
                                                             <option value="4" <%= (list.getRoleId() == 4) ? "selected" : "" %>>Service staff</option>
                                                         </select>
                                                     </div>
-                                                    <div class="form-group col-md-9">
-                                                        <label for="name<%= list.getId() %>"><span class="glyphicon glyphicon-user"></span>Name:</label>
-                                                        <input type="text" class="form-control" name="name" value="<%= list.getName() %>">
+                                                    <div class="form-group col-md-6">
+                                                        <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Role:</label></div>
+                                                        <select name="airlineID" value="<%= list.getAirlineId() %>" style="height:  34px">
+                                                            <option value="1" <%= (list.getAirlineId() == 1) ? "selected" : "" %>>Empty</option>
+                                                            <option value="2" <%= (list.getAirlineId() == 2) ? "selected" : "" %>>Vietnam Airline</option>
+                                                            <option value="3" <%= (list.getAirlineId() == 3) ? "selected" : "" %>>Bamboo Airway</option>
+                                                            <option value="4" <%= (list.getAirlineId() == 4) ? "selected" : "" %>>Vietjet Air</option>
+                                                        </select>
                                                     </div>
+
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="name<%= list.getId() %>"><span class="glyphicon glyphicon-user"></span>Name:</label>
+                                                    <input type="text" class="form-control" name="name" value="<%= list.getName() %>">
                                                 </div>
                                                 <div class="row">
                                                     <div class="form-group col-md-6">
-                                                        <label for="dob<%= list.getId() %>"><span class="glyphicon glyphicon-calendar"></span>Date of birth:</label>
-                                                        <input type="date" class="form-control" name="dob" value="<%= list.getDob() %>">
+                                                        <label><span class="glyphicon glyphicon-calendar"></span>Date of birth:</label>
+                                                        <input type="date" class="form-control" name="dob" value="<%= list.getDob() %>" required>
                                                     </div>
                                                     <div class="form-group col-md-6">
-                                                        <label for="phoneNumber<%= list.getId() %>"><span class="glyphicon glyphicon-earphone"></span>Phone number:</label>
+                                                        <label><span class="glyphicon glyphicon-earphone"></span>Phone number:</label>
                                                         <input type="text" class="form-control" name="phoneNumber" value="<%= list.getPhoneNumber() %>">
                                                     </div>
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label for="email<%= list.getId() %>"><span class="glyphicon glyphicon-envelope"></span>Email:</label>
+                                                    <label><span class="glyphicon glyphicon-envelope"></span>Email:</label>
                                                     <input type="email" class="form-control" name="email" value="<%= list.getEmail() %>">
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="password<%= list.getId() %>"><span class="glyphicon glyphicon-eye-open"></span>Password:</label>
-                                                    <input type="password" class="form-control" name="password" value="<%= list.getPassword() %>">
+                                                    <label><span class="glyphicon glyphicon-eye-open"></span>Password:</label>
+                                                    <input type="password" class="form-control" name="password" value="<%= rd.decryptAES(list.getPassword(),SECRET_KEY) %>">
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label for="address<%= list.getId() %>"><span class="glyphicon glyphicon-home"></span>Address:</label>
+                                                    <label><span class="glyphicon glyphicon-home"></span>Address:</label>
                                                     <input type="text" class="form-control" name="address" value="<%= list.getAddress() %>">
                                                 </div>
                                                 <button type="submit" class="btn btn-success btn-block">
@@ -169,6 +280,7 @@
                     %>
                 </tbody>
             </table>
+
         </div>
 
         <script>
@@ -180,6 +292,11 @@
                     window.location = "accountController?action=remove&idAcc=" + id;
                 }
             }
+            $(document).ready(function () {
+                $("#myBtn").click(function () {
+                    $("#myModal").modal();
+                });
+            });
         </script>
     </body>
 </html>

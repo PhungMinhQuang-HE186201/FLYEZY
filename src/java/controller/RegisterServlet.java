@@ -15,7 +15,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.sql.Timestamp;
-import java.util.Date;
 import model.Accounts;
 
 /**
@@ -89,7 +88,7 @@ public class RegisterServlet extends HttpServlet {
             request.setAttribute("existedUsername", "Gmail đã được đăng ký!");
             request.getRequestDispatcher("register.jsp").forward(request, response);
         } else {
-            Accounts a = new Accounts(name, email, pass, phoneNumber, 2);
+            Accounts a = new Accounts(name, email, pass, phoneNumber, 2, 1, new Timestamp(System.currentTimeMillis()));
             d.addNewAccount(a);
             HttpSession session = request.getSession();
             AccountsDAO ad = new AccountsDAO();

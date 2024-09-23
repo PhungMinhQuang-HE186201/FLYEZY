@@ -56,15 +56,7 @@ public class LoginDAO extends DBConnect {
     public static void main(String[] args) {
         LoginDAO a = new LoginDAO();
 
-        String emailOrPhoneNumber = "duongnthe186310@fpt.edu.vn"; 
-
-        boolean exists = a.checkPassword(emailOrPhoneNumber,"1");
-
-        if (exists) {
-            System.out.println("Tài khoản tồn tại với email hoặc số điện thoại: " + emailOrPhoneNumber);
-        } else {
-            System.out.println("Tài khoản không tồn tại với email hoặc số điện thoại: " + emailOrPhoneNumber);
-        }
+        System.out.println(a.checkPassword("0966486473", "KIymfC4XfLDNFnygtZuXNQ=="));
     }
 
 }

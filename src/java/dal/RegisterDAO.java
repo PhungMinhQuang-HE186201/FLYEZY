@@ -7,7 +7,6 @@ package dal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 import model.Accounts;
 
 /**
@@ -39,27 +38,34 @@ public class RegisterDAO extends DBConnect {
             return false;
         }
     }
-
+    //QuanHT
     public void addNewAccount(Accounts a) {
-        String sql = "INSERT INTO Accounts (name, password, email, phoneNumber, address, image, dob, Rolesid, Airlineid)\n"
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, NULL);";
+        String sql = """
+                 INSERT INTO Accounts 
+                     (name, email, password, phoneNumber, Rolesid, Airlineid, created_at) 
+                 VALUES 
+                 (?,?,?,?,?,?,?)""";
         try (PreparedStatement st = conn.prepareStatement(sql)) {
             st.setString(1, a.getName());
-            st.setString(2, a.getPassword());
-            st.setString(3, a.getEmail()); 
-            st.setString(4, a.getPhoneNumber()); 
-            st.setString(5, a.getAddress()); 
-            st.setString(6, a.getImage()); 
-            st.setDate(7, a.getDob());
-            st.setInt(8, a.getRoleId()); 
+            
+            String encode = encryptAES(a.getPassword(), "maiyeudomdomjj98");
+            st.setString(3, encode);
+            
+            
+            st.setString(2, a.getEmail());
+            st.setString(4, a.getPhoneNumber());
+            st.setInt(5, a.getRoleId());
+            st.setInt(6, a.getAirlineId());
+            st.setTimestamp(7, a.getCreated_at() );
             st.executeUpdate();
         } catch (Exception e) {
             System.out.println(e);
         }
     }
+    
 
-  public static void main(String[] args) {
-       RegisterDAO rd = new RegisterDAO();
-       rd.addNewAccount(new Accounts("Quaan", "123@gmail.com", "1", "0123", 2));
+    public static void main(String[] args) {
+        RegisterDAO rd = new RegisterDAO();
+        rd.addNewAccount(new Accounts("Quaan", "123@gmail.com", "1", "0123", 2,1,null));
     }
 }
