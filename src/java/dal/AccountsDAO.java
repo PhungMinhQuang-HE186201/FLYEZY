@@ -225,24 +225,38 @@ public class AccountsDAO extends DBConnect {
         return n;
     }
 
+    public void deleteAllAccountByAirline(int airlineId) {
+        String sql = "DELETE FROM `flyezy`.`Accounts`\n"
+                + "WHERE airlineid = " + airlineId;
+        try {
+
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.executeUpdate();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
         AccountsDAO dao = new AccountsDAO();
 
-        // Test hàm getAccountsById với một id cụ thể
-        int accountId = 5; // Thay id này bằng một giá trị có thật trong DB
-        Accounts account = dao.getAccountsById(accountId);
-
-        if (account != null) {
-            System.out.println("Thông tin tài khoản:");
-            System.out.println("ID: " + account.getId());
-            System.out.println("Name: " + account.getName());
-            System.out.println("Email: " + account.getEmail());
-            System.out.println("Phone Number: " + account.getPhoneNumber());
-            System.out.println("Address: " + account.getAddress());
-            System.out.println("Image: " + account.getImage());
-            System.out.println("Date of Birth: " + account.getDob());
-            System.out.println(account.getCreated_at());
-            System.out.println(account.getUpdated_at());
-        }
+//        // Test hàm getAccountsById với một id cụ thể
+//        int accountId = 5; // Thay id này bằng một giá trị có thật trong DB
+//        Accounts account = dao.getAccountsById(accountId);
+//
+//        if (account != null) {
+//            System.out.println("Thông tin tài khoản:");
+//            System.out.println("ID: " + account.getId());
+//            System.out.println("Name: " + account.getName());
+//            System.out.println("Email: " + account.getEmail());
+//            System.out.println("Phone Number: " + account.getPhoneNumber());
+//            System.out.println("Address: " + account.getAddress());
+//            System.out.println("Image: " + account.getImage());
+//            System.out.println("Date of Birth: " + account.getDob());
+//            System.out.println(account.getCreated_at());
+//            System.out.println(account.getUpdated_at());
+//        }
+        System.out.println(dao.getAllAccounts());
     }
 }

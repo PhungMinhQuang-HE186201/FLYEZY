@@ -47,11 +47,11 @@ public class EncodeController {
 
     public static void main(String[] args) throws Exception {
         String str_en = "1";
-        String key = "SECRET_KEY";
+        String key = SECRET_KEY;
 
         String encode = encryptAES(str_en, key);
         System.out.println("ma khi duoc ma hoa:" + encode);
-        String decode = decryptAES(encode, key);
+        String decode = decryptAES("eJm7mXOhxdULW3Lye/UPbw==", key);
         System.out.println("Code sau khi giai ma:" + decode);
     }
 }

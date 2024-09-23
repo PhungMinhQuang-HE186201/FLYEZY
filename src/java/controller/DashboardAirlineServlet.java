@@ -52,7 +52,7 @@ public class DashboardAirlineServlet extends HttpServlet {
         session.setAttribute("listAirline", listAirline);
         session.setAttribute("listBaggage", listBaggage);
 
-        request.getRequestDispatcher("airlineManage.jsp").forward(request, response);
+        request.getRequestDispatcher("airlineManagement.jsp").forward(request, response);
     }
 
     @Override

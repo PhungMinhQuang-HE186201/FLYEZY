@@ -209,4 +209,9 @@ public class Accounts {
         this.airlineId = airlineId;
     }
 
+    @Override
+    public String toString() {
+        return "Accounts{" + "id=" + id + ", name=" + name + ", email=" + email + ", password=" + password + ", phoneNumber=" + phoneNumber + ", address=" + address + ", image=" + image + ", dob=" + dob + ", roleId=" + roleId + ", airlineId=" + airlineId + ", created_at=" + created_at + ", updated_at=" + updated_at + '}';
+    }
+
 }

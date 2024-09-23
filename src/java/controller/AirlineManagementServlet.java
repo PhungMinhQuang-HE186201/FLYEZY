@@ -6,6 +6,7 @@ package controller;
 
 import dal.AirlineManageDAO;
 import dal.BaggageManageDAO;
+import dal.AccountsDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -22,6 +23,7 @@ public class AirlineManagementServlet extends HttpServlet {
 
     AirlineManageDAO airlineManageDao = new AirlineManageDAO();
     BaggageManageDAO baggageManageDao = new BaggageManageDAO();
+    AccountsDAO accountsDao = new AccountsDAO();
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -122,6 +124,7 @@ public class AirlineManagementServlet extends HttpServlet {
         try {
             int airlineId = Integer.parseInt(request.getParameter("airlineId"));
             baggageManageDao.deleteAllBaggageByAirline(airlineId);
+            accountsDao.deleteAllAccountByAirline(airlineId);
             airlineManageDao.deleteAirline(airlineId);
         } catch (Exception e) {
             // Xử lý lỗi khác
