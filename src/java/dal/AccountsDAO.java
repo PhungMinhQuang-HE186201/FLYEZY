@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Accounts;
@@ -19,6 +20,8 @@ import model.Accounts;
  * @author Admin
  */
 public class AccountsDAO extends DBConnect {
+
+    private final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
     public List<Accounts> getAllAccounts() {
         List<Accounts> ls = new ArrayList<>();
@@ -232,10 +235,9 @@ public class AccountsDAO extends DBConnect {
         try {
             PreparedStatement pre = conn.prepareStatement(sqlupdate);
             String encode = encryptAES(newPassword, SECRET_KEY);
-            
             pre.setString(1, encode);
             pre.setString(2, idAccount);
-            
+
             pre.executeUpdate();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -278,6 +280,48 @@ public class AccountsDAO extends DBConnect {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+    }
+       
+    public int findIdByEmail(String email){
+        String sql = "select id from accounts where email = ?";
+        int userId = -1;
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setString(1, email);
+            ResultSet rs = pre.executeQuery();
+            if (rs.next()) {
+                userId = rs.getInt("id");
+            }
+        } catch (SQLException ex) {
+           ex.printStackTrace();
+        }
+        return userId;
+    }
+    
+    public boolean checkEmailExist(String email) {
+        String sql = "select * from accounts where email = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            if (!rs.next()) {
+                return false;
+            } else {
+                return true;
+            }
+        } catch (Exception e) {
+        }
+        return false;
+    }
+
+    public String generateRandomString() {
+        StringBuilder sb = new StringBuilder(8);
+        Random r = new Random();
+        for (int i = 0; i < 8; i++) {
+            int index = r.nextInt(CHARACTERS.length());
+            sb.append(CHARACTERS.charAt(index));
+        }
+        return sb.toString();
     }
 
     public static void main(String[] args) {

@@ -70,7 +70,7 @@
                 </p>
                 <input type="checkbox" ${cookie.crem != null ? 'checked' : ''}
                        name="rem" value="ON"/> Remember me
-                <a id="forgetPassword" href="forgetPassword">Quên mật khẩu?</a
+                <a id="forgetPassword" href="ForgetPassword">Quên mật khẩu?</a
                 ><br /><br />
                 <div class="button">
                     <input type="submit" value="Đăng nhập" /><br /><br />
