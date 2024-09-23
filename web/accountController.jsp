@@ -182,12 +182,13 @@
                         <td><img src="<%= list.getImage() %>" alt="<%= list.getName() %>"></td>
                         <td><%= rd.getNameById(list.getRoleId()) %></td>
                         <td><%= amd.getNameById(list.getAirlineId()) %></td>
-                        <td><%= sdf.format(list.getCreated_at()) %></td>
-                        <td><%= sdf.format(list.getUpdated_at()) %></td>
+                        <td><%= list.getCreated_at() != null ? sdf.format(list.getCreated_at()) : "" %></td>
+                        <td><%= list.getUpdated_at() != null ? sdf.format(list.getUpdated_at()) : "" %></td>
+
                         <td>
                             <a class="btn btn-info" style="text-decoration: none" id="myBtn<%= list.getId() %>" onclick="openModal(<%= list.getId() %>)">Update</a>
                             <a class="btn btn-danger" style="text-decoration: none" onclick="doDelete('<%= list.getId() %>', '<%= list.getName() %>')">Delete</a>
-                            <!-- Modal -->
+                            <!-- Modal: Update account -->
                             <div class="modal fade" id="myModal<%= list.getId() %>" role="dialog">
                                 <div class="modal-dialog">
                                     <!-- Modal content-->
@@ -199,7 +200,7 @@
                                         <div class="modal-body" style="padding:40px 50px;">
                                             <form role="form" action="accountController" method="post">
                                                 <input type="hidden" name="action" value="update"/>
-
+                                                <input type="hidden" name="createdAt" value="<%= list.getCreated_at() %>"/>
                                                 <div class="row">
                                                     <div class="form-group col-md-2">
                                                         <label for="usrname"><span class="glyphicon glyphicon-globe"></span>ID:</label>

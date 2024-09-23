@@ -98,11 +98,8 @@ public class AccountsDAO extends DBConnect {
         try {
             PreparedStatement pre = conn.prepareStatement(sql);
             pre.setString(1, account.getName());
-
-            String encode = encryptAES(account.getPassword(), SECRET_KEY);
-
             pre.setString(2, account.getEmail());
-
+            String encode = encryptAES(account.getPassword(), SECRET_KEY);
             pre.setString(3, encode);
             pre.setString(4, account.getPhoneNumber());
             pre.setString(5, account.getAddress());
@@ -221,7 +218,6 @@ public class AccountsDAO extends DBConnect {
             ps.setInt(8, accounts.getRoleId());
             ps.setTimestamp(9, accounts.getCreated_at());
             ps.setInt(10, accounts.getAirlineId());
-            // Chuyển đổi java.util.Date thành java.sql.Date nếu cần
             n = ps.executeUpdate();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -284,45 +280,6 @@ public class AccountsDAO extends DBConnect {
 
     public static void main(String[] args) {
         AccountsDAO dao = new AccountsDAO();
-
-        // Test hàm getAccountsById với một id cụ thể
-        int accountId = 5; // Thay id này bằng một giá trị có thật trong DB
-        Accounts account = dao.getAccountsById(accountId);
-
-        if (account != null) {
-            System.out.println("Thông tin tài khoản:");
-            System.out.println("ID: " + account.getId());
-            System.out.println("Name: " + account.getName());
-            System.out.println("Email: " + account.getEmail());
-            System.out.println("Phone Number: " + account.getPhoneNumber());
-            System.out.println("Address: " + account.getAddress());
-            System.out.println("Image: " + account.getImage());
-            System.out.println("Date of Birth: " + account.getDob());
-            System.out.println(account.getCreated_at());
-            System.out.println(account.getUpdated_at());
-        }
-        AccountsDAO a = new AccountsDAO();
-//        //a.updateAccount(new Accounts(1, "Ngo 123", "duongnthe186310@fpt.edu.vn", "1", "0862521226", null, "img/flyezy-logo.png", null, 2, 1));
-//        String dateString = "1/1/1";
-//        SimpleDateFormat sdf = new SimpleDateFormat("d/M/yy"); 
-//        Accounts account = new Accounts(1,"khoapv" , "khoapvhe182378@gmail.com", "123", "bac ninh", "", "dateString");
-//        System.out.println(a.infoUpdate(account));
-//        // Test hàm getAccountsById với một id cụ thể
-//        int accountId = 5; // Thay id này bằng một giá trị có thật trong DB
-//        Accounts account = dao.getAccountsById(accountId);
-//
-//        if (account != null) {
-//            System.out.println("Thông tin tài khoản:");
-//            System.out.println("ID: " + account.getId());
-//            System.out.println("Name: " + account.getName());
-//            System.out.println("Email: " + account.getEmail());
-//            System.out.println("Phone Number: " + account.getPhoneNumber());
-//            System.out.println("Address: " + account.getAddress());
-//            System.out.println("Image: " + account.getImage());
-//            System.out.println("Date of Birth: " + account.getDob());
-//            System.out.println(account.getCreated_at());
-//            System.out.println(account.getUpdated_at());
-//        }
-        System.out.println(dao.getAllAccounts());
+        dao.updateAccount(new Accounts(11, "Ngo Tung Duong", "abccccc@gmail.com", "1", "0123456789", null, null, new Date(2000, 12, 11), 1, 3, null, null));
     }
 }

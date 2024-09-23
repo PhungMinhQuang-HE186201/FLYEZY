@@ -112,20 +112,23 @@ public class AccountControllerServlet extends HttpServlet {
         String phoneNumber = request.getParameter("phoneNumber");
         String address = request.getParameter("address");
         String image = "img/" + request.getParameter("image");
-        String create_at = request.getParameter("create_at");
+        String create_at = request.getParameter("createdAt");
         //insert
         try {
             if (action.equals("update")) {
+                
                 int id = Integer.parseInt(idStr);
                 int roleId = Integer.parseInt(roleIdStr);
                 int airlineID = Integer.parseInt(airlineIDStr);
                 Date dob = Date.valueOf(dobStr);
                 Timestamp ca = Timestamp.valueOf(create_at);
-                //Integer.parseInt(request.getParameter("airlineId"));
+                
                 if (image.equals("img/")) {
                     image = ad.getAccountsById(id).getImage();
                 }
+                
                 Accounts newAcc = new Accounts(id, name, email, password, phoneNumber, address, image, dob, roleId, airlineID,ca,new Timestamp(System.currentTimeMillis()));
+                
                 ad.updateAccount(newAcc);
                 response.sendRedirect("accountController");
             } else if (action.equals("create")) {
