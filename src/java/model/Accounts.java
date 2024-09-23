@@ -81,17 +81,7 @@ public class Accounts {
         this.created_at = created_at;
     }
 
-    public Accounts(int id, String name, String email, String password, String phoneNumber, String address, String image, Date dob, int roleId, int airlineId) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.phoneNumber = phoneNumber;
-        this.image = image;
-        this.dob = dob;
-        this.roleId = roleId;
-        this.airlineId = airlineId;
-    }
+    
 
     public Accounts(String name, String email, String password, String phoneNumber, String address, String image, Date dob, int roleId, int airlineId) {
         this.name = name;
