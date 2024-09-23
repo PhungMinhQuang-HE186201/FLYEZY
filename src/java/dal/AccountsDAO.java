@@ -80,7 +80,6 @@ public class AccountsDAO extends DBConnect {
         return null;
     }
 
-
     public void updateAccount(Accounts account) {
         String sql = "UPDATE Accounts\n"
                 + "   SET name = ?\n"
@@ -232,10 +231,13 @@ public class AccountsDAO extends DBConnect {
                 + "WHERE `id` = ?";
         try {
             PreparedStatement pre = conn.prepareStatement(sqlupdate);
-            pre.setString(1, newPassword);
+            String encode = encryptAES(newPassword, SECRET_KEY);
+            
+            pre.setString(1, encode);
             pre.setString(2, idAccount);
+            
             pre.executeUpdate();
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -258,7 +260,7 @@ public class AccountsDAO extends DBConnect {
             pre.setString(4, account.getPhoneNumber());
             pre.setString(5, account.getAddress());
             pre.setString(6, account.getImage());
-            pre.setInt(7,account.getId());
+            pre.setInt(7, account.getId());
             pre.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();

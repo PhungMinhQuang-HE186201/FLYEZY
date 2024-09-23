@@ -5,6 +5,9 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="controller.EncodeController"%>
+<%@page import="static controller.EncodeController.SECRET_KEY" %>
+<%@page import="model.Accounts"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -19,13 +22,17 @@
     </head>
     <body>
         <%@include file="header.jsp" %> 
+         <%
+            EncodeController ec = new EncodeController();
+         %>
         <div style="display: flex;
              justify-content: center;
              align-items: center;
              height: 100%">
-            <form action="ChangePasswordServlet" method="post" 
+            <form action="changePassword" method="post" 
                   style="margin: 100px 0;">
-                <input type="hidden" id="currentPassword" value="${requestScope.account.getPassword()}"/>
+                <%String currentP = ((Accounts)request.getAttribute("account")).getPassword();%>
+                <input type="hidden" id="currentPassword" value="<%=ec.decryptAES(currentP,SECRET_KEY)%>"/>
                 <input type="hidden" name="idAccount" value="${requestScope.account.getId()}"/>
                 <div class="form-group">
                     <input type="password" name="pass" id="password" onkeyup="checkCurrentPass()" required />
@@ -56,53 +63,6 @@
                 </div>
             </form>
         </div>
-      
-
-        <script>
+        <script>    
             var p = document.getElementById("password");
             var pn = document.getElementById("passNew");
-            var sp = document.getElementById("currentPassword");
-            var cp = document.getElementById("confirmPassword");
-            var submit = document.getElementById("submit");
-            var wrongPass = document.getElementById("wrongPassNew");
-            var wrongCurrentPass = document.getElementById("wrongCurrentPass");
-            var text = document.getElementById("capslock-warning");
-
-            function CapsCheck(event) {
-                if (event.getModifierState("CapsLock")) {
-                    text.style.display = "block";
-                } else {
-                    text.style.display = "none";
-                }
-            }
-
-            p.addEventListener("keyup", CapsCheck);
-            pn.addEventListener("keyup", CapsCheck);
-            cp.addEventListener("keyup", CapsCheck);
-
-            function checkPass() {
-                if (pn.value !== cp.value) {
-                    submit.disabled = true;
-                    cp.style.border = "2px solid red";
-                    wrongPass.style.display = "inline";
-                } else {
-                    submit.disabled = false;
-                    cp.style.border = "2px solid green";
-                    wrongPass.style.display = "none";
-                }
-            }
-            
-            function checkCurrentPass() {
-                if (p.value !== sp.value) {
-                    submit.disabled = true;
-                    sp.style.border = "2px solid red";
-                    wrongCurrentPass.style.display = "inline";
-                } else {
-                    submit.disabled = false;
-                    sp.style.border = "2px solid green";
-                    wrongCurrentPass.style.display = "none";
-                }
-            }
-        </script>
-    </body>
-</html>
