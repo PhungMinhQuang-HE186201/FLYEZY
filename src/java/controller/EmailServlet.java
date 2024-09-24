@@ -19,8 +19,8 @@ public class EmailServlet {
 
     //Email: Zankhoa2203@gmail.com
     //password: lpsr txnz vbxj nzjc;
-    final String from = "Zankhoa2203@gmail.com";
-    final String passWord = "lpsr txnz vbxj nzjc";
+    final String from = "flyezy.work@gmail.com";
+    final String passWord = "tbtz ipwv rjek wahd";
 
     public void sendPasswordEmail(String to, String newPassword) {
         //Properties: khai bao cac thuoc tinh

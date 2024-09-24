@@ -288,7 +288,7 @@ public class AccountsDAO extends DBConnect {
     }
 
     public int findIdByEmail(String email) {
-        String sql = "select id from accounts where email = ?";
+        String sql = "select id from Accounts where email = ?";
         int userId = -1;
         try {
             PreparedStatement pre = conn.prepareStatement(sql);
@@ -304,7 +304,7 @@ public class AccountsDAO extends DBConnect {
     }
 
     public boolean checkEmailExist(String email) {
-        String sql = "select * from accounts where email = ?";
+        String sql = "select * from Accounts where email = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, email);
