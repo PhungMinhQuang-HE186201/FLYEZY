@@ -6,7 +6,6 @@ package dal;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import model.Accounts;
 import java.sql.SQLException;
 
 /**

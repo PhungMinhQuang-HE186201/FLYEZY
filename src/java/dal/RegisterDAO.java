@@ -47,12 +47,9 @@ public class RegisterDAO extends DBConnect {
                  (?,?,?,?,?,?,?)""";
         try (PreparedStatement st = conn.prepareStatement(sql)) {
             st.setString(1, a.getName());
-            
+            st.setString(2, a.getEmail());
             String encode = encryptAES(a.getPassword(), SECRET_KEY);
             st.setString(3, encode);
-            
-            
-            st.setString(2, a.getEmail());
             st.setString(4, a.getPhoneNumber());
             st.setInt(5, a.getRoleId());
             st.setInt(6, a.getAirlineId());
