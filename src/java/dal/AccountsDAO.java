@@ -324,6 +324,6 @@ public class AccountsDAO extends DBConnect {
 
     public static void main(String[] args) {
         AccountsDAO dao = new AccountsDAO();
-        dao.updateAccount(new Accounts(11, "Ngo Tung Duong", "abccccc@gmail.com", "1", "0123456789", null, null, new Date(2000, 12, 11), 1, 3, null, null));
+        dao.updateAccount(new Accounts(23,"Ngo Tung Duong222", "abccccc@gmail.com", "1", "0123456789", null, null, new Date(2000, 12, 11), 1, 1, null, null));
     }
 }

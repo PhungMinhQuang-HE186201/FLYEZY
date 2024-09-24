@@ -223,7 +223,7 @@
                                                         <select name="roleId" value="<%= list.getRoleId() %>" style="height:  34px">
                                                             <%
                                                             for(Roles role : rolesList){%>
-                                                               <option value="<%=list.getRoleId()%>" <%= (list.getRoleId() == role.getId()) ? "selected" : "" %>><%=role.getName()%></option>
+                                                               <option value="<%=role.getId()%>" <%= (list.getRoleId() == role.getId()) ? "selected" : "" %>><%=role.getName()%></option>
                                                             <%}%>
                                                         </select>
                                                     </div>
@@ -232,7 +232,7 @@
                                                         <select name="airlineID" value="<%= list.getAirlineId() %>" style="height:  34px">
                                                             <%
                                                             for(Airline airline : airlineList){%>
-                                                               <option value="<%=list.getAirlineId()%>" <%= (list.getAirlineId() == airline.getId()) ? "selected" : "" %>><%=airline.getName()%></option>
+                                                               <option value="<%=airline.getId()%>" <%= (list.getAirlineId() == airline.getId()) ? "selected" : "" %>><%=airline.getName()%></option>
                                                             <%}%>
                                                         </select>
                                                     </div>
