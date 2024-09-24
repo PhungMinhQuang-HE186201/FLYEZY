@@ -49,8 +49,8 @@ public class DashboardAirlineServlet extends HttpServlet {
             listAirline = airlineManageDao.getAirlineByName(keyword);
         }
 
-        session.setAttribute("listAirline", listAirline);
-        session.setAttribute("listBaggage", listBaggage);
+        request.setAttribute("listAirline", listAirline);
+        request.setAttribute("listBaggage", listBaggage);
 
         request.getRequestDispatcher("airlineManagement.jsp").forward(request, response);
     }

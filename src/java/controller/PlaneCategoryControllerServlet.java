@@ -87,7 +87,7 @@ public class PlaneCategoryControllerServlet extends HttpServlet {
             response.sendRedirect("planeCategoryController");
         } else if (action.equals("search")) {
             String fName = request.getParameter("fName");
-            List<PlaneCategory> accountList = pcd.searchPlaneCategory(fName);
+            List<PlaneCategory> accountList = pcd.searchPlaneCategory(fName,acc.getAirlineId());
             request.setAttribute("planeCategoryList", accountList);
             request.getRequestDispatcher("planeCategoryController.jsp").forward(request, response);
         }

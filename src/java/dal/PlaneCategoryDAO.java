@@ -35,7 +35,6 @@ public class PlaneCategoryDAO extends DBConnect {
         return null;
     }
 
-
     // DuongNT: to get a plane categories of corresponding airline with its id- OK
     public PlaneCategory getPlaneCategoryById(int planeCategoryId) {
         String sql = "SELECT * FROM Plane_Category WHERE id =?";
@@ -109,12 +108,13 @@ public class PlaneCategoryDAO extends DBConnect {
     }
 
     // DuongNT: search plane category by name
-    public List<PlaneCategory> searchPlaneCategory(String name) {
+    public List<PlaneCategory> searchPlaneCategory(String name, int airlineId) {
         List<PlaneCategory> ls = new ArrayList<>();
-        String sql = "SELECT * FROM Plane_Category WHERE name LIKE ?";
+        String sql = "SELECT * FROM Plane_Category WHERE Airlineid = ? AND name LIKE ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, "%" + name + "%");
+            ps.setInt(1, airlineId);
+            ps.setString(2, "%" + name + "%");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 PlaneCategory pc = new PlaneCategory(rs.getInt("id"), rs.getString("name"), rs.getString("image"), rs.getString("info"), rs.getInt("Airlineid"));
@@ -128,8 +128,8 @@ public class PlaneCategoryDAO extends DBConnect {
 
     public static void main(String[] args) {
         PlaneCategoryDAO pd = new PlaneCategoryDAO();
-        //System.out.println(pd.searchPlaneCategory("Air"));
-        
+        System.out.println(pd.searchPlaneCategory("A320",3));
+
     }
 
 }
