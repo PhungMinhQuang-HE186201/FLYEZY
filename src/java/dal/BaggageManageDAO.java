@@ -40,16 +40,17 @@ public class BaggageManageDAO extends DBConnect {
     public List<Baggages> getAllBaggagesByAirline(int airlineId) {
         List<Baggages> list = new ArrayList<>();
         String sql = "select * from Baggages\n"
-                + "where airlineid= " + airlineId;
+                + "where airlineid= ?";
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
+            prepare.setInt(1, airlineId);
             ResultSet resultSet = prepare.executeQuery();
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 float weight = resultSet.getFloat("weight");
                 int price = resultSet.getInt("price");
-                airlineId = resultSet.getInt("airlineId");
-                list.add(new Baggages(id, weight, price, airlineId));
+                int airlineIdFound = resultSet.getInt("airlineId");
+                list.add(new Baggages(id, weight, price, airlineIdFound));
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -84,10 +85,11 @@ public class BaggageManageDAO extends DBConnect {
 
     public void deleteBaggage(int id) {
         String sql = "DELETE FROM `flyezy`.`Baggages`\n"
-                + "WHERE id = " + id;
+                + "WHERE id = ?";
         try {
 
             PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setInt(1, id);
             pre.executeUpdate();
 
         } catch (SQLException ex) {
@@ -97,10 +99,11 @@ public class BaggageManageDAO extends DBConnect {
 
     public void deleteAllBaggageByAirline(int airlineId) {
         String sql = "DELETE FROM `flyezy`.`Baggages`\n"
-                + "WHERE airlineid = " + airlineId;
+                + "WHERE airlineid = ?";
         try {
 
             PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setInt(1, airlineId);
             pre.executeUpdate();
 
         } catch (SQLException ex) {
@@ -131,14 +134,17 @@ public class BaggageManageDAO extends DBConnect {
     public static void main(String[] args) {
         BaggageManageDAO dao = new BaggageManageDAO();
 
-//        dao.deleteAllBaggageByAirline(1);
-        float weight = 3;
-        int price = 4;
-        int airlineId = 5;
-        dao.createBaggages(new Baggages(weight, airlineId, airlineId));
-//        System.out.println("n= " + n);
-        for (Baggages baggage : dao.getAllBaggages()) {
-            System.out.println(baggage);
+////        dao.deleteAllBaggageByAirline(1);
+//        float weight = 3;
+//        int price = 4;
+//        int airlineId = 5;
+//        dao.createBaggages(new Baggages(weight, airlineId, airlineId));
+////        System.out.println("n= " + n);
+//        for (Baggages baggage : dao.getAllBaggages()) {
+//            System.out.println(baggage);
+//        }
+        for (Baggages baggages : dao.getAllBaggagesByAirline(2)) {
+            System.out.println(baggages);
         }
     }
 }

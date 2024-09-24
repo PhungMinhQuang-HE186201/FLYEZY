@@ -74,9 +74,13 @@
                         <form action="infoUpdateServlet" method="post" >
                             <div class="form-group">
                                 <label for="image" class="control-label">Ảnh đại diện</label>
-                                <input type="file" name="image" class="form-control" style="padding:5px;">
+                                <input type="file" name="image" value="${requestScope.account.image}" class="form-control" style="padding:5px;" onchange="displayImage2(this,${requestScope.account.id})">
                             </div>
-                            <input type="hidden" name="id" value="${requestScope.account.id}" />
+                            <div class="form-group">
+                                <img id="hideImage${requestScope.account.id}" src="${requestScope.account.image}" alt="alt" width="100%" height="100%"/>
+                                <img id="preImage2${requestScope.account.id}" src="#" alt="Preview" width="100%" height="100%">
+                            </div>
+                            <input type="hidden" name="id" value="${requestScope.account.id}"/>
                             <!-- Full Name -->
                             <div class="form-group">
                                 <label for="name" class="control-label">Họ và tên:</label>
@@ -109,7 +113,25 @@
 
             </div>
         </div>
+        <script>
+            function displayImage2(input, id) {
+                var i = id;
+                var hideImage = document.getElementById(`hideImage` + i);
+                var previewImage2 = document.getElementById(`preImage2` + i);
+                var file = input.files[0];
+                var reader = new FileReader();
 
+                console.log(hideImage, previewImage2);
+
+                reader.onload = function (e) {
+                    hideImage.style.display = "none";
+                    previewImage2.src = e.target.result;
+                    previewImage2.style.display = "block";
+                };
+
+                reader.readAsDataURL(file);
+            }
+        </script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     </body>

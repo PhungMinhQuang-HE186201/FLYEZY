@@ -159,10 +159,11 @@ public class AirlineManageDAO extends DBConnect {
 
     public void deleteAirline(int id) {
         String sql = "DELETE FROM `flyezy`.`Airline`\n"
-                + "WHERE id = " + id;
+                + "WHERE id = ?";
         try {
 
             PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setInt(1, id);
             pre.executeUpdate();
 
         } catch (SQLException ex) {

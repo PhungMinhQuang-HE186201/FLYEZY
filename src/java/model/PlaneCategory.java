@@ -18,6 +18,10 @@ public class PlaneCategory {
     public PlaneCategory() {
     }
 
+    public PlaneCategory(int id) {
+        this.id = id;
+    }
+
     public PlaneCategory(String name, String image, String info, int Airlineid) {
         this.name = name;
         this.image = image;

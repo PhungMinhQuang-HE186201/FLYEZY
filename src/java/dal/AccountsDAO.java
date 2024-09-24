@@ -118,11 +118,12 @@ public class AccountsDAO extends DBConnect {
     }
 
     public void removeAccount(int id) {
-        String sql = "delete from Accounts where id = " + id;
+        String sql = "delete from Accounts where id = ?";
 
         try {
             PreparedStatement st = conn.prepareStatement(sql);
-            st.executeUpdate(sql);
+            st.setInt(1, id);
+            st.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -174,23 +175,31 @@ public class AccountsDAO extends DBConnect {
     }
 
     public boolean checkAccount(Accounts accounts) {
-        String sql = "Select * from Accounts where email='" + accounts.getEmail() + "'";
+        String emailQuery = "SELECT * FROM Accounts WHERE email = ?";
+        String phoneQuery = "SELECT * FROM Accounts WHERE phoneNumber = ?";
+
         try {
-            PreparedStatement st = conn.prepareStatement(sql);
-            ResultSet rs = st.executeQuery();
-            if (rs.next()) {
-                return false;
+            // Kiểm tra email
+            PreparedStatement emailStatement = conn.prepareStatement(emailQuery);
+            emailStatement.setString(1, accounts.getEmail());  // Thay thế dấu ? bằng giá trị email
+            ResultSet emailResultSet = emailStatement.executeQuery();
+            if (emailResultSet.next()) {
+                return false;  // Email đã tồn tại
             }
-            sql = "Select * from Accounts where phoneNumber='" + accounts.getPhoneNumber() + "'";
-            st = conn.prepareStatement(sql);
-            rs = st.executeQuery();
-            if (rs.next()) {
-                return false;
+
+            // Kiểm tra số điện thoại
+            PreparedStatement phoneStatement = conn.prepareStatement(phoneQuery);
+            phoneStatement.setString(1, accounts.getPhoneNumber());  // Thay thế dấu ? bằng giá trị phoneNumber
+            ResultSet phoneResultSet = phoneStatement.executeQuery();
+            if (phoneResultSet.next()) {
+                return false;  // Số điện thoại đã tồn tại
             }
+
         } catch (SQLException e) {
-            System.out.println(e);
+            e.printStackTrace();  // Có thể thay bằng logging để ghi log lỗi
         }
-        return true;
+
+        return true;  // Email và số điện thoại đều chưa tồn tại
     }
 
     public int createAccount(Accounts accounts) {
@@ -268,19 +277,17 @@ public class AccountsDAO extends DBConnect {
     }
 
     public void deleteAllAccountByAirline(int airlineId) {
-        String sql = "DELETE FROM `flyezy`.`Accounts`\n"
-                + "WHERE airlineid = " + airlineId;
+        String sql = "DELETE FROM `flyezy`.`Accounts` WHERE airlineid = ?";
         try {
-
             PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setInt(1, airlineId);  // Thay thế ? bằng airlineId
             pre.executeUpdate();
-
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
-       
-    public int findIdByEmail(String email){
+
+    public int findIdByEmail(String email) {
         String sql = "select id from accounts where email = ?";
         int userId = -1;
         try {
@@ -291,11 +298,11 @@ public class AccountsDAO extends DBConnect {
                 userId = rs.getInt("id");
             }
         } catch (SQLException ex) {
-           ex.printStackTrace();
+            ex.printStackTrace();
         }
         return userId;
     }
-    
+
     public boolean checkEmailExist(String email) {
         String sql = "select * from accounts where email = ?";
         try {

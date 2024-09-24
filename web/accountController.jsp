@@ -24,6 +24,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
         <style>
             .modal-body{
                 text-align: left
@@ -88,7 +89,11 @@
 
                                         <div class="form-group col-md-6">
                                             <label for="image"><span class="glyphicon glyphicon-picture"></span>Avatar:</label>
-                                            <input type="file" class="form-control" name="image">
+                                            <input type="file" class="form-control" name="image" onchange="displayImage(this)">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <img  id="previewImage" src="#" alt="Preview"
+                                                  style="display: none; max-width: 130px; float: left">
                                         </div>
                                     </div>
                                     <div class="row">
@@ -211,10 +216,11 @@
                                                     </div>
                                                     <div class="form-group col-md-6">
                                                         <label for="image<%= list.getId() %>"><span class="glyphicon glyphicon-picture"></span>Avatar:</label>
-                                                        <input type="file" class="form-control" name="image">
+                                                        <input type="file" class="form-control" name="image" onchange="displayImage2(this,<%= list.getId() %>)" >
                                                     </div>                      
                                                     <div class="form-group col-md-4">
-                                                        <img src="<%= list.getImage() %>" alt="Avatar" class="img-thumbnail" style="width: 100px; height: 100px; float: right;">
+                                                        <img id="hideImage<%= list.getId() %>" src="<%= list.getImage() %>"  alt="Avatar" class="img-thumbnail" style="width: 100px; height: 100px; float: right;">
+                                                        <img id="preImage2<%= list.getId() %>" src="#" alt="Preview" style="display: none; width: 100px; height: 100px; float: right;">
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -223,7 +229,7 @@
                                                         <select name="roleId" value="<%= list.getRoleId() %>" style="height:  34px">
                                                             <%
                                                             for(Roles role : rolesList){%>
-                                                               <option value="<%=list.getRoleId()%>" <%= (list.getRoleId() == role.getId()) ? "selected" : "" %>><%=role.getName()%></option>
+                                                            <option value="<%=role.getId()%>" <%= (list.getRoleId() == role.getId()) ? "selected" : "" %>><%=role.getName()%></option>
                                                             <%}%>
                                                         </select>
                                                     </div>
@@ -232,7 +238,7 @@
                                                         <select name="airlineID" value="<%= list.getAirlineId() %>" style="height:  34px">
                                                             <%
                                                             for(Airline airline : airlineList){%>
-                                                               <option value="<%=list.getAirlineId()%>" <%= (list.getAirlineId() == airline.getId()) ? "selected" : "" %>><%=airline.getName()%></option>
+                                                            <option value="<%=airline.getId()%>" <%= (list.getAirlineId() == airline.getId()) ? "selected" : "" %>><%=airline.getName()%></option>
                                                             <%}%>
                                                         </select>
                                                     </div>
@@ -284,20 +290,79 @@
 
         </div>
 
+        <!-- delete Modal -->
+        <div id="deleteModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">Xác nhận xoá tài khoản</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="modalMessage">Bạn có chắc chắn muốn xóa tài khoản <strong></strong>?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Xóa</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <script>
             function openModal(id) {
                 $("#myModal" + id).modal('show');
             }
             function doDelete(id, name) {
-                if (confirm("Bạn có muốn xoá tài khoản với tên là " + name)) {
+                // Hiển thị thông tin tài khoản cần xoá trong modal
+                document.getElementById('modalMessage').innerHTML = "Bạn có chắc chắn muốn xóa tài khoản <strong>" + name + "</strong>?";
+
+                // Lưu ID của tài khoản để sử dụng sau khi xác nhận xóa
+                const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+                confirmDeleteBtn.onclick = function () {
+                    // Chuyển hướng tới trang xử lý xoá tài khoản
                     window.location = "accountController?action=remove&idAcc=" + id;
-                }
+                };
+
+                // Hiển thị modal
+                $('#deleteModal').modal('show');
             }
             $(document).ready(function () {
                 $("#myBtn").click(function () {
                     $("#myModal").modal();
                 });
             });
+            function displayImage(input) {
+                var previewImage = document.getElementById("previewImage");
+                var file = input.files[0];
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = "block";
+                };
+
+                reader.readAsDataURL(file);
+            }
+            function displayImage2(input, id) {
+                var i = id;
+                var hideImage = document.getElementById(`hideImage` + i);
+                var previewImage2 = document.getElementById(`preImage2` + i);
+                var file = input.files[0];
+                var reader = new FileReader();
+
+                console.log(hideImage, previewImage2);
+
+                reader.onload = function (e) {
+                    hideImage.style.display = "none";
+                    previewImage2.src = e.target.result;
+                    previewImage2.style.display = "block";
+                };
+
+                reader.readAsDataURL(file);
+            }
         </script>
+        
     </body>
 </html>

@@ -60,12 +60,13 @@
                                     <input type="hidden" value="${account.getAirlineId()}" name="airlineId"/>
                                     <div class="form-group col-md-6">
                                         <label><span class="glyphicon glyphicon-picture"></span>Image:</label>
-                                        <input type="file" class="form-control" name="image">
+                                        <input type="file" class="form-control" name="image" onchange="displayImage(this)">
                                     </div>
-                                    <!--                                    <div class="col-md-2"></div>
-                                                                        <div class="form-group col-md-4">
-                                                                            <img src="" alt="Avatar" class="img-thumbnail" style="width: 100px; height: 100px; float: right;">
-                                                                        </div>-->
+                                    <div class="col-md-6">
+                                        <img  id="previewImage" src="#" alt="Preview"
+                                              style="display: none;  width: 100%; height: 100%; float: right;">
+
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <label><span class="glyphicon glyphicon-user"></span>Name:</label>
@@ -138,7 +139,12 @@
                                                     </div>
                                                     <div class="form-group col-md-6">
                                                         <label><span class="glyphicon glyphicon-picture"></span>Image:</label>
-                                                        <input type="file" class="form-control" name="image">
+                                                        <input type="file" class="form-control" name="image" onchange="displayImage1(this)">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <img  id="previewImage1" src="#" alt="Preview"
+                                                              style="display: none; height: 100%; float: right;">
+                                                        
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -208,10 +214,11 @@
                                                         </div>
                                                         <div class="form-group col-md-6">
                                                             <label><span class="glyphicon glyphicon-picture"></span>Image:</label>
-                                                            <input type="file" class="form-control" name="image">
+                                                            <input type="file" class="form-control" name="image" onchange="displayImage3(this,<%= sc.getId() %>)">
                                                         </div>
                                                         <div class="form-group col-md-4">
-                                                            <img src="<%= sc.getImage() %>" alt="Image" class="img-thumbnail" style="width: 100px; height: 100px; float: right;">
+                                                            <img id="hideImage1<%= sc.getId() %>" src="<%= sc.getImage() %>" alt="Image" class="img-thumbnail" style="width: 100px; height: 100px; float: right;">
+                                                            <img id="preImage3<%= sc.getId() %>" src="#" alt="Preview" style="display: none; width: 100px; height: 100px; float: right;">
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -262,11 +269,12 @@
                             </div>
                             <div class="form-group col-md-6">
                                 <label><span class="glyphicon glyphicon-picture"></span>Image:</label>
-                                <input type="file" class="form-control" name="image">
+                                <input type="file" class="form-control" name="image" onchange="displayImage2(this,<%= pc.getId() %>)">
                             </div>
                         </div>
                         <div class="form-group">
-                            <img src="<%= pc.getImage() %>" alt="Avatar" class="img-thumbnail" style="height: 100%; float: right;">
+                            <img id="hideImage<%= pc.getId() %>" src="<%= pc.getImage() %>" alt="Avatar" class="img-thumbnail" style="height: 100%; float: right;">
+                            <img id="preImage2<%= pc.getId() %>" src="#" alt="Preview" style="display: none; width: 100%">
                         </div>
                         <div class="form-group">
                             <label><span class="glyphicon glyphicon-picture"></span>Name:</label>
@@ -293,6 +301,43 @@
 </tbody>
 </table>
 </div>
+<!-- Modal cho loại máy bay -->
+<div class="modal fade" id="deletePlaneCategoryModal" tabindex="-1" aria-labelledby="deletePlaneCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deletePlaneCategoryModalLabel">Xác nhận xóa loại máy bay</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có muốn xóa loại máy bay với tên là <span id="planeCategoryName"></span>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger" id="confirmDeletePlane">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal cho loại ghế -->
+<div class="modal fade" id="deleteSeatCategoryModal" tabindex="-1" aria-labelledby="deleteSeatCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteSeatCategoryModalLabel">Xác nhận xóa loại ghế</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có muốn xóa loại ghế với tên là <span id="seatCategoryName"></span>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteSeat">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
     function openModal(id) {
@@ -318,21 +363,104 @@
 
         }
     }
+    let deletePlaneCategoryUrl = ""; // Biến để lưu URL xóa loại máy bay
+    let deleteSeatCategoryUrl = ""; // Biến để lưu URL xóa loại ghế
+
     function doDelete(id, name) {
-        if (confirm("Bạn có muốn xoá loại máy bay với tên là " + name)) {
-            window.location = "planeCategoryController?action=remove&id=" + id;
-        }
+        // Cập nhật tên loại máy bay trong modal
+        document.getElementById('planeCategoryName').textContent = name;
+
+        // Lưu URL xóa cho loại máy bay
+        deletePlaneCategoryUrl = "planeCategoryController?action=remove&id=" + id;
+
+        // Hiển thị modal cho loại máy bay
+        $('#deletePlaneCategoryModal').modal('show');
     }
+
+// Hàm xóa loại ghế
     function doDeleteSeatCategory(id, name) {
-        if (confirm("Bạn có muốn xoá loại ghế với tên là " + name)) {
-            window.location = "seatCategoryController?action=remove&id=" + id;
-        }
+        // Cập nhật tên loại ghế trong modal
+        document.getElementById('seatCategoryName').textContent = name;
+
+        // Lưu URL xóa cho loại ghế
+        deleteSeatCategoryUrl = "seatCategoryController?action=remove&id=" + id;
+
+        // Hiển thị modal cho loại ghế
+        $('#deleteSeatCategoryModal').modal('show');
     }
+
+// Lắng nghe sự kiện click trên nút xác nhận xóa cho loại máy bay
+    document.getElementById('confirmDeletePlane').onclick = function () {
+        window.location = deletePlaneCategoryUrl; // Chuyển hướng đến URL đã lưu cho loại máy bay
+    };
+
+// Lắng nghe sự kiện click trên nút xác nhận xóa cho loại ghế
+    document.getElementById('confirmDeleteSeat').onclick = function () {
+        window.location = deleteSeatCategoryUrl; // Chuyển hướng đến URL đã lưu cho loại ghế
+    };
     window.onload = function () {
         if (window.location.protocol === 'file:') {
             alert('This sample requires an HTTP server. Please serve this file with a web server.');
         }
     };
+    function displayImage(input) {
+        var previewImage = document.getElementById("previewImage");
+        var file = input.files[0];
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            previewImage.src = e.target.result;
+            previewImage.style.display = "block";
+        };
+
+        reader.readAsDataURL(file);
+    }
+    function displayImage1(input) {
+        var previewImage = document.getElementById("previewImage1");
+        var file = input.files[0];
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            previewImage.src = e.target.result;
+            previewImage.style.display = "block";
+        };
+
+        reader.readAsDataURL(file);
+    }
+    function displayImage2(input, id) {
+        var i = id;
+        var hideImage = document.getElementById(`hideImage` + i);
+        var previewImage2 = document.getElementById(`preImage2` + i);
+        var file = input.files[0];
+        var reader = new FileReader();
+
+        console.log(hideImage, previewImage2);
+
+        reader.onload = function (e) {
+            hideImage.style.display = "none";
+            previewImage2.src = e.target.result;
+            previewImage2.style.display = "block";
+        };
+
+        reader.readAsDataURL(file);
+    }
+    function displayImage3(input, id) {
+        var i = id;
+        var hideImage = document.getElementById(`hideImage1` + i);
+        var previewImage2 = document.getElementById(`preImage3` + i);
+        var file = input.files[0];
+        var reader = new FileReader();
+
+        console.log(hideImage, previewImage2);
+
+        reader.onload = function (e) {
+            hideImage.style.display = "none";
+            previewImage2.src = e.target.result;
+            previewImage2.style.display = "block";
+        };
+
+        reader.readAsDataURL(file);
+    }
 </script>
 
 <script type="importmap">

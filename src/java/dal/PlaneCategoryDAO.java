@@ -35,6 +35,7 @@ public class PlaneCategoryDAO extends DBConnect {
         return null;
     }
 
+
     // DuongNT: to get a plane categories of corresponding airline with its id- OK
     public PlaneCategory getPlaneCategoryById(int planeCategoryId) {
         String sql = "SELECT * FROM Plane_Category WHERE id =?";
@@ -80,6 +81,17 @@ public class PlaneCategoryDAO extends DBConnect {
         return false;
     }
 
+    public void deleteAllPlaneCategoryByAirline(int airlineId) {
+        String sql = "DELETE FROM Plane_Category WHERE airlineid = ?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setInt(1, airlineId);  // Thay thế ? bằng airlineId
+            pre.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     // DuongNT: update a plane category by id - OK
     public boolean updatePlaneCategoryById(PlaneCategory pc) {
         String sql = "UPDATE Plane_Category SET name = ?, image = ?, info = ? WHERE id = ?";
@@ -116,7 +128,8 @@ public class PlaneCategoryDAO extends DBConnect {
 
     public static void main(String[] args) {
         PlaneCategoryDAO pd = new PlaneCategoryDAO();
-        System.out.println(pd.searchPlaneCategory("Air"));
+        //System.out.println(pd.searchPlaneCategory("Air"));
+        
     }
 
 }

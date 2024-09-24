@@ -35,7 +35,7 @@ public class SeatCategoryDAO extends DBConnect {
         }
         return null;
     }
-    
+
     public SeatCategory getSeatCategoryById(int id) {
         List<SeatCategory> ls = new ArrayList<>();
         String sql = "SELECT * FROM Seat_Category WHERE id = ?";
@@ -45,8 +45,8 @@ public class SeatCategoryDAO extends DBConnect {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 SeatCategory sc = new SeatCategory(rs.getInt("id"), rs.getString("name"), rs.getInt("numberOfSeat"),
-                        rs.getString("image"),rs.getString("info"), rs.getInt("Plane_Categoryid"));
-               return sc;
+                        rs.getString("image"), rs.getString("info"), rs.getInt("Plane_Categoryid"));
+                return sc;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -88,31 +88,47 @@ public class SeatCategoryDAO extends DBConnect {
         }
         return false;
     }
-    
+
     public boolean deleteSeatCategory(int id) {
         String sql = "DELETE FROM Seat_Category WHERE id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
             int rowsAffected = ps.executeUpdate();
-            return rowsAffected > 0; 
+            return rowsAffected > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
-    
+
     public boolean deleteAllSeatCategoryByPlaneCategoryId(int id) {
         String sql = "DELETE FROM Seat_Category WHERE Plane_Categoryid = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
             int rowsAffected = ps.executeUpdate();
-            return rowsAffected > 0; 
+            return rowsAffected > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public void deleteAllSeatCategoryByAirline(int airlineId) {
+        String sql = """
+                     DELETE sc
+                     FROM Seat_Category sc
+                     JOIN Plane_Category pc ON sc.Plane_Categoryid = pc.id
+                     WHERE pc.Airlineid = ?""";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, airlineId);
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
