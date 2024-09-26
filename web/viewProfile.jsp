@@ -90,7 +90,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="birth" class="control-label">Ngày sinh:</label>
-                                <input type="date" name="birth" value="${requestScope.account.dob}" class="form-control" />
+                                <input type="date" name="birth" value="${requestScope.account.dob}" class="form-control" required />
                             </div>
                             <div class="form-group">
                                 <label for="email" class="control-label">Email:</label>

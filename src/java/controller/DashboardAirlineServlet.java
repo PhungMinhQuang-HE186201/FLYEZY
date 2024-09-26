@@ -45,7 +45,7 @@ public class DashboardAirlineServlet extends HttpServlet {
         if (submit == null) {
             listAirline = airlineManageDao.getAllAirline();
         } else {
-            String keyword = request.getParameter("keyword");
+            String keyword = request.getParameter("keyword").trim();
             listAirline = airlineManageDao.getAirlineByName(keyword);
         }
 

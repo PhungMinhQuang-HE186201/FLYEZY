@@ -255,17 +255,17 @@
                                                     </div>
                                                     <div class="form-group col-md-6">
                                                         <label><span class="glyphicon glyphicon-earphone"></span>Phone number:</label>
-                                                        <input type="text" class="form-control" name="phoneNumber" value="<%= list.getPhoneNumber() %>">
+                                                        <input type="text" class="form-control" name="phoneNumber" value="<%= list.getPhoneNumber() %>" readonly>
                                                     </div>
                                                 </div>
 
                                                 <div class="form-group">
                                                     <label><span class="glyphicon glyphicon-envelope"></span>Email:</label>
-                                                    <input type="email" class="form-control" name="email" value="<%= list.getEmail() %>">
+                                                    <input type="email" class="form-control" name="email" value="<%= list.getEmail() %>" readonly>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label><span class="glyphicon glyphicon-eye-open"></span>Password:</label>
-                                                    <input type="password" class="form-control" name="password" value="<%= rd.decryptAES(list.getPassword(),SECRET_KEY) %>">
+<!--                                                    <label><span class="glyphicon glyphicon-eye-open"></span>Password:</label>-->
+                                                    <input type="hidden" class="form-control" name="password" value="<%= rd.decryptAES(list.getPassword(),SECRET_KEY) %>">
                                                 </div>
 
                                                 <div class="form-group">

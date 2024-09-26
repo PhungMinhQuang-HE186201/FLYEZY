@@ -42,7 +42,7 @@
                     <label for="">Email</label>
                 </div>
                 <div class="form-group">
-                    <input type="text" name="phoneNumber" required />
+                    <input type="number" name="phoneNumber" required />
                     <label for="">Số điện thoại</label>
                 </div>
                 <div class="form-group">
