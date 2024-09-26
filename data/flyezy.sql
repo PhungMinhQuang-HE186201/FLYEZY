@@ -31,6 +31,18 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
+-- Table `flyezy`.`Status`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `flyezy`.`Status` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
 -- Table `flyezy`.`Airline`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `flyezy`.`Airline` (
@@ -38,7 +50,14 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Airline` (
   `name` VARCHAR(255) NULL DEFAULT NULL,
   `image` VARCHAR(255) NULL DEFAULT NULL,
   `info` TEXT NULL DEFAULT NULL,
-  PRIMARY KEY (`id`))
+  `Status_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_Airline_Status1_idx` (`Status_id` ASC) VISIBLE,
+  CONSTRAINT `fk_Airline_Status1`
+    FOREIGN KEY (`Status_id`)
+    REFERENCES `flyezy`.`Status` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 AUTO_INCREMENT = 7
 DEFAULT CHARACTER SET = utf8mb4
@@ -61,15 +80,22 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Accounts` (
   `Airlineid` INT NULL DEFAULT NULL,
   `created_at` TIMESTAMP NULL DEFAULT NULL,
   `updated_at` TIMESTAMP NULL DEFAULT NULL,
+  `Status_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `FKAccounts201294` (`Rolesid` ASC) VISIBLE,
   INDEX `FKAccounts898886` (`Airlineid` ASC) VISIBLE,
+  INDEX `fk_Accounts_Status1_idx` (`Status_id` ASC) VISIBLE,
   CONSTRAINT `FKAccounts201294`
     FOREIGN KEY (`Rolesid`)
     REFERENCES `flyezy`.`Roles` (`id`),
   CONSTRAINT `FKAccounts898886`
     FOREIGN KEY (`Airlineid`)
-    REFERENCES `flyezy`.`Airline` (`id`))
+    REFERENCES `flyezy`.`Airline` (`id`),
+  CONSTRAINT `fk_Accounts_Status1`
+    FOREIGN KEY (`Status_id`)
+    REFERENCES `flyezy`.`Status` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 AUTO_INCREMENT = 26
 DEFAULT CHARACTER SET = utf8mb4
@@ -154,18 +180,6 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `flyezy`.`Status`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `flyezy`.`Status` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
-
--- -----------------------------------------------------
 -- Table `flyezy`.`Feedbacks`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `flyezy`.`Feedbacks` (
@@ -204,20 +218,22 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Flight` (
   `minutes` INT NULL DEFAULT NULL,
   `departureAirportid` INT NOT NULL,
   `destinationAirportid` INT NOT NULL,
-  `Discountid` INT NOT NULL,
+  `Status_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `FKFlight90325` (`departureAirportid` ASC) VISIBLE,
   INDEX `FKFlight563127` (`destinationAirportid` ASC) VISIBLE,
-  INDEX `FKFlight225776` (`Discountid` ASC) VISIBLE,
-  CONSTRAINT `FKFlight225776`
-    FOREIGN KEY (`Discountid`)
-    REFERENCES `flyezy`.`Discount` (`id`),
+  INDEX `fk_Flight_Status1_idx` (`Status_id` ASC) VISIBLE,
   CONSTRAINT `FKFlight563127`
     FOREIGN KEY (`destinationAirportid`)
     REFERENCES `flyezy`.`Airport` (`id`),
   CONSTRAINT `FKFlight90325`
     FOREIGN KEY (`departureAirportid`)
-    REFERENCES `flyezy`.`Airport` (`id`))
+    REFERENCES `flyezy`.`Airport` (`id`),
+  CONSTRAINT `fk_Flight_Status1`
+    FOREIGN KEY (`Status_id`)
+    REFERENCES `flyezy`.`Status` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -232,11 +248,18 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Plane_Category` (
   `image` VARCHAR(255) NULL DEFAULT NULL,
   `Airlineid` INT NOT NULL,
   `info` TEXT NULL DEFAULT NULL,
+  `Status_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `FKPlane_Cate276706` (`Airlineid` ASC) VISIBLE,
+  INDEX `fk_Plane_Category_Status1_idx` (`Status_id` ASC) VISIBLE,
   CONSTRAINT `FKPlane_Cate276706`
     FOREIGN KEY (`Airlineid`)
-    REFERENCES `flyezy`.`Airline` (`id`))
+    REFERENCES `flyezy`.`Airline` (`id`),
+  CONSTRAINT `fk_Plane_Category_Status1`
+    FOREIGN KEY (`Status_id`)
+    REFERENCES `flyezy`.`Status` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 AUTO_INCREMENT = 13
 DEFAULT CHARACTER SET = utf8mb4
@@ -253,15 +276,22 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Flight_Detail` (
   `price` INT NULL DEFAULT NULL,
   `Flightid` INT NOT NULL,
   `Plane_Categoryid` INT NOT NULL,
+  `Status_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `FKFlight_Det484575` (`Flightid` ASC) VISIBLE,
   INDEX `FKFlight_Det564449` (`Plane_Categoryid` ASC) VISIBLE,
+  INDEX `fk_Flight_Detail_Status1_idx` (`Status_id` ASC) VISIBLE,
   CONSTRAINT `FKFlight_Det484575`
     FOREIGN KEY (`Flightid`)
     REFERENCES `flyezy`.`Flight` (`id`),
   CONSTRAINT `FKFlight_Det564449`
     FOREIGN KEY (`Plane_Categoryid`)
-    REFERENCES `flyezy`.`Plane_Category` (`id`))
+    REFERENCES `flyezy`.`Plane_Category` (`id`),
+  CONSTRAINT `fk_Flight_Detail_Status1`
+    FOREIGN KEY (`Status_id`)
+    REFERENCES `flyezy`.`Status` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -349,11 +379,18 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Seat_Category` (
   `Plane_Categoryid` INT NOT NULL,
   `info` TEXT NULL DEFAULT NULL,
   `surcharge` FLOAT NULL DEFAULT NULL,
+  `Status_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `FKSeat_Categ529738` (`Plane_Categoryid` ASC) VISIBLE,
+  INDEX `fk_Seat_Category_Status1_idx` (`Status_id` ASC) VISIBLE,
   CONSTRAINT `FKSeat_Categ529738`
     FOREIGN KEY (`Plane_Categoryid`)
-    REFERENCES `flyezy`.`Plane_Category` (`id`))
+    REFERENCES `flyezy`.`Plane_Category` (`id`),
+  CONSTRAINT `fk_Seat_Category_Status1`
+    FOREIGN KEY (`Status_id`)
+    REFERENCES `flyezy`.`Status` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 AUTO_INCREMENT = 20
 DEFAULT CHARACTER SET = utf8mb4
@@ -445,15 +482,33 @@ SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
-
 -- ------------------------------------------------
 -- INSERT DATA
 ---------------------------------------------------
-INSERT INTO `Roles` VALUES (1,'Admin'),(2,'Airline Staff'),(3,'Member'),(4,'Service Staff');
-INSERT INTO `Airline` VALUES (1,'Empty','img/empty.jpg',NULL),(2,'Vietnam Airline','img/vietnam-airline.png',NULL),(3,'Bamboo Airway','img/bamboo-airway.png',NULL),(4,'Vietjet Air','img/vietjet.jpg',NULL);
-INSERT INTO `Accounts` VALUES (1,'Ngô Tùng Dương','duongnthe186310@fpt.edu.vn','KIymfC4XfLDNFnygtZuXNQ==','0862521226','','img/avatar.jpg','2004-11-16',1,3,'2024-09-23 14:07:56','2024-09-23 14:20:15'),(2,'Hồ Trần Quân','abc@gmail.com','KIymfC4XfLDNFnygtZuXNQ==','0123','','img/jack.png','2024-09-18',2,2,'2024-09-23 14:19:19',NULL);
-INSERT INTO `Plane_Category` VALUES (1,'Airbus A321CEO','img/Airbus A321CEO.png',3,NULL),(2,'Airbus A320NEO','img/Airbus A320NEO.png',3,NULL),(3,'Airbus A320CEO','img/Airbus A320CEO.png',3,NULL),(4,'Airbus A321','img/vnairline-AIRBUS A321.png',2,'<p>Nhà sản xuất: Airbus</p><p>Khoảng cách tối đa (km): 5.600 km</p><p>Vận tốc (km/h): 950 km/h</p><p>Số ghế (*): 184</p><p>Tổng chiều dài: 44,51 m</p><p>Sải cánh: 34,1 m</p><p>Chiều cao: 11,76 m</p>'),(5,'BOEING 787','img/vnairline-BOEING 787.png',2,'<p>Nhà sản xuất: Boeing</p><p>Khoảng cách tối đa (km): 15.750 km</p><p>Vận tốc (km/h): 954 km/h</p><p>Tổng chiều dài: 63.73 m</p><p>Sải cánh: 60.93 m</p><p>Chiều cao: 18.76 m</p>'),(6,'AIRBUS A350','img/vnairline-AIRBUS A350.png',2,'<p>Nhà sản xuất: Airbus</p><p>Khoảng cách tối đa (km): 14.350 km</p><p>Vận tốc (km/h): 901 km/h</p><p>Tổng chiều dài: 66.89 m</p><p>Sải cánh: 64.75 m</p><p>Chiều cao: 17.05 m</p>'),(7,'AIRBUS A320 NEO','img/vnairline-AIRBUS A320 NEO.png',2,'<p>Nhà sản xuất: Airbus</p><p>Khoảng cách tối đa (km): 6.300 km</p><p>Vận tốc (km/h): 1.005 km/h</p><p>Tổng chiều dài: 37,57 m</p><p>Sải cánh: 35,8 m</p><p>Chiều cao: 11,76 m</p>');
-INSERT INTO `Seat_Category` VALUES (1,'Economy',184,'img/bamboo-economy.jpg',1,NULL,NULL),(2,'Business',8,'img/bamboo-business.jpg',1,NULL,NULL),(3,'Economy',168,'img/bamboo-economy.jpg',2,NULL,NULL),(4,'Business',8,'img/bamboo-business.jpg',2,NULL,NULL),(5,'Economy',162,'img/bamboo-economy.jpg',3,NULL,NULL),(6,'Business',8,'img/bamboo-business.jpg',3,NULL,NULL),(7,'Hạng Thương Gia',16,'img/vnairline-A321-Business.png',4,'',NULL),(8,'Hạng Phổ Thông',162,'img/vnairline-A321-GhePhoThong.png',4,NULL,NULL),(9,'Hạng Thương Gia',28,'img/vnairline-B787-GheThuongGia.png',5,NULL,NULL),(10,'Hạng Phổ Thông Đặc Biệt',35,'img/vnairline-B787-GhePhoThongDacBiet.png',5,NULL,NULL),(11,'Hạng Phổ Thông',211,'img/vnairline-B787-GhePhoThong.png',5,NULL,NULL),(12,'Hạng Thương Gia',29,'img/vnairline-A350-GheThuongGia.png',6,NULL,NULL),(13,'Hạng Phổ Thông Đặc Biệt',45,'img/vnairline-A350-GhePhoThongDacBiet.png',6,NULL,NULL),(14,'Hạng Phổ Thông',231,'img/vnairline-A350-GhePhoThong.png',6,NULL,NULL),(15,'Hạng Thương Gia',8,'img/vnairline-A320neo-Thuong gia.png',7,NULL,NULL),(16,'Hạng Phổ Thông',180,'img/vnairline-A320neo-PhoThong.png',7,NULL,NULL);
+INSERT INTO `Status` VALUES (1,'Activated'),(2,'Deactivated'),(3,'Pre-flight'),(4,'In-flight'),(5,'Landed'),(6,'Flight cancellation request'),(7,'Flight successfully canceled'),(8,'Refund completed');
+
+INSERT INTO `Roles` VALUES 
+(1,'Admin'),
+(2,'Airline Staff'),
+(3,'Member'),
+(4,'Service Staff');
+
+INSERT INTO `Airline` VALUES 
+(1,'Empty','img/empty.jpg',NULL, 1),
+(2,'Vietnam Airline','img/vietnam-airline.png',NULL, 1),
+(3,'Bamboo Airway','img/bamboo-airway.png',NULL, 1),
+(4,'Vietjet Air','img/vietjet.jpg',NULL, 1);
+
+INSERT INTO `Accounts` VALUES 
+(1,'Ngô Tùng Dương','duongnthe186310@fpt.edu.vn','KIymfC4XfLDNFnygtZuXNQ==','0862521226','','img/avatar.jpg','2004-11-16',1,3,'2024-09-23 14:07:56','2024-09-23 14:20:15', 1),
+(2,'Hồ Trần Quân','abc@gmail.com','KIymfC4XfLDNFnygtZuXNQ==','0123','','img/jack.png','2024-09-18',2,2,'2024-09-23 14:19:19',NULL, 1);
+
+INSERT INTO `Plane_Category` VALUES 
+(1,'Airbus A321CEO','img/Airbus A321CEO.png',3,NULL, 1),
+(2,'Airbus A320NEO','img/Airbus A320NEO.png',3,NULL, 1),
+(3,'Airbus A320CEO','img/Airbus A320CEO.png',3,NULL, 1),
+(4,'Airbus A321','img/vnairline-AIRBUS A321.png',3,NULL, 1);
+
 INSERT INTO Country (id,name)
 VALUES
     (1,'Việt Nam'),
@@ -469,7 +524,7 @@ VALUES
     (5,'Seoul', 3),
     (6,'Busan', 3);
 
-INSERT INTO Airport (id,name, Locationid)
+INSERT INTO Airport (id,name, Location_id)
 VALUES
     (1,'Nội Bài International Airport', 1),
     (2,'Tân Sơn Nhất International Airport', 2),
