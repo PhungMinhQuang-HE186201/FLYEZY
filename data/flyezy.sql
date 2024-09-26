@@ -174,10 +174,10 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Feedbacks` (
   `ratedStar` INT NULL DEFAULT NULL,
   `comment` VARCHAR(255) NULL DEFAULT NULL,
   `date` TIMESTAMP NULL DEFAULT NULL,
-  `Airlineid` INT NOT NULL,
-  `Statusid` INT NOT NULL,
   `created_at` TIMESTAMP NULL DEFAULT NULL,
   `updated_at` TIMESTAMP NULL DEFAULT NULL,
+  `Airlineid` INT NOT NULL,
+  `Statusid` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `FKFeedbacks957463` (`Accountsid` ASC) VISIBLE,
   INDEX `FKFeedbacks177109` (`Airlineid` ASC) VISIBLE,
@@ -197,32 +197,17 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `flyezy`.`Flight_Type`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `flyezy`.`Flight_Type` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
-
--- -----------------------------------------------------
 -- Table `flyezy`.`Flight`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `flyezy`.`Flight` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `name` INT NULL DEFAULT NULL,
   `minutes` INT NULL DEFAULT NULL,
   `departureAirportid` INT NOT NULL,
   `destinationAirportid` INT NOT NULL,
-  `Flight_Typeid` INT NOT NULL,
   `Discountid` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `FKFlight90325` (`departureAirportid` ASC) VISIBLE,
   INDEX `FKFlight563127` (`destinationAirportid` ASC) VISIBLE,
-  INDEX `FKFlight644782` (`Flight_Typeid` ASC) VISIBLE,
   INDEX `FKFlight225776` (`Discountid` ASC) VISIBLE,
   CONSTRAINT `FKFlight225776`
     FOREIGN KEY (`Discountid`)
@@ -230,9 +215,6 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Flight` (
   CONSTRAINT `FKFlight563127`
     FOREIGN KEY (`destinationAirportid`)
     REFERENCES `flyezy`.`Airport` (`id`),
-  CONSTRAINT `FKFlight644782`
-    FOREIGN KEY (`Flight_Typeid`)
-    REFERENCES `flyezy`.`Flight_Type` (`id`),
   CONSTRAINT `FKFlight90325`
     FOREIGN KEY (`departureAirportid`)
     REFERENCES `flyezy`.`Airport` (`id`))
@@ -280,6 +262,18 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Flight_Detail` (
   CONSTRAINT `FKFlight_Det564449`
     FOREIGN KEY (`Plane_Categoryid`)
     REFERENCES `flyezy`.`Plane_Category` (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `flyezy`.`Flight_Type`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `flyezy`.`Flight_Type` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -383,6 +377,7 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Ticket` (
   `Baggagesid` INT NOT NULL,
   `paymentTime` TIMESTAMP NULL DEFAULT NULL,
   `Statusid` INT NOT NULL,
+  `Flight_Type_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `FKTicket527556` (`Accountsid` ASC) VISIBLE,
   INDEX `FKTicket704972` (`Flight_Detailid` ASC) VISIBLE,
@@ -391,6 +386,7 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Ticket` (
   INDEX `FKTicket999927` (`Baggagesid` ASC) VISIBLE,
   INDEX `FKTicket721068` (`Seat_Categoryid` ASC) VISIBLE,
   INDEX `FKTicket601957` (`Statusid` ASC) VISIBLE,
+  INDEX `fk_Ticket_Flight_Type1_idx` (`Flight_Type_id` ASC) VISIBLE,
   CONSTRAINT `FKTicket339557`
     FOREIGN KEY (`Passenger_Typesid`)
     REFERENCES `flyezy`.`Passenger_Types` (`id`),
@@ -411,7 +407,12 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Ticket` (
     REFERENCES `flyezy`.`Seat_Category` (`id`),
   CONSTRAINT `FKTicket999927`
     FOREIGN KEY (`Baggagesid`)
-    REFERENCES `flyezy`.`Baggages` (`id`))
+    REFERENCES `flyezy`.`Baggages` (`id`),
+  CONSTRAINT `fk_Ticket_Flight_Type1`
+    FOREIGN KEY (`Flight_Type_id`)
+    REFERENCES `flyezy`.`Flight_Type` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -443,7 +444,6 @@ COLLATE = utf8mb4_0900_ai_ci;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
-
 
 
 -- ------------------------------------------------
