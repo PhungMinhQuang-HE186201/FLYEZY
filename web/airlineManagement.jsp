@@ -129,7 +129,7 @@
                         </thead>
                         <tbody>
 
-                            <c:forEach items="${sessionScope.listAirline}" var="airline">
+                            <c:forEach items="${requestScope.listAirline}" var="airline">
                                 <tr>
                                     <td name="name">${airline.getName()}</td>
                                     <td name="image">
@@ -251,7 +251,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <c:forEach items="${sessionScope.listBaggage}" var="baggage">
+                                                <c:forEach items="${requestScope.listBaggage}" var="baggage">
 
                                                     <c:if test="${baggage.airlineId == airline.id}">
                                                         <c:set var="counter" value="0" />

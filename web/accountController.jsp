@@ -229,7 +229,7 @@
                                                         <select name="roleId" value="<%= list.getRoleId() %>" style="height:  34px">
                                                             <%
                                                             for(Roles role : rolesList){%>
-                                                               <option value="<%=list.getRoleId()%>" <%= (list.getRoleId() == role.getId()) ? "selected" : "" %>><%=role.getName()%></option>
+                                                               <option value="<%=role.getId()%>" <%= (list.getRoleId() == role.getId()) ? "selected" : "" %>><%=role.getName()%></option>
                                                             <%}%>
                                                         </select>
                                                     </div>
@@ -238,7 +238,7 @@
                                                         <select name="airlineID" value="<%= list.getAirlineId() %>" style="height:  34px">
                                                             <%
                                                             for(Airline airline : airlineList){%>
-                                                               <option value="<%=list.getAirlineId()%>" <%= (list.getAirlineId() == airline.getId()) ? "selected" : "" %>><%=airline.getName()%></option>
+                                                               <option value="<%=airline.getId()%>" <%= (list.getAirlineId() == airline.getId()) ? "selected" : "" %>><%=airline.getName()%></option>
                                                             <%}%>
                                                         </select>
                                                     </div>
@@ -255,17 +255,17 @@
                                                     </div>
                                                     <div class="form-group col-md-6">
                                                         <label><span class="glyphicon glyphicon-earphone"></span>Phone number:</label>
-                                                        <input type="text" class="form-control" name="phoneNumber" value="<%= list.getPhoneNumber() %>">
+                                                        <input type="text" class="form-control" name="phoneNumber" value="<%= list.getPhoneNumber() %>" readonly>
                                                     </div>
                                                 </div>
 
                                                 <div class="form-group">
                                                     <label><span class="glyphicon glyphicon-envelope"></span>Email:</label>
-                                                    <input type="email" class="form-control" name="email" value="<%= list.getEmail() %>">
+                                                    <input type="email" class="form-control" name="email" value="<%= list.getEmail() %>" readonly>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label><span class="glyphicon glyphicon-eye-open"></span>Password:</label>
-                                                    <input type="password" class="form-control" name="password" value="<%= rd.decryptAES(list.getPassword(),SECRET_KEY) %>">
+<!--                                                    <label><span class="glyphicon glyphicon-eye-open"></span>Password:</label>-->
+                                                    <input type="hidden" class="form-control" name="password" value="<%= rd.decryptAES(list.getPassword(),SECRET_KEY) %>">
                                                 </div>
 
                                                 <div class="form-group">

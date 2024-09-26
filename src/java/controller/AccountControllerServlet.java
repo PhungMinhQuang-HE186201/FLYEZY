@@ -21,6 +21,7 @@ import java.util.List;
 import model.Accounts;
 import model.Roles;
 import model.Airline;
+
 /**
  *
  * @author Admin
@@ -70,7 +71,7 @@ public class AccountControllerServlet extends HttpServlet {
 
         List<Roles> rolesList = rd.getAllRoles();
         request.setAttribute("rolesList", rolesList);
-        
+
         List<Airline> airlineList = amd.getAllAirline();
         request.setAttribute("airlineList", airlineList);
 
@@ -85,8 +86,8 @@ public class AccountControllerServlet extends HttpServlet {
             response.sendRedirect("accountController");
         } else if (action.equals("search")) {
             String fRole = request.getParameter("fRole");
-            String fName = request.getParameter("fName");
-            String fPhoneNumber = request.getParameter("fPhoneNumber");
+            String fName = request.getParameter("fName").trim();
+            String fPhoneNumber = request.getParameter("fPhoneNumber").trim();
             List<Accounts> accountList = ad.searchAccounts(fRole, fName, fPhoneNumber);
             request.setAttribute("accountList", accountList);
             request.getRequestDispatcher("accountController.jsp").forward(request, response);
@@ -121,30 +122,29 @@ public class AccountControllerServlet extends HttpServlet {
         //insert
         try {
             if (action.equals("update")) {
-                
+
                 int id = Integer.parseInt(idStr);
                 int roleId = Integer.parseInt(roleIdStr);
                 int airlineID = Integer.parseInt(airlineIDStr);
                 Date dob = Date.valueOf(dobStr);
                 Timestamp ca = Timestamp.valueOf(create_at);
-                
+
                 if (image.equals("img/")) {
                     image = ad.getAccountsById(id).getImage();
                 }
-                
-                Accounts newAcc = new Accounts(id, name, email, password, phoneNumber, address, image, dob, roleId, airlineID,ca,new Timestamp(System.currentTimeMillis()));
-                
+
+                Accounts newAcc = new Accounts(id, name, email, password, phoneNumber, address, image, dob, roleId, airlineID, ca, new Timestamp(System.currentTimeMillis()));
+
                 ad.updateAccount(newAcc);
                 response.sendRedirect("accountController");
             } else if (action.equals("create")) {
                 int roleId = Integer.parseInt(roleIdStr);
                 int airlineID = Integer.parseInt(airlineIDStr);
                 Date dob = Date.valueOf(dobStr);
-                //Integer.parseInt(request.getParameter("airlineId"));
 
-                Accounts newAcc = new Accounts(name, email, password, phoneNumber, address, image, dob, roleId, airlineID,new Timestamp(System.currentTimeMillis()));
+                Accounts newAcc = new Accounts(name, email, password, phoneNumber, address, image, dob, roleId, airlineID, new Timestamp(System.currentTimeMillis()));
                 boolean check = ad.checkAccount(newAcc);
-                if (check==true) {
+                if (check == true) {
                     int n = ad.createAccount(newAcc);
                     response.sendRedirect("accountController");
                 } else {
@@ -152,6 +152,17 @@ public class AccountControllerServlet extends HttpServlet {
                     List<Accounts> accountList = ad.getAllAccounts();
                     request.setAttribute("accountList", accountList);
                     request.setAttribute("message", message);
+                    RolesDAO rd = new RolesDAO();
+                    AirlineManageDAO amd = new AirlineManageDAO();
+                    HttpSession session = request.getSession();
+                    List<Roles> rolesList = rd.getAllRoles();
+                    request.setAttribute("rolesList", rolesList);
+                    List<Airline> airlineList = amd.getAllAirline();
+                    request.setAttribute("airlineList", airlineList);
+                    Integer idd = (Integer) session.getAttribute("id");
+                    int i = (idd != null) ? idd : -1;
+                    Accounts acc = ad.getAccountsById(i);
+                    request.setAttribute("account", acc);
                     request.getRequestDispatcher("accountController.jsp").forward(request, response);
                 }
             }

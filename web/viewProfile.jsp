@@ -72,13 +72,15 @@
                     </div>
                     <div class="modal-body">
                         <form action="infoUpdateServlet" method="post" >
-                            <div class="form-group">
-                                <label for="image" class="control-label">Ảnh đại diện</label>
-                                <input type="file" name="image" value="${requestScope.account.image}" class="form-control" style="padding:5px;" onchange="displayImage2(this,${requestScope.account.id})">
-                            </div>
-                            <div class="form-group">
-                                <img id="hideImage${requestScope.account.id}" src="${requestScope.account.image}" alt="alt" width="100%" height="100%"/>
-                                <img id="preImage2${requestScope.account.id}" src="#" alt="Preview" width="100%" height="100%">
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for="image" class="control-label">Ảnh đại diện</label>
+                                    <input type="file" name="image" value="${requestScope.account.image}" class="form-control" style="padding:5px;" onchange="displayImage2(this,${requestScope.account.id})">
+                                </div>
+                                <div class="form-group col-md-6" >
+                                    <img id="hideImage${requestScope.account.id}" src="${requestScope.account.image}" style="float: right" width="50%" height="50%"/>
+                                    <img id="preImage2${requestScope.account.id}" style="display: none;float: right" src="#"  width="50%" height="50%">
+                                </div>
                             </div>
                             <input type="hidden" name="id" value="${requestScope.account.id}"/>
                             <!-- Full Name -->
@@ -88,7 +90,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="birth" class="control-label">Ngày sinh:</label>
-                                <input type="date" name="birth" value="${requestScope.account.dob}" class="form-control" />
+                                <input type="date" name="birth" value="${requestScope.account.dob}" class="form-control" required />
                             </div>
                             <div class="form-group">
                                 <label for="email" class="control-label">Email:</label>
