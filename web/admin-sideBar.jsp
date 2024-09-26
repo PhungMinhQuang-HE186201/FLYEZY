@@ -26,6 +26,11 @@ Admin --%> <%@page contentType="text/html" pageEncoding="UTF-8"%>
                         Quản lý loại máy bay
                     </a>
                 </li>
+                <li>
+                    <a href="flightManagement" class="<%= currentPage.equals("/flyezy/flightManagement.jsp") ? "current-page" : "" %>">
+                        Quản lý loại máy bay
+                    </a>
+                </li>
  
 
             </ul>

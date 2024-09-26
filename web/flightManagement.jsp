@@ -79,7 +79,7 @@
 
 
                                 <!-- Baggage Inputs -->
-                                <input type="hidden" name="airlineId" value="${maxAirlineId}">
+                                <input type="hidden" name="airlineId" value="">
 
                                 </form>
                             </div>
@@ -90,7 +90,7 @@
                     </div>
                 </div>
             </div>
-
+            </div>
             <div id="main-content">
                 <div>
                     <!-- Search bar -->
