@@ -26,8 +26,7 @@ Admin --%> <%@page contentType="text/html" pageEncoding="UTF-8"%>
                         Quản lý loại máy bay
                     </a>
                 </li>
-
-
+ 
 
             </ul>
         </div>
