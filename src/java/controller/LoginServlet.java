@@ -73,16 +73,16 @@ public class LoginServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException{
+            throws ServletException, IOException {
         EncodeController ec = new EncodeController();
         //quanHT: encode password before checkpass
         try {
-            String u = request.getParameter("user"); 
+            String u = request.getParameter("user");
             String p = request.getParameter("pass");
             String r = request.getParameter("rem");
-            
+
             String encode = ec.encryptAES(p, SECRET_KEY);
-            
+
             Cookie cu = new Cookie("cuser", u);
             Cookie cp = new Cookie("cpass", p);
             Cookie cr = new Cookie("crem", r);
@@ -108,7 +108,11 @@ public class LoginServlet extends HttpServlet {
             } else if (!ld.checkPassword(u, encode)) {
                 request.setAttribute("error", "Mật khẩu của bạn không chính xác!");
                 request.getRequestDispatcher("login.jsp").forward(request, response);
+            } else if (ld.checkStatus(u)) {
+                request.setAttribute("error", "Tài khoản của bạn đã bị khóa");
+                request.getRequestDispatcher("login.jsp").forward(request, response);
             } else {
+
                 int id = ad.getIdByEmailOrPhoneNumber(u);
                 session.setAttribute("id", id);
                 response.sendRedirect("home");
@@ -117,7 +121,7 @@ public class LoginServlet extends HttpServlet {
         }
 
     }
-   
+
 //------------------------------------------------------------------------------------------------------------------
     /**
      * Returns a short description of the servlet.

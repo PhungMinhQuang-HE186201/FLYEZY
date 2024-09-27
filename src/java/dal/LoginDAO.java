@@ -17,37 +17,54 @@ public class LoginDAO extends DBConnect {
     public boolean checkUsername(String emailOrPhoneNumber) {
         String sql = "SELECT * FROM Accounts WHERE email = ? OR phoneNumber = ?";
         try (PreparedStatement st = conn.prepareStatement(sql)) {
-            st.setString(1, emailOrPhoneNumber); 
-            st.setString(2, emailOrPhoneNumber); 
+            st.setString(1, emailOrPhoneNumber);
+            st.setString(2, emailOrPhoneNumber);
             ResultSet rs = st.executeQuery();
 
             if (rs.next()) {
-                return true; 
+                return true;
             } else {
-                return false; 
+                return false;
             }
         } catch (SQLException e) {
         }
 
-        return false; 
+        return false;
     }
 
     public boolean checkPassword(String emailOrPhoneNumber, String password) {
         String sql = "SELECT * FROM Accounts WHERE (email=? OR phoneNumber=?) AND password=?";
 
         try {
-            PreparedStatement st = conn.prepareStatement(sql); 
+            PreparedStatement st = conn.prepareStatement(sql);
             st.setString(1, emailOrPhoneNumber);
-            st.setString(2, emailOrPhoneNumber); 
-            st.setString(3, password); 
+            st.setString(2, emailOrPhoneNumber);
+            st.setString(3, password);
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
-                return true; 
+                return true;
             } else {
-                return false; 
+                return false;
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean checkStatus(String emailOrPhoneNumber) {
+        String sql = "SELECT * FROM Accounts WHERE (email=? OR phoneNumber=?) AND Status_id = 2 ";
+        try {
+            PreparedStatement st = conn.prepareStatement(sql);
+            st.setString(1, emailOrPhoneNumber);
+            st.setString(2, emailOrPhoneNumber);
+            ResultSet rs = st.executeQuery();
+            if(rs.next()){
+                return true;
+            }else{
+                return false;
+            }
+        } catch (SQLException e) {
         }
         return false;
     }

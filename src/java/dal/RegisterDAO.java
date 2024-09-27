@@ -42,9 +42,9 @@ public class RegisterDAO extends DBConnect {
     public void addNewAccount(Accounts a) {
         String sql = """
                  INSERT INTO Accounts 
-                     (name, email, password, phoneNumber, Rolesid, Airlineid, created_at) 
+                     (name, email, password, phoneNumber, Rolesid, Airlineid, created_at, Status_id) 
                  VALUES 
-                 (?,?,?,?,?,?,?)""";
+                 (?,?,?,?,?,?,?,?)""";
         try (PreparedStatement st = conn.prepareStatement(sql)) {
             st.setString(1, a.getName());
             st.setString(2, a.getEmail());
@@ -54,6 +54,7 @@ public class RegisterDAO extends DBConnect {
             st.setInt(5, a.getRoleId());
             st.setInt(6, a.getAirlineId());
             st.setTimestamp(7, a.getCreated_at() );
+            st.setInt(8, a.getStatus_id());
             st.executeUpdate();
         } catch (Exception e) {
             System.out.println(e);
@@ -63,6 +64,5 @@ public class RegisterDAO extends DBConnect {
 
     public static void main(String[] args) {
         RegisterDAO rd = new RegisterDAO();
-        rd.addNewAccount(new Accounts("Quaan", "123@gmail.com", "1", "0123", 2,1,null));
     }
 }
