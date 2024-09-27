@@ -121,6 +121,7 @@ public class SeatCategoryDAO extends DBConnect {
         }
         return false;
     }
+
     public boolean activateAllSeatCategoryByPlaneCategoryId(int id) {
         String sql = "UPDATE Seat_Category SET Status_id = 1 WHERE Plane_Categoryid = ?";
         try {
@@ -133,6 +134,23 @@ public class SeatCategoryDAO extends DBConnect {
         return false;
     }
 
+    public void activateAllSeatCategoryByAirline(int airlineId) {
+        String sql = "UPDATE Seat_Category sc "
+                + "SET sc.Status_id = ? "
+                + "WHERE sc.Plane_Categoryid IN ( "
+                + "   SELECT pc.id FROM Plane_Category pc "
+                + "   WHERE pc.airlineId = ? "
+                + ")";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, 1);
+            ps.setInt(2, airlineId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public boolean deactivateAllSeatCategoryByPlaneCategoryId(int id) {
         String sql = "UPDATE Seat_Category SET Status_id = 2 WHERE Plane_Categoryid = ?";
         try {
@@ -143,6 +161,23 @@ public class SeatCategoryDAO extends DBConnect {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public void deactivateAllSeatCategoryByAirline(int airlineId) {
+        String sql = "UPDATE Seat_Category sc "
+                + "SET sc.Status_id = ? "
+                + "WHERE sc.Plane_Categoryid IN ( "
+                + "   SELECT pc.id FROM Plane_Category pc "
+                + "   WHERE pc.airlineId = ? "
+                + ")";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, 2);
+            ps.setInt(2, airlineId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {

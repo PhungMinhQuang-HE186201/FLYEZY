@@ -80,6 +80,18 @@ public class PlaneCategoryDAO extends DBConnect {
         return false;
     }
 
+    public void activatePlaneCategoryByAirline(int airlineId) {
+        String sql = "UPDATE Plane_Category SET Status_id = ? WHERE airlineId = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, 1);
+            ps.setInt(2, airlineId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public boolean deactivatePlaneCategoryById(int id) {
         String sql = "UPDATE Plane_Category SET Status_id = 2 WHERE id = ?";
         try {
@@ -90,6 +102,18 @@ public class PlaneCategoryDAO extends DBConnect {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public void deactivatePlaneCategoryByAirline(int airlineId) {
+        String sql = "UPDATE Plane_Category SET Status_id = ? WHERE airlineId = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, 2);
+            ps.setInt(2, airlineId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void deleteAllPlaneCategoryByAirline(int airlineId) {
@@ -141,8 +165,8 @@ public class PlaneCategoryDAO extends DBConnect {
             }
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                PlaneCategory pc = new PlaneCategory(rs.getInt("id"), rs.getString("name"), 
-                        rs.getString("image"), rs.getString("info"), 
+                PlaneCategory pc = new PlaneCategory(rs.getInt("id"), rs.getString("name"),
+                        rs.getString("image"), rs.getString("info"),
                         rs.getInt("Airlineid"), rs.getInt("Status_id"));
                 ls.add(pc);
             }

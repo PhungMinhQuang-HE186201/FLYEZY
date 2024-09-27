@@ -62,8 +62,8 @@ public class AirlineManagementServlet extends HttpServlet {
             case "add":
                 addAirline(request);
                 break;
-            case "delete":
-                removeAirline(request);
+            case "changeStatus":
+                ChangeStatusAirline(request);
                 break;
             case "update":
                 updateAirline(request);
@@ -124,16 +124,23 @@ public class AirlineManagementServlet extends HttpServlet {
 
     }
 
-    private void removeAirline(HttpServletRequest request) {
+    private void ChangeStatusAirline(HttpServletRequest request) {
         try {
             int airlineId = Integer.parseInt(request.getParameter("airlineId"));
-            baggageManageDao.deleteAllBaggageByAirline(airlineId);
-            
-            planeCategoryDao.deleteAllPlaneCategoryByAirline(airlineId);
-            
-            accountsDao.deleteAllAccountByAirline(airlineId);
-            
-            airlineManageDao.deleteAirline(airlineId);
+            int statusId = Integer.parseInt(request.getParameter("airlineStatus"));
+            int newStatusId = 1;
+            if(statusId == 1){
+                baggageManageDao.DeactiveAllByAirline(airlineId);
+                planeCategoryDao.deactivatePlaneCategoryByAirline(airlineId);
+                seatCategoryDao.deactivateAllSeatCategoryByAirline(airlineId);
+                newStatusId = 2;
+            }else if(statusId == 2){
+                baggageManageDao.ReactiveAllByAirline(airlineId);
+                planeCategoryDao.activatePlaneCategoryByAirline(airlineId);
+                seatCategoryDao.activateAllSeatCategoryByAirline(airlineId);
+                newStatusId = 1;
+            }
+            airlineManageDao.changeStatus(airlineId, newStatusId);
         } catch (Exception e) {
             // Xử lý lỗi khác
             e.printStackTrace();

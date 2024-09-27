@@ -29,7 +29,8 @@ public class BaggageManageDAO extends DBConnect {
                 float weight = resultSet.getFloat("weight");
                 int price = resultSet.getInt("price");
                 int airlineId = resultSet.getInt("airlineId");
-                list.add(new Baggages(id, weight, price, airlineId));
+                int statusId = resultSet.getInt("Status_id");
+                list.add(new Baggages(id, weight, price, airlineId, statusId));
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -50,7 +51,8 @@ public class BaggageManageDAO extends DBConnect {
                 float weight = resultSet.getFloat("weight");
                 int price = resultSet.getInt("price");
                 int airlineIdFound = resultSet.getInt("airlineId");
-                list.add(new Baggages(id, weight, price, airlineIdFound));
+                int statusId = resultSet.getInt("Status_id");
+                list.add(new Baggages(id, weight, price, airlineIdFound, statusId));
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -59,8 +61,8 @@ public class BaggageManageDAO extends DBConnect {
     }
 
     public int createBaggages(Baggages baggage) {
-        String sql = "INSERT INTO `flyezy`.`Baggages` (`weight`, `price`, `Airlineid`)\n"
-                + "VALUES (?, ?, ?)";
+        String sql = "INSERT INTO `flyezy`.`Baggages` (`weight`, `price`, `Airlineid`,`Status_id`)\n"
+                + "VALUES (?, ?, ?,1)";
         int generatedId = -1;  // Giá trị mặc định cho trường hợp không thể lấy được ID
         try (PreparedStatement pre = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -131,19 +133,70 @@ public class BaggageManageDAO extends DBConnect {
         }
     }
 
+    public void changeStatus(int id, int statusId) {
+        // Kiểm tra nếu statusId chỉ là 1 hoặc 2
+        if (statusId == 1 || statusId == 2) {
+            String updateSql = "UPDATE `flyezy`.`Baggages`\n"
+                    + "SET\n"
+                    + "`Status_id` = ?\n"
+                    + "WHERE `id` = ?";
+            try (PreparedStatement pre = conn.prepareStatement(updateSql)) {
+                pre.setInt(1, statusId);
+                pre.setInt(2, id);
+                pre.executeUpdate();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            System.out.println("Invalid status ID. Status ID must be 1 or 2.");
+        }
+    }
+
+    public void DeactiveAllByAirline(int airlineId) {
+        // Kiểm tra nếu statusId chỉ là 1 hoặc 2
+
+        String updateSql = "UPDATE `flyezy`.`Baggages`\n"
+                + "SET\n"
+                + "`Status_id` = ?\n"
+                + "WHERE `airlineId` = ?";
+        try (PreparedStatement pre = conn.prepareStatement(updateSql)) {
+            pre.setInt(1, 2);
+            pre.setInt(2, airlineId);
+            pre.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void ReactiveAllByAirline(int airlineId) {
+        // Kiểm tra nếu statusId chỉ là 1 hoặc 2
+
+        String updateSql = "UPDATE `flyezy`.`Baggages`\n"
+                + "SET\n"
+                + "`Status_id` = ?\n"
+                + "WHERE `airlineId` = ?";
+        try (PreparedStatement pre = conn.prepareStatement(updateSql)) {
+            pre.setInt(1, 1);
+            pre.setInt(2, airlineId);
+            pre.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
         BaggageManageDAO dao = new BaggageManageDAO();
 
 ////        dao.deleteAllBaggageByAirline(1);
 //        float weight = 3;
 //        int price = 4;
-//        int airlineId = 5;
-//        dao.createBaggages(new Baggages(weight, airlineId, airlineId));
-////        System.out.println("n= " + n);
+//        int airlineId = 7;
+//        int n = dao.createBaggages(new Baggages(weight, price, airlineId));
+//        System.out.println("n= " + n);
 //        for (Baggages baggage : dao.getAllBaggages()) {
 //            System.out.println(baggage);
 //        }
-        for (Baggages baggages : dao.getAllBaggagesByAirline(2)) {
+        for (Baggages baggages : dao.getAllBaggages()) {
             System.out.println(baggages);
         }
     }

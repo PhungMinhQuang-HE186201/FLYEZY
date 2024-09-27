@@ -6,6 +6,7 @@
 <%@page import="model.SeatCategory"%>
 <%@page import="dal.SeatCategoryDAO"%>
 <%@page import="dal.StatusDAO"%>
+<%@page import="dal.AirlineManageDAO"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -108,6 +109,7 @@
                     <%
                     SeatCategoryDAO scd = new SeatCategoryDAO();
                     StatusDAO sd = new StatusDAO();
+                    AirlineManageDAO ad = new AirlineManageDAO();
                     List<PlaneCategory> planeCategoryList = (List<PlaneCategory>) request.getAttribute("planeCategoryList");
                     for (PlaneCategory pc : planeCategoryList) {
                     %>
@@ -116,8 +118,11 @@
                         <td style="background-color:  <%= (pc.getStatusId() == 1) ? "" : "#ccc" %>"><img style="width: 100%" src="<%= pc.getImage() %>" alt="<%= pc.getName() %>"></td>
                         <td style="background-color:  <%= (pc.getStatusId() == 1) ? "" : "#ccc" %>"><div style="max-height:  100px; text-align: left;padding-left: 20px; overflow-y: scroll;"><%= pc.getInfo() %></div></td>
                         <td style="background-color:  <%= (pc.getStatusId() == 1) ? "" : "#ccc" %>">
-                            <a class="btn <%= (pc.getStatusId() == 1) ? "btn-success" : "btn-danger" %>" style="text-decoration: none; width: 100px;margin: 0" 
+                            <a class="btn <%= (pc.getStatusId() == 1) ? "btn-success" : "btn-danger" %>" style="text-decoration: none; width: 100px;margin: 0"
+                               <% if (ad.getStatusById(pc.getAirlineid()) == 1) { %> 
                                onclick="changePlaneCategoryStatus('<%= pc.getId() %>', '<%= pc.getName() %>', '<%= pc.getStatusId() %>')">
+                               <% } %>>
+                               
                                 <%= (pc.getStatusId() == 1) ? "Activated" : "Deactivated" %>
                             </a>
                         </td>
@@ -220,7 +225,7 @@
                                                <% if (pc.getStatusId() == 1) { %> 
                                                onclick="changeSeatCategoryStatus('<%= sc.getId() %>', '<%= sc.getName() %>', '<%= sc.getStatusId() %>')" 
                                                <% } %>
-                                                >
+                                               >
                                                 <%= (sc.getStatusId() == 1) ? "Activated" : "Deactivated" %>
                                             </a>
                                         </td>
