@@ -12,6 +12,7 @@ public class Baggages {
     private float weight;
     private int price;
     private int airlineId;
+    private int statusId;
 
     public Baggages(float weight, int price, int airlineId) {
         this.weight = weight;
@@ -30,6 +31,14 @@ public class Baggages {
         this.weight = weight;
         this.price = price;
         this.airlineId = airlineId;
+    }
+
+    public Baggages(int id, float weight, int price, int airlineId, int statusId) {
+        this.id = id;
+        this.weight = weight;
+        this.price = price;
+        this.airlineId = airlineId;
+        this.statusId = statusId;
     }
 
     public int getId() {
@@ -64,10 +73,20 @@ public class Baggages {
         this.airlineId = airlineId;
     }
 
+    public int getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(int statusId) {
+        this.statusId = statusId;
+    }
+
     @Override
     public String toString() {
-        return "Baggages{" + "id=" + id + ", weight=" + weight + ", price=" + price + ", airlineId=" + airlineId + '}';
+        return "Baggages{" + "id=" + id + ", weight=" + weight + ", price=" + price + ", airlineId=" + airlineId + ", statusId=" + statusId + '}';
     }
+
+    
     
 
     

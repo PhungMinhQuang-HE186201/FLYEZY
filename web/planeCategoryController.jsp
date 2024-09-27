@@ -5,6 +5,8 @@
 <%@page import="model.PlaneCategory"%>
 <%@page import="model.SeatCategory"%>
 <%@page import="dal.SeatCategoryDAO"%>
+<%@page import="dal.StatusDAO"%>
+<%@page import="dal.AirlineManageDAO"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -33,6 +35,12 @@
             <div class="filterController" style="width: 100%">
                 <form action="planeCategoryController" method="get" style="margin-bottom: 20px;">
                     <input type="hidden" name="action" value="search">
+                    <strong class="filterElm">Status:</strong>
+                    <select class="filterElm" name="fStatus">
+                        <option value="" ${param.fStatus == null ? 'selected' : ''}>All</option>
+                        <option value="1" ${param.fStatus != null && (param.fStatus==1) ? 'selected' : ''}>Activated</option>
+                        <option value="2" ${param.fStatus != null && (param.fStatus==2) ? 'selected' : ''}>Deactivated</option>
+                    </select>
                     <strong>Name: </strong>
                     <input class="filterElm" type="text" name="fName" value="${param.fName}" placeholder="Enter name">
                     <button class="btn btn-info" type="submit" >
@@ -58,6 +66,7 @@
                             <form role="form" action="planeCategoryController" method="post">
                                 <div class="row">
                                     <input type="hidden" value="${account.getAirlineId()}" name="airlineId"/>
+                                    <input type="hidden" class="form-control" name="status" value="1"/>
                                     <div class="form-group col-md-6">
                                         <label><span class="glyphicon glyphicon-picture"></span>Image:</label>
                                         <input type="file" class="form-control" name="image" onchange="displayImage(this)">
@@ -65,12 +74,11 @@
                                     <div class="col-md-6">
                                         <img  id="previewImage" src="#" alt="Preview"
                                               style="display: none;  width: 100%; height: 100%; float: right;">
-
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label><span class="glyphicon glyphicon-user"></span>Name:</label>
-                                    <input type="text" class="form-control" name="name">
+                                    <input type="text" class="form-control" name="name" required>
                                 </div>
                                 <div class="form-group">
                                     <label><span class="glyphicon glyphicon-info-sign"></span>Info:</label>
@@ -93,22 +101,34 @@
                         <th>Name</th>
                         <th>Image</th>
                         <th>Information</th>
+                        <th>Status</th>
                         <th style="padding: 0 55px; min-width: 380px">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <%
                     SeatCategoryDAO scd = new SeatCategoryDAO();
+                    StatusDAO sd = new StatusDAO();
+                    AirlineManageDAO ad = new AirlineManageDAO();
                     List<PlaneCategory> planeCategoryList = (List<PlaneCategory>) request.getAttribute("planeCategoryList");
                     for (PlaneCategory pc : planeCategoryList) {
                     %>
                     <tr>
-                        <td><%= pc.getName() %></td>
-                        <td><img style="width: 100%" src="<%= pc.getImage() %>" alt="<%= pc.getName() %>"></td>
-                        <td><div style="max-height:  100px; text-align: left;padding-left: 20px; overflow-y: scroll;"><%= pc.getInfo() %></div></td>
-                        <td>
+                        <td style="background-color:  <%= (pc.getStatusId() == 1) ? "" : "#ccc" %>"><%= pc.getName() %></td>
+                        <td style="background-color:  <%= (pc.getStatusId() == 1) ? "" : "#ccc" %>"><img style="width: 100%" src="<%= pc.getImage() %>" alt="<%= pc.getName() %>"></td>
+                        <td style="background-color:  <%= (pc.getStatusId() == 1) ? "" : "#ccc" %>"><div style="max-height:  100px; text-align: left;padding-left: 20px; overflow-y: scroll;"><%= pc.getInfo() %></div></td>
+                        <td style="background-color:  <%= (pc.getStatusId() == 1) ? "" : "#ccc" %>">
+                            <a class="btn <%= (pc.getStatusId() == 1) ? "btn-success" : "btn-danger" %>" style="text-decoration: none; width: 100px;margin: 0"
+                               <% if (ad.getStatusById(pc.getAirlineid()) == 1) { %> 
+                               onclick="changePlaneCategoryStatus('<%= pc.getId() %>', '<%= pc.getName() %>', '<%= pc.getStatusId() %>')">
+                               <% } %>>
+                               
+                                <%= (pc.getStatusId() == 1) ? "Activated" : "Deactivated" %>
+                            </a>
+                        </td>
+                        <td style="background-color:  <%= (pc.getStatusId() == 1) ? "" : "#ccc" %>">
                             <a class="btn btn-info" style="text-decoration: none" onclick="openModal(<%= pc.getId() %>)">Update</a>
-                            <a class="btn btn-danger" style="text-decoration: none" onclick="doDelete('<%= pc.getId() %>', '<%= pc.getName() %>')">Delete</a>
+
                             <a class="btn btn-warning" style="text-decoration: none" onclick="openSeatCategoryDashboard(<%= pc.getId() %>)" >Seat Category Setting
                                 <span id="arrow<%= pc.getId() %>" style="margin-left: 8px" class="glyphicon glyphicon-menu-down"></span>
                             </a>
@@ -116,7 +136,7 @@
                     </tr>
                     <!-- For seat category -->
                     <tr id="seatCategoryDashboard<%= pc.getId() %>" style="display: none">
-                        <td colspan="4">
+                        <td colspan="5">
                             <div style="float: right; margin-left: 20px">
                                 <a class="btn btn-success" style="text-decoration: none; margin-bottom: 20px" onclick="openModalInsertSeatCategory(<%= pc.getId() %>)">Add new seat category</a>
                             </div>
@@ -133,6 +153,7 @@
                                             <form role="form" action="seatCategoryController" method="post">
                                                 <div class="row">
                                                     <input type="hidden" value="<%= pc.getId() %>" name="planeCategoryId"/>
+                                                    <input type="hidden" value="1" name="status"/>
                                                     <div class="form-group col-md-2">
                                                         <label> <span class="glyphicon glyphicon-globe"></span>ID:</label>
                                                         <input type="text" class="form-control" name="id" readonly>
@@ -144,16 +165,20 @@
                                                     <div class="col-md-6">
                                                         <img  id="previewImage1" src="#" alt="Preview"
                                                               style="display: none; height: 100%; float: right;">
-                                                        
+
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label><span class="glyphicon glyphicon-user"></span>Name:</label>
-                                                    <input type="text" class="form-control" name="name" %>
+                                                    <input type="text" class="form-control" name="name" required/>
                                                 </div>
                                                 <div class="form-group">
                                                     <label><span class="glyphicon glyphicon-picture"></span>Number of seat:</label>
-                                                    <input type="number" class="form-control" name="numberOfSeat">
+                                                    <input type="number" class="form-control" name="numberOfSeat" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label><span class="glyphicon glyphicon-picture"></span>Surcharge:</label>
+                                                    <input step="0.01" type="number" class="form-control" name="surcharge" required>
                                                 </div>
                                                 <div class="form-group">
                                                     <label><span class="glyphicon glyphicon-info-sign"></span>Info:</label>
@@ -176,23 +201,39 @@
                                         <th>Name</th>
                                         <th>Image</th>
                                         <th>Number Of Seat</th>
+                                        <th>Surcharge</th>
                                         <th>Info</th>
+                                        <th>Status</th>
                                         <th style="padding: 0 55px; min-width: 156px">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <%
+                                    StatusDAO sdao = new StatusDAO();
                                     List<SeatCategory> seatCategoryList = scd.getAllSeatCategoryByPlaneCategoryId(pc.getId());
                                     for (SeatCategory sc : seatCategoryList) {
                                     %>
                                     <tr>
-                                        <td><%= sc.getName() %></td>
-                                        <td><img src="<%= sc.getImage() %>" alt="<%= sc.getName() %>"></td>
-                                        <td><%= sc.getNumberOfSeat() %></td>
-                                        <td><div style="max-height:  100px; text-align: left; overflow-y: scroll; padding-left: 20px;"><%= sc.getInfo() %></div></td>
-                                        <td>
-                                            <a class="btn btn-info" style="text-decoration: none" onclick="openModalSeatCategory(<%= sc.getId() %>)">Update</a>
-                                            <a class="btn btn-danger" style="text-decoration: none" onclick="doDeleteSeatCategory('<%= sc.getId() %>', '<%= sc.getName() %>')">Delete</a>
+                                        <td style="background-color:  <%= (sc.getStatusId() == 1) ? "" : "#ccc" %>"><%= sc.getName() %></td>
+                                        <td style="background-color:  <%= (sc.getStatusId() == 1) ? "" : "#ccc" %>"><img src="<%= sc.getImage() %>" alt="<%= sc.getName() %>"></td>
+                                        <td style="background-color:  <%= (sc.getStatusId() == 1) ? "" : "#ccc" %>"><%= sc.getNumberOfSeat() %></td>
+                                        <td style="background-color:  <%= (sc.getStatusId() == 1) ? "" : "#ccc" %>"><%= sc.getSurcharge() %></td>
+                                        <td style="background-color:  <%= (sc.getStatusId() == 1) ? "" : "#ccc" %>"><div style="max-height:  100px; text-align: left; overflow-y: scroll; padding-left: 20px;"><%= sc.getInfo() %></div></td>
+                                        <td style="background-color:  <%= (sc.getStatusId() == 1) ? "" : "#ccc" %>">
+                                            <a class="btn <%=(sc.getStatusId() == 1) ? "btn-success" : "btn-danger"%>" 
+                                               style="text-decoration: none; width: 100px; margin: 0" 
+                                               <% if (pc.getStatusId() == 1) { %> 
+                                               onclick="changeSeatCategoryStatus('<%= sc.getId() %>', '<%= sc.getName() %>', '<%= sc.getStatusId() %>')" 
+                                               <% } %>
+                                               >
+                                                <%= (sc.getStatusId() == 1) ? "Activated" : "Deactivated" %>
+                                            </a>
+                                        </td>
+                                        <td style="background-color:  <%= (sc.getStatusId() == 1) ? "" : "#ccc" %>">
+                                            <a class="btn btn-info" style="text-decoration: none" onclick="openModalSeatCategory('<%= sc.getId() %>')">Update</a>
+
+
+
                                         </td>
                                     </tr>
                                     <!-- Modal for updating seat category -->
@@ -208,11 +249,13 @@
                                                 <form role="form" action="seatCategoryController" method="post">
                                                     <div class="row">
                                                         <input type="hidden" value="<%= sc.getPlane_Categoryid() %>" name="planeCategoryId"/>
+                                                        <input type="hidden" value="<%= sc.getStatusId() %>" name="status"/>
+
                                                         <div class="form-group col-md-2">
                                                             <label> <span class="glyphicon glyphicon-globe"></span>ID:</label>
                                                             <input type="text" class="form-control" name="id" value="<%= sc.getId() %>" readonly>
                                                         </div>
-                                                        <div class="form-group col-md-6">
+                                                        <div class="form-group col-md-4">
                                                             <label><span class="glyphicon glyphicon-picture"></span>Image:</label>
                                                             <input type="file" class="form-control" name="image" onchange="displayImage3(this,<%= sc.getId() %>)">
                                                         </div>
@@ -223,11 +266,15 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <label><span class="glyphicon glyphicon-user"></span>Name:</label>
-                                                        <input type="text" class="form-control" name="name" value="<%= sc.getName() %>">
+                                                        <input type="text" class="form-control" name="name" value="<%= sc.getName() %>" required/>
                                                     </div>
                                                     <div class="form-group">
                                                         <label><span class="glyphicon glyphicon-picture"></span>Number of seat:</label>
-                                                        <input type="text" class="form-control" name="numberOfSeat" value="<%= sc.getNumberOfSeat() %>">
+                                                        <input type="text" class="form-control" name="numberOfSeat" value="<%= sc.getNumberOfSeat() %>" required/>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label><span class="glyphicon glyphicon-picture"></span>Surcharge:</label>
+                                                        <input type="number" step="0.01" class="form-control" name="surcharge" value="<%= sc.getSurcharge() %>" required/>
                                                     </div>
                                                     <div class="form-group">
                                                         <label><span class="glyphicon glyphicon-info-sign"></span>Info:</label>
@@ -263,11 +310,12 @@
                     <form role="form" action="planeCategoryController" method="post">
                         <div class="row">
                             <input type="hidden" value="<%= pc.getAirlineid() %>" name="airlineId"/>
+                            <input type="hidden" class="form-control" name="status" value="<%= pc.getStatusId() %>"/>
                             <div class="form-group col-md-2">
                                 <label> <span class="glyphicon glyphicon-globe"></span>ID:</label>
                                 <input type="text" class="form-control" name="id" value="<%= pc.getId() %>" readonly>
                             </div>
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-7">
                                 <label><span class="glyphicon glyphicon-picture"></span>Image:</label>
                                 <input type="file" class="form-control" name="image" onchange="displayImage2(this,<%= pc.getId() %>)">
                             </div>
@@ -278,7 +326,7 @@
                         </div>
                         <div class="form-group">
                             <label><span class="glyphicon glyphicon-picture"></span>Name:</label>
-                            <input type="text" class="form-control" name="name" value="<%= pc.getName() %>">
+                            <input type="text" class="form-control" name="name" value="<%= pc.getName() %>" required/>
                         </div>
                         <div class="form-group">
                             <label><span class="glyphicon glyphicon-info-sign"></span>Info:</label>
@@ -301,39 +349,40 @@
 </tbody>
 </table>
 </div>
-<!-- Modal cho loại máy bay -->
-<div class="modal fade" id="deletePlaneCategoryModal" tabindex="-1" aria-labelledby="deletePlaneCategoryModalLabel" aria-hidden="true">
+<!-- Modal change status plane category -->
+<div class="modal fade" id="changePlaneCategoryStatusModal" tabindex="-1" aria-labelledby="changePlaneCategoryModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deletePlaneCategoryModalLabel">Xác nhận xóa loại máy bay</h5>
+                <h5 class="modal-title" id="changePlaneCategoryModalLabel">Confirm <span id="status1"></span> plane category</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                Bạn có muốn xóa loại máy bay với tên là <span id="planeCategoryName"></span>?
+                Do you want to <span style="font-weight: bold" id="status2"></span><span id="planeCategoryName"></span>?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                <button type="button" class="btn btn-danger" id="confirmDeletePlane">Xóa</button>
+                <button type="button" class="btn btn-danger" id="confirmChangeStatusPlaneCategory">Confirm</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal cho loại ghế -->
-<div class="modal fade" id="deleteSeatCategoryModal" tabindex="-1" aria-labelledby="deleteSeatCategoryModalLabel" aria-hidden="true">
+<!-- Modal change status seat category -->
+
+<div class="modal fade" id="changeSeatCategoryStatusModal" tabindex="-1" aria-labelledby="deleteSeatCategoryModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteSeatCategoryModalLabel">Xác nhận xóa loại ghế</h5>
+                <h5 class="modal-title" id="deleteSeatCategoryModalLabel">Confirm <span id="status3"></span> seat category</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                Bạn có muốn xóa loại ghế với tên là <span id="seatCategoryName"></span>?
+                Do you want to <span style="font-weight: bold" id="status4"></span><span id="seatCategoryName"></span>?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                <button type="button" class="btn btn-danger" id="confirmDeleteSeat">Xóa</button>
+                <button type="button" class="btn btn-danger" id="confirmChangeSeatCategoryStatus">Confirm</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancle</button>
             </div>
         </div>
     </div>
@@ -360,44 +409,46 @@
             dashboard.style.display = 'none';
             arrow.classList.remove("glyphicon-menu-up");
             arrow.classList.add("glyphicon-menu-down");
-
         }
     }
-    let deletePlaneCategoryUrl = ""; // Biến để lưu URL xóa loại máy bay
-    let deleteSeatCategoryUrl = ""; // Biến để lưu URL xóa loại ghế
 
-    function doDelete(id, name) {
+    //func change plane category status
+    let changePlaneCategoryStatusUrl = "";
+    function changePlaneCategoryStatus(id, name, status) {
         // Cập nhật tên loại máy bay trong modal
         document.getElementById('planeCategoryName').textContent = name;
+        let statusText = (status === "1") ? "deactivate" : "activate";
+        document.getElementById('status1').textContent = statusText;
+        document.getElementById('status2').textContent = statusText;
 
-        // Lưu URL xóa cho loại máy bay
-        deletePlaneCategoryUrl = "planeCategoryController?action=remove&id=" + id;
+        changePlaneCategoryStatusUrl = "planeCategoryController?action=changeStatus&id=" + id;
 
-        // Hiển thị modal cho loại máy bay
-        $('#deletePlaneCategoryModal').modal('show');
+        $('#changePlaneCategoryStatusModal').modal('show');
     }
+    document.getElementById('confirmChangeStatusPlaneCategory').onclick = function () {
+        window.location = changePlaneCategoryStatusUrl;
+    };
 
-// Hàm xóa loại ghế
-    function doDeleteSeatCategory(id, name) {
-        // Cập nhật tên loại ghế trong modal
+
+    // func change seat category status
+    let changeSeatCategoryStatusUrl = "";
+    function changeSeatCategoryStatus(id, name, status) {
         document.getElementById('seatCategoryName').textContent = name;
+        let statusText = (status === "1") ? "deactivate" : "activate";
+        console.log(statusText);
+        document.getElementById('status3').textContent = statusText;
+        document.getElementById('status4').textContent = statusText;
 
-        // Lưu URL xóa cho loại ghế
-        deleteSeatCategoryUrl = "seatCategoryController?action=remove&id=" + id;
+        changeSeatCategoryStatusUrl = "seatCategoryController?action=changeStatus&id=" + id;
 
-        // Hiển thị modal cho loại ghế
-        $('#deleteSeatCategoryModal').modal('show');
+        $('#changeSeatCategoryStatusModal').modal('show');
     }
 
-// Lắng nghe sự kiện click trên nút xác nhận xóa cho loại máy bay
-    document.getElementById('confirmDeletePlane').onclick = function () {
-        window.location = deletePlaneCategoryUrl; // Chuyển hướng đến URL đã lưu cho loại máy bay
+    document.getElementById('confirmChangeSeatCategoryStatus').onclick = function () {
+        window.location = changeSeatCategoryStatusUrl;
     };
 
-// Lắng nghe sự kiện click trên nút xác nhận xóa cho loại ghế
-    document.getElementById('confirmDeleteSeat').onclick = function () {
-        window.location = deleteSeatCategoryUrl; // Chuyển hướng đến URL đã lưu cho loại ghế
-    };
+
     window.onload = function () {
         if (window.location.protocol === 'file:') {
             alert('This sample requires an HTTP server. Please serve this file with a web server.');

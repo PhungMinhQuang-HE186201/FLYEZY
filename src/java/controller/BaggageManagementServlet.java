@@ -52,8 +52,8 @@ public class BaggageManagementServlet extends HttpServlet {
             case "add":
                 addBaggage(request);
                 break;
-            case "delete":
-                removeBaggage(request);
+            case "changeStatus":
+                changeStatusBaggage(request);
                 break;
             case "update":
                 updateBaggage(request);
@@ -86,12 +86,18 @@ public class BaggageManagementServlet extends HttpServlet {
         }
     }
 
-    private void removeBaggage(HttpServletRequest request) {
+    private void changeStatusBaggage(HttpServletRequest request) {
         try {
 
             int baggageId = Integer.parseInt(request.getParameter("baggageId"));
-
-            baggageManageDao.deleteBaggage(baggageId);
+            int baggageStatus = Integer.parseInt(request.getParameter("baggageStatus"));
+            int newStatus = 1;
+            if(baggageStatus == 1){
+                newStatus = 2;
+            }else if(baggageStatus == 2){
+                newStatus = 1;
+            }
+            baggageManageDao.changeStatus(baggageId, newStatus);
 
         } catch (Exception e) {
             e.printStackTrace();

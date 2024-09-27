@@ -6,11 +6,14 @@ package model;
 
 /**
  *
- * @author Admin
+ * @author PMQUANG
  */
 public class Status {
     private int id;
     private String name;
+
+    public Status() {
+    }
 
     public Status(int id, String name) {
         this.id = id;
@@ -32,6 +35,10 @@ public class Status {
     public void setName(String name) {
         this.name = name;
     }
-    
+
+    @Override
+    public String toString() {
+        return "Status{" + "id=" + id + ", name=" + name + '}';
+    }
     
 }

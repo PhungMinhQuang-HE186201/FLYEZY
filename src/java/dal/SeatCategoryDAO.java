@@ -25,8 +25,11 @@ public class SeatCategoryDAO extends DBConnect {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                SeatCategory sc = new SeatCategory(rs.getInt("id"), rs.getString("name"), rs.getInt("numberOfSeat"),
-                        rs.getString("image"), rs.getString("info"), rs.getInt("Plane_Categoryid"));
+                SeatCategory sc = new SeatCategory(rs.getInt("id"),
+                        rs.getString("name"), rs.getInt("numberOfSeat"),
+                        rs.getString("image"), rs.getString("info"),
+                        rs.getFloat("surcharge"), rs.getInt("Plane_Categoryid"),
+                        rs.getInt("Status_id"));
                 ls.add(sc);
             }
             return ls;
@@ -44,8 +47,11 @@ public class SeatCategoryDAO extends DBConnect {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                SeatCategory sc = new SeatCategory(rs.getInt("id"), rs.getString("name"), rs.getInt("numberOfSeat"),
-                        rs.getString("image"), rs.getString("info"), rs.getInt("Plane_Categoryid"));
+                SeatCategory sc = new SeatCategory(rs.getInt("id"),
+                        rs.getString("name"), rs.getInt("numberOfSeat"),
+                        rs.getString("image"), rs.getString("info"),
+                        rs.getFloat("surcharge"), rs.getInt("Plane_Categoryid"),
+                        rs.getInt("Status_id"));
                 return sc;
             }
         } catch (SQLException e) {
@@ -55,14 +61,16 @@ public class SeatCategoryDAO extends DBConnect {
     }
 
     public boolean addSeatCategory(SeatCategory sc) {
-        String sql = "INSERT INTO Seat_Category (name, numberOfSeat, image, info, Plane_Categoryid) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Seat_Category (name, numberOfSeat, image, info, surcharge, Plane_Categoryid, Status_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, sc.getName());
             ps.setInt(2, sc.getNumberOfSeat());
             ps.setString(3, sc.getImage());
             ps.setString(4, sc.getInfo());
-            ps.setInt(5, sc.getPlane_Categoryid());
+            ps.setFloat(5, sc.getSurcharge());
+            ps.setInt(6, sc.getPlane_Categoryid());
+            ps.setInt(7, sc.getStatusId());
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
@@ -72,15 +80,16 @@ public class SeatCategoryDAO extends DBConnect {
     }
 
     public boolean updateSeatCategory(SeatCategory sc) {
-        String sql = "UPDATE Seat_Category SET name = ?, numberOfSeat = ?, image = ?, info = ?, Plane_Categoryid = ? WHERE id = ?";
+        String sql = "UPDATE Seat_Category SET name = ?, numberOfSeat = ?, image = ?, info = ?, surcharge = ?, Plane_Categoryid = ? WHERE id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, sc.getName());
             ps.setInt(2, sc.getNumberOfSeat());
             ps.setString(3, sc.getImage());
             ps.setString(4, sc.getInfo());
-            ps.setInt(5, sc.getPlane_Categoryid());
-            ps.setInt(6, sc.getId());
+            ps.setFloat(5, sc.getSurcharge());
+            ps.setInt(6, sc.getPlane_Categoryid());
+            ps.setInt(7, sc.getId());
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
@@ -89,42 +98,82 @@ public class SeatCategoryDAO extends DBConnect {
         return false;
     }
 
-    public boolean deleteSeatCategory(int id) {
-        String sql = "DELETE FROM Seat_Category WHERE id = ?";
+    public boolean activateSeatCategoryById(int id) {
+        String sql = "UPDATE Seat_Category SET Status_id = 1 WHERE id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
-            int rowsAffected = ps.executeUpdate();
-            return rowsAffected > 0;
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
 
-    public boolean deleteAllSeatCategoryByPlaneCategoryId(int id) {
-        String sql = "DELETE FROM Seat_Category WHERE Plane_Categoryid = ?";
+    public boolean deactivateSeatCategoryById(int id) {
+        String sql = "UPDATE Seat_Category SET Status_id = 2 WHERE id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
-            int rowsAffected = ps.executeUpdate();
-            return rowsAffected > 0;
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
 
-    public void deleteAllSeatCategoryByAirline(int airlineId) {
-        String sql = """
-                     DELETE sc
-                     FROM Seat_Category sc
-                     JOIN Plane_Category pc ON sc.Plane_Categoryid = pc.id
-                     WHERE pc.Airlineid = ?""";
+    public boolean activateAllSeatCategoryByPlaneCategoryId(int id) {
+        String sql = "UPDATE Seat_Category SET Status_id = 1 WHERE Plane_Categoryid = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, airlineId);
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
+    public void activateAllSeatCategoryByAirline(int airlineId) {
+        String sql = "UPDATE Seat_Category sc "
+                + "SET sc.Status_id = ? "
+                + "WHERE sc.Plane_Categoryid IN ( "
+                + "   SELECT pc.id FROM Plane_Category pc "
+                + "   WHERE pc.airlineId = ? "
+                + ")";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, 1);
+            ps.setInt(2, airlineId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean deactivateAllSeatCategoryByPlaneCategoryId(int id) {
+        String sql = "UPDATE Seat_Category SET Status_id = 2 WHERE Plane_Categoryid = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public void deactivateAllSeatCategoryByAirline(int airlineId) {
+        String sql = "UPDATE Seat_Category sc "
+                + "SET sc.Status_id = ? "
+                + "WHERE sc.Plane_Categoryid IN ( "
+                + "   SELECT pc.id FROM Plane_Category pc "
+                + "   WHERE pc.airlineId = ? "
+                + ")";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, 2);
+            ps.setInt(2, airlineId);
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -133,5 +182,6 @@ public class SeatCategoryDAO extends DBConnect {
 
     public static void main(String[] args) {
         SeatCategoryDAO scd = new SeatCategoryDAO();
+        System.out.println(scd.getSeatCategoryById(7).getStatusId());
     }
 }

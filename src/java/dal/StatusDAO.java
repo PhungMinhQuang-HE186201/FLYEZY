@@ -5,6 +5,7 @@
 package dal;
 
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -13,43 +14,46 @@ import model.Status;
 
 /**
  *
- * @author Admin
+ * @author PMQUANG
  */
 public class StatusDAO extends DBConnect {
 
-    public String getStatusById(int id) {
-        String sql = "SELECT name FROM Status WHERE id = ?";
-
+    public List<Status> getAllStatus() {
+        List<Status> list = new ArrayList<>();
+        String sql = "select * from Status";
         try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getString("name");
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            ResultSet resultSet = prepare.executeQuery();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                list.add(new Status(id, name));
             }
-        } catch (Exception e) {
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
         }
-        return null;
+        return list;
     }
 
-    public List<Status> getAllStatusID() {
-        List<Status> ls = new ArrayList<>();
-        String sql = "SELECT * from status";
+    public String getStatusNameById(int id) {
+        String sql = "SELECT name FROM Status WHERE id = ?";
+        String name = null;
         try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Status s = new Status(rs.getInt("id"), rs.getString("name"));
-                ls.add(s);
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            prepare.setInt(1, id);  // Đặt giá trị id vào câu lệnh SQL
+            ResultSet resultSet = prepare.executeQuery();
+            if (resultSet.next()) {
+                name = resultSet.getString("name");  // Lấy tên từ kết quả truy vấn
             }
-            return ls;
-        } catch (SQLException e) {
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
         }
-        return null;
+        return name;  // Trả về tên, nếu không có giá trị sẽ trả về null
     }
 
     public static void main(String[] args) {
-        StatusDAO sd = new StatusDAO();
-        System.out.println(sd.getStatusById(1));
+        StatusDAO dao = new StatusDAO();
+//        System.out.println(dao.getAllStatus());
+        System.out.println(dao.getStatusNameById(0));
     }
 }
