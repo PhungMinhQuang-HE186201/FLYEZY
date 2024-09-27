@@ -129,7 +129,6 @@ public class AirlineManagementServlet extends HttpServlet {
             int airlineId = Integer.parseInt(request.getParameter("airlineId"));
             baggageManageDao.deleteAllBaggageByAirline(airlineId);
             
-            seatCategoryDao.deleteAllSeatCategoryByAirline(airlineId);
             planeCategoryDao.deleteAllPlaneCategoryByAirline(airlineId);
             
             accountsDao.deleteAllAccountByAirline(airlineId);

@@ -26,7 +26,7 @@ public class PlaneCategoryDAO extends DBConnect {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                PlaneCategory pc = new PlaneCategory(rs.getInt("id"), rs.getString("name"), rs.getString("image"), rs.getString("info"), id);
+                PlaneCategory pc = new PlaneCategory(rs.getInt("id"), rs.getString("name"), rs.getString("image"), rs.getString("info"), id, rs.getInt("Status_id"));
                 ls.add(pc);
             }
             return ls;
@@ -43,7 +43,8 @@ public class PlaneCategoryDAO extends DBConnect {
             ps.setInt(1, planeCategoryId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                PlaneCategory pc = new PlaneCategory(rs.getInt("id"), rs.getString("name"), rs.getString("image"), rs.getString("info"), rs.getInt("Airlineid"));
+                PlaneCategory pc = new PlaneCategory(rs.getInt("id"), rs.getString("name"), rs.getString("image"),
+                        rs.getString("info"), rs.getInt("Airlineid"), rs.getInt("Status_id"));
                 return pc;
             }
         } catch (Exception e) {
@@ -53,7 +54,7 @@ public class PlaneCategoryDAO extends DBConnect {
 
     // DuongNT: add a plane category for an airline - OK
     public boolean addPlaneCategory(PlaneCategory pc) {
-        String sql = "INSERT INTO Plane_Category (name, image, info, Airlineid) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Plane_Category (name, image, info, Airlineid, Status_id) VALUES (?, ?, ?, ?, 1)";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, pc.getName());
@@ -67,9 +68,20 @@ public class PlaneCategoryDAO extends DBConnect {
         return false;
     }
 
-    // DuongNT: delete a plane category by id - OK
-    public boolean deletePlaneCategoryById(int id) {
-        String sql = "DELETE FROM Plane_Category WHERE id = ?";
+    public boolean activatePlaneCategoryById(int id) {
+        String sql = "UPDATE Plane_Category SET Status_id = 1 WHERE id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean deactivatePlaneCategoryById(int id) {
+        String sql = "UPDATE Plane_Category SET Status_id = 2 WHERE id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
@@ -108,16 +120,30 @@ public class PlaneCategoryDAO extends DBConnect {
     }
 
     // DuongNT: search plane category by name
-    public List<PlaneCategory> searchPlaneCategory(String name, int airlineId) {
+    public List<PlaneCategory> searchPlaneCategory(String name, int statusId, int airlineId) {
         List<PlaneCategory> ls = new ArrayList<>();
-        String sql = "SELECT * FROM Plane_Category WHERE Airlineid = ? AND name LIKE ?";
+        StringBuilder sql = new StringBuilder("SELECT * FROM Plane_Category WHERE Airlineid = ?");
+        if (statusId != -1) {
+            sql.append(" AND Status_id = ?");
+        }
+        if (name != null && !name.isEmpty()) {
+            sql.append(" AND name LIKE ?");
+        }
         try {
-            PreparedStatement ps = conn.prepareStatement(sql);
+            PreparedStatement ps = conn.prepareStatement(sql.toString());
             ps.setInt(1, airlineId);
-            ps.setString(2, "%" + name + "%");
+            int i = 2;
+            if (statusId != -1) {
+                ps.setInt(i++, statusId);
+            }
+            if (name != null && !name.isEmpty()) {
+                ps.setString(i++, "%" + name + "%");
+            }
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                PlaneCategory pc = new PlaneCategory(rs.getInt("id"), rs.getString("name"), rs.getString("image"), rs.getString("info"), rs.getInt("Airlineid"));
+                PlaneCategory pc = new PlaneCategory(rs.getInt("id"), rs.getString("name"), 
+                        rs.getString("image"), rs.getString("info"), 
+                        rs.getInt("Airlineid"), rs.getInt("Status_id"));
                 ls.add(pc);
             }
             return ls;
@@ -128,7 +154,7 @@ public class PlaneCategoryDAO extends DBConnect {
 
     public static void main(String[] args) {
         PlaneCategoryDAO pd = new PlaneCategoryDAO();
-        System.out.println(pd.searchPlaneCategory("A320",3));
+        System.out.println(pd.searchPlaneCategory(null, 2, 2));
 
     }
 

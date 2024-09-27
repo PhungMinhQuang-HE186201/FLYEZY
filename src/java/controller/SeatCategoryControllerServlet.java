@@ -61,9 +61,11 @@ public class SeatCategoryControllerServlet extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getParameter("action");
         SeatCategoryDAO scd = new SeatCategoryDAO();
-        if (action.equals("remove")) { //ok
+        if (action.equals("changeStatus")) { //ok
             int id = Integer.parseInt(request.getParameter("id"));
-            scd.deleteSeatCategory(id);
+            if(scd.getSeatCategoryById(id).getStatusId()==1){
+                scd.deactivateSeatCategoryById(id);
+            } else scd.activateSeatCategoryById(id);
             response.sendRedirect("planeCategoryController");
         }
     }
@@ -86,27 +88,33 @@ public class SeatCategoryControllerServlet extends HttpServlet {
         String name = request.getParameter("name");
         String numberOfSeatStr = request.getParameter("numberOfSeat");
         String info = request.getParameter("info");
+        String surchargeStr = request.getParameter("surcharge");
         String planeCategoryIdStr = request.getParameter("planeCategoryId");
+        String statusIdStr = request.getParameter("status");
         int numberOfSeat = 0;
         int planeCategoryId = 0;
+        float surcharge = 0;
+        int statusId = 0;
         try {
             numberOfSeat = Integer.parseInt(numberOfSeatStr);
             planeCategoryId = Integer.parseInt(planeCategoryIdStr);
+            statusId = Integer.parseInt(statusIdStr);
+            surcharge = Float.parseFloat(surchargeStr);
         } catch (Exception e) {
         }
-
         if (idStr != null && !idStr.isEmpty()) {
             try {
                 int id = Integer.parseInt(idStr);
+                
                 if (image.equals("img/")) {
                     image = scd.getSeatCategoryById(id).getImage();
                 }
-                scd.updateSeatCategory(new SeatCategory(id, name, numberOfSeat, image, info, planeCategoryId));
+                scd.updateSeatCategory(new SeatCategory(id, name, numberOfSeat, image, info, surcharge, planeCategoryId, statusId));
                 response.sendRedirect("planeCategoryController");
             } catch (Exception e) {
             }
         } else {
-            scd.addSeatCategory(new SeatCategory(name, numberOfSeat, image, info, planeCategoryId));
+            scd.addSeatCategory(new SeatCategory(name, numberOfSeat, image, info, surcharge, planeCategoryId,1));
             response.sendRedirect("planeCategoryController");
         }
 

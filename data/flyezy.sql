@@ -156,11 +156,18 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Baggages` (
   `weight` FLOAT NULL DEFAULT NULL,
   `price` INT NULL DEFAULT NULL,
   `Airlineid` INT NOT NULL,
+  `Status_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `FKBaggages227358` (`Airlineid` ASC) VISIBLE,
+  INDEX `fk_Baggages_Status1_idx` (`Status_id` ASC) VISIBLE,
   CONSTRAINT `FKBaggages227358`
     FOREIGN KEY (`Airlineid`)
-    REFERENCES `flyezy`.`Airline` (`id`))
+    REFERENCES `flyezy`.`Airline` (`id`),
+  CONSTRAINT `fk_Baggages_Status1`
+    FOREIGN KEY (`Status_id`)
+    REFERENCES `flyezy`.`Status` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 AUTO_INCREMENT = 4
 DEFAULT CHARACTER SET = utf8mb4
@@ -503,11 +510,35 @@ INSERT INTO `Accounts` VALUES
 (1,'Ngô Tùng Dương','duongnthe186310@fpt.edu.vn','KIymfC4XfLDNFnygtZuXNQ==','0862521226','','img/avatar.jpg','2004-11-16',1,3,'2024-09-23 14:07:56','2024-09-23 14:20:15', 1),
 (2,'Hồ Trần Quân','abc@gmail.com','KIymfC4XfLDNFnygtZuXNQ==','0123','','img/jack.png','2024-09-18',2,2,'2024-09-23 14:19:19',NULL, 1);
 
-INSERT INTO `Plane_Category` VALUES 
-(1,'Airbus A321CEO','img/Airbus A321CEO.png',3,NULL, 1),
-(2,'Airbus A320NEO','img/Airbus A320NEO.png',3,NULL, 1),
-(3,'Airbus A320CEO','img/Airbus A320CEO.png',3,NULL, 1),
-(4,'Airbus A321','img/vnairline-AIRBUS A321.png',3,NULL, 1);
+INSERT INTO Plane_Category 
+VALUES 
+  (1,'Airbus A321CEO','img/Airbus A321CEO.png',3,NULL,1),
+  (2,'Airbus A320NEO','img/Airbus A320NEO.png',3,NULL,1),
+  (3,'Airbus A320CEO','img/Airbus A320CEO.png',3,NULL,1),
+  (4,'Airbus A321','img/vnairline-AIRBUS A321.png',2,'<p>Nhà sản xuất: Airbus</p><p>Khoảng cách tối đa (km): 5.600 km</p><p>Vận tốc (km/h): 950 km/h</p><p>Số ghế (*): 184</p><p>Tổng chiều dài: 44,51 m</p><p>Sải cánh: 34,1 m</p><p>Chiều cao: 11,76 m</p>',1),
+  (5,'BOEING 787','img/vnairline-BOEING 787.png',2,'<p>Nhà sản xuất: Boeing</p><p>Khoảng cách tối đa (km): 15.750 km</p><p>Vận tốc (km/h): 954 km/h</p><p>Tổng chiều dài: 63.73 m</p><p>Sải cánh: 60.93 m</p><p>Chiều cao: 18.76 m</p>',1),
+  (6,'AIRBUS A350','img/vnairline-AIRBUS A350.png',2,'<p>Nhà sản xuất: Airbus</p><p>Khoảng cách tối đa (km): 14.350 km</p><p>Vận tốc (km/h): 901 km/h</p><p>Tổng chiều dài: 66.89 m</p><p>Sải cánh: 64.75 m</p><p>Chiều cao: 17.05 m</p>',1),
+  (7,'AIRBUS A320 NEO','img/vnairline-AIRBUS A320 NEO.png',2,'<p>Nhà sản xuất: Airbus</p><p>Khoảng cách tối đa (km): 6.300 km</p><p>Vận tốc (km/h): 1.005 km/h</p><p>Tổng chiều dài: 37,57 m</p><p>Sải cánh: 35,8 m</p><p>Chiều cao: 11,76 m</p>',1);
+
+INSERT INTO Seat_Category 
+VALUES 
+  (1,'Economy',184,'img/bamboo-economy.jpg',1,NULL,NULL,1),
+  (2,'Business',8,'img/bamboo-business.jpg',1,NULL,NULL,1),
+  (3,'Economy',168,'img/bamboo-economy.jpg',2,NULL,NULL,1),
+  (4,'Business',8,'img/bamboo-business.jpg',2,NULL,NULL,1),
+  (5,'Economy',162,'img/bamboo-economy.jpg',3,NULL,NULL,1),
+  (6,'Business',8,'img/bamboo-business.jpg',3,NULL,NULL,1),
+  (7,'Hạng Thương Gia',16,'img/vnairline-A321-Business.png',4,'',NULL,1),
+  (8,'Hạng Phổ Thông',162,'img/vnairline-A321-GhePhoThong.png',4,NULL,NULL,1),
+  (9,'Hạng Thương Gia',28,'img/vnairline-B787-GheThuongGia.png',5,NULL,NULL,1),
+  (10,'Hạng Phổ Thông Đặc Biệt',35,'img/vnairline-B787-GhePhoThongDacBiet.png',5,NULL,NULL,1),
+  (11,'Hạng Phổ Thông',211,'img/vnairline-B787-GhePhoThong.png',5,NULL,NULL,1),
+  (12,'Hạng Thương Gia',29,'img/vnairline-A350-GheThuongGia.png',6,NULL,NULL,1),
+  (13,'Hạng Phổ Thông Đặc Biệt',45,'img/vnairline-A350-GhePhoThongDacBiet.png',6,NULL,NULL,1),
+  (14,'Hạng Phổ Thông',231,'img/vnairline-A350-GhePhoThong.png',6,NULL,NULL,1),
+  (15,'Hạng Thương Gia',8,'img/vnairline-A320neo-Thuong gia.png',7,NULL,NULL,1),
+  (16,'Hạng Phổ Thông',180,'img/vnairline-A320neo-PhoThong.png',7,NULL,NULL,1);
+
 
 INSERT INTO Country (id,name)
 VALUES
@@ -524,7 +555,7 @@ VALUES
     (5,'Seoul', 3),
     (6,'Busan', 3);
 
-INSERT INTO Airport (id,name, Location_id)
+INSERT INTO Airport (id,name, Locationid)
 VALUES
     (1,'Nội Bài International Airport', 1),
     (2,'Tân Sơn Nhất International Airport', 2),
@@ -532,3 +563,5 @@ VALUES
     (4,'Kansai International Airport', 4),
     (5,'Incheon International Airport', 5),
     (6,'Gimhae International Airport', 6);
+
+
