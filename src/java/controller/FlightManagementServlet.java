@@ -80,14 +80,14 @@ public class FlightManagementServlet extends HttpServlet {
         String action = request.getParameter("action");
         if (action == null) {
             String sql = "select f.id,f.minutes,a1.name as departureAirport,l1.name as departureLocation,c1.name as departureCountry,\n"
-                    + "a2.name as destinationAirport,l2.name as destinationLocation, c2.name as destinationCountry,  s.name as status, f.departureAirportid, f.destinationAirportid, f.Status_id  from flyezy.flight as f\n"
-                    + "inner join flyezy.airport as a1 on a1.id = f.departureAirportid\n"
-                    + "inner join flyezy.airport as a2 on a2.id = f.destinationAirportid\n"
-                    + "inner join location as l1 on l1.id = a1.locationid\n"
-                    + "inner join country as c1 on c1.id = l1.country_id\n"
-                    + "inner join location as l2 on l2.id = a2.locationid\n"
-                    + "inner join country as c2 on c2.id = l2.country_id\n"
-                    + "inner join status as s on s.id = f.Status_id;";
+                    + "a2.name as destinationAirport,l2.name as destinationLocation, c2.name as destinationCountry,  s.name as status, f.departureAirportid, f.destinationAirportid, f.Status_id  from flyezy.Flight as f\n"
+                    + "inner join flyezy.Airport as a1 on a1.id = f.departureAirportid\n"
+                    + "inner join flyezy.Airport as a2 on a2.id = f.destinationAirportid\n"
+                    + "inner join Location as l1 on l1.id = a1.locationid\n"
+                    + "inner join Country as c1 on c1.id = l1.country_id\n"
+                    + "inner join Location as l2 on l2.id = a2.locationid\n"
+                    + "inner join Country as c2 on c2.id = l2.country_id\n"
+                    + "inner join Status as s on s.id = f.Status_id;";
             rsFlightManage = fmd.getData(sql);
         } else {
             String departureAirport = request.getParameter("departureAirport");
@@ -107,18 +107,21 @@ public class FlightManagementServlet extends HttpServlet {
                     + "       f.destinationAirportid,\n"
                     + "       f.Status_id\n"
                     + "FROM flyezy.flight AS f\n"
-                    + "INNER JOIN flyezy.airport AS a1 ON a1.id = f.departureAirportid\n"
-                    + "INNER JOIN flyezy.airport AS a2 ON a2.id = f.destinationAirportid\n"
-                    + "INNER JOIN location AS l1 ON l1.id = a1.locationid\n"
-                    + "INNER JOIN country AS c1 ON c1.id = l1.country_id\n"
-                    + "INNER JOIN location AS l2 ON l2.id = a2.locationid\n"
-                    + "INNER JOIN country AS c2 ON c2.id = l2.country_id\n"
-                    + "INNER JOIN status AS s ON s.id = f.Status_id\n"
+                    + "INNER JOIN flyezy.Airport AS a1 ON a1.id = f.departureAirportid\n"
+                    + "INNER JOIN flyezy.Airport AS a2 ON a2.id = f.destinationAirportid\n"
+                    + "INNER JOIN Location AS l1 ON l1.id = a1.locationid\n"
+                    + "INNER JOIN Country AS c1 ON c1.id = l1.country_id\n"
+                    + "INNER JOIN Location AS l2 ON l2.id = a2.locationid\n"
+                    + "INNER JOIN Country AS c2 ON c2.id = l2.country_id\n"
+                    + "INNER JOIN Status AS s ON s.id = f.Status_id\n"
                     + "WHERE a1.name LIKE '%" + departureAirport + "%' and a2.name LIKE '%" + destinationAirport + "%' and "
                     + "c1.name LIKE '%" + departureCountry + "%' and c2.name LIKE '%" + destinationCountry + "%';";
             rsFlightManage = fmd.getData(sql);
         }
         request.setAttribute("rsFlightManage", rsFlightManage);
+        List<Airport> listA = ad.getAllAirport();
+        request.setAttribute("listA", listA);
+        
         request.getRequestDispatcher("view/flightManagement.jsp").forward(request, response);
 
            

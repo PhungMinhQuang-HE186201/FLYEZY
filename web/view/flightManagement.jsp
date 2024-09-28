@@ -16,16 +16,7 @@
 <!DOCTYPE html>
 
 <html>
-    <%
-      
-      ResultSet rsFlightManage;
 
-if (request.getAttribute("rsFlightManage") != null) {
-    rsFlightManage = (ResultSet) request.getAttribute("rsFlightManage");
-} else {
-    rsFlightManage = null;
-}
-    %>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Quản lý loại máy bay</title>
@@ -46,8 +37,6 @@ if (request.getAttribute("rsFlightManage") != null) {
     <body>
         <%@include file="header.jsp" %>
         <%@include file="admin-sideBar.jsp" %>
-
-
         <div class="modal fade" id="addAirline" tabindex="-1" role="dialog" aria-labelledby="addModal" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -142,8 +131,14 @@ if (request.getAttribute("rsFlightManage") != null) {
                             </tr>
                         </thead> 
                         <tbody>
-
-                            <%while(rsFlightManage.next()) {%>
+                            <%
+                            ResultSet rsFlightManage;
+                            if (request.getAttribute("rsFlightManage") != null) {
+                                rsFlightManage = (ResultSet) request.getAttribute("rsFlightManage");
+                            } else {
+                                rsFlightManage = null;
+                            }
+                            while(rsFlightManage != null && rsFlightManage.next()) {%>
                             <tr>
                                 <td style="background-color:  <%= (rsFlightManage.getInt(12) == 1) ? "" : "#ccc" %>" ><%=rsFlightManage.getString(3)%></td>
                                 <td style="background-color:  <%= (rsFlightManage.getInt(12) == 1) ? "" : "#ccc" %>"><%=rsFlightManage.getString(4)%></td>
@@ -160,7 +155,7 @@ if (request.getAttribute("rsFlightManage") != null) {
                                     <button class="btn btn-danger" data-toggle="modal" data-target="#changeActive-airline-<%=rsFlightManage.getInt(1) %>">Deactivated</button>
                                     <%}%>
 
-                                    <!--                                  Change active -->
+                                    <!-- Change active -->
                                     <div class="modal fade" id="changeActive-airline-<%=rsFlightManage.getInt(1) %>" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog" role="document">
                                             <div class="modal-content">
@@ -205,12 +200,6 @@ if (request.getAttribute("rsFlightManage") != null) {
                                 </td>
                                 <td style="background-color:  <%= (rsFlightManage.getInt(12) == 1) ? "" : "#ccc" %>">  
                                     <button class="btn btn-info" data-toggle="modal" data-target="#update-flight-<%=rsFlightManage.getInt(1) %>">Update</button>
-
-
-
-
-
-
 
                                     <!--update-->
                                     <div class="modal fade" id="update-flight-<%=rsFlightManage.getInt(1) %>" tabindex="-1" role="dialog" aria-hidden="true">

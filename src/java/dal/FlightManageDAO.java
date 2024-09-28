@@ -42,7 +42,7 @@ public class FlightManageDAO extends DBConnect {
     public int createFlight(Flights flight) {
         int n = 0;
         String sql = """
-                 INSERT INTO `flyezy`.`flight`
+                 INSERT INTO `flyezy`.`Flight`
                  (
                  `minutes`,
                  `departureAirportid`,
@@ -66,7 +66,7 @@ public class FlightManageDAO extends DBConnect {
     }
 
     public void updateFlight(Flights flight) {
-        String sql = "UPDATE `flyezy`.`flight`\n"
+        String sql = "UPDATE `flyezy`.`Flight`\n"
                 + "SET\n"
                 + "`minutes` = ?,\n"
                 + "`departureAirportid` = ?,\n"
@@ -86,7 +86,7 @@ public class FlightManageDAO extends DBConnect {
     }
 
     public void changeStatus(int id, int newStatus) {
-        String sqlupdate = "UPDATE flight\n"
+        String sqlupdate = "UPDATE Flight\n"
                 + "                SET\n"
                 + "                Status_id = ?\n"
                 + "                WHERE id =?";
@@ -102,7 +102,7 @@ public class FlightManageDAO extends DBConnect {
 
     public static void main(String[] args) {
         FlightManageDAO dao = new FlightManageDAO();
-        int n = dao.createFlight(new Flights(30, 1, 2));
+        System.out.println(dao.getAllFlights());
     }
 
 }
