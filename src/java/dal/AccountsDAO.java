@@ -206,9 +206,9 @@ public class AccountsDAO extends DBConnect {
         int n = 0;
         String sql = """
                  INSERT INTO Accounts 
-                     (name, email, password, phoneNumber, address, image, dob, Rolesid,created_at,Airlineid) 
+                     (name, email, password, phoneNumber, address, image, dob, Rolesid,created_at,Airlineid,Status_id) 
                  VALUES 
-                 (?,?,?,?,?,?,?,?,?,?)""";
+                 (?,?,?,?,?,?,?,?,?,?,?)""";
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -227,6 +227,7 @@ public class AccountsDAO extends DBConnect {
             ps.setInt(8, accounts.getRoleId());
             ps.setTimestamp(9, accounts.getCreated_at());
             ps.setInt(10, accounts.getAirlineId());
+            ps.setInt(11,accounts.getStatus_id());
             n = ps.executeUpdate();
         } catch (Exception ex) {
             ex.printStackTrace();

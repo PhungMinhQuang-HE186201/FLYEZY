@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import dal.AccountsDAO;
 import dal.RolesDAO;
 import dal.AirlineManageDAO;
+import dal.StatusDAO;
 import jakarta.servlet.http.HttpSession;
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -21,6 +22,7 @@ import java.util.List;
 import model.Accounts;
 import model.Roles;
 import model.Airline;
+import model.Status;
 
 /**
  *
@@ -61,6 +63,7 @@ public class AccountControllerServlet extends HttpServlet {
             throws ServletException, IOException {
         AccountsDAO ad = new AccountsDAO();
         RolesDAO rd = new RolesDAO();
+        StatusDAO st = new StatusDAO();
         AirlineManageDAO amd = new AirlineManageDAO();
         HttpSession session = request.getSession();
 
@@ -74,6 +77,9 @@ public class AccountControllerServlet extends HttpServlet {
 
         List<Airline> airlineList = amd.getAllAirline();
         request.setAttribute("airlineList", airlineList);
+
+        List<Status> StatusID_list = st.getAllStatusID();
+        request.setAttribute("StatusList", StatusID_list);
 
         String action = request.getParameter("action");
         if (action == null) {
@@ -142,7 +148,7 @@ public class AccountControllerServlet extends HttpServlet {
                 int airlineID = Integer.parseInt(airlineIDStr);
                 Date dob = Date.valueOf(dobStr);
 
-                Accounts newAcc = new Accounts(name, email, password, phoneNumber, address, image, dob, roleId, airlineID, new Timestamp(System.currentTimeMillis()));
+                Accounts newAcc = new Accounts(name, email, password, phoneNumber, address, image, dob, roleId, airlineID, new Timestamp(System.currentTimeMillis()), 1);
                 boolean check = ad.checkAccount(newAcc);
                 if (check == true) {
                     int n = ad.createAccount(newAcc);

@@ -5,36 +5,51 @@
 package dal;
 
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import model.Flights;
 import model.Status;
 
 /**
  *
- * @author user
+ * @author PMQUANG
  */
 public class StatusDAO extends DBConnect {
 
-    public String getStatusById(int id) {
-        String sql = "SELECT name FROM Status WHERE id = ?";
-
+    public List<Status> getAllStatus() {
+        List<Status> list = new ArrayList<>();
+        String sql = "select * from Status";
         try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getString("name");
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            ResultSet resultSet = prepare.executeQuery();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                list.add(new Status(id, name));
             }
-        } catch (Exception e) {
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
         }
-        return null;
+        return list;
     }
 
+    public String getStatusNameById(int id) {
+        String sql = "SELECT name FROM Status WHERE id = ?";
+        String name = null;
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            prepare.setInt(1, id);  // Đặt giá trị id vào câu lệnh SQL
+            ResultSet resultSet = prepare.executeQuery();
+            if (resultSet.next()) {
+                name = resultSet.getString("name");  // Lấy tên từ kết quả truy vấn
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return name;  // Trả về tên, nếu không có giá trị sẽ trả về null
+    }
     public List<Status> getStatusOfFlight() {
         List<Status> list = new ArrayList<>();
         String sql = "select * from Status where id = 1 or id = 2 ";
@@ -53,6 +68,9 @@ public class StatusDAO extends DBConnect {
         }
         return list;    
     }
-    
+    public static void main(String[] args) {
+        StatusDAO dao = new StatusDAO();
+//        System.out.println(dao.getAllStatus());
+        System.out.println(dao.getStatusNameById(0));
+    } 
 }
-    

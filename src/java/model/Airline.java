@@ -13,6 +13,7 @@ public class Airline {
     private String name;
     private String image;
     private String info;
+    private int statusId;
 
     public Airline(int id) {
         this.id = id;
@@ -41,6 +42,14 @@ public class Airline {
         this.name = name;
         this.image = image;
         this.info = info;
+    }
+
+    public Airline(int id, String name, String image, String info, int statusId) {
+        this.id = id;
+        this.name = name;
+        this.image = image;
+        this.info = info;
+        this.statusId = statusId;
     }
 
     public int getId() {
@@ -75,9 +84,19 @@ public class Airline {
         this.info = info;
     }
 
+    public int getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(int statusId) {
+        this.statusId = statusId;
+    }
+
     @Override
     public String toString() {
-        return "Airline{" + "id=" + id + ", name=" + name + ", image=" + image + ", info=" + info + '}';
+        return "Airline{" + "id=" + id + ", name=" + name + ", image=" + image + ", info=" + info + ", statusId=" + statusId + '}';
     }
+
+
 
 }

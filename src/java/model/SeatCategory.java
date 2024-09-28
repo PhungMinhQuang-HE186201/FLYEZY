@@ -14,26 +14,32 @@ public class SeatCategory {
     private int numberOfSeat;
     private String image;
     private String info;
+    private float surcharge;
     private int Plane_Categoryid;
+    private int statusId;
 
     public SeatCategory() {
     }
 
-    public SeatCategory(String name, int numberOfSeat, String image, String info, int Plane_Categoryid) {
+    public SeatCategory(String name, int numberOfSeat, String image, String info, float surcharge, int Plane_Categoryid, int statusId) {
         this.name = name;
         this.numberOfSeat = numberOfSeat;
         this.image = image;
         this.info = info;
+        this.surcharge = surcharge;
         this.Plane_Categoryid = Plane_Categoryid;
+        this.statusId = statusId;
     }
 
-    public SeatCategory(int id, String name, int numberOfSeat, String image, String info, int Plane_Categoryid) {
+    public SeatCategory(int id, String name, int numberOfSeat, String image, String info, float surcharge, int Plane_Categoryid, int statusId) {
         this.id = id;
         this.name = name;
         this.numberOfSeat = numberOfSeat;
         this.image = image;
         this.info = info;
+        this.surcharge = surcharge;
         this.Plane_Categoryid = Plane_Categoryid;
+        this.statusId = statusId;
     }
 
     public int getId() {
@@ -82,6 +88,22 @@ public class SeatCategory {
 
     public void setInfo(String info) {
         this.info = info;
+    }
+
+    public float getSurcharge() {
+        return surcharge;
+    }
+
+    public void setSurcharge(float surcharge) {
+        this.surcharge = surcharge;
+    }
+
+    public int getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(int statusId) {
+        this.statusId = statusId;
     }
     
     

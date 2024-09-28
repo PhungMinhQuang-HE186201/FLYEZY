@@ -8,6 +8,7 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page import="dal.RolesDAO"%>
 <%@page import="model.Roles"%>
+<%@page import="model.Status"%>
 <%@page import="model.Airline"%>
 <%@page import="static controller.EncodeController.SECRET_KEY" %>
 <%@page import="java.util.List"%>
@@ -107,7 +108,7 @@
 
                                             </select>
                                         </div>
-
+                                       
                                         <div class="form-group col-md-6">
                                             <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Airline:</label></div>
                                             <select name="airlineID" value="" style="height:  34px">
@@ -229,20 +230,19 @@
                                                         <select name="roleId" value="<%= list.getRoleId() %>" style="height:  34px">
                                                             <%
                                                             for(Roles role : rolesList){%>
-                                                               <option value="<%=role.getId()%>" <%= (list.getRoleId() == role.getId()) ? "selected" : "" %>><%=role.getName()%></option>
+                                                            <option value="<%=role.getId()%>" <%= (list.getRoleId() == role.getId()) ? "selected" : "" %>><%=role.getName()%></option>
                                                             <%}%>
                                                         </select>
                                                     </div>
                                                     <div class="form-group col-md-6">
                                                         <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Role:</label></div>
-                                                        <select name="airlineID" value="<%= list.getAirlineId() %>" style="height:  34px">
+                                                        <select name="airlineID" value="<%= list.getAirlineId()%>" style="height:  34px">
                                                             <%
                                                             for(Airline airline : airlineList){%>
-                                                               <option value="<%=airline.getId()%>" <%= (list.getAirlineId() == airline.getId()) ? "selected" : "" %>><%=airline.getName()%></option>
+                                                            <option value="<%=airline.getId()%>" <%= (list.getAirlineId() == airline.getId()) ? "selected" : "" %>><%=airline.getName()%></option>
                                                             <%}%>
                                                         </select>
                                                     </div>
-
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="name<%= list.getId() %>"><span class="glyphicon glyphicon-user"></span>Name:</label>
@@ -264,7 +264,7 @@
                                                     <input type="email" class="form-control" name="email" value="<%= list.getEmail() %>" readonly>
                                                 </div>
                                                 <div class="form-group">
-<!--                                                    <label><span class="glyphicon glyphicon-eye-open"></span>Password:</label>-->
+                                                    <!--                                                    <label><span class="glyphicon glyphicon-eye-open"></span>Password:</label>-->
                                                     <input type="hidden" class="form-control" name="password" value="<%= rd.decryptAES(list.getPassword(),SECRET_KEY) %>">
                                                 </div>
 
@@ -363,6 +363,6 @@
                 reader.readAsDataURL(file);
             }
         </script>
-        
+
     </body>
 </html>

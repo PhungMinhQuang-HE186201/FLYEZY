@@ -7,6 +7,7 @@ package controller;
 import dal.AccountsDAO;
 import dal.AirlineManageDAO;
 import dal.BaggageManageDAO;
+import dal.StatusDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -17,6 +18,7 @@ import java.util.List;
 import model.Accounts;
 import model.Airline;
 import model.Baggages;
+import model.Status;
 
 /**
  *
@@ -26,6 +28,7 @@ public class DashboardAirlineServlet extends HttpServlet {
 
     AirlineManageDAO airlineManageDao = new AirlineManageDAO();
     BaggageManageDAO baggageManageDao = new BaggageManageDAO();
+    StatusDAO statusDao = new StatusDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -45,12 +48,28 @@ public class DashboardAirlineServlet extends HttpServlet {
         if (submit == null) {
             listAirline = airlineManageDao.getAllAirline();
         } else {
-            String keyword = request.getParameter("keyword").trim();
-            listAirline = airlineManageDao.getAirlineByName(keyword);
-        }
+            // Search for airlines based on keyword and status
+            String keyword = request.getParameter("keyword") != null ? request.getParameter("keyword").trim() : "";
+            String statusParam = request.getParameter("status");
+            Integer statusId = Integer.parseInt(statusParam);
 
+            // Ensure status is a valid integer
+            if (statusParam != null && !statusParam.isEmpty()) {
+                try {
+                    statusId = Integer.parseInt(statusParam);
+                } catch (NumberFormatException e) {
+                    // Log the error and handle it accordingly (e.g., set statusId to null or default)
+                    System.out.println("Invalid status ID format: " + e.getMessage());
+                }
+            }
+
+            // Fetch the airlines based on search criteria
+            listAirline = airlineManageDao.searchAirline(keyword, statusId);
+        }
+        List<Status> listStatus = statusDao.getAllStatus();
         request.setAttribute("listAirline", listAirline);
         request.setAttribute("listBaggage", listBaggage);
+        request.setAttribute("listStatus", listStatus);
 
         request.getRequestDispatcher("airlineManagement.jsp").forward(request, response);
     }

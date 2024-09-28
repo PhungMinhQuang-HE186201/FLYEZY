@@ -6,10 +6,11 @@ package dal;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import model.Roles;
-
+import model.Status;
 /**
  *
  * @author Admin
@@ -26,7 +27,7 @@ public class RolesDAO extends DBConnect {
                 ls.add(r);
             }
             return ls;
-        } catch (Exception e) {
+        } catch (SQLException e) {
         }
         return null;
     }
@@ -40,7 +41,8 @@ public class RolesDAO extends DBConnect {
             if(rs.next()){
                 return rs.getString("name");
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
         return null;
     }

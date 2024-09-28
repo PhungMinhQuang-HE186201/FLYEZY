@@ -80,14 +80,27 @@ public class PlaneCategoryControllerServlet extends HttpServlet {
             List<PlaneCategory> planeCategoryList = pcd.getAllPlaneCategoryByAirlineId(acc.getAirlineId());
             request.setAttribute("planeCategoryList", planeCategoryList);
             request.getRequestDispatcher("planeCategoryController.jsp").forward(request, response);
-        } else if (action.equals("remove")) { //ok
+        } else if (action.equals("changeStatus")) { //ok
             int id = Integer.parseInt(request.getParameter("id"));
-            scd.deleteAllSeatCategoryByPlaneCategoryId(id);
-            pcd.deletePlaneCategoryById(id);
+            if (pcd.getPlaneCategoryById(id).getStatusId() == 1) {
+                scd.deactivateAllSeatCategoryByPlaneCategoryId(id);
+                pcd.deactivatePlaneCategoryById(id);
+            } else {
+                scd.activateAllSeatCategoryByPlaneCategoryId(id);
+                pcd.activatePlaneCategoryById(id);
+            }
             response.sendRedirect("planeCategoryController");
         } else if (action.equals("search")) {
             String fName = request.getParameter("fName").trim();
-            List<PlaneCategory> accountList = pcd.searchPlaneCategory(fName,acc.getAirlineId());
+            String fStatus = request.getParameter("fStatus");
+            int fStatusId = -1;
+            if (fStatus != null) {
+                try {
+                    fStatusId = Integer.parseInt(fStatus);
+                } catch (Exception e) {
+                }
+            }
+            List<PlaneCategory> accountList = pcd.searchPlaneCategory(fName, fStatusId, acc.getAirlineId());
             request.setAttribute("planeCategoryList", accountList);
             request.getRequestDispatcher("planeCategoryController.jsp").forward(request, response);
         }
@@ -110,9 +123,12 @@ public class PlaneCategoryControllerServlet extends HttpServlet {
         String image = "img/" + request.getParameter("image");
         String info = request.getParameter("info");
         String airlineIdStr = request.getParameter("airlineId");
+        String statusIdStr = request.getParameter("status");
         int airlineId = 0;
+        int statusId = 1;
         try {
             airlineId = Integer.parseInt(airlineIdStr);
+            statusId = Integer.parseInt(statusIdStr);
         } catch (Exception e) {
         }
         if (idStr != null && !idStr.isEmpty()) {
@@ -121,14 +137,14 @@ public class PlaneCategoryControllerServlet extends HttpServlet {
                 if (image.equals("img/")) {
                     image = pcd.getPlaneCategoryById(id).getImage();
                 }
-                PlaneCategory pc = new PlaneCategory(id, name, image, info, airlineId);
+                PlaneCategory pc = new PlaneCategory(id, name, image, info, airlineId, statusId);
                 pcd.updatePlaneCategoryById(pc);
                 response.sendRedirect("planeCategoryController");
             } catch (Exception e) {
                 response.sendRedirect("home");
             }
         } else {
-            PlaneCategory pc = new PlaneCategory(name, image, info, airlineId);
+            PlaneCategory pc = new PlaneCategory(name, image, info, airlineId, statusId);
             pcd.addPlaneCategory(pc);
             response.sendRedirect("planeCategoryController");
         }

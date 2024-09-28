@@ -30,26 +30,44 @@ public class AirlineManageDAO extends DBConnect {
                 String name = resultSet.getString("name");
                 String image = resultSet.getString("image");
                 String info = resultSet.getString("info");
-                list.add(new Airline(id, name, image,info));
+                int statusId = resultSet.getInt("Status_id");
+                list.add(new Airline(id, name, image, info, statusId));
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
         return list;
     }
-    public String getNameById(int id){
+
+    public String getNameById(int id) {
         String sql = "select * from Airline where id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 return rs.getString("name");
             }
         } catch (Exception e) {
         }
         return null;
     }
+
+    public int getStatusById(int id) {
+        String sql = "select * from Airline where id = ?";
+        int statusId = -1;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("Status_id");
+            }
+        } catch (Exception e) {
+        }
+        return statusId;
+    }
+
     public Airline getAirlineById(int id) {
         List<Airline> list = new ArrayList<>();
         String sql = "select * from Airline where id = ?";
@@ -62,7 +80,8 @@ public class AirlineManageDAO extends DBConnect {
                 String name = resultSet.getString("name");
                 String image = resultSet.getString("image");
                 String info = resultSet.getString("info");
-                list.add(new Airline(id, name, image,info));
+                int statusId = resultSet.getInt("Status_id");
+                list.add(new Airline(id, name, image, info, statusId));
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -70,31 +89,74 @@ public class AirlineManageDAO extends DBConnect {
         return list.get(0);
     }
 
-    public List<Airline> getAirlineByName(String name) {
+    public List<Airline> searchAirline(String name, Integer statusId) {
         List<Airline> list = new ArrayList<>();
-        String sql = "SELECT * FROM Airline WHERE name LIKE ?";
+        StringBuilder sql = new StringBuilder("SELECT * FROM Airline WHERE 1=1"); // Base query
+
+        // Use a list to hold parameter values
+        List<Object> parameters = new ArrayList<>();
+
+        // Check if name is not null or empty
+        if (name != null && !name.isEmpty()) {
+            sql.append(" AND name LIKE ?");
+            parameters.add("%" + name + "%"); // Add the parameter for name
+        }
+
+        // Check if statusId is not null
+        if (statusId != null) {
+            sql.append(" AND Status_id = ?");
+            parameters.add(statusId); // Add the parameter for statusId
+        }
+
         try {
-            PreparedStatement prepare = conn.prepareStatement(sql);
-            // Sử dụng ? để chèn tham số an toàn
-            prepare.setString(1, "%" + name + "%");
+            PreparedStatement prepare = conn.prepareStatement(sql.toString());
+
+            // Set the parameters in the prepared statement
+            for (int i = 0; i < parameters.size(); i++) {
+                prepare.setObject(i + 1, parameters.get(i)); // Use setObject for dynamic types
+            }
+
             ResultSet resultSet = prepare.executeQuery();
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String airlineName = resultSet.getString("name");
                 String image = resultSet.getString("image");
                 String info = resultSet.getString("info");
-                list.add(new Airline(id, airlineName, image,info));
+                int status = resultSet.getInt("Status_id"); // Retrieve statusId from the result set
+                list.add(new Airline(id, airlineName, image, info, status));
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
-        // Kiểm tra danh sách không rỗng trước khi truy cập phần tử
-        if (!list.isEmpty()) {
-            return list;
-        } else {
-            // Xử lý trường hợp không tìm thấy
-            return null; // Hoặc ném exception tùy thuộc vào yêu cầu
+
+        // Return the list if not empty, otherwise null
+        return !list.isEmpty() ? list : null; // Or handle the case as needed
+    }
+
+    public List<Airline> getAirlineByStatusId(int statusId) {
+        List<Airline> list = new ArrayList<>();
+        String sql = "SELECT * FROM Airline WHERE Status_id = ?";
+
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            // Set the statusId parameter in the prepared statement
+            prepare.setInt(1, statusId);
+
+            ResultSet resultSet = prepare.executeQuery();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String airlineName = resultSet.getString("name");
+                String image = resultSet.getString("image");
+                String info = resultSet.getString("info");
+                // No need to set statusId again since we're filtering by it
+                list.add(new Airline(id, airlineName, image, info, statusId));
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
         }
+
+        // Return the list if not empty, otherwise null
+        return !list.isEmpty() ? list : null;
     }
 
     public List<Baggages> getAirlineBaggages(int airlineId) {
@@ -134,7 +196,7 @@ public class AirlineManageDAO extends DBConnect {
     }
 
     public int createAirline(Airline airline) {
-        String sql = "INSERT INTO Airline (name, image,info) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO Airline (name, image,info,Status_id) VALUES (?, ?, ?,1)";
         int generatedId = -1;  // Giá trị mặc định cho trường hợp không thể lấy được ID
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, airline.getName());
@@ -183,7 +245,7 @@ public class AirlineManageDAO extends DBConnect {
             PreparedStatement pre = conn.prepareStatement(sql);
             pre.setString(1, airline.getName());
             pre.setString(2, airline.getImage());
-             pre.setString(3, airline.getInfo());
+            pre.setString(3, airline.getInfo());
             pre.setInt(4, airline.getId());
             pre.executeUpdate();
 
@@ -192,15 +254,35 @@ public class AirlineManageDAO extends DBConnect {
         }
     }
 
+    public void changeStatus(int id, int statusId) {
+        // Kiểm tra nếu statusId chỉ là 1 hoặc 2
+        if (statusId == 1 || statusId == 2) {
+            String updateSql = "UPDATE `flyezy`.`airline`\n"
+                    + "SET\n"
+                    + "`Status_id` = ?\n"
+                    + "WHERE `id` = ?";
+            try (PreparedStatement pre = conn.prepareStatement(updateSql)) {
+                pre.setInt(1, statusId);
+                pre.setInt(2, id);
+                pre.executeUpdate();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            System.out.println("Invalid status ID. Status ID must be 1 or 2.");
+        }
+    }
+
     public static void main(String[] args) {
         AirlineManageDAO dao = new AirlineManageDAO();
 
-//        // Create Airline and Baggage objects
-//        Airline airline = new Airline(5, "ab", "ab.jpg","abc");
+////        // Create Airline and Baggage objects
+//        Airline airline = new Airline(5, "ab", "ab.jpg", "abc");
 //        int n = dao.createAirline(airline);
 //        System.out.println("n= " + n);
 //        dao.deleteAirline(228);
-        dao.updateAirline(new Airline(5, "abccc", "ab.jpg","abcccccc"));
+        dao.updateAirline(new Airline(9, "abccc", "ab.jpg", "abcccccc", 1));
+        dao.changeStatus(9, 2);
         for (Airline airline1 : dao.getAllAirline()) {
             System.out.println(airline1);
         }

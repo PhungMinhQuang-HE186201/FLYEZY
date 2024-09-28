@@ -8,6 +8,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page import="model.Airline"%>
 <%@page import="java.util.*" %>
+<%@page import="model.Status"%>
+<%@page import="dal.StatusDAO"%>
 <!DOCTYPE html>
 <html>  
     <head>
@@ -101,12 +103,22 @@
                 <!-- Search bar -->
                 <div style="max-width: 60%;">
                     <form action="airlineController" method="GET" style="display: flex; width: 50%; align-items: center;">
-                        <input type="hidden" name="search" value="searchByName">
+                        <input type="hidden" name="search" value="search">
                         <strong>Name: </strong>
                         <input class="filterElm" type="text" placeholder="Airline Name ..." name="keyword" style="margin-left:5px"/>
+                        <strong class="filterElm">Status:</strong>
+                        <select class="filterElm" name="status">
+                            <option value="" ${param.status == null ? 'selected' : ''}>All</option>
+                            <c:set var="counter" value="0" />
+                            <c:forEach items="${requestScope.listStatus}" var="status">
+                                <c:if test="${counter < 2}">
+                                    <option value="${status.id}" ${param.status != null && (param.status == status.id) ? 'selected' : ''}>${status.name}</option>
+                                    <c:set var="counter" value="${counter + 1}" />
+                                </c:if>
+                            </c:forEach>
+                        </select>
                         <input type="submit" class="btn btn-info" name="submit" value="Search" style="margin-right: 5px">
                         <input type="reset" class="btn btn-danger" value="Cancle">
-                        <input type="hidden" name="service" value="listStaff">
                     </form>
                 </div>
 
@@ -115,6 +127,9 @@
                     Add New Airline
                 </button>
             </div>
+            <% StatusDAO statusDao = new StatusDAO();
+            
+            %>
             <div class="row" style="margin: 0">
 
                 <div class="col-md-10" id="left-column" style="padding: 0; margin-top: 10px">
@@ -124,6 +139,7 @@
                                 <th>Name</th>
                                 <th>Image</th>
                                 <th>Information</th>
+                                <th>Status</th>
                                 <th style="min-width: 156px">Actions</th>
                             </tr>
                         </thead>
@@ -140,16 +156,29 @@
                                             ${airline.getInfo()}
                                         </div>
                                     </td>
+
+                                    <td name="status"> 
+                                        <c:forEach items="${requestScope.listStatus}" var="status">
+                                            <c:if test="${status.getId() == airline.getStatusId()}">
+                                                <c:if test="${airline.getStatusId() == 1}">
+                                                    <button class="btn btn-success" data-toggle="modal" data-target="#changeActive-airline-${airline.getId()}">Activate</button>
+                                                </c:if>
+                                                <c:if test="${airline.getStatusId() == 2}">
+                                                    <button class="btn btn-danger" data-toggle="modal" data-target="#changeActive-airline-${airline.getId()}">Deactivate</button>
+                                                </c:if>
+                                            </c:if>
+                                        </c:forEach>
+                                    </td>
+
                                     <td>
                                         <button class="btn btn-info" data-toggle="modal" data-target="#update-airline-${airline.getId()}">Update</button>
-                                        <button class="btn btn-danger" data-toggle="modal" data-target="#delete-airline-${airline.getId()}">Delete</button>
                                         <button class="btn btn-warning" onclick="toggleBaggageDetails(${airline.id})">Baggage Detail
                                             <span id="arrow${airline.id}" style="margin-left: 8px" class="glyphicon glyphicon-menu-down"></span>
                                         </button>
                                     </td>
                                 </tr>
-                                <!--delete airline modal-->
-                            <div class="modal fade" id="delete-airline-${airline.getId()}" tabindex="-1" role="dialog" aria-labelledby="delete-modal-label" aria-hidden="true">
+                                <!--change status airline modal-->
+                            <div class="modal fade" id="changeActive-airline-${airline.getId()}" tabindex="-1" role="dialog" aria-labelledby="delete-modal-label" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -158,17 +187,32 @@
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
-                                        <div class="modal-body">
-                                            <p>Are you sure to delete this airline(All the baggages of this airline will remove too)?</p>
-                                        </div>
+                                        <c:if test="${airline.getStatusId() == 1}">
+                                            <div class="modal-body">
+                                                <p>Do you want to deactivate this airline?</p>
+                                            </div>
+                                        </c:if>
+                                        <c:if test="${airline.getStatusId() == 2}">
+                                            <div class="modal-body">
+                                                <p>Do you want to reactivate this airline?</p>
+                                            </div>
+                                        </c:if>
                                         <div class="modal-footer">
                                             <form action="airlineManagement" method="POST">
-                                                <input type="hidden" name="action" value="delete">
+                                                <input type="hidden" name="action" value="changeStatus">
                                                 <div class="form-group" style="display: none">
                                                     <input type="text" class="form-control" id="idDeleteInput" name="airlineId" value="${airline.getId()}">
                                                 </div>
+                                                <div class="form-group" style="display: none">
+                                                    <input type="text" class="form-control" id="idDeleteInput" name="airlineStatus" value="${airline.getStatusId()}">
+                                                </div>
                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                                                <button type="submit" class="btn btn-danger">Yes</button>
+                                                <c:if test="${airline.getStatusId() == 1}">
+                                                    <button type="submit" class="btn btn-danger">Yes</button>
+                                                </c:if>
+                                                <c:if test="${airline.getStatusId() == 2}">
+                                                    <button type="submit" class="btn btn-success">Yes</button>
+                                                </c:if>
                                             </form>
                                         </div>
                                     </div>
@@ -214,7 +258,7 @@
                                                     <div class="editor-container">
                                                         <textarea class="editor" name="airlineInfo">${airline.getInfo()}</textarea>
                                                     </div>
-                                                </div>  
+                                                </div>
                                                 <input type="hidden" value="${airline.getId()}" name="airlineId">
                                                 <div style="text-align: right;">
                                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -247,6 +291,7 @@
                                                     <th>No</th>
                                                     <th>Weight</th>
                                                     <th>Price</th>
+                                                    <th>Status</th>
                                                     <th style="min-width: 156px">Actions</th>
                                                 </tr>
                                             </thead>
@@ -260,16 +305,25 @@
                                                             <td>${baggage.getWeight()}</td>
                                                             <td>${baggage.getPrice()}</td>
                                                             <td>
+                                                                <c:forEach items="${requestScope.listStatus}" var="status">
+                                                                    <c:if test="${status.getId() == baggage.getStatusId()}">
+                                                                        <c:if test="${baggage.getStatusId() == 1}">
+                                                                            <button class="btn btn-success" data-toggle="modal" data-target="#changeActive-baggage-${baggage.getId()}">Activate</button>
+                                                                        </c:if>
+                                                                        <c:if test="${baggage.getStatusId() == 2}">
+                                                                            <button class="btn btn-danger" data-toggle="modal" data-target="#changeActive-baggage-${baggage.getId()}">Deactivate</button>
+                                                                        </c:if>
+                                                                    </c:if>
+                                                                </c:forEach>
+                                                            </td>
+                                                            <td>
                                                                 <button 
                                                                     class="btn btn-info"
                                                                     data-toggle="modal" data-target="#update-baggage-${baggage.id}">Update</button>
-                                                                <button 
-                                                                    class="btn btn-danger"
-                                                                    data-toggle="modal" data-target="#delete-baggage-${baggage.id}">Delete</button>
                                                             </td>
                                                         </tr>
-                                                        <!--delete baggage modal-->
-                                                    <div class="modal fade" id="delete-baggage-${baggage.id}" tabindex="-1" role="dialog" aria-labelledby="delete-modal-label" aria-hidden="true">
+                                                        <!--change status baggage modal-->
+                                                    <div class="modal fade" id="changeActive-baggage-${baggage.id}" tabindex="-1" role="dialog" aria-labelledby="delete-modal-label" aria-hidden="true">
                                                         <div class="modal-dialog" role="document">
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
@@ -278,14 +332,24 @@
                                                                         <span aria-hidden="true">&times;</span>
                                                                     </button>
                                                                 </div>
-                                                                <div class="modal-body">
-                                                                    <p>Are you sure to delete this baggage?</p>
-                                                                </div>
+                                                                <c:if test="${baggage.getStatusId() == 1}">
+                                                                    <div class="modal-body">
+                                                                        <p>Do you want to deactivate this baggage?</p>
+                                                                    </div>
+                                                                </c:if>
+                                                                <c:if test="${baggage.getStatusId() == 2}">
+                                                                    <div class="modal-body">
+                                                                        <p>Do you want to reactivate this baggage?</p>
+                                                                    </div>
+                                                                </c:if>
                                                                 <div class="modal-footer">
                                                                     <form action="baggageManagement" method="POST">
-                                                                        <input type="hidden" name="action" value="delete">
+                                                                        <input type="hidden" name="action" value="changeStatus">
                                                                         <div class="form-group" style="display: none">
                                                                             <input type="text" class="form-control" id="idDeleteInput" name="baggageId" value="${baggage.id}">
+                                                                        </div>
+                                                                        <div class="form-group" style="display: none">
+                                                                            <input type="text" class="form-control" id="idDeleteInput" name="baggageStatus" value="${baggage.getStatusId()}">
                                                                         </div>
                                                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
                                                                         <button type="submit" class="btn btn-danger">Yes</button>

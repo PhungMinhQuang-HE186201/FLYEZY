@@ -25,11 +25,12 @@ public class Accounts {
     private int airlineId;
     private Timestamp created_at;
     private Timestamp updated_at;
+    private int Status_id;
 
     public Accounts() {
     }
 
-    public Accounts(String name, String email, String password, String phoneNumber, String address, String image, Date dob, int roleId, int airlineId, Timestamp created_at) {
+    public Accounts(String name, String email, String password, String phoneNumber, String address, String image, Date dob, int roleId, int airlineId, Timestamp created_at,int status_id) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -40,6 +41,7 @@ public class Accounts {
         this.roleId = roleId;
         this.airlineId = airlineId;
         this.created_at = created_at;
+        this.Status_id  = status_id;
     }
 
     public Accounts(int id, String name, String email, String password, String phoneNumber, String address, String image, Date dob, int roleId, int airlineId, Timestamp created_at, Timestamp updated_at) {
@@ -116,7 +118,7 @@ public class Accounts {
         this.airlineId = airlineId;
         this.created_at = created_at;
     }
-    public Accounts(String name, String email, String password, String phoneNumber, int roleId, int airlineID, Timestamp created_at) {
+    public Accounts(String name, String email, String password, String phoneNumber, int roleId, int airlineID, Timestamp created_at,int Status_id) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -124,8 +126,17 @@ public class Accounts {
         this.roleId = roleId;
         this.airlineId = airlineID;
         this.created_at = created_at;
+        this.Status_id = Status_id;
     }
 
+    public int getStatus_id() {
+        return Status_id;
+    }
+
+    public void setStatus_id(int Status_id) {
+        this.Status_id = Status_id;
+    }
+    
     public Timestamp getCreated_at() {
         return created_at;
     }
@@ -222,6 +233,7 @@ public class Accounts {
         this.airlineId = airlineId;
     }
 
+    
     @Override
     public String toString() {
         return "Accounts{" + "id=" + id + ", name=" + name + ", email=" + email + ", password=" + password + ", phoneNumber=" + phoneNumber + ", address=" + address + ", image=" + image + ", dob=" + dob + ", roleId=" + roleId + ", airlineId=" + airlineId + ", created_at=" + created_at + ", updated_at=" + updated_at + '}';
