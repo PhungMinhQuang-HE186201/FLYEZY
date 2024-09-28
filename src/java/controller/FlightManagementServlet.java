@@ -69,7 +69,7 @@ public class FlightManagementServlet extends HttpServlet {
                 + "inner join country as c2 on c2.id = l2.country_id;";
         ResultSet rsFlightManage = fmd.getData(sql);
         request.setAttribute("rsFlightManage", rsFlightManage);
-        request.getRequestDispatcher("flightManagement.jsp").forward(request, response);
+        request.getRequestDispatcher("view/flightManagement.jsp").forward(request, response);
 
            
     }

@@ -57,7 +57,7 @@ public class InfoUpdateServlet extends HttpServlet {
 //        int id = (int) session.getAttribute("id");
 //        Accounts acc = ad.getAccountsById(id);
 //        request.setAttribute("account", acc);
-//        request.getRequestDispatcher("viewProfile.jsp").forward(request, response);
+//        request.getRequestDispatcher("view/viewProfile.jsp").forward(request, response);
     }
 
     @Override

@@ -55,7 +55,7 @@ public class ChangePasswordServlet extends HttpServlet {
         int id = (int) session.getAttribute("id");
         Accounts acc = ad.getAccountsById(id);
         request.setAttribute("account", acc);
-        request.getRequestDispatcher("changePassword.jsp").forward(request, response);
+        request.getRequestDispatcher("view/changePassword.jsp").forward(request, response);
     }
 
     @Override

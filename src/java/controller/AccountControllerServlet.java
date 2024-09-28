@@ -22,7 +22,6 @@ import java.util.List;
 import model.Accounts;
 import model.Roles;
 import model.Airline;
-import model.Status;
 
 /**
  *
@@ -78,14 +77,11 @@ public class AccountControllerServlet extends HttpServlet {
         List<Airline> airlineList = amd.getAllAirline();
         request.setAttribute("airlineList", airlineList);
 
-        List<Status> StatusID_list = st.getAllStatusID();
-        request.setAttribute("StatusList", StatusID_list);
-
         String action = request.getParameter("action");
         if (action == null) {
             List<Accounts> accountList = ad.getAllAccounts();
             request.setAttribute("accountList", accountList);
-            request.getRequestDispatcher("accountController.jsp").forward(request, response);
+            request.getRequestDispatcher("view/accountController.jsp").forward(request, response);
         } else if (action.equals("remove")) { //ok
             int id = Integer.parseInt(request.getParameter("idAcc"));
             ad.removeAccount(id);
@@ -96,7 +92,7 @@ public class AccountControllerServlet extends HttpServlet {
             String fPhoneNumber = request.getParameter("fPhoneNumber").trim();
             List<Accounts> accountList = ad.searchAccounts(fRole, fName, fPhoneNumber);
             request.setAttribute("accountList", accountList);
-            request.getRequestDispatcher("accountController.jsp").forward(request, response);
+            request.getRequestDispatcher("view/accountController.jsp").forward(request, response);
         }
 
     }
@@ -169,7 +165,7 @@ public class AccountControllerServlet extends HttpServlet {
                     int i = (idd != null) ? idd : -1;
                     Accounts acc = ad.getAccountsById(i);
                     request.setAttribute("account", acc);
-                    request.getRequestDispatcher("accountController.jsp").forward(request, response);
+                    request.getRequestDispatcher("view/accountController.jsp").forward(request, response);
                 }
             }
         } catch (Exception e) {
