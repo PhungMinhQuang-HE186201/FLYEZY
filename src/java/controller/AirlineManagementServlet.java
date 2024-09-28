@@ -6,7 +6,6 @@ package controller;
 
 import dal.AirlineManageDAO;
 import dal.BaggageManageDAO;
-import dal.AccountsDAO;
 import dal.PlaneCategoryDAO;
 import dal.SeatCategoryDAO;
 import java.io.IOException;
@@ -25,7 +24,6 @@ public class AirlineManagementServlet extends HttpServlet {
 
     AirlineManageDAO airlineManageDao = new AirlineManageDAO();
     BaggageManageDAO baggageManageDao = new BaggageManageDAO();
-    AccountsDAO accountsDao = new AccountsDAO();
     PlaneCategoryDAO planeCategoryDao = new PlaneCategoryDAO();
     SeatCategoryDAO seatCategoryDao = new SeatCategoryDAO();
 

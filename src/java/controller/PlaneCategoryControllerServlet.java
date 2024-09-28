@@ -79,7 +79,7 @@ public class PlaneCategoryControllerServlet extends HttpServlet {
         if (action == null) {
             List<PlaneCategory> planeCategoryList = pcd.getAllPlaneCategoryByAirlineId(acc.getAirlineId());
             request.setAttribute("planeCategoryList", planeCategoryList);
-            request.getRequestDispatcher("planeCategoryController.jsp").forward(request, response);
+            request.getRequestDispatcher("view/planeCategoryController.jsp").forward(request, response);
         } else if (action.equals("changeStatus")) { //ok
             int id = Integer.parseInt(request.getParameter("id"));
             if (pcd.getPlaneCategoryById(id).getStatusId() == 1) {
@@ -102,7 +102,7 @@ public class PlaneCategoryControllerServlet extends HttpServlet {
             }
             List<PlaneCategory> accountList = pcd.searchPlaneCategory(fName, fStatusId, acc.getAirlineId());
             request.setAttribute("planeCategoryList", accountList);
-            request.getRequestDispatcher("planeCategoryController.jsp").forward(request, response);
+            request.getRequestDispatcher("view/planeCategoryController.jsp").forward(request, response);
         }
     }
 

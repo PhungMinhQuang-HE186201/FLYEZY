@@ -21,7 +21,7 @@
         </style>
     </head>
     <body>
-        <%@include file="header.jsp" %> 
+        <%@include file="view/header.jsp" %> 
          <%
             EncodeController ec = new EncodeController();
          %>

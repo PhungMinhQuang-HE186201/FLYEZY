@@ -56,7 +56,7 @@ public class ForgetPasswordServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       request.getRequestDispatcher("forgetPassword.jsp").forward(request, response);
+       request.getRequestDispatcher("view/forgetPassword.jsp").forward(request, response);
     }
 
     /**
@@ -78,7 +78,7 @@ public class ForgetPasswordServlet extends HttpServlet {
         //if email not exist show error 
         if (!ad.checkEmailExist(email)) {
             request.setAttribute("error", "Email của bạn không tồn tại!");
-            request.getRequestDispatcher("forgetPassword.jsp").forward(request, response);
+            request.getRequestDispatcher("view/forgetPassword.jsp").forward(request, response);
         } else {
             //get id from request to change password
             int id = ad.findIdByEmail(email);

@@ -60,7 +60,7 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("login.jsp").forward(request, response);
+        request.getRequestDispatcher("view/login.jsp").forward(request, response);
     }
 
     /**
@@ -104,13 +104,13 @@ public class LoginServlet extends HttpServlet {
             HttpSession session = request.getSession();
             if (!ld.checkUsername(u)) {
                 request.setAttribute("error", "Tài khoản của bạn không tồn tại!");
-                request.getRequestDispatcher("login.jsp").forward(request, response);
+                request.getRequestDispatcher("view/login.jsp").forward(request, response);
             } else if (!ld.checkPassword(u, encode)) {
                 request.setAttribute("error", "Mật khẩu của bạn không chính xác!");
-                request.getRequestDispatcher("login.jsp").forward(request, response);
+                request.getRequestDispatcher("view/login.jsp").forward(request, response);
             } else if (ld.checkStatus(u)) {
                 request.setAttribute("error", "Tài khoản của bạn đã bị khóa");
-                request.getRequestDispatcher("login.jsp").forward(request, response);
+                request.getRequestDispatcher("view/login.jsp").forward(request, response);
             } else {
 
                 int id = ad.getIdByEmailOrPhoneNumber(u);

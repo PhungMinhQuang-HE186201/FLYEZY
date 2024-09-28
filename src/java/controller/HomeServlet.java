@@ -67,7 +67,7 @@ public class HomeServlet extends HttpServlet {
         int i = (idd != null) ? idd : -1;
         Accounts acc = ad.getAccountsById(i);
         request.setAttribute("account", acc);
-        request.getRequestDispatcher("home.jsp").forward(request, response);
+        request.getRequestDispatcher("view/home.jsp").forward(request, response);
     }
 
     /**

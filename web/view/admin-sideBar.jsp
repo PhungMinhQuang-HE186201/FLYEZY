@@ -12,22 +12,22 @@ Admin --%> <%@page contentType="text/html" pageEncoding="UTF-8"%>
         <div id="sidebar">
             <ul>
                 <li>
-                    <a href="accountController" class="<%= currentPage.equals("/flyezy/accountController.jsp") ? "current-page" : "" %>">
+                    <a href="accountController" class="<%= currentPage.equals("/flyezy/view/accountController.jsp") ? "current-page" : "" %>">
                         Quản lý tài khoản 
                     </a>
                 </li>
                 <li>
-                    <a href="airlineController" class="<%= currentPage.equals("/flyezy/airlineManage.jsp") ? "current-page" : "" %>">
+                    <a href="airlineController" class="<%= currentPage.equals("/flyezy/view/airlineManage.jsp") ? "current-page" : "" %>">
                         Quản lý hãng hàng không
                     </a>
                 </li>
                 <li>
-                    <a href="planeCategoryController" class="<%= currentPage.equals("/flyezy/planeCategoryController.jsp") ? "current-page" : "" %>">
+                    <a href="planeCategoryController" class="<%= currentPage.equals("/flyezy/view/planeCategoryController.jsp") ? "current-page" : "" %>">
                         Quản lý loại máy bay
                     </a>
                 </li>
                 <li>
-                    <a href="flightManagement" class="<%= currentPage.equals("/flyezy/flightManagement.jsp") ? "current-page" : "" %>">
+                    <a href="flightManagement" class="<%= currentPage.equals("/flyezy/view/flightManagement.jsp") ? "current-page" : "" %>">
                         Quản lý chuyến bay
                     </a>
                 </li>

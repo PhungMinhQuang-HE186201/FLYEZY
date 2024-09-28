@@ -121,7 +121,7 @@
                             <a class="btn <%= (pc.getStatusId() == 1) ? "btn-success" : "btn-danger" %>" style="text-decoration: none; width: 100px;margin: 0"
                                <% if (ad.getStatusById(pc.getAirlineid()) == 1) { %> 
                                onclick="changePlaneCategoryStatus('<%= pc.getId() %>', '<%= pc.getName() %>', '<%= pc.getStatusId() %>')">
-                               <% } %>>
+                               <% } %>
                                
                                 <%= (pc.getStatusId() == 1) ? "Activated" : "Deactivated" %>
                             </a>

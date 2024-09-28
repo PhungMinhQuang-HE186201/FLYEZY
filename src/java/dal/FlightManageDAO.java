@@ -24,31 +24,85 @@ public class FlightManageDAO extends DBConnect {
             PreparedStatement prepare = conn.prepareStatement(sql);
             ResultSet resultSet = prepare.executeQuery();
             while (resultSet.next()) {
-                int id = resultSet.getInt("id");        
+                int id = resultSet.getInt("id");
                 int minutes = resultSet.getInt("minutes");
                 int departureAirportId = resultSet.getInt("departureAirportId");
                 int destinationAirportId = resultSet.getInt("destinationAirportId");
-               
-                list.add(new Flights(id, minutes, departureAirportId, destinationAirportId));
+                int statusId = resultSet.getInt("Status_id");
+
+                list.add(new Flights(id, minutes, departureAirportId, destinationAirportId, statusId));
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
-        
+
         return list;
     }
-    
-   
-    
-    
-    
-    
-    
-    
-    
-     
-    
-    
-    
+
+    public int createFlight(Flights flight) {
+        int n = 0;
+        String sql = """
+                 INSERT INTO `flyezy`.`Flight`
+                 (
+                 `minutes`,
+                 `departureAirportid`,
+                 `destinationAirportid`,
+                 `Status_id`)
+                 VALUES (?,?,?,1)""";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            // Set các giá trị vào PreparedStatement
+//            ps.setInt(1, flight.getId());
+            ps.setInt(1, flight.getMinutes());
+            ps.setInt(2, flight.getDepartureAirportId());
+            ps.setInt(3, flight.getDestinationAirportId());
+
+            n = ps.executeUpdate();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return n;
     }
 
+    public void updateFlight(Flights flight) {
+        String sql = "UPDATE `flyezy`.`Flight`\n"
+                + "SET\n"
+                + "`minutes` = ?,\n"
+                + "`departureAirportid` = ?,\n"
+                + "`destinationAirportid` = ?\n"
+                + "WHERE `id` = ?;";
+
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setInt(1, flight.getMinutes());
+            pre.setInt(2, flight.getDepartureAirportId());
+            pre.setInt(3, flight.getDestinationAirportId());
+            pre.setInt(4, flight.getId());
+            pre.executeUpdate();
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+    }
+
+    public void changeStatus(int id, int newStatus) {
+        String sqlupdate = "UPDATE Flight\n"
+                + "                SET\n"
+                + "                Status_id = ?\n"
+                + "                WHERE id =?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sqlupdate);
+            pre.setInt(2, id);
+            pre.setInt(1, newStatus);
+            pre.executeUpdate();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        FlightManageDAO dao = new FlightManageDAO();
+        System.out.println(dao.getAllFlights());
+    }
+
+}

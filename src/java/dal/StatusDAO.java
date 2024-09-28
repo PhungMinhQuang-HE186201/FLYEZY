@@ -50,10 +50,27 @@ public class StatusDAO extends DBConnect {
         }
         return name;  // Trả về tên, nếu không có giá trị sẽ trả về null
     }
+    public List<Status> getStatusOfFlight() {
+        List<Status> list = new ArrayList<>();
+        String sql = "select * from Status where id = 1 or id = 2 ";
 
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            ResultSet resultSet = prepare.executeQuery();
+            prepare = conn.prepareStatement(sql);
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                list.add(new Status(id, name));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return list;    
+    }
     public static void main(String[] args) {
         StatusDAO dao = new StatusDAO();
 //        System.out.println(dao.getAllStatus());
         System.out.println(dao.getStatusNameById(0));
-    }
+    } 
 }

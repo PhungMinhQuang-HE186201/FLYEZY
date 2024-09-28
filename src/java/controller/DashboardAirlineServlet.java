@@ -71,7 +71,7 @@ public class DashboardAirlineServlet extends HttpServlet {
         request.setAttribute("listBaggage", listBaggage);
         request.setAttribute("listStatus", listStatus);
 
-        request.getRequestDispatcher("airlineManagement.jsp").forward(request, response);
+        request.getRequestDispatcher("view/airlineManagement.jsp").forward(request, response);
     }
 
     @Override

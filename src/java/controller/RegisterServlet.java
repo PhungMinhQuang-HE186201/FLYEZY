@@ -62,7 +62,7 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("register.jsp").forward(request, response);
+        request.getRequestDispatcher("view/register.jsp").forward(request, response);
     }
 
     /**
@@ -83,10 +83,10 @@ public class RegisterServlet extends HttpServlet {
         RegisterDAO d = new RegisterDAO();
         if (d.checkPhoneNumberExisted(phoneNumber)) {
             request.setAttribute("existedUsername", "Số điện thoại đã được đăng ký!");
-            request.getRequestDispatcher("register.jsp").forward(request, response);
+            request.getRequestDispatcher("view/register.jsp").forward(request, response);
         } else if (d.checkEmailExisted(email)) {
             request.setAttribute("existedUsername", "Gmail đã được đăng ký!");
-            request.getRequestDispatcher("register.jsp").forward(request, response);
+            request.getRequestDispatcher("view/register.jsp").forward(request, response);
         } else {
             Accounts a = new Accounts(name, email, pass, phoneNumber, 3, 1, new Timestamp(System.currentTimeMillis()), 1);
             d.addNewAccount(a);
