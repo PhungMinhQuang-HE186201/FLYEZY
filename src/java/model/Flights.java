@@ -10,19 +10,39 @@ public class Flights {
     private int minutes;
     private int departureAirportId;
     private int destinationAirportId;
+    private int statusId;
  
 
     public Flights() {
     }
 
-    public Flights(int id, int minutes, int departureAirportId, int destinationAirportId) {
+
+    
+    
+    public Flights(int id, int minutes, int departureAirportId, int destinationAirportId){
+        this.id = id;
+        this.minutes = minutes;
+        this.departureAirportId = departureAirportId;
+        this.destinationAirportId = destinationAirportId;   
+    }
+    
+    
+    
+    public Flights(int minutes, int departureAirportId, int destinationAirportId) {
+        this.minutes = minutes;
+        this.departureAirportId = departureAirportId;
+        this.destinationAirportId = destinationAirportId;
+    
+    }
+
+    public Flights(int id, int minutes, int departureAirportId, int destinationAirportId, int statusId) {
         this.id = id;
         this.minutes = minutes;
         this.departureAirportId = departureAirportId;
         this.destinationAirportId = destinationAirportId;
-     
+        this.statusId = statusId;
     }
-
+         
 
     public int getId() {
         return id;
@@ -56,6 +76,15 @@ public class Flights {
     public void setDestinationAirportId(int destinationAirportId) {
         this.destinationAirportId = destinationAirportId;
     }
+
+    public int getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(int statusId) {
+        this.statusId = statusId;
+    }
+    
 
 
    
