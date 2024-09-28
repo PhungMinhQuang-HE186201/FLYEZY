@@ -4,14 +4,23 @@
  */
 package controller;
 
+import dal.AccountsDAO;
+import dal.AirportDAO;
 import dal.FlightManageDAO;
+import dal.StatusDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.sql.ResultSet;
+import java.util.List;
+import model.Accounts;
+import model.Airport;
+import model.Flights;
+import model.Status;
 
 /**
  *
@@ -58,25 +67,104 @@ public class FlightManagementServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         FlightManageDAO fmd = new FlightManageDAO();
-        
-        String sql = "select f.id,f.minutes,a1.name as departureAirport,l1.name as departureLocation,c1.name as departureCountry,\n"
-                + "a2.name as destinationAirport,l2.name as destinationLocation, c2.name as destinationCountry from flyezy.flight as f\n"
-                + "inner join flyezy.airport as a1 on a1.id = f.departureAirportid\n"
-                + "inner join flyezy.airport as a2 on a2.id = f.destinationAirportid\n"
-                + "inner join location as l1 on l1.id = a1.locationid\n"
-                + "inner join country as c1 on c1.id = l1.country_id\n"
-                + "inner join location as l2 on l2.id = a2.locationid\n"
-                + "inner join country as c2 on c2.id = l2.country_id;";
-        ResultSet rsFlightManage = fmd.getData(sql);
+        AirportDAO ad = new AirportDAO();
+        StatusDAO sd = new StatusDAO();
+        ResultSet rsFlightManage;
+        AccountsDAO accd = new AccountsDAO();
+        HttpSession session = request.getSession();
+
+        Integer idd = (Integer) session.getAttribute("id");
+        int i = (idd != null) ? idd : -1;
+        Accounts acc = accd.getAccountsById(i);
+        request.setAttribute("account", acc);
+        String action = request.getParameter("action");
+        if (action == null) {
+            String sql = "select f.id,f.minutes,a1.name as departureAirport,l1.name as departureLocation,c1.name as departureCountry,\n"
+                    + "a2.name as destinationAirport,l2.name as destinationLocation, c2.name as destinationCountry,  s.name as status, f.departureAirportid, f.destinationAirportid, f.Status_id  from flyezy.flight as f\n"
+                    + "inner join flyezy.airport as a1 on a1.id = f.departureAirportid\n"
+                    + "inner join flyezy.airport as a2 on a2.id = f.destinationAirportid\n"
+                    + "inner join location as l1 on l1.id = a1.locationid\n"
+                    + "inner join country as c1 on c1.id = l1.country_id\n"
+                    + "inner join location as l2 on l2.id = a2.locationid\n"
+                    + "inner join country as c2 on c2.id = l2.country_id\n"
+                    + "inner join status as s on s.id = f.Status_id;";
+            rsFlightManage = fmd.getData(sql);
+        } else {
+            String departureAirport = request.getParameter("departureAirport");
+            String destinationAirport = request.getParameter("destinationAirport");
+            String departureCountry = request.getParameter("departureCountry");
+            String destinationCountry = request.getParameter("destinationCountry");
+            String sql = "SELECT f.id,\n"
+                    + "       f.minutes,\n"
+                    + "       a1.name AS departureAirport,\n"
+                    + "       l1.name AS departureLocation,\n"
+                    + "       c1.name AS departureCountry,\n"
+                    + "       a2.name AS destinationAirport,\n"
+                    + "       l2.name AS destinationLocation,\n"
+                    + "       c2.name AS destinationCountry,\n"
+                    + "       s.name AS status,\n"
+                    + "       f.departureAirportid,\n"
+                    + "       f.destinationAirportid,\n"
+                    + "       f.Status_id\n"
+                    + "FROM flyezy.flight AS f\n"
+                    + "INNER JOIN flyezy.airport AS a1 ON a1.id = f.departureAirportid\n"
+                    + "INNER JOIN flyezy.airport AS a2 ON a2.id = f.destinationAirportid\n"
+                    + "INNER JOIN location AS l1 ON l1.id = a1.locationid\n"
+                    + "INNER JOIN country AS c1 ON c1.id = l1.country_id\n"
+                    + "INNER JOIN location AS l2 ON l2.id = a2.locationid\n"
+                    + "INNER JOIN country AS c2 ON c2.id = l2.country_id\n"
+                    + "INNER JOIN status AS s ON s.id = f.Status_id\n"
+                    + "WHERE a1.name LIKE '%" + departureAirport + "%' and a2.name LIKE '%" + destinationAirport + "%' and "
+                    + "c1.name LIKE '%" + departureCountry + "%' and c2.name LIKE '%" + destinationCountry + "%';";
+            rsFlightManage = fmd.getData(sql);
+        }
         request.setAttribute("rsFlightManage", rsFlightManage);
+
+        List<Airport> listA = ad.getAllAirport();
+        request.setAttribute("listA", listA);
+
+        List<Status> listS = sd.getStatusOfFlight();
+        request.setAttribute("listS", listS);
+
         request.getRequestDispatcher("flightManagement.jsp").forward(request, response);
 
-           
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        FlightManageDAO fmd = new FlightManageDAO();
+
+        String action = request.getParameter("action");
+
+        //minutes, departureAirport, destinationAirport, statusId
+        if (action.equals("create")) {
+            int minutes = Integer.parseInt(request.getParameter("minutes"));
+            int departureAirportId = Integer.parseInt(request.getParameter("departureAirport"));
+            int destinationAirportId = Integer.parseInt(request.getParameter("destinationAirport"));
+            Flights newFlight = new Flights(minutes, departureAirportId, destinationAirportId);
+            int n = fmd.createFlight(newFlight);
+            response.sendRedirect("flightManagement");
+
+        } else if (action.equals("update")) {
+            int minutes = Integer.parseInt(request.getParameter("minutes"));
+            int id = Integer.parseInt(request.getParameter("id"));
+            int departureAirportId = Integer.parseInt(request.getParameter("departureAirport"));
+            int destinationAirportId = Integer.parseInt(request.getParameter("destinationAirport"));
+            Flights newFlight = new Flights(id, minutes, departureAirportId, destinationAirportId);
+            fmd.updateFlight(newFlight);
+            response.sendRedirect("flightManagement");
+        } else if (action.equals("changeStatus")) {
+            int flightId = Integer.parseInt(request.getParameter("flightId"));
+            int flightStatus = Integer.parseInt(request.getParameter("flightStatus"));
+            int newStatus = 1;
+            if (flightStatus == 1) {
+                newStatus = 2;
+            } else if (flightStatus == 2) {
+                newStatus = 1;
+            }
+            fmd.changeStatus(flightId, newStatus);
+            response.sendRedirect("flightManagement");
+        }
     }
 
     /**
