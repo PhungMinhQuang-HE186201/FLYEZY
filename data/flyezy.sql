@@ -278,7 +278,7 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `flyezy`.`Flight_Detail` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `date` TIMESTAMP NULL DEFAULT NULL,
+  `date` DATE NULL DEFAULT NULL,
   `time` TIME NULL DEFAULT NULL,
   `price` INT NULL DEFAULT NULL,
   `Flightid` INT NOT NULL,
@@ -488,6 +488,7 @@ COLLATE = utf8mb4_0900_ai_ci;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
 
 -- ------------------------------------------------
 -- INSERT DATA
