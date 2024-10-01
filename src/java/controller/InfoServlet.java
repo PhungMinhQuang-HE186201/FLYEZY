@@ -23,15 +23,7 @@ public class InfoServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-
-        HttpSession session = request.getSession();
-        AccountsDAO accountDao = new AccountsDAO();
-        Integer id = (Integer) session.getAttribute("id");
-        int i = (id != null) ? id : -1;
-        Accounts acc = accountDao.getAccountsById(i);
-        request.setAttribute("account", acc);
-        request.getRequestDispatcher("view/viewProfile.jsp").forward(request, response);
+       
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -52,7 +44,7 @@ public class InfoServlet extends HttpServlet {
         int i = (id != null) ? id : -1;
         Accounts acc = accountDao.getAccountsById(i);
         request.setAttribute("account", acc);
-        request.getRequestDispatcher("viewProfile.jsp").forward(request, response);
+        request.getRequestDispatcher("view/viewProfile.jsp").forward(request, response);
     }
 
     /**

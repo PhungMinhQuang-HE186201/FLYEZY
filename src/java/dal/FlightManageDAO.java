@@ -42,7 +42,7 @@ public class FlightManageDAO extends DBConnect {
 
     public int createFlight(Flights flight) {
         int n = 0;
-        String sql = "INSERT INTO `flyezy`.`flight`\n"
+        String sql = "INSERT INTO `flyezy`.`Flight`\n"
                 + "(\n"
                 + "`minutes`,\n"
                 + "`departureAirportid`,\n"
