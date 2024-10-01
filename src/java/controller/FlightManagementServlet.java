@@ -5,6 +5,7 @@
 package controller;
 
 import dal.AccountsDAO;
+import dal.AirlineManageDAO;
 import dal.AirportDAO;
 import dal.CountryDAO;
 import dal.FlightManageDAO;
@@ -72,6 +73,7 @@ public class FlightManagementServlet extends HttpServlet {
         AccountsDAO accd = new AccountsDAO();
         LocationDAO ld = new LocationDAO();
         CountryDAO cd = new CountryDAO();
+        AirlineManageDAO amd = new AirlineManageDAO();
         HttpSession session = request.getSession();
 
         Integer idd = (Integer) session.getAttribute("id");
@@ -90,7 +92,7 @@ public class FlightManagementServlet extends HttpServlet {
                     + "inner join location as l2 on l2.id = a2.locationid\n"
                     + "inner join country as c2 on c2.id = l2.country_id\n"
                     + "inner join status as s on s.id = f.Status_id\n"
-                    + "inner join accounts as acc on acc.Airlineid = f.id\n"
+                    + "inner join accounts as acc on acc.Airlineid = f.Airline_id\n"
                     + "where acc.id = "  + idd;
             rsFlightManage = fmd.getData(sql);
         } else {
@@ -147,6 +149,7 @@ public class FlightManagementServlet extends HttpServlet {
         request.setAttribute("listA", ad.getAllAirport());
         request.setAttribute("listL", ld.getAllLocation());
         request.setAttribute("listC", cd.getAllCountry());
+     
 
         request.getRequestDispatcher("view/flightManagement.jsp").forward(request, response);
 
@@ -155,7 +158,7 @@ public class FlightManagementServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         FlightManageDAO fmd = new FlightManageDAO();
-
+        
         String action = request.getParameter("action");
 
         //minutes, departureAirport, destinationAirport, statusId
@@ -163,7 +166,8 @@ public class FlightManagementServlet extends HttpServlet {
             int minutes = Integer.parseInt(request.getParameter("minutes"));
             int departureAirportId = Integer.parseInt(request.getParameter("departureAirport"));
             int destinationAirportId = Integer.parseInt(request.getParameter("destinationAirport"));
-            Flights newFlight = new Flights(minutes, departureAirportId, destinationAirportId);
+            int airlineId = Integer.parseInt(request.getParameter("airlineId"));
+            Flights newFlight = new Flights(minutes, departureAirportId, destinationAirportId,airlineId);
             int n = fmd.createFlight(newFlight);
             response.sendRedirect("flightManagement");
 
@@ -172,7 +176,8 @@ public class FlightManagementServlet extends HttpServlet {
             int id = Integer.parseInt(request.getParameter("id"));
             int departureAirportId = Integer.parseInt(request.getParameter("departureAirport"));
             int destinationAirportId = Integer.parseInt(request.getParameter("destinationAirport"));
-            Flights newFlight = new Flights(id, minutes, departureAirportId, destinationAirportId);
+            
+            Flights newFlight = new Flights(id, minutes, departureAirportId, destinationAirportId, id);
             fmd.updateFlight(newFlight);
             response.sendRedirect("flightManagement");
         } else if (action.equals("changeStatus")) {

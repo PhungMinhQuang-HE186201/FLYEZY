@@ -10,6 +10,7 @@ import model.Flights;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import model.Airline;
 
 /**
  *
@@ -41,14 +42,15 @@ public class FlightManageDAO extends DBConnect {
 
     public int createFlight(Flights flight) {
         int n = 0;
-        String sql = """
-                 INSERT INTO `flyezy`.`Flight`
-                 (
-                 `minutes`,
-                 `departureAirportid`,
-                 `destinationAirportid`,
-                 `Status_id`)
-                 VALUES (?,?,?,1)""";
+        String sql = "INSERT INTO `flyezy`.`flight`\n"
+                + "(\n"
+                + "`minutes`,\n"
+                + "`departureAirportid`,\n"
+                + "`destinationAirportid`,\n"
+                + "`Status_id`,\n"
+                + "`Airline_id`)\n"
+                + "VALUES\n"
+                + "(?,?,?,1,?);";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
 
@@ -57,7 +59,7 @@ public class FlightManageDAO extends DBConnect {
             ps.setInt(1, flight.getMinutes());
             ps.setInt(2, flight.getDepartureAirportId());
             ps.setInt(3, flight.getDestinationAirportId());
-
+            ps.setInt(4, flight.getAirlineId());
             n = ps.executeUpdate();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -102,7 +104,9 @@ public class FlightManageDAO extends DBConnect {
 
     public static void main(String[] args) {
         FlightManageDAO dao = new FlightManageDAO();
-        System.out.println(dao.getAllFlights());
+       Flights f = new Flights(23, 2, 1, 3);
+       int n = dao.createFlight(f);
+       
     }
 
 }

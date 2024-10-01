@@ -6,12 +6,14 @@
 <%@page import="model.Flights"%>
 <%@page import="model.Location"%>
 <%@page import="model.Status"%>
+<%@page import="model.Airline"%>
 <%@page import="java.util.List"%>
 <%@page import="dal.AirportDAO"%>
 <%@page import="dal.CountryDAO"%>
 <%@page import="dal.FlightManageDAO"%>
 <%@page import="dal.StatusDAO"%>
 <%@page import="dal.LocationDAO"%>
+<%@page import="dal.AirlineManageDAO"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.util.List"%>
 <!DOCTYPE html>
@@ -39,6 +41,7 @@
     <body>
         <%@include file="header.jsp" %>
         <%@include file="admin-sideBar.jsp" %>
+
         <div class="modal fade" id="addAirline" tabindex="-1" role="dialog" aria-labelledby="addModal" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -50,7 +53,7 @@
                     </div>
                     <div class="modal-body">
                         <form id="addProductForm" action="flightManagement" method="POST">
-                            <input type="hidden" name="action" value="create">
+                            <input type="hidden" name="action" value="create">     
                             <!-- Name -->
                             <div class="form-group">
                                 <label for="minutesInput"><span class="glyphicon glyphicon-plane"></span> Minutes:</label>
@@ -76,8 +79,10 @@
                                         <%}%>  
                                     </select>
                                 </div>
-                            </div>
+                            </div>       
+                            <input type="hidden" class="form-control" name="airlineId" value="${requestScope.account.getAirlineId()}" readonly="">
 
+                            
 
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -198,9 +203,10 @@
                                                 <div class="modal-body">
                                                     <form  action="flightManagement" method="post"> 
                                                         <input type="hidden" name="action" value="update"/>
-
+                                                         <input type="hidden" name="airlineId" value="${requestScope.account.getAirlineId()}"/>
                                                         <label for="usrname"><span class="glyphicon glyphicon-globe"></span>ID:</label>
                                                         <input type="text" class="form-control" id="usrname" name="id" value="<%=rsFlightManage.getInt(1) %>" readonly="">
+                                                       
                                                         <!-- Minutes -->
                                                         <div class="form-group">
                                                             <label for="nameInput" style="text-align: left; display: block;"><span class="glyphicon glyphicon-plane"></span> Minutes:</label>
@@ -216,7 +222,7 @@
                                                                     <%}%>
                                                                 </select>
                                                             </div>
-                                                            <!-- Preview Image -->
+                                                          
                                                             <div class="form-group col-md-6">
                                                                 <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Destination Airport: </label></div>
                                                                 <select name="destinationAirport" value="<%=rsFlightManage.getInt(11)%>" style="height:  34px">
@@ -225,6 +231,8 @@
                                                                     <%}%>
                                                                 </select>
                                                             </div>
+                                                                
+                                                                
                                                         </div>
                                                         <div style="text-align: right;">
                                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
