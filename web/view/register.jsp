@@ -42,7 +42,7 @@
                     <label for="">Email</label>
                 </div>
                 <div class="form-group">
-                    <input type="number" name="phoneNumber" required />
+                    <input type="number" name="phoneNumber" id="phoneNumber" oninput="validatePhoneNumber()" required />
                     <label for="">Số điện thoại</label>
                 </div>
                 <div class="form-group">
@@ -68,6 +68,7 @@
                         Mật khẩu không trùng khớp
                     </p></div>
                 <br />
+                <span id="phoneError" style="color:red; display:none;">Số điện thoại không hợp lệ!</span>
                 <p id="capslock-warning" style="display: none; margin-bottom: 30px">⚠️ Caps Lock is on</p>
                 <p style="color: red">${requestScope.existedUsername}</p>
                 <div class="button">
@@ -84,6 +85,24 @@
             var wrongPass = document.getElementById("wrongPass");
             var text = document.getElementById("capslock-warning");
 
+            function validatePhoneNumber() {
+                var phoneNumber = document.getElementById("phoneNumber").value;
+                var phoneError = document.getElementById("phoneError");
+
+                var phoneRegex = /^(0[3|5|7|8|9])+([0-9]{8})$/;
+                if (phoneNumber === "") {
+                    submit.disabled = true;
+                    phoneError.style.display = "none";
+                } else if (!phoneNumber.match(phoneRegex)) {
+                    submit.disabled = true;
+                    phoneError.style.display = "inline";
+                } else {
+                    submit.disabled = false;
+                    phoneError.style.display = "none";
+
+
+                }
+            }
             function CapsCheck(event) {
                 if (event.getModifierState("CapsLock")) {
                     text.style.display = "block";
