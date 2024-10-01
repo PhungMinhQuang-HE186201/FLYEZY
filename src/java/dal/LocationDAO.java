@@ -15,12 +15,48 @@ import model.Location;
  *
  * @author user
  */
-public class LocationDAO extends DBConnect{
+public class LocationDAO extends DBConnect {
+
     public List<Location> getAllLocation() {
         List<Location> list = new ArrayList<>();
         String sql = "select * from Location";
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
+            ResultSet resultSet = prepare.executeQuery();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                int Country_id = resultSet.getInt("Country_id");
+                list.add(new Location(id, name, Country_id));
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return list;
+    }
+
+    
+    public int getIdByLocationName(String name) {
+        String sql = "Select * from Location where name = ?";
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            prepare.setString(1, name);
+            ResultSet resultSet = prepare.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("id");
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return -1;
+    }
+
+    public List<Location> getLocationsByCountryId(int cid) {
+        List<Location> list = new ArrayList<>();
+        String sql = "select * from Location WHERE Country_id = ?";
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            prepare.setInt(1, cid);
             ResultSet resultSet = prepare.executeQuery();
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");

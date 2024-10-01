@@ -17,7 +17,7 @@ Admin --%> <%@page contentType="text/html" pageEncoding="UTF-8"%>
                     </a>
                 </li>
                 <li>
-                    <a href="airlineController" class="<%= currentPage.equals("/flyezy/view/airlineManage.jsp") ? "current-page" : "" %>">
+                    <a href="airlineController" class="<%= currentPage.equals("/flyezy/view/airlineManagement.jsp") ? "current-page" : "" %>">
                         Quản lý hãng hàng không
                     </a>
                 </li>

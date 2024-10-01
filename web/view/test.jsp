@@ -1,63 +1,89 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>CKEditor 5 - Quick start CDN</title>
-        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.css">
-        <style>
-            .main-container {
-                width: 795px;
-                margin-left: auto;
-                margin-right: auto;
-            }
-        </style>
+        <title>Flight Management</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                var countries   
+                        = {
+                            "Vietnam": ["Ha Noi", "Da Nang", "Ho Chi Minh City"] // Sample locations and airports for Vietnam
+                                    // Add other countries and their corresponding locations/airports here
+                        };
+
+                $("#departureCountry").change(function () {
+                    var selectedCountry = $(this).val();
+                    var locationOptions = "";
+
+                    if (selectedCountry) {
+                        var locations = countries[selectedCountry];
+
+                        if (locations) {
+                            locations.forEach(function (location) {
+                                locationOptions += "<option value='" + location + "'>" + location + "</option>";
+                            });
+                        } else {
+                            locationOptions = "<option value=''>No locations available</option>";
+                        }
+
+                        $("#departureLocation").html(locationOptions);
+
+                        // Update airport options based on selected location (if data available)
+                        updateAirportOptions(selectedCountry, $("#departureLocation").val());
+                    } else {
+                        $("#departureLocation").empty();
+                        $("#departureAirport").empty(); // Clear airport options as well
+                    }
+                });
+
+                $("#departureLocation").change(function () {
+                    var selectedCountry = $("#departureCountry").val();
+                    updateAirportOptions(selectedCountry, $(this).val());
+                });
+
+                function updateAirportOptions(country, location) {
+                    // Assuming airports are associated with locations (modify as needed)
+                    var airportOptions = "";
+                    var airports = countries[country]; // Access country data again
+
+                    if (airports && location) {
+                        var locationAirports = airports.filter(function (airport) {
+                            // Replace with logic to identify airports based on location (if data structure is different)
+                            return airport.startsWith(location); // Sample filtering based on location prefix (improve as needed)
+                        });
+
+                        if (locationAirports.length > 0) {
+                            locationAirports.forEach(function (airport) {
+                                airportOptions += "<option value='" + airport + "'>" + airport + "</option>";
+                            });
+                        } else {
+                            airportOptions = "<option value=''>No airports available for this location</option>";
+                        }
+                    } else {
+                        airportOptions = "<option value=''>Select location first</option>";
+                    }
+
+                    $("#departureAirport").html(airportOptions);
+                }
+            });
+        </script>
     </head>
     <body>
-        <div class="main-container">
-            <div id="editor">
-                <p>Hello from CKEditor 5!</p>
-            </div>
-        </div>
-        <script type="importmap">
-            {
-            "imports": {
-            "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.js",
-            "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.1.0/"
-            }
-            }
-        </script>
-        <script type="module">
-            import {
-            ClassicEditor,
-                    Essentials,
-                    Paragraph,
-                    Bold,
-                    Italic,
-                    Font
-            } from 'ckeditor5';
-            ClassicEditor
-                    .create(document.querySelector('#editor'), {
-                        plugins: [Essentials, Paragraph, Bold, Italic, Font],
-                        toolbar: [
-                            'undo', 'redo', '|', 'bold', 'italic', '|',
-                            'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
-                        ]
-                    })
-                    .then(editor => {
-                        window.editor = editor;
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
-        </script>
-        <!-- A friendly reminder to run on a server, remove this during the integration. -->
-        <script>
-            window.onload = function () {
-                if (window.location.protocol === 'file:') {
-                    alert('This sample requires an HTTP server. Please serve this file with a web server.');
-                }
-            };
-        </script>
+        <form>
+            <label for="departureCountry">Departure Country:</label>
+            <select id="departureCountry">
+                <option value="">Select Country</option>
+                <option value="Vietnam">Vietnam</option>
+            </select>
+
+            <label for="departureLocation">Departure Location:</label>
+            <select id="departureLocation"></select>
+
+            <label for="departureAirport">Departure Airport:</label>
+            <select id="departureAirport"></select>
+
+            <button type="submit">Add Flight</button>
+        </form>
     </body>
 </html>

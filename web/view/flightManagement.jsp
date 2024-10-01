@@ -13,6 +13,7 @@
 <%@page import="dal.StatusDAO"%>
 <%@page import="dal.LocationDAO"%>
 <%@page import="java.sql.ResultSet"%>
+<%@page import="java.util.List"%>
 <!DOCTYPE html>
 
 <html>
@@ -22,6 +23,7 @@
         <title>Quản lý loại máy bay</title>
         <link rel="shortcut icon" type="image/png" href="img/flyezy-logo3.png" />
         <link rel="stylesheet" href="css/styleAdminController.css">
+        <link rel="stylesheet" href="css/styleFlightManagement.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.css">
 
@@ -90,22 +92,6 @@
 
         <div id="main-content">
             <div>
-                <!-- Search bar -->
-                <div style="max-width: 60%;">
-                    <form action="flightManagement" method="GET" style="display: flex; width: 78%; align-items: center;">
-                        <input type="hidden" name="action" value="searchByName">
-                        <strong>Departure Airport:  </strong>
-                        <input class="filterElm" type="text" name="departureAirport" value="" placeholder="Enter DepartureAirport:" style="margin-left: 5px">
-                        <strong>Destination Airport:  </strong>
-                        <input class="filterElm" type="text" name="destinationAirport" value="" placeholder="Enter DestinationAirport:" style="margin-left: 5px">
-                        <strong>Departure Country:    </strong>
-                        <input class="filterElm" type="text" name="departureCountry" value="" placeholder="Enter Departure Country:"  style="margin-left: 5px">
-                        <strong>Destination Country:    </strong>
-                        <input class="filterElm" type="text" name="destinationCountry" value="" placeholder="Enter Destination Country" style="margin-left: 5px">  
-                        <button class="btn btn-info" type="submit"> Search </button>
-                        <a class="btn btn-danger" href="flightManagement">Cancle</a>
-                    </form>
-                </div>
                 <!-- Trigger the modal with a button -->
                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addAirline"  style="margin-top: 20px;flex-shrink: 0;">
                     Add New Airline
@@ -113,11 +99,9 @@
             </div>
 
             <div class="row" style="margin: 0">
-                <div class="col-md-10" id="left-column" style="padding: 0; margin-top: 10px">
+                <div class="col-md-9" id="left-column" style="padding: 0; margin-top: 10px">
                     <table class="entity">
-
                         <thead>     
-
                             <tr>
                                 <th>DEP Airport</th>
                                 <th>DEP Location</th>
@@ -254,25 +238,83 @@
                                 </td>
                             </tr>
                             <%}%>
-
                         </tbody>
                     </table>
+                </div>
+                <!-- Search bar -->
+                <div class="col-md-3">
+                    <form class="flight-form" action="flightManagement" method="GET" style="display: flex; width: 78%; align-items: center;">
+                        <input type="hidden" name="action" value="search"/>
+                        <%
+                        CountryDAO cd = new CountryDAO();
+                        LocationDAO ld = new LocationDAO();
+                        AirportDAO aird = new AirportDAO();
+                        %>
+
+                        <div class="flight-form-group">
+                            <strong>DEP Country:</strong>
+                            <select class="flight-select" name="departureCountry" id="departureCountry">
+                                <option value="">Select Country</option>
+                                <% for (Country c : (List<Country>) request.getAttribute("listC")) { %>
+                                <option value="<%= c.getName() %>" <%= (c.getName().equals(request.getParameter("departureCountry")) ? "selected" : "") %>><%= c.getName() %></option>
+                                <% } %>
+                            </select>
+
+                            <strong>DEP Location:</strong>
+                            <select class="flight-select" name="departureLocation" id="departureLocation">
+                                <option value="">Select Location</option>
+                                <% for (Location l : (List<Location>) ld.getLocationsByCountryId(cd.getIdByCountryName(request.getParameter("departureCountry")))) { %>
+                                <option value="<%= l.getName() %>" <%= (l.getName().equals(request.getParameter("departureLocation")) ? "selected" : "") %>><%= l.getName() %></option>
+                                <% } %>
+                            </select>
+
+                            <strong>DEP Airport:</strong>
+                            <select class="flight-select" name="departureAirport" id="departureAirport">
+                                <option value="">Select Airport</option>
+                                <% for (Airport ap : (List<Airport>) aird.getAirportsByLocationId(ld.getIdByLocationName(request.getParameter("departureLocation")))) { %>
+                                <option value="<%= ap.getName() %>" <%= (ap.getName().equals(request.getParameter("departureAirport")) ? "selected" : "") %>><%= ap.getName() %></option>
+                                <% } %>
+                            </select>
+                        </div>
+
+                        <div class="flight-form-group">
+                            <strong>DES Country:</strong>
+                            <select class="flight-select" name="destinationCountry" id="destinationCountry">
+                                <option value="">Select Country</option>
+                                <% for (Country c : (List<Country>) request.getAttribute("listC")) { %>
+                                <option value="<%= c.getName() %>" <%= (c.getName().equals(request.getParameter("destinationCountry")) ? "selected" : "") %>><%= c.getName() %></option>
+                                <% } %>
+                            </select>
+
+                            <strong>DES Location:</strong>
+                            <select class="flight-select" name="destinationLocation" id="destinationLocation">
+                                <option value="">Select Location</option>
+                                <% for (Location l : (List<Location>) ld.getLocationsByCountryId(cd.getIdByCountryName(request.getParameter("destinationCountry")))) { %>
+                                <option value="<%= l.getName() %>" <%= (l.getName().equals(request.getParameter("destinationLocation")) ? "selected" : "") %>><%= l.getName() %></option>
+                                <% } %>
+                            </select>
+
+
+                            <strong>DES Airport:</strong>
+                            <select class="flight-select" name="destinationAirport" id="destinationAirport">
+                                <option value="">Select Airport</option>
+                                <% for (Airport ap : (List<Airport>) aird.getAirportsByLocationId(ld.getIdByLocationName(request.getParameter("destinationLocation")))) { %>
+                                <option value="<%= ap.getName() %>" <%= (ap.getName().equals(request.getParameter("destinationAirport")) ? "selected" : "") %>><%= ap.getName() %></option>
+                                <% } %>
+                            </select>
+                        </div>
+
+                        <div>
+                            <button class="btn btn-info" type="submit">Search</button>
+                            <a class="btn btn-danger" href="flightManagement">Cancel</a>
+                        </div>
+                    </form>
+
                 </div>
             </div>
         </div>
 
 
-        <script type="importmap">
-            {
-            "imports": {
-            "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.js",
-            "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.1.0/"
-            }
-            }
-        </script>
-        <script type="module">
-
-        </script>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
@@ -290,6 +332,120 @@
         }
         }
     </script>
+
+    <script>
+        $(document).ready(function () {
+
+        // Create an empty countries object
+        var countries = {};
+        <%
+                LocationDAO ld2 = new LocationDAO();
+                AirportDAO aird2 = new AirportDAO();
+                List<Country> listCountry = (List<Country>) request.getAttribute("listC");
+        %>
+        countries = {
+        "All": {
+        locations: ["All"],
+                airports: { "All": ["All"] }
+        }
+        };
+        <%
+
+                for (Country c : listCountry) { 
+                    List<Location> listLocation = ld2.getLocationsByCountryId(c.getId());
+        %>
+        countries["<%= c.getName() %>"] = {
+        locations: [
+        <% 
+                    for (Location l : listLocation) { 
+        %>
+        "<%= l.getName() %>",
+        <% } %>
+        ],
+                airports: {
+        <% 
+                    for (Location l : listLocation) { 
+                        List<Airport> listAirport = aird2.getAirportsByLocationId(l.getId());
+        %>
+                "<%= l.getName() %>": [
+        <% 
+                            for (int i = 0; i < listAirport.size(); i++) {
+                                Airport airport = listAirport.get(i);
+                                out.print("\"" + airport.getName() + "\"");
+                                if (i < listAirport.size() - 1) {
+                                    out.print(", ");
+                                }
+                            }
+        %>
+                ],
+        <% } %>
+                }
+        };
+        <% } %>
+
+        $("#departureCountry").change(function () {
+        var selectedCountry = $(this).val();
+                console.log(selectedCountry);
+                var locationOptions = "<option value=''>Select Location</option>";
+                if (selectedCountry && countries[selectedCountry]) {
+        var locations = countries[selectedCountry]["locations"];
+                locations.forEach(function (location) {
+                locationOptions += "<option value='" + location + "'" + ">" + location + "</option>";
+                });
+                $("#departureLocation").html(locationOptions);
+        } else {
+        $("#departureLocation").empty();
+                $("#departureAirport").empty();
+        }
+        });
+                $("#departureLocation").change(function () {
+        var selectedCountry = $("#departureCountry").val();
+                var selectedLocation = $(this).val();
+                var airportOptions = "<option value=''>Select Airport</option>";
+                if (selectedLocation && countries[selectedCountry]) {
+        var airports = countries[selectedCountry]["airports"][selectedLocation];
+                airports.forEach(function (airport) {
+                airportOptions += "<option value='" + airport + "'" + ">" + airport + "</option>";
+                });
+                $("#departureAirport").html(airportOptions);
+        } else {
+        $("#departureAirport").empty();
+        }
+        });
+                $("#destinationCountry").change(function () {
+        var selectedCountry = $(this).val();
+                console.log(selectedCountry);
+                var locationOptions = "<option value=''>Select Location</option>";
+                if (selectedCountry && countries[selectedCountry]) {
+        var locations = countries[selectedCountry]["locations"];
+                locations.forEach(function (location) {
+                locationOptions += "<option value='" + location + "'" + ">" + location + "</option>";
+                });
+                $("#destinationLocation").html(locationOptions);
+        } else {
+        $("#destinationLocation").empty();
+                $("#destinationAirport").empty();
+        }
+        });
+                $("#destinationLocation").change(function () {
+        var selectedCountry = $("#destinationCountry").val();
+                var selectedLocation = $(this).val();
+                var airportOptions = "<option value=''>Select Airport</option>";
+                if (selectedLocation && countries[selectedCountry]) {
+        var airports = countries[selectedCountry]["airports"][selectedLocation];
+                airports.forEach(function (airport) {
+                airportOptions += "<option value='" + airport + "'" + ">" + airport + "</option>";
+                });
+                $("#destinationAirport").html(airportOptions);
+        } else {
+        $("#destinationAirport").empty();
+        }
+        });
+        });
+    </script>   
+
+
+
 
 </body>
 </html>

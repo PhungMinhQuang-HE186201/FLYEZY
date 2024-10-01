@@ -6,7 +6,9 @@ package controller;
 
 import dal.AccountsDAO;
 import dal.AirportDAO;
+import dal.CountryDAO;
 import dal.FlightManageDAO;
+import dal.LocationDAO;
 import dal.StatusDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,11 +18,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.sql.ResultSet;
-import java.util.List;
 import model.Accounts;
-import model.Airport;
 import model.Flights;
-import model.Status;
 
 /**
  *
@@ -71,6 +70,8 @@ public class FlightManagementServlet extends HttpServlet {
         StatusDAO sd = new StatusDAO();
         ResultSet rsFlightManage;
         AccountsDAO accd = new AccountsDAO();
+        LocationDAO ld = new LocationDAO();
+        CountryDAO cd = new CountryDAO();
         HttpSession session = request.getSession();
 
         Integer idd = (Integer) session.getAttribute("id");
@@ -90,10 +91,13 @@ public class FlightManagementServlet extends HttpServlet {
                     + "inner join Status as s on s.id = f.Status_id;";
             rsFlightManage = fmd.getData(sql);
         } else {
-            String departureAirport = request.getParameter("departureAirport");
-            String destinationAirport = request.getParameter("destinationAirport");
             String departureCountry = request.getParameter("departureCountry");
             String destinationCountry = request.getParameter("destinationCountry");
+            String departureLocation = request.getParameter("departureLocation");
+            String departureAirport = request.getParameter("departureAirport");
+            String destinationLocation = request.getParameter("destinationLocation");
+            String destinationAirport = request.getParameter("destinationAirport");
+
             String sql = "SELECT f.id,\n"
                     + "       f.minutes,\n"
                     + "       a1.name AS departureAirport,\n"
@@ -106,7 +110,7 @@ public class FlightManagementServlet extends HttpServlet {
                     + "       f.departureAirportid,\n"
                     + "       f.destinationAirportid,\n"
                     + "       f.Status_id\n"
-                    + "FROM flyezy.flight AS f\n"
+                    + "FROM flyezy.Flight AS f\n"
                     + "INNER JOIN flyezy.Airport AS a1 ON a1.id = f.departureAirportid\n"
                     + "INNER JOIN flyezy.Airport AS a2 ON a2.id = f.destinationAirportid\n"
                     + "INNER JOIN Location AS l1 ON l1.id = a1.locationid\n"
@@ -114,17 +118,35 @@ public class FlightManagementServlet extends HttpServlet {
                     + "INNER JOIN Location AS l2 ON l2.id = a2.locationid\n"
                     + "INNER JOIN Country AS c2 ON c2.id = l2.country_id\n"
                     + "INNER JOIN Status AS s ON s.id = f.Status_id\n"
-                    + "WHERE a1.name LIKE '%" + departureAirport + "%' and a2.name LIKE '%" + destinationAirport + "%' and "
-                    + "c1.name LIKE '%" + departureCountry + "%' and c2.name LIKE '%" + destinationCountry + "%';";
+                    + "WHERE 1=1";
+            if (departureAirport != null && !departureAirport.isEmpty()) {
+                sql += " AND a1.name LIKE '%" + departureAirport + "%'";
+            }
+            if (destinationAirport != null && !destinationAirport.isEmpty()) {
+                sql += " AND a2.name LIKE '%" + destinationAirport + "%'";
+            }
+            if (departureLocation != null && !departureLocation.isEmpty()) {
+                sql += " AND l1.name LIKE '%" + departureLocation + "%'";
+            }
+            if (destinationLocation != null && !destinationLocation.isEmpty()) {
+                sql += " AND l2.name LIKE '%" + destinationLocation + "%'";
+            }
+            if (departureCountry != null && !departureCountry.isEmpty()) {
+                sql += " AND c1.name LIKE '%" + departureCountry + "%'";
+            }
+            if (destinationCountry != null && !destinationCountry.isEmpty()) {
+                sql += " AND c2.name LIKE '%" + destinationCountry + "%'";
+            }
+
             rsFlightManage = fmd.getData(sql);
         }
         request.setAttribute("rsFlightManage", rsFlightManage);
-        List<Airport> listA = ad.getAllAirport();
-        request.setAttribute("listA", listA);
-        
+        request.setAttribute("listA", ad.getAllAirport());
+        request.setAttribute("listL", ld.getAllLocation());
+        request.setAttribute("listC", cd.getAllCountry());
+
         request.getRequestDispatcher("view/flightManagement.jsp").forward(request, response);
 
-           
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
