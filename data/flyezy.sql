@@ -226,10 +226,12 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Flight` (
   `departureAirportid` INT NOT NULL,
   `destinationAirportid` INT NOT NULL,
   `Status_id` INT NOT NULL,
+  `Airline_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `FKFlight90325` (`departureAirportid` ASC) VISIBLE,
   INDEX `FKFlight563127` (`destinationAirportid` ASC) VISIBLE,
   INDEX `fk_Flight_Status1_idx` (`Status_id` ASC) VISIBLE,
+  INDEX `fk_Flight_Airline1_idx` (`Airline_id` ASC) VISIBLE,
   CONSTRAINT `FKFlight563127`
     FOREIGN KEY (`destinationAirportid`)
     REFERENCES `flyezy`.`Airport` (`id`),
@@ -239,6 +241,11 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Flight` (
   CONSTRAINT `fk_Flight_Status1`
     FOREIGN KEY (`Status_id`)
     REFERENCES `flyezy`.`Status` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Flight_Airline1`
+    FOREIGN KEY (`Airline_id`)
+    REFERENCES `flyezy`.`Airline` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -488,6 +495,7 @@ COLLATE = utf8mb4_0900_ai_ci;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
 
 
 -- ------------------------------------------------
