@@ -113,9 +113,10 @@
             </div>
 
             <div class="row" style="margin: 0">
+               
                 <div class="col-md-10" id="left-column" style="padding: 0; margin-top: 10px">
+                     
                     <table class="entity">
-
                         <thead>     
 
                             <tr>

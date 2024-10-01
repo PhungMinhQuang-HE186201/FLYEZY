@@ -79,15 +79,18 @@ public class FlightManagementServlet extends HttpServlet {
         request.setAttribute("account", acc);
         String action = request.getParameter("action");
         if (action == null) {
+          
             String sql = "select f.id,f.minutes,a1.name as departureAirport,l1.name as departureLocation,c1.name as departureCountry,\n"
-                    + "a2.name as destinationAirport,l2.name as destinationLocation, c2.name as destinationCountry,  s.name as status, f.departureAirportid, f.destinationAirportid, f.Status_id  from flyezy.Flight as f\n"
-                    + "inner join flyezy.Airport as a1 on a1.id = f.departureAirportid\n"
-                    + "inner join flyezy.Airport as a2 on a2.id = f.destinationAirportid\n"
-                    + "inner join Location as l1 on l1.id = a1.locationid\n"
-                    + "inner join Country as c1 on c1.id = l1.country_id\n"
-                    + "inner join Location as l2 on l2.id = a2.locationid\n"
-                    + "inner join Country as c2 on c2.id = l2.country_id\n"
-                    + "inner join Status as s on s.id = f.Status_id;";
+                    + "a2.name as destinationAirport,l2.name as destinationLocation, c2.name as destinationCountry,  s.name as status, f.departureAirportid, f.destinationAirportid, f.Status_id  from flyezy.flight as f\n"
+                    + "inner join flyezy.airport as a1 on a1.id = f.departureAirportid\n"
+                    + "inner join flyezy.airport as a2 on a2.id = f.destinationAirportid\n"
+                    + "inner join location as l1 on l1.id = a1.locationid\n"
+                    + "inner join country as c1 on c1.id = l1.country_id\n"
+                    + "inner join location as l2 on l2.id = a2.locationid\n"
+                    + "inner join country as c2 on c2.id = l2.country_id\n"
+                    + "inner join status as s on s.id = f.Status_id\n"
+                    + "inner join accounts as acc on acc.Airlineid = f.id\n"
+                    + "where acc.id = "  + idd;
             rsFlightManage = fmd.getData(sql);
         } else {
             String departureAirport = request.getParameter("departureAirport");
@@ -121,10 +124,9 @@ public class FlightManagementServlet extends HttpServlet {
         request.setAttribute("rsFlightManage", rsFlightManage);
         List<Airport> listA = ad.getAllAirport();
         request.setAttribute("listA", listA);
-        
+
         request.getRequestDispatcher("view/flightManagement.jsp").forward(request, response);
 
-           
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
