@@ -50,8 +50,13 @@
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
+
                     </div>
                     <div class="modal-body">
+                        <c:if test="${not empty error}">
+                            <p id="error" class="text-danger"><%= request.getAttribute("error") != null ? request.getAttribute("error") : "" %></p>
+                        </c:if>
+
                         <form id="addProductForm" action="flightManagement" method="POST">
                             <input type="hidden" name="action" value="create">     
                             <!-- Name -->
@@ -82,11 +87,12 @@
                             </div>       
                             <input type="hidden" class="form-control" name="airlineId" value="${requestScope.account.getAirlineId()}" readonly="">
 
-                            
+
 
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                 <button type="submit" class="btn btn-primary" form="addProductForm">Add</button>
+
                             </div>
                         </form>
                     </div>
@@ -189,7 +195,6 @@
                                 </td>
                                 <td style="background-color:  <%= (rsFlightManage.getInt(12) == 1) ? "" : "#ccc" %>">  
                                     <button class="btn btn-info" data-toggle="modal" data-target="#update-flight-<%=rsFlightManage.getInt(1) %>">Update</button>
-
                                     <!--update-->
                                     <div class="modal fade" id="update-flight-<%=rsFlightManage.getInt(1) %>" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog" role="document">
@@ -201,12 +206,16 @@
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
+
+                                                    <c:if test="${not empty errorUpdate}">
+                                                        <p id="update-<%=rsFlightManage.getInt(1) %>" class="text-danger"> </p>                                             
+                                                    </c:if>
                                                     <form  action="flightManagement" method="post"> 
                                                         <input type="hidden" name="action" value="update"/>
-                                                         <input type="hidden" name="airlineId" value="${requestScope.account.getAirlineId()}"/>
+                                                        <input type="hidden" name="airlineId" value="${requestScope.account.getAirlineId()}"/>
                                                         <label for="usrname"><span class="glyphicon glyphicon-globe"></span>ID:</label>
                                                         <input type="text" class="form-control" id="usrname" name="id" value="<%=rsFlightManage.getInt(1) %>" readonly="">
-                                                       
+
                                                         <!-- Minutes -->
                                                         <div class="form-group">
                                                             <label for="nameInput" style="text-align: left; display: block;"><span class="glyphicon glyphicon-plane"></span> Minutes:</label>
@@ -222,7 +231,7 @@
                                                                     <%}%>
                                                                 </select>
                                                             </div>
-                                                          
+
                                                             <div class="form-group col-md-6">
                                                                 <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Destination Airport: </label></div>
                                                                 <select name="destinationAirport" value="<%=rsFlightManage.getInt(11)%>" style="height:  34px">
@@ -231,8 +240,8 @@
                                                                     <%}%>
                                                                 </select>
                                                             </div>
-                                                                
-                                                                
+
+
                                                         </div>
                                                         <div style="text-align: right;">
                                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -344,114 +353,146 @@
     <script>
         $(document).ready(function () {
 
-        // Create an empty countries object
-        var countries = {};
+            // Create an empty countries object
+            var countries = {};
         <%
-                LocationDAO ld2 = new LocationDAO();
-                AirportDAO aird2 = new AirportDAO();
-                List<Country> listCountry = (List<Country>) request.getAttribute("listC");
+                    LocationDAO ld2 = new LocationDAO();
+                    AirportDAO aird2 = new AirportDAO();
+                    List<Country> listCountry = (List<Country>) request.getAttribute("listC");
+                
+            
         %>
-        countries = {
-        "All": {
-        locations: ["All"],
-                airports: { "All": ["All"] }
-        }
-        };
-        <%
-
-                for (Country c : listCountry) { 
-                    List<Location> listLocation = ld2.getLocationsByCountryId(c.getId());
-        %>
-        countries["<%= c.getName() %>"] = {
-        locations: [
-        <% 
-                    for (Location l : listLocation) { 
-        %>
-        "<%= l.getName() %>",
-        <% } %>
-        ],
-                airports: {
-        <% 
-                    for (Location l : listLocation) { 
-                        List<Airport> listAirport = aird2.getAirportsByLocationId(l.getId());
-        %>
-                "<%= l.getName() %>": [
-        <% 
-                            for (int i = 0; i < listAirport.size(); i++) {
-                                Airport airport = listAirport.get(i);
-                                out.print("\"" + airport.getName() + "\"");
-                                if (i < listAirport.size() - 1) {
-                                    out.print(", ");
-                                }
-                            }
-        %>
-                ],
-        <% } %>
+            countries = {
+                "All": {
+                    locations: ["All"],
+                    airports: {"All": ["All"]}
                 }
-        };
+            };
+        <%
+
+                    for (Country c : listCountry) { 
+                        List<Location> listLocation = ld2.getLocationsByCountryId(c.getId());
+        %>
+            countries["<%= c.getName() %>"] = {
+            locations: [
+        <% 
+                        for (Location l : listLocation) { 
+        %>
+            "<%= l.getName() %>",
+        <% } %>
+            ],
+                    airports: {
+        <% 
+                        for (Location l : listLocation) { 
+                            List<Airport> listAirport = aird2.getAirportsByLocationId(l.getId());
+        %>
+                    "<%= l.getName() %>": [
+        <% 
+                                for (int i = 0; i < listAirport.size(); i++) {
+                                    Airport airport = listAirport.get(i);
+                                    out.print("\"" + airport.getName() + "\"");
+                                    if (i < listAirport.size() - 1) {
+                                        out.print(", ");
+                                    }
+                                }
+        %>
+                    ],
+        <% } %>
+                    }
+            };
         <% } %>
 
-        $("#departureCountry").change(function () {
-        var selectedCountry = $(this).val();
+            $("#departureCountry").change(function () {
+                var selectedCountry = $(this).val();
                 console.log(selectedCountry);
                 var locationOptions = "<option value=''>Select Location</option>";
                 if (selectedCountry && countries[selectedCountry]) {
-        var locations = countries[selectedCountry]["locations"];
-                locations.forEach(function (location) {
-                locationOptions += "<option value='" + location + "'" + ">" + location + "</option>";
-                });
-                $("#departureLocation").html(locationOptions);
-        } else {
-        $("#departureLocation").empty();
-                $("#departureAirport").empty();
-        }
-        });
-                $("#departureLocation").change(function () {
-        var selectedCountry = $("#departureCountry").val();
+                    var locations = countries[selectedCountry]["locations"];
+                    locations.forEach(function (location) {
+                        locationOptions += "<option value='" + location + "'" + ">" + location + "</option>";
+                    });
+                    $("#departureLocation").html(locationOptions);
+                } else {
+                    $("#departureLocation").empty();
+                    $("#departureAirport").empty();
+                }
+            });
+            $("#departureLocation").change(function () {
+                var selectedCountry = $("#departureCountry").val();
                 var selectedLocation = $(this).val();
                 var airportOptions = "<option value=''>Select Airport</option>";
                 if (selectedLocation && countries[selectedCountry]) {
-        var airports = countries[selectedCountry]["airports"][selectedLocation];
-                airports.forEach(function (airport) {
-                airportOptions += "<option value='" + airport + "'" + ">" + airport + "</option>";
-                });
-                $("#departureAirport").html(airportOptions);
-        } else {
-        $("#departureAirport").empty();
-        }
-        });
-                $("#destinationCountry").change(function () {
-        var selectedCountry = $(this).val();
+                    var airports = countries[selectedCountry]["airports"][selectedLocation];
+                    airports.forEach(function (airport) {
+                        airportOptions += "<option value='" + airport + "'" + ">" + airport + "</option>";
+                    });
+                    $("#departureAirport").html(airportOptions);
+                } else {
+                    $("#departureAirport").empty();
+                }
+            });
+            $("#destinationCountry").change(function () {
+                var selectedCountry = $(this).val();
                 console.log(selectedCountry);
                 var locationOptions = "<option value=''>Select Location</option>";
                 if (selectedCountry && countries[selectedCountry]) {
-        var locations = countries[selectedCountry]["locations"];
-                locations.forEach(function (location) {
-                locationOptions += "<option value='" + location + "'" + ">" + location + "</option>";
-                });
-                $("#destinationLocation").html(locationOptions);
-        } else {
-        $("#destinationLocation").empty();
-                $("#destinationAirport").empty();
-        }
-        });
-                $("#destinationLocation").change(function () {
-        var selectedCountry = $("#destinationCountry").val();
+                    var locations = countries[selectedCountry]["locations"];
+                    locations.forEach(function (location) {
+                        locationOptions += "<option value='" + location + "'" + ">" + location + "</option>";
+                    });
+                    $("#destinationLocation").html(locationOptions);
+                } else {
+                    $("#destinationLocation").empty();
+                    $("#destinationAirport").empty();
+                }
+            });
+            $("#destinationLocation").change(function () {
+                var selectedCountry = $("#destinationCountry").val();
                 var selectedLocation = $(this).val();
                 var airportOptions = "<option value=''>Select Airport</option>";
                 if (selectedLocation && countries[selectedCountry]) {
-        var airports = countries[selectedCountry]["airports"][selectedLocation];
-                airports.forEach(function (airport) {
-                airportOptions += "<option value='" + airport + "'" + ">" + airport + "</option>";
-                });
-                $("#destinationAirport").html(airportOptions);
-        } else {
-        $("#destinationAirport").empty();
-        }
+                    var airports = countries[selectedCountry]["airports"][selectedLocation];
+                    airports.forEach(function (airport) {
+                        airportOptions += "<option value='" + airport + "'" + ">" + airport + "</option>";
+                    });
+                    $("#destinationAirport").html(airportOptions);
+                } else {
+                    $("#destinationAirport").empty();
+                }
+            });
+
+        <c:if test="${not empty error}">
+            $('#addAirline').modal('show'); // Show the 'Add Airline' modal
+        </c:if>
+            $('#addAirline').on('hidden.bs.modal', function () {
+                $('#error').text(''); // Clear the error text
+            });
+
         });
-        });
+
     </script>   
 
+    <c:if test="${not empty errorUpdate}">
+        <script>
+            $(document).ready(function () {
+                // Mở modal khi có lỗi
+                $('#update-flight-<%= request.getAttribute("id") %>').modal('show');
+
+                // Hiển thị thông báo lỗi
+                $('#update-<%= request.getAttribute("id") %>').text('<c:out value="${errorUpdate}"/>'); // Hiển thị lỗi
+            });
+        </script>
+    </c:if>
+
+    <!-- Sự kiện đóng modal để xóa thông báo lỗi -->
+    <script>
+        $(document).ready(function () {
+            $('#update-flight-<%= request.getAttribute("id") %>').on('hidden.bs.modal', function () {
+                // Xóa nội dung của phần tử thông báo lỗi
+                $('#update-<%= request.getAttribute("id") %>').text('');
+            });
+        });
+    </script>
 
 
 
