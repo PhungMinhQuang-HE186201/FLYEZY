@@ -82,9 +82,15 @@ public class AccountControllerServlet extends HttpServlet {
             List<Accounts> accountList = ad.getAllAccounts();
             request.setAttribute("accountList", accountList);
             request.getRequestDispatcher("view/accountController.jsp").forward(request, response);
-        } else if (action.equals("remove")) { //ok
+        } else if (action.equals("changeStatus")) { //ok
             int id = Integer.parseInt(request.getParameter("idAcc"));
-            ad.removeAccount(id);
+            Accounts account = ad.getAccountsById(id);
+            int status = account.getStatus_id();
+            if (status == 1) {
+                ad.changeStatusAccount(id, 2);
+            } else {
+                ad.changeStatusAccount(id, 1);
+            }
             response.sendRedirect("accountController");
         } else if (action.equals("search")) {
             String fRole = request.getParameter("fRole");
@@ -150,7 +156,7 @@ public class AccountControllerServlet extends HttpServlet {
                     int n = ad.createAccount(newAcc);
                     response.sendRedirect("accountController");
                 } else {
-                    String message = "Account already exists";
+                    String message = "The phoneNumber or email has already existed!";
                     List<Accounts> accountList = ad.getAllAccounts();
                     request.setAttribute("accountList", accountList);
                     request.setAttribute("message", message);

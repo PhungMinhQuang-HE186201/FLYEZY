@@ -415,20 +415,21 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- Table `flyezy`.`Ticket`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `flyezy`.`Ticket` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NULL DEFAULT NULL,
-  `Accountsid` INT NOT NULL,
+  `id` INT NOT NULL,
   `Flight_Detailid` INT NOT NULL,
+  `Seat_Categoryid` INT NOT NULL,
+  `name` VARCHAR(255) NULL DEFAULT NULL,
   `pName` VARCHAR(255) NULL DEFAULT NULL,
   `pSex` BIT(1) NULL DEFAULT NULL,
   `pPhoneNumber` INT NULL DEFAULT NULL,
-  `Passenger_Typesid` INT NOT NULL,
-  `PaymentTypeid` INT NOT NULL,
-  `Seat_Categoryid` INT NOT NULL,
-  `Baggagesid` INT NOT NULL,
+  `pDob` DATE NULL DEFAULT NULL,
   `paymentTime` TIMESTAMP NULL DEFAULT NULL,
-  `Statusid` INT NOT NULL,
-  `Flight_Type_id` INT NOT NULL,
+  `Accountsid` INT NULL DEFAULT NULL,
+  `Passenger_Typesid` INT NULL DEFAULT NULL,
+  `PaymentTypeid` INT NULL DEFAULT NULL,
+  `Baggagesid` INT NULL DEFAULT NULL,
+  `Statusid` INT NULL DEFAULT NULL,
+  `Flight_Type_id` INT NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `FKTicket527556` (`Accountsid` ASC) VISIBLE,
   INDEX `FKTicket704972` (`Flight_Detailid` ASC) VISIBLE,
@@ -501,7 +502,7 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 -- ------------------------------------------------
 -- INSERT DATA
 ---------------------------------------------------
-INSERT INTO `Status` VALUES (1,'Activated'),(2,'Deactivated'),(3,'Pre-flight'),(4,'In-flight'),(5,'Landed'),(6,'Flight cancellation request'),(7,'Flight successfully canceled'),(8,'Refund completed');
+INSERT INTO `Status` VALUES (1,'Activated'),(2,'Deactivated'),(3,'Pre-flight'),(4,'In-flight'),(5,'Landed'),(6,'Cancellation Request'),(7,'Successfully Canceled'),(8,'Refund completed'),(9,'Is Empty'),(10,'Successful Payment'),(11,'Cancellation Rejection');
 
 INSERT INTO `Roles` VALUES 
 (1,'Admin'),
@@ -572,5 +573,10 @@ VALUES
     (4,'Kansai International Airport', 4),
     (5,'Incheon International Airport', 5),
     (6,'Gimhae International Airport', 6);
+
+INSERT INTO `Flight` VALUES (1,120,1,2,1,3),(2,120,2,1,1,3),(3,360,1,3,1,3),(4,360,3,1,1,3),(5,360,2,3,1,3),(6,360,3,2,1,3),(7,300,1,4,1,2),(8,300,4,1,1,2),(9,300,2,6,1,2),(10,300,6,2,1,2);
+INSERT INTO `Flight_Detail` VALUES (1,'2024-10-01','14:30:00',1200000,1,1,9),(2,'2024-10-02','15:45:00',1350000,1,2,9),(3,'2024-10-03','10:00:00',1500000,1,3,9);
+INSERT INTO `Flight_Type` VALUES (1,'Outbound '),(2,'RT-Outbound'),(3,'RT-Inbound');
+INSERT INTO `Passenger_Types` VALUES (1,'Adult'),(2,'Children'),(3,'Newborn');
 
 

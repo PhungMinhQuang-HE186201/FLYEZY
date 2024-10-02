@@ -114,12 +114,12 @@
                     <table class="entity">
                         <thead>     
                             <tr>
-                                <th>DEP Airport</th>
-                                <th>DEP Location</th>
                                 <th>DEP Country</th>
-                                <th>DES Airport</th>
-                                <th>DES Location</th>
+                                <th>DEP Location</th>
+                                <th>DEP Airport</th>
                                 <th>DES Country</th>
+                                <th>DES Location</th>
+                                <th>DES Airport</th>      
                                 <th>Minutes</th>
                                 <th>Status</th>
                                 <th style="padding: 0 55px; min-width: 156px">Actions</th>
@@ -135,12 +135,12 @@
                             }
                             while(rsFlightManage != null && rsFlightManage.next()) {%>
                             <tr>
-                                <td style="background-color:  <%= (rsFlightManage.getInt(12) == 1) ? "" : "#ccc" %>" ><%=rsFlightManage.getString(3)%></td>
-                                <td style="background-color:  <%= (rsFlightManage.getInt(12) == 1) ? "" : "#ccc" %>"><%=rsFlightManage.getString(4)%></td>
                                 <td style="background-color:  <%= (rsFlightManage.getInt(12) == 1) ? "" : "#ccc" %>"><%=rsFlightManage.getString(5)%></td>
-                                <td style="background-color:  <%= (rsFlightManage.getInt(12) == 1) ? "" : "#ccc" %>"><%=rsFlightManage.getString(6)%></td>
-                                <td style="background-color:  <%= (rsFlightManage.getInt(12) == 1) ? "" : "#ccc" %>"><%=rsFlightManage.getString(7)%></td>
+                                <td style="background-color:  <%= (rsFlightManage.getInt(12) == 1) ? "" : "#ccc" %>"><%=rsFlightManage.getString(4)%></td>
+                                <td style="background-color:  <%= (rsFlightManage.getInt(12) == 1) ? "" : "#ccc" %>" ><%=rsFlightManage.getString(3)%></td>
                                 <td style="background-color:  <%= (rsFlightManage.getInt(12) == 1) ? "" : "#ccc" %>"><%=rsFlightManage.getString(8)%></td>
+                                <td style="background-color:  <%= (rsFlightManage.getInt(12) == 1) ? "" : "#ccc" %>"><%=rsFlightManage.getString(7)%></td>
+                                <td style="background-color:  <%= (rsFlightManage.getInt(12) == 1) ? "" : "#ccc" %>"><%=rsFlightManage.getString(6)%></td>
                                 <td style="background-color:  <%= (rsFlightManage.getInt(12) == 1) ? "" : "#ccc" %>"><%=rsFlightManage.getInt(2)%></td>
                                 <td style="background-color:  <%= (rsFlightManage.getInt(12) == 1) ? "" : "#ccc" %>">
                                     <%if (rsFlightManage.getInt(12) == 1){ %>
