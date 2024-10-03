@@ -50,8 +50,13 @@
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
+
                     </div>
                     <div class="modal-body">
+                        <c:if test="${not empty error}">
+                            <p id="error" class="text-danger"><%= request.getAttribute("error") != null ? request.getAttribute("error") : "" %></p>
+                        </c:if>
+
                         <form id="addProductForm" action="flightManagement" method="POST">
                             <input type="hidden" name="action" value="create">     
                             <!-- Name -->
@@ -115,9 +120,13 @@
                                 </div>
                             </div>       
                             <input type="hidden" class="form-control" name="airlineId" value="${requestScope.account.getAirlineId()}" readonly="">
+
+
+
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                 <button type="submit" class="btn btn-primary" form="addProductForm">Add</button>
+
                             </div>
                         </form>
                     </div>
@@ -232,11 +241,17 @@
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
+
+                                                    <c:if test="${not empty errorUpdate}">
+                                                        <p id="update-<%=rsFlightManage.getInt(1) %>" class="text-danger"> </p>                                             
+                                                    </c:if>
                                                     <form  action="flightManagement" method="post"> 
                                                         <input type="hidden" name="action" value="update"/>
                                                         <input type="hidden" name="airlineId" value="${requestScope.account.getAirlineId()}"/>
+                                                        <input type="hidden" name="airlineId" value="${requestScope.account.getAirlineId()}"/>
                                                         <label for="usrname"><span class="glyphicon glyphicon-globe"></span>ID:</label>
                                                         <input type="text" class="form-control" id="usrname" name="id" value="<%=rsFlightManage.getInt(1) %>" readonly="">
+
 
                                                         <!-- Minutes -->
                                                         <div class="form-group">

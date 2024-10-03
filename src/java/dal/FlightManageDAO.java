@@ -35,7 +35,6 @@ public class FlightManageDAO extends DBConnect {
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
-
         return list;
     }
     
@@ -61,6 +60,44 @@ public class FlightManageDAO extends DBConnect {
     return null; 
 }
 
+
+    public boolean checkDuplicated(Flights flight) {
+        String departureAirportid = "SELECT * FROM Flight WHERE departureAirportid = ? && destinationAirportid = ?";
+
+        try {
+            // Kiểm tra email
+            PreparedStatement departureCheck = conn.prepareStatement(departureAirportid);
+            departureCheck.setInt(1, flight.getDepartureAirportId());
+            departureCheck.setInt(2, flight.getDestinationAirportId());
+            ResultSet departureResultSet = departureCheck.executeQuery();
+            if (departureResultSet.next()) {
+                return false;  //  đã tồn tại
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true; //chua ton tai
+    }
+
+    public Flights getAllFlight() {
+        String sql = "select * from Flight";
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            ResultSet resultSet = prepare.executeQuery();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                int minutes = resultSet.getInt("minutes");
+                int departureAirportId = resultSet.getInt("departureAirportId");
+                int destinationAirportId = resultSet.getInt("destinationAirportId");
+                int statusId = resultSet.getInt("Status_id");
+                Flights f = new Flights(id, minutes, departureAirportId, destinationAirportId, statusId, statusId);
+                return f;
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return null;
+    }
 
     public int createFlight(Flights flight) {
         int n = 0;
@@ -126,9 +163,9 @@ public class FlightManageDAO extends DBConnect {
 
     public static void main(String[] args) {
         FlightManageDAO dao = new FlightManageDAO();
-       Flights f = new Flights(23, 2, 1, 3);
-       int n = dao.createFlight(f);
-       
+        Flights f = new Flights(23, 2, 1, 3);
+        int n = dao.createFlight(f);
+
     }
 
 }
