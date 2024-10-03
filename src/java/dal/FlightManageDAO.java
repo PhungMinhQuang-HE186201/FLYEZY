@@ -10,7 +10,6 @@ import model.Flights;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import model.Airline;
 
 /**
  *
@@ -39,6 +38,29 @@ public class FlightManageDAO extends DBConnect {
 
         return list;
     }
+    
+    public Flights getFlightById(int id) {
+    String sql = "SELECT * FROM Flight WHERE id = ?";
+    try {
+        PreparedStatement prepare = conn.prepareStatement(sql);
+        prepare.setInt(1, id);
+        ResultSet resultSet = prepare.executeQuery();
+
+        if (resultSet.next()) {
+            int flightId = resultSet.getInt("id");
+            int minutes = resultSet.getInt("minutes");
+            int departureAirportId = resultSet.getInt("departureAirportId");
+            int destinationAirportId = resultSet.getInt("destinationAirportId");
+            int statusId = resultSet.getInt("Status_id");
+
+            return new Flights(flightId, minutes, departureAirportId, destinationAirportId, statusId);
+        }
+    } catch (Exception e) {
+    }
+
+    return null; 
+}
+
 
     public int createFlight(Flights flight) {
         int n = 0;

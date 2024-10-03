@@ -82,7 +82,6 @@ public class FlightManagementServlet extends HttpServlet {
         request.setAttribute("account", acc);
         String action = request.getParameter("action");
         if (action == null) {
-          
             String sql = "select f.id,f.minutes,a1.name as departureAirport,l1.name as departureLocation,c1.name as departureCountry,\n"
                     + "a2.name as destinationAirport,l2.name as destinationLocation, c2.name as destinationCountry,  s.name as status, f.departureAirportid, f.destinationAirportid, f.Status_id  from flyezy.Flight as f\n"
                     + "inner join flyezy.Airport as a1 on a1.id = f.departureAirportid\n"
@@ -158,14 +157,15 @@ public class FlightManagementServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         FlightManageDAO fmd = new FlightManageDAO();
+        AirportDAO ad = new AirportDAO();
         
         String action = request.getParameter("action");
 
         //minutes, departureAirport, destinationAirport, statusId
         if (action.equals("create")) {
             int minutes = Integer.parseInt(request.getParameter("minutes"));
-            int departureAirportId = Integer.parseInt(request.getParameter("departureAirport"));
-            int destinationAirportId = Integer.parseInt(request.getParameter("destinationAirport"));
+            int departureAirportId = ad.getAirportIdByName(request.getParameter("departureAirport"));
+            int destinationAirportId = ad.getAirportIdByName(request.getParameter("destinationAirport"));
             int airlineId = Integer.parseInt(request.getParameter("airlineId"));
             Flights newFlight = new Flights(minutes, departureAirportId, destinationAirportId,airlineId);
             int n = fmd.createFlight(newFlight);
@@ -174,8 +174,8 @@ public class FlightManagementServlet extends HttpServlet {
         } else if (action.equals("update")) {
             int minutes = Integer.parseInt(request.getParameter("minutes"));
             int id = Integer.parseInt(request.getParameter("id"));
-            int departureAirportId = Integer.parseInt(request.getParameter("departureAirport"));
-            int destinationAirportId = Integer.parseInt(request.getParameter("destinationAirport"));
+            int departureAirportId = ad.getAirportIdByName(request.getParameter("departureAirport"));
+            int destinationAirportId = ad.getAirportIdByName(request.getParameter("destinationAirport"));
             
             Flights newFlight = new Flights(id, minutes, departureAirportId, destinationAirportId, id);
             fmd.updateFlight(newFlight);

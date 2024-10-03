@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * @author user
  */
 public class AirportDAO extends DBConnect {
-    
+
     public List<Airport> getAllAirport() {
         List<Airport> list = new ArrayList<>();
         String sql = "select * from Airport";
@@ -27,7 +27,7 @@ public class AirportDAO extends DBConnect {
                 int id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
                 int locationId = resultSet.getInt("Locationid");
-                
+
                 list.add(new Airport(id, name, locationId));
             }
         } catch (SQLException ex) {
@@ -35,7 +35,45 @@ public class AirportDAO extends DBConnect {
         }
         return list;
     }
+
+    public Airport getAirportById(int id) {
+        String sql = "SELECT * FROM Airport WHERE id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                int airportId = rs.getInt("id");
+                String name = rs.getString("name");
+                int locationId = rs.getInt("Locationid");
+                Airport a = new Airport(airportId, name, locationId);
+                return a;
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+
+        return null;
+    }
     
+    public int getAirportIdByName(String name) {
+        String sql = "SELECT id FROM Airport WHERE name = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, name);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                return rs.getInt("id");
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+
+        return -1;
+    }
+
+
     public List<Airport> getAirportsByLocationId(int lid) {
         List<Airport> list = new ArrayList<>();
         String sql = "select * from Airport WHERE Locationid = ?";
@@ -47,12 +85,17 @@ public class AirportDAO extends DBConnect {
                 int id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
                 int locationId = resultSet.getInt("Locationid");
-                
+
                 list.add(new Airport(id, name, locationId));
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
         return list;
+    }
+    
+    public static void main(String[] args) {
+        AirportDAO ad = new AirportDAO();
+        System.out.println(ad.getAirportIdByName("Narita International Airport"));
     }
 }

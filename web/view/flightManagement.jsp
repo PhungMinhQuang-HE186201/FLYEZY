@@ -59,31 +59,62 @@
                                 <label for="minutesInput"><span class="glyphicon glyphicon-plane"></span> Minutes:</label>
                                 <input type="text" class="form-control" id="minutesInput" name="minutes" required>
                             </div>
-
+                            <%
+                                CountryDAO cd = new CountryDAO();
+                                LocationDAO ld = new LocationDAO();
+                                AirportDAO aird = new AirportDAO();
+                            %>
                             <div class="row">
                                 <div class="form-group col-md-6">
-                                    <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Departure Airport: </label></div>
-                                    <select name="departureAirport" value="" style="height:  34px">
-                                        <%List<Airport> listA = (List<Airport>)request.getAttribute("listA");
-                                                  for(Airport airport : listA){%>
-                                        <option value="<%=airport.getId()%>"><%=airport.getName()%></option>"
-                                        <%}%>
-                                    </select>
+                                    <div class="flight-form-group">
+                                        <strong>DEP Country:</strong>
+                                        <select class="flight-select" name="departureCountry" id="departureCountry1">
+                                            <option value="">Select Country</option>
+                                            <% for (Country c : (List<Country>) request.getAttribute("listC")) { %>
+                                            <option value="<%= c.getName() %>"><%= c.getName() %></option>
+                                            <% } %>
+                                        </select>
+
+                                        <strong>DEP Location:</strong>
+                                        <select class="flight-select" name="departureLocation" id="departureLocation1">
+                                            <option value="">Select Location</option>
+
+                                        </select>
+
+                                        <strong>DEP Airport:</strong>
+                                        <select class="flight-select" name="departureAirport" id="departureAirport1">
+                                            <option value="">Select Airport</option>
+
+                                        </select>
+                                    </div>
                                 </div>
 
                                 <div class="form-group col-md-6">
-                                    <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Destination Airport: </label></div>
-                                    <select name="destinationAirport" value="" style="height:  34px">
-                                        <%  for(Airport airport2 : listA){%>      
-                                        <option value="<%=airport2.getId()%>"> <%=airport2.getName()%></option>"
-                                        <%}%>  
-                                    </select>
+                                    <div class="flight-form-group">
+                                        <strong>DES Country:</strong>
+                                        <select class="flight-select" name="destinationCountry" id="destinationCountry1">
+                                            <option value="">Select Country</option>
+                                            <% for (Country c : (List<Country>) request.getAttribute("listC")) { %>
+                                            <option value="<%= c.getName() %>"><%= c.getName() %></option>
+                                            <% } %>
+                                        </select>
+
+                                        <strong>DES Location:</strong>
+                                        <select class="flight-select" name="destinationLocation" id="destinationLocation1">
+                                            <option value="">Select Location</option>
+
+                                        </select>
+
+
+                                        <strong>DES Airport:</strong>
+                                        <select class="flight-select" name="destinationAirport" id="destinationAirport1">
+                                            <option value="">Select Airport</option>
+
+                                        </select>
+                                    </div>
                                 </div>
                             </div>       
                             <input type="hidden" class="form-control" name="airlineId" value="${requestScope.account.getAirlineId()}" readonly="">
-
-                            
-
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                 <button type="submit" class="btn btn-primary" form="addProductForm">Add</button>
@@ -104,7 +135,7 @@
             </div>
 
             <div class="row" style="margin: 0">
-                <div class="col-md-9" id="left-column" style="padding: 0; margin-top: 10px">
+                <div class="col-md-8" id="left-column" style="padding: 0; margin-top: 10px">
                     <table class="entity">
                         <thead>     
                             <tr>
@@ -116,7 +147,7 @@
                                 <th>DES Airport</th>      
                                 <th>Minutes</th>
                                 <th>Status</th>
-                                <th style="padding: 0 55px; min-width: 156px">Actions</th>
+                                <th>Actions</th>
                             </tr>
                         </thead> 
                         <tbody>
@@ -190,7 +221,7 @@
                                 <td style="background-color:  <%= (rsFlightManage.getInt(12) == 1) ? "" : "#ccc" %>">  
                                     <button class="btn btn-info" data-toggle="modal" data-target="#update-flight-<%=rsFlightManage.getInt(1) %>">Update</button>
 
-                                    <!--update-->
+                                    <!--update modal-->
                                     <div class="modal fade" id="update-flight-<%=rsFlightManage.getInt(1) %>" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog" role="document">
                                             <div class="modal-content">
@@ -203,36 +234,69 @@
                                                 <div class="modal-body">
                                                     <form  action="flightManagement" method="post"> 
                                                         <input type="hidden" name="action" value="update"/>
-                                                         <input type="hidden" name="airlineId" value="${requestScope.account.getAirlineId()}"/>
+                                                        <input type="hidden" name="airlineId" value="${requestScope.account.getAirlineId()}"/>
                                                         <label for="usrname"><span class="glyphicon glyphicon-globe"></span>ID:</label>
                                                         <input type="text" class="form-control" id="usrname" name="id" value="<%=rsFlightManage.getInt(1) %>" readonly="">
-                                                       
+
                                                         <!-- Minutes -->
                                                         <div class="form-group">
                                                             <label for="nameInput" style="text-align: left; display: block;"><span class="glyphicon glyphicon-plane"></span> Minutes:</label>
                                                             <input type="number" class="form-control" id="nameInput" name="minutes" value="<%=rsFlightManage.getInt(2)%>" required/>
                                                         </div>
 
-                                                        <div class="row">
-                                                            <div class="form-group col-md-6">
-                                                                <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Departure Airport: </label></div>
-                                                                <select name="departureAirport" value="<%=rsFlightManage.getInt(10)%>" style="height:  34px">
-                                                                    <% for(Airport airport : listA){%>
-                                                                    <option value="<%=airport.getId()%>" <%= (rsFlightManage.getInt(10) == airport.getId()) ? "selected" : "" %>><%=airport.getName()%></option>"
-                                                                    <%}%>
+                                                        <div class="row" >
+                                                            <div class="flight-form-group col-md-6">
+                                                                <strong>DEP Country:</strong>
+                                                                <select class="flight-select" name="departureCountry" id="departureCountry2">
+                                                                    <option value="">Select Country</option>
+                                                                    <% for (Country c : (List<Country>) request.getAttribute("listC")) { %>
+                                                                    <option value="<%= c.getName() %>" <%= (c.getName().equals(rsFlightManage.getString(5)) ? "selected" : "") %>><%= c.getName() %></option>
+                                                                    <% } %>
+                                                                </select>
+
+                                                                <strong>DEP Location:</strong>
+                                                                <select class="flight-select" name="departureLocation" id="departureLocation2">
+                                                                    <option value="">Select Location</option>
+                                                                    <% for (Location l : (List<Location>) ld.getLocationsByCountryId(cd.getIdByCountryName(rsFlightManage.getString(5)))) { %>
+                                                                    <option value="<%= l.getName() %>" <%= (l.getName().equals(rsFlightManage.getString(4)) ? "selected" : "") %>><%= l.getName() %></option>
+                                                                    <% } %>
+                                                                </select>
+
+                                                                <strong>DEP Airport:</strong>
+                                                                <select class="flight-select" name="departureAirport" id="departureAirport2">
+                                                                    <option value="">Select Airport</option>
+                                                                    <% for (Airport ap : (List<Airport>) aird.getAirportsByLocationId(ld.getIdByLocationName(rsFlightManage.getString(4)))) { %>
+                                                                    <option value="<%= ap.getName() %>" <%= (ap.getName().equals(rsFlightManage.getString(3)) ? "selected" : "") %>><%= ap.getName() %></option>
+                                                                    <% } %>
                                                                 </select>
                                                             </div>
-                                                          
-                                                            <div class="form-group col-md-6">
-                                                                <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Destination Airport: </label></div>
-                                                                <select name="destinationAirport" value="<%=rsFlightManage.getInt(11)%>" style="height:  34px">
-                                                                    <% for(Airport airport2 : listA){%>
-                                                                    <option value="<%=airport2.getId()%>" <%= (rsFlightManage.getInt(11) == airport2.getId()) ? "selected" : "" %>><%=airport2.getName()%></option>"
-                                                                    <%}%>
+
+                                                            <div class="flight-form-group col-md-6">
+                                                                <strong>DES Country:</strong>
+                                                                <select class="flight-select" name="destinationCountry" id="destinationCountry2">
+                                                                    <option value="">Select Country</option>
+                                                                    <% for (Country c : (List<Country>) request.getAttribute("listC")) { %>
+                                                                    <option value="<%= c.getName() %>" <%= (c.getName().equals(rsFlightManage.getString(8)) ? "selected" : "") %>><%= c.getName() %></option>
+                                                                    <% } %>
+                                                                </select>
+
+                                                                <strong>DES Location:</strong>
+                                                                <select class="flight-select" name="destinationLocation" id="destinationLocation2">
+                                                                    <option value="">Select Location</option>
+                                                                    <% for (Location l : (List<Location>) ld.getLocationsByCountryId(cd.getIdByCountryName(rsFlightManage.getString(8)))) { %>
+                                                                    <option value="<%= l.getName() %>" <%= (l.getName().equals(rsFlightManage.getString(7)) ? "selected" : "") %>><%= l.getName() %></option>
+                                                                    <% } %>
+                                                                </select>
+
+
+                                                                <strong>DES Airport:</strong>
+                                                                <select class="flight-select" name="destinationAirport" id="destinationAirport2">
+                                                                    <option value="">Select Airport</option>
+                                                                    <% for (Airport ap : (List<Airport>) aird.getAirportsByLocationId(ld.getIdByLocationName(rsFlightManage.getString(7)))) { %>
+                                                                    <option value="<%= ap.getName() %>" <%= (ap.getName().equals(rsFlightManage.getString(6)) ? "selected" : "") %>><%= ap.getName() %></option>
+                                                                    <% } %>
                                                                 </select>
                                                             </div>
-                                                                
-                                                                
                                                         </div>
                                                         <div style="text-align: right;">
                                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -250,18 +314,12 @@
                     </table>
                 </div>
                 <!-- Search bar -->
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <form class="flight-form" action="flightManagement" method="GET" style="display: flex; width: 78%; align-items: center;">
                         <input type="hidden" name="action" value="search"/>
-                        <%
-                        CountryDAO cd = new CountryDAO();
-                        LocationDAO ld = new LocationDAO();
-                        AirportDAO aird = new AirportDAO();
-                        %>
-
                         <div class="flight-form-group">
                             <strong>DEP Country:</strong>
-                            <select class="flight-select" name="departureCountry" id="departureCountry">
+                            <select class="flight-select" name="departureCountry" id="departureCountry3">
                                 <option value="">Select Country</option>
                                 <% for (Country c : (List<Country>) request.getAttribute("listC")) { %>
                                 <option value="<%= c.getName() %>" <%= (c.getName().equals(request.getParameter("departureCountry")) ? "selected" : "") %>><%= c.getName() %></option>
@@ -269,7 +327,7 @@
                             </select>
 
                             <strong>DEP Location:</strong>
-                            <select class="flight-select" name="departureLocation" id="departureLocation">
+                            <select class="flight-select" name="departureLocation" id="departureLocation3">
                                 <option value="">Select Location</option>
                                 <% for (Location l : (List<Location>) ld.getLocationsByCountryId(cd.getIdByCountryName(request.getParameter("departureCountry")))) { %>
                                 <option value="<%= l.getName() %>" <%= (l.getName().equals(request.getParameter("departureLocation")) ? "selected" : "") %>><%= l.getName() %></option>
@@ -277,7 +335,7 @@
                             </select>
 
                             <strong>DEP Airport:</strong>
-                            <select class="flight-select" name="departureAirport" id="departureAirport">
+                            <select class="flight-select" name="departureAirport" id="departureAirport3">
                                 <option value="">Select Airport</option>
                                 <% for (Airport ap : (List<Airport>) aird.getAirportsByLocationId(ld.getIdByLocationName(request.getParameter("departureLocation")))) { %>
                                 <option value="<%= ap.getName() %>" <%= (ap.getName().equals(request.getParameter("departureAirport")) ? "selected" : "") %>><%= ap.getName() %></option>
@@ -287,7 +345,7 @@
 
                         <div class="flight-form-group">
                             <strong>DES Country:</strong>
-                            <select class="flight-select" name="destinationCountry" id="destinationCountry">
+                            <select class="flight-select" name="destinationCountry" id="destinationCountry3">
                                 <option value="">Select Country</option>
                                 <% for (Country c : (List<Country>) request.getAttribute("listC")) { %>
                                 <option value="<%= c.getName() %>" <%= (c.getName().equals(request.getParameter("destinationCountry")) ? "selected" : "") %>><%= c.getName() %></option>
@@ -295,7 +353,7 @@
                             </select>
 
                             <strong>DES Location:</strong>
-                            <select class="flight-select" name="destinationLocation" id="destinationLocation">
+                            <select class="flight-select" name="destinationLocation" id="destinationLocation3">
                                 <option value="">Select Location</option>
                                 <% for (Location l : (List<Location>) ld.getLocationsByCountryId(cd.getIdByCountryName(request.getParameter("destinationCountry")))) { %>
                                 <option value="<%= l.getName() %>" <%= (l.getName().equals(request.getParameter("destinationLocation")) ? "selected" : "") %>><%= l.getName() %></option>
@@ -304,7 +362,7 @@
 
 
                             <strong>DES Airport:</strong>
-                            <select class="flight-select" name="destinationAirport" id="destinationAirport">
+                            <select class="flight-select" name="destinationAirport" id="destinationAirport3">
                                 <option value="">Select Airport</option>
                                 <% for (Airport ap : (List<Airport>) aird.getAirportsByLocationId(ld.getIdByLocationName(request.getParameter("destinationLocation")))) { %>
                                 <option value="<%= ap.getName() %>" <%= (ap.getName().equals(request.getParameter("destinationAirport")) ? "selected" : "") %>><%= ap.getName() %></option>
@@ -343,40 +401,38 @@
 
     <script>
         $(document).ready(function () {
+            // Create an empty countries object
+            var countries = {
+                "All": {
+                    locations: ["All"],
+                    airports: { "All": ["All"] }
+                }
+            };
 
-        // Create an empty countries object
-        var countries = {};
-        <%
+            <%
                 LocationDAO ld2 = new LocationDAO();
                 AirportDAO aird2 = new AirportDAO();
                 List<Country> listCountry = (List<Country>) request.getAttribute("listC");
-        %>
-        countries = {
-        "All": {
-        locations: ["All"],
-                airports: { "All": ["All"] }
-        }
-        };
-        <%
 
                 for (Country c : listCountry) { 
                     List<Location> listLocation = ld2.getLocationsByCountryId(c.getId());
-        %>
-        countries["<%= c.getName() %>"] = {
-        locations: [
-        <% 
-                    for (Location l : listLocation) { 
-        %>
-        "<%= l.getName() %>",
-        <% } %>
-        ],
+            %>
+
+            countries["<%= c.getName() %>"] = {
+                locations: [
+                    <% 
+                        for (Location l : listLocation) { 
+                    %>
+                    "<%= l.getName() %>",
+                    <% } %>
+                ],
                 airports: {
-        <% 
-                    for (Location l : listLocation) { 
-                        List<Airport> listAirport = aird2.getAirportsByLocationId(l.getId());
-        %>
-                "<%= l.getName() %>": [
-        <% 
+                    <% 
+                        for (Location l : listLocation) { 
+                            List<Airport> listAirport = aird2.getAirportsByLocationId(l.getId());
+                    %>
+                    "<%= l.getName() %>": [
+                        <% 
                             for (int i = 0; i < listAirport.size(); i++) {
                                 Airport airport = listAirport.get(i);
                                 out.print("\"" + airport.getName() + "\"");
@@ -384,76 +440,58 @@
                                     out.print(", ");
                                 }
                             }
-        %>
-                ],
-        <% } %>
+                        %>
+                    ],
+                    <% } %>
                 }
-        };
-        <% } %>
+            };
+            <% } %>
 
-        $("#departureCountry").change(function () {
-        var selectedCountry = $(this).val();
-                console.log(selectedCountry);
-                var locationOptions = "<option value=''>Select Location</option>";
-                if (selectedCountry && countries[selectedCountry]) {
-        var locations = countries[selectedCountry]["locations"];
-                locations.forEach(function (location) {
-                locationOptions += "<option value='" + location + "'" + ">" + location + "</option>";
+            function updateLocationOptions(countrySelector, locationSelector, airportSelector) {
+                $(countrySelector).change(function () {
+                    console.log("Selected country: " + $(this).val());
+                    var selectedCountry = $(this).val();
+                    var locationOptions = "<option value=''>Select Location</option>";
+
+                    if (selectedCountry && countries[selectedCountry]) {
+                        var locations = countries[selectedCountry]["locations"];
+                        locations.forEach(function (location) {
+                            locationOptions += "<option value='" + location + "'>" + location + "</option>";
+                        });
+                        $(locationSelector).html(locationOptions);
+                    } else {
+                        $(locationSelector).empty();
+                        $(airportSelector).empty();
+                    }
                 });
-                $("#departureLocation").html(locationOptions);
-        } else {
-        $("#departureLocation").empty();
-                $("#departureAirport").empty();
-        }
-        });
-                $("#departureLocation").change(function () {
-        var selectedCountry = $("#departureCountry").val();
-                var selectedLocation = $(this).val();
-                var airportOptions = "<option value=''>Select Airport</option>";
-                if (selectedLocation && countries[selectedCountry]) {
-        var airports = countries[selectedCountry]["airports"][selectedLocation];
-                airports.forEach(function (airport) {
-                airportOptions += "<option value='" + airport + "'" + ">" + airport + "</option>";
+
+                $(locationSelector).change(function () {
+                    console.log("Selected location: " + $(this).val());
+                    var selectedCountry = $(countrySelector).val();
+                    var selectedLocation = $(this).val();
+                    var airportOptions = "<option value=''>Select Airport</option>";
+
+                    if (selectedLocation && countries[selectedCountry]) {
+                        var airports = countries[selectedCountry]["airports"][selectedLocation];
+                        airports.forEach(function (airport) {
+                            airportOptions += "<option value='" + airport + "'>" + airport + "</option>";
+                        });
+                        $(airportSelector).html(airportOptions);
+                    } else {
+                        $(airportSelector).empty();
+                    }
                 });
-                $("#departureAirport").html(airportOptions);
-        } else {
-        $("#departureAirport").empty();
-        }
-        });
-                $("#destinationCountry").change(function () {
-        var selectedCountry = $(this).val();
-                console.log(selectedCountry);
-                var locationOptions = "<option value=''>Select Location</option>";
-                if (selectedCountry && countries[selectedCountry]) {
-        var locations = countries[selectedCountry]["locations"];
-                locations.forEach(function (location) {
-                locationOptions += "<option value='" + location + "'" + ">" + location + "</option>";
-                });
-                $("#destinationLocation").html(locationOptions);
-        } else {
-        $("#destinationLocation").empty();
-                $("#destinationAirport").empty();
-        }
-        });
-                $("#destinationLocation").change(function () {
-        var selectedCountry = $("#destinationCountry").val();
-                var selectedLocation = $(this).val();
-                var airportOptions = "<option value=''>Select Airport</option>";
-                if (selectedLocation && countries[selectedCountry]) {
-        var airports = countries[selectedCountry]["airports"][selectedLocation];
-                airports.forEach(function (airport) {
-                airportOptions += "<option value='" + airport + "'" + ">" + airport + "</option>";
-                });
-                $("#destinationAirport").html(airportOptions);
-        } else {
-        $("#destinationAirport").empty();
-        }
-        });
-        });
-    </script>   
+            }
 
-
-
-
+            // Initialize location options for multiple country-location-airport pairs
+            updateLocationOptions("#departureCountry1", "#departureLocation1", "#departureAirport1");
+            updateLocationOptions("#destinationCountry1", "#destinationLocation1", "#destinationAirport1");
+            updateLocationOptions("#departureCountry2", "#departureLocation2", "#departureAirport2");
+            updateLocationOptions("#destinationCountry2", "#destinationLocation2", "#destinationAirport2");
+            updateLocationOptions("#departureCountry3", "#departureLocation3", "#departureAirport3");
+            updateLocationOptions("#destinationCountry3", "#destinationLocation3", "#destinationAirport3");
+        });
+    </script>
+  
 </body>
 </html>
