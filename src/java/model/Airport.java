@@ -13,6 +13,11 @@ public class Airport {
     private String name;
     private int locationId;
 
+    public Airport(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Airport() {
     }
 

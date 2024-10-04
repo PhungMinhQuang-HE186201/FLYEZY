@@ -184,6 +184,21 @@ public class BaggageManageDAO extends DBConnect {
         }
     }
 
+    public float getWeight(int id) {
+        String sql = "select weight from Baggages where id= "+id;
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            ResultSet resultSet = prepare.executeQuery();
+            while (resultSet.next()) {
+                float weight = resultSet.getFloat("weight");
+                return weight;
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return 0;
+    }
+
     public static void main(String[] args) {
         BaggageManageDAO dao = new BaggageManageDAO();
 

@@ -72,8 +72,27 @@ public class AccountsDAO extends DBConnect {
                 Accounts a = new Accounts(rs.getInt("id"), rs.getString("name"), rs.getString("email"),
                         rs.getString("password"), rs.getString("phoneNumber"),
                         rs.getString("address"), rs.getString("image"), rs.getDate("dob"), rs.getInt("Rolesid"), rs.getInt("Airlineid"),
-                        rs.getTimestamp("created_at"), rs.getTimestamp("updated_at"),rs.getInt("Status_id"));
+                        rs.getTimestamp("created_at"), rs.getTimestamp("updated_at"), rs.getInt("Status_id"));
                 return a;
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return null;
+    }
+
+    public String getAccountNameById(int id) {
+        String sql = "SELECT * FROM Accounts WHERE id = ?";
+        try {
+            PreparedStatement st = conn.prepareStatement(sql);
+            st.setInt(1, id);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                Accounts a = new Accounts(rs.getInt("id"), rs.getString("name"), rs.getString("email"),
+                        rs.getString("password"), rs.getString("phoneNumber"),
+                        rs.getString("address"), rs.getString("image"), rs.getDate("dob"), rs.getInt("Rolesid"), rs.getInt("Airlineid"),
+                        rs.getTimestamp("created_at"), rs.getTimestamp("updated_at"), rs.getInt("Status_id"));
+                return a.getName();
             }
         } catch (SQLException e) {
             System.out.println(e);
@@ -117,7 +136,7 @@ public class AccountsDAO extends DBConnect {
         }
     }
 
-    public void changeStatusAccount(int id,int status) {
+    public void changeStatusAccount(int id, int status) {
         String sql = "UPDATE Accounts\n"
                 + "   SET Status_id=?"
                 + " WHERE id=?";
@@ -346,7 +365,7 @@ public class AccountsDAO extends DBConnect {
         }
         return sb.toString();
     }
-    
+
     public static void main(String[] args) {
         AccountsDAO dao = new AccountsDAO();
         dao.updateAccount(new Accounts(23, "Ngo Tung Duong222", "abccccc@gmail.com", "1", "0123456789", null, null, new Date(2000, 12, 11), 1, 1, null, null));

@@ -55,4 +55,18 @@ public class AirportDAO extends DBConnect {
         }
         return list;
     }
+    public String getNameAirportById(int id) {
+        String sql = "select * from Airport where id = "+id;
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            ResultSet resultSet = prepare.executeQuery();
+            while (resultSet.next()) {
+                String name = resultSet.getString("name");
+                return name;
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return null;
+    }
 }

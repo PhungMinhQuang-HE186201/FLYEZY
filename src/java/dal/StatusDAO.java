@@ -50,6 +50,7 @@ public class StatusDAO extends DBConnect {
         }
         return name;  // Trả về tên, nếu không có giá trị sẽ trả về null
     }
+
     public List<Status> getStatusOfFlight() {
         List<Status> list = new ArrayList<>();
         String sql = "select * from Status where id = 1 or id = 2 ";
@@ -66,11 +67,50 @@ public class StatusDAO extends DBConnect {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return list;    
+        return list;
     }
+
+    public List<Status> getStatusOfTicket() {
+        List<Status> list = new ArrayList<>();
+        String sql = "SELECT * \n"
+                + "FROM Status\n"
+                + "ORDER BY id DESC\n"
+                + "LIMIT 6;";
+
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            ResultSet resultSet = prepare.executeQuery();
+            prepare = conn.prepareStatement(sql);
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                list.add(new Status(id, name));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return list;
+    }
+    public void changeStatusTicket(int id, int status) {
+        String sql = "UPDATE Ticket\n"
+                + "   SET Statusid=?"
+                + " WHERE id=?";
+
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setInt(1, status);
+            pre.setInt(2, id);
+
+            pre.executeUpdate();
+
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+    }
+
     public static void main(String[] args) {
         StatusDAO dao = new StatusDAO();
 //        System.out.println(dao.getAllStatus());
         System.out.println(dao.getStatusNameById(0));
-    } 
+    }
 }

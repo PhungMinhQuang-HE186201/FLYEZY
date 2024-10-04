@@ -17,9 +17,10 @@ import model.FlightType;
  * @author user
  */
 public class FlightTypeDAO extends DBConnect {
+
     public List<FlightType> getAllFlightType() {
         List<FlightType> list = new ArrayList<>();
-        String sql = "select * from flight_type";
+        String sql = "select * from Flight_type";
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
             ResultSet resultSet = prepare.executeQuery();
@@ -32,5 +33,20 @@ public class FlightTypeDAO extends DBConnect {
             System.out.println(ex.getMessage());
         }
         return list;
+    }
+
+    public String getNameType(int id) {
+        String sql = "Select name from Flight_type where id= "+id;
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            ResultSet resultSet = prepare.executeQuery();
+            while (resultSet.next()) {
+                String name = resultSet.getString("name");
+                return name;
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return null;
     }
 }
