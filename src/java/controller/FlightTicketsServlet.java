@@ -70,9 +70,13 @@ public class FlightTicketsServlet extends HttpServlet {
         int i = (idd != null) ? idd : -1;
         Accounts acc = ad.getAccountsById(i);
         request.setAttribute("account", acc);
+        
+        String adult = request.getParameter("adult");
+        String child = request.getParameter("child");
+        String infant = request.getParameter("infant");
 
-        String depAStr = request.getParameter("departureAirport");
-        String desAStr = request.getParameter("destinationAirport");
+        String depAStr = request.getParameter("departure");
+        String desAStr = request.getParameter("destination");
         String depDateStr = request.getParameter("departureDate");
         
         try {
