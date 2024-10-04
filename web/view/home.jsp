@@ -79,7 +79,7 @@
 
             %>
             <h1 id="errorMessage"></h1> <!-- Display the error message here -->
-            <form action="routeTicket" method="GET" class="row g-3" onsubmit="return validateLocations(event)">
+            <form action="flightTickets" method="GET" class="row g-3" onsubmit="return validateLocations(event)">
                 <!-- From and To Fields -->
                 <div class="col-md-2">
                     <label for="from" class="form-label">Từ</label>
