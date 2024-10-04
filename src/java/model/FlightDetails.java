@@ -13,14 +13,13 @@ import java.sql.Date;
 public class FlightDetails {
 
     private int id;
-    private Date date;           // Ngày của chuyến bay
-    private Time time;           // Thời gian của chuyến bay (kiểu java.sql.Time)
-    private int price;        // Giá vé
-    private int flightId;       // ID của chuyến bay
-    private int planeCategoryId; // ID của loại máy bay
-    private int statusId;       // ID của trạng thái chuyến bay
+    private Date date;         
+    private Time time;          
+    private int price;        
+    private int flightId;       
+    private int planeCategoryId; 
+    private int statusId;      
 
-    // Constructors
     public FlightDetails() {
     }
 
@@ -51,7 +50,6 @@ public class FlightDetails {
         this.statusId = statusId;
     }
     
-    // Getters and Setters
     public int getId() {
         return id;
     }

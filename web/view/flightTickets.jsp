@@ -100,6 +100,16 @@
             display: block;
         }
 
+        .ticket-category-head{
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            text-align: center;
+            padding:10px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px
+        }
+
         .ticket-category-body {
             display: flex;
             flex-direction: column;
@@ -114,7 +124,13 @@
         .ticket-category-info {
             flex-grow: 1;
             margin-bottom: 20px;
-            padding: 0 40px
+            padding: 0 18px
+        }
+        .ticket-category-list{
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 25px 90px;
         }
 
         .ticket-category-form {
@@ -195,20 +211,21 @@
                 List<FlightDetails> flightTickets = (List<FlightDetails>) request.getAttribute("flightTickets");
 
                 for (FlightDetails fd : flightTickets) {
-                    int airlineId = fdd.getAirlineIdByFlightDetailId(fd.getId());
-                    String airlineImage = amd.getImageById(airlineId);
-                    String airlineName = amd.getNameById(airlineId);
-                    PlaneCategory planeCategory = fdd.getPlaneCategoryByFlightDetailId(fd.getId());
-                    List<SeatCategory> ticketCatList = scd.getAllSeatCategoryByPlaneCategoryId(planeCategory.getId());
-                    Flights flight = fdd.getFlightByFlightDetailId(fd.getId());
-                    
-                    Airport depAirport = ad.getAirportById(flight.getDepartureAirportId());
-                    Location depLocation = ld.getLocationById(depAirport.getLocationId());
-                    Country depCountry = cd.getCountryById(depLocation.getCountryId());
+                    if(fd.getStatusId()==3){
+                        int airlineId = fdd.getAirlineIdByFlightDetailId(fd.getId());
+                        String airlineImage = amd.getImageById(airlineId);
+                        String airlineName = amd.getNameById(airlineId);
+                        PlaneCategory planeCategory = fdd.getPlaneCategoryByFlightDetailId(fd.getId());
+                        List<SeatCategory> ticketCatList = scd.getAllSeatCategoryByPlaneCategoryId(planeCategory.getId());
+                        Flights flight = fdd.getFlightByFlightDetailId(fd.getId());
 
-                    Airport desAirport = ad.getAirportById(flight.getDestinationAirportId());
-                    Location desLocation = ld.getLocationById(desAirport.getLocationId());
-                    Country desCountry = cd.getCountryById(desLocation.getCountryId());
+                        Airport depAirport = ad.getAirportById(flight.getDepartureAirportId());
+                        Location depLocation = ld.getLocationById(depAirport.getLocationId());
+                        Country depCountry = cd.getCountryById(depLocation.getCountryId());
+
+                        Airport desAirport = ad.getAirportById(flight.getDestinationAirportId());
+                        Location desLocation = ld.getLocationById(desAirport.getLocationId());
+                        Country desCountry = cd.getCountryById(desLocation.getCountryId());                    
                 %>
                 <div class="flight-detail" style="display: block">
                     <div class="flight-info" style="display: flex">
@@ -258,20 +275,30 @@
                     </div>
                     <div id="ticket-category-container<%=fd.getId()%>" style="max-height: 0; overflow: hidden; transition: max-height 0.5s ease, opacity 0.5s ease; opacity: 0;">
                         <div style="text-align: center; font-size: 20px">Select Ticket Class</div>
-                        <div class="ticket-category-list" style="width: 100%; display: flex; justify-content: space-between; padding: 35px 112px;">
-
+                        <div class="ticket-category-list">
                             <% 
+                                int activated = 0;
                                 for(int i = 0; i<ticketCatList.size(); i++){
+                                    if(ticketCatList.get(i).getStatusId()==1){
+                                        activated+=1;
+                                    }
+                                }       
+                                for(int i = 0; i<ticketCatList.size(); i++){
+                                    if(ticketCatList.get(i).getStatusId()==1){
                             %>
-                            <div class="ticket-category-box" style="width:<%=95.0/ticketCatList.size()%>%;">
-                                <div class="ticket-category-head" style="background-color: <%= colors[i] %>;color: white; font-size: 15px; font-weight: 600;
-                                     text-align: center; padding:10px;
-                                     border-top-left-radius: 10px; border-top-right-radius: 10px">
+                            <div class="ticket-category-box" style="width:<%=90.0/activated%>%;">
+                                <div class="ticket-category-head" style="background-color: <%= colors[i] %>;">
                                     <%=ticketCatList.get(i).getName()%>
                                     <div style="font-size: 25px"><%= NumberFormat.getInstance().format(fd.getPrice()*(1+ticketCatList.get(i).getSurcharge()))%> ₫</div>
                                 </div>
-                                <div class="ticket-category-body" style="border: 2px solid <%= colors[i] %>; padding: 25px 12px;; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;min-height: 85%">
-                                    <div class="ticket-category-info">
+                                <div class="ticket-category-body" style="border: 2px solid <%= colors[i] %>; padding: 12px 12px;; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;min-height: 85%">
+                                    <div>
+                                        <img style="width: 100%; display: block; border-radius: 10px; transition: transform 0.3s ease; " 
+                                             src="<%=ticketCatList.get(i).getImage()%>" alt="alt"
+                                             onmouseover="this.style.transform = 'scale(1.05)'" 
+                                             onmouseout="this.style.transform = 'scale(1)'"/>
+                                    </div>
+                                    <div class="ticket-category-info" style="font-size: 13px; margin-top: 12px">
                                         <%=ticketCatList.get(i).getInfo()%>
                                     </div>
                                     <form class="ticket-category-form" action="" method="" style="display: flex; justify-content: center; ">
@@ -279,10 +306,10 @@
                                         <button style="background-color: <%= colors[i] %>;" type="submit">Buy Ticket</button>
                                     </form>
                                 </div>
-
                             </div>
                             <%
-                                } 
+                                }
+                            } 
                             %>
                         </div>
                     </div>
@@ -295,8 +322,9 @@
                                     <div class="modal-header" style="padding:5px 5px;">
                                         <button type="button" class="close" style="font-size: 30px; margin-right: 8px;
                                                 margin-top: 2px;" data-dismiss="modal">&times;</button>
-                                        <h3 style="margin-left: 12px;
-                                            font-weight: 700; color: #3C6E57"><%=depLocation.getName()%> - <%=desLocation.getName()%></h3>
+                                        <h3 style="margin-left: 12px; font-weight: 700; color: #3C6E57">
+                                            <%=depLocation.getName()%> - <%=desLocation.getName()%>
+                                        </h3>
                                     </div>
                                     <div class="modal-body row" style="padding:18px 50px;">
                                         <div class="col-md-5">
@@ -353,6 +381,7 @@
                 </div>
                 <%
                     }
+                }
                 %>
 
             </div>
