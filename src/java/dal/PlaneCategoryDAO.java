@@ -4,6 +4,7 @@
  */
 package dal;
 
+import com.oracle.wls.shaded.org.apache.bcel.Constants;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -176,9 +177,30 @@ public class PlaneCategoryDAO extends DBConnect {
         return null;
     }
 
+    //QuanHT:
+    public String getNameById(int planeCategoryId) {
+        String categoryName = null;
+        String query = "SELECT name FROM plane_category WHERE id = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setInt(1, planeCategoryId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                categoryName = rs.getString("name");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return categoryName;
+    }
+
     public static void main(String[] args) {
         PlaneCategoryDAO pd = new PlaneCategoryDAO();
-        System.out.println(pd.searchPlaneCategory(null, 2, 2));
+        System.out.println(pd.getNameById(1));
 
     }
 

@@ -93,6 +93,11 @@ public class Flights {
     public void setStatusId(int statusId) {
         this.statusId = statusId;
     }
+
+    @Override
+    public String toString() {
+        return "Flights{" + "id=" + id + ", minutes=" + minutes + ", departureAirportId=" + departureAirportId + ", destinationAirportId=" + destinationAirportId + ", statusId=" + statusId + ", airlineId=" + airlineId + '}';
+    }
     
 
 

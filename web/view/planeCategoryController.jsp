@@ -16,14 +16,22 @@
         <link rel="stylesheet" href="css/styleAdminController.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.css">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
         <style>
             .modal-body{
                 text-align: left
             }
             .modal-body span{
                 margin-right: 5px
+            }
+            #toast-container > .toast {
+                top: 80px;     
+                right: 0.5%;    
+                left:  auto;   
+                position: fixed; 
             }
         </style>
     </head>
@@ -121,8 +129,8 @@
                             <a class="btn <%= (pc.getStatusId() == 1) ? "btn-success" : "btn-danger" %>" style="text-decoration: none; width: 100px;margin: 0"
                                <% if (ad.getStatusById(pc.getAirlineid()) == 1) { %> 
                                onclick="changePlaneCategoryStatus('<%= pc.getId() %>', '<%= pc.getName() %>', '<%= pc.getStatusId() %>')">
-                               <% } %>
-                               
+                                <% } %>
+
                                 <%= (pc.getStatusId() == 1) ? "Activated" : "Deactivated" %>
                             </a>
                         </td>
@@ -412,6 +420,36 @@
         }
     }
 
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "3500",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+
+    function successful(message) {
+        toastr["success"](message, "Successful");
+    }
+    ;
+
+    $(document).ready(function () {
+    <% if (request.getAttribute("result") != null) { %>
+        successful("<%= request.getAttribute("result").toString()%>");
+    <% } %>
+        
+    });
+
     //func change plane category status
     let changePlaneCategoryStatusUrl = "";
     function changePlaneCategoryStatus(id, name, status) {
@@ -428,7 +466,6 @@
     document.getElementById('confirmChangeStatusPlaneCategory').onclick = function () {
         window.location = changePlaneCategoryStatusUrl;
     };
-
 
     // func change seat category status
     let changeSeatCategoryStatusUrl = "";
@@ -447,7 +484,6 @@
     document.getElementById('confirmChangeSeatCategoryStatus').onclick = function () {
         window.location = changeSeatCategoryStatusUrl;
     };
-
 
     window.onload = function () {
         if (window.location.protocol === 'file:') {

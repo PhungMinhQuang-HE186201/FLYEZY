@@ -21,12 +21,12 @@ public class LocationDAO extends DBConnect {
         List<Location> list = new ArrayList<>();
         String sql = "select * from Location";
         try {
-            PreparedStatement prepare = conn.prepareStatement(sql);
-            ResultSet resultSet = prepare.executeQuery();
-            while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                String name = resultSet.getString("name");
-                int Country_id = resultSet.getInt("Country_id");
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                int Country_id = rs.getInt("Country_id");
                 list.add(new Location(id, name, Country_id));
             }
         } catch (SQLException ex) {
@@ -34,8 +34,45 @@ public class LocationDAO extends DBConnect {
         }
         return list;
     }
+    public List<Location> searchLocation(String name) {
+        List<Location> list = new ArrayList<>();
+        String sql = "select * from Location where name like ?";
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            prepare.setString(1, "%" + name + "%");
+            ResultSet resultSet = prepare.executeQuery();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                name = resultSet.getString("name");
+                int countryId = resultSet.getInt("Country_id");
 
-    
+                list.add(new Location(id, name, countryId));
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return list;
+    }
+
+    public Location getLocationById(int id) {
+        String sql = "SELECT * FROM Location WHERE id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id); 
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int locationId = rs.getInt("id");
+                String name = rs.getString("name");
+                int countryId = rs.getInt("Country_id");
+                Location l = new Location(locationId, name, countryId);
+                return l;
+            }
+        } catch (Exception e) {
+        }
+
+        return null; 
+    }
+
     public int getIdByLocationName(String name) {
         String sql = "Select * from Location where name = ?";
         try {
@@ -68,5 +105,9 @@ public class LocationDAO extends DBConnect {
             System.out.println(ex.getMessage());
         }
         return list;
+    }
+    public static void main(String[] args) {
+        LocationDAO dao = new LocationDAO();
+        System.out.println(dao.searchLocation("n"));
     }
 }
