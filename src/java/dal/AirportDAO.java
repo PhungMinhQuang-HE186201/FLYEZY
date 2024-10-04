@@ -35,6 +35,25 @@ public class AirportDAO extends DBConnect {
         }
         return list;
     }
+    public List<Airport> searchAirport(String name) {
+        List<Airport> list = new ArrayList<>();
+        String sql = "select * from Airport where name like ?";
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            prepare.setString(1, "%" + name + "%");
+            ResultSet resultSet = prepare.executeQuery();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                name = resultSet.getString("name");
+                int locationId = resultSet.getInt("Locationid");
+
+                list.add(new Airport(id, name, locationId));
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return list;
+    }
 
     public Airport getAirportById(int id) {
         String sql = "SELECT * FROM Airport WHERE id = ?";

@@ -31,6 +31,7 @@ public class FlightDetails {
         this.planeCategoryId = planeCategoryId;
     }
 
+
     public FlightDetails(Date date, Time time, int price, int flightId, int planeCategoryId, int statusId) {
         this.date = date;
         this.time = time;
