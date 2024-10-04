@@ -102,7 +102,10 @@ public class FlightManageDAO extends DBConnect {
 
     public static void main(String[] args) {
         FlightManageDAO dao = new FlightManageDAO();
-        System.out.println(dao.getAllFlights());
-    }
+        List<Flights> ls = dao.getAllFlights();
 
-}
+        for (Flights flight : ls) {
+            System.out.println(flight.getId());
+            }
+        }
+    }
