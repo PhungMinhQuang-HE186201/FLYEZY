@@ -40,6 +40,30 @@ public class FlightManageDAO extends DBConnect {
         return list;
     }
 
+    public List<Flights> getAllFlightsByDepartAndDes(int departureAirportId, int destinationAirportId) {
+        List<Flights> list = new ArrayList<>();
+        String sql = "select * from flyezy.Flight where Flight.departureAirportid = ? and Flight.destinationAirportid = ?";
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            prepare.setInt(1, departureAirportId);
+            prepare.setInt(2, destinationAirportId);
+            ResultSet resultSet = prepare.executeQuery();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                int minutes = resultSet.getInt("minutes");
+                departureAirportId = resultSet.getInt("departureAirportId");
+                destinationAirportId = resultSet.getInt("destinationAirportId");
+                int statusId = resultSet.getInt("Status_id");
+
+                list.add(new Flights(id, minutes, departureAirportId, destinationAirportId, statusId));
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+
+        return list;
+    }
+
     public int createFlight(Flights flight) {
         int n = 0;
         String sql = "INSERT INTO `flyezy`.`Flight`\n"
@@ -102,11 +126,6 @@ public class FlightManageDAO extends DBConnect {
         }
     }
 
-    public static void main(String[] args) {
-        FlightManageDAO dao = new FlightManageDAO();
-       Flights f = new Flights(23, 2, 1, 3);
-       int n = dao.createFlight(f);
-       
-    }
+
 
 }
