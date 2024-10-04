@@ -94,7 +94,7 @@ public class FlightManagementServlet extends HttpServlet {
                     + "inner join Country as c2 on c2.id = l2.country_id\n"
                     + "inner join Status as s on s.id = f.Status_id\n"
                     + "inner join Accounts as acc on acc.Airlineid = f.Airline_id\n"
-                    + "where acc.id = "  + idd;
+                    + "where acc.id = " + idd;
             rsFlightManage = fmd.getData(sql);
         } else {
             String departureCountry = request.getParameter("departureCountry");
@@ -124,7 +124,8 @@ public class FlightManagementServlet extends HttpServlet {
                     + "INNER JOIN Location AS l2 ON l2.id = a2.locationid\n"
                     + "INNER JOIN Country AS c2 ON c2.id = l2.country_id\n"
                     + "INNER JOIN Status AS s ON s.id = f.Status_id\n"
-                    + "WHERE 1=1";
+                    + "inner join Accounts as acc on acc.Airlineid = f.Airline_id\n"
+                    + "WHERE 1=1 and acc.id = " + idd;
             if (departureAirport != null && !departureAirport.isEmpty()) {
                 sql += " AND a1.name LIKE '%" + departureAirport + "%'";
             }
@@ -244,17 +245,20 @@ public class FlightManagementServlet extends HttpServlet {
         } else if (action.equals("update")) {
             int minutes = Integer.parseInt(request.getParameter("minutes"));
             int id = Integer.parseInt(request.getParameter("id"));
-            int departureAirportId = Integer.parseInt(request.getParameter("departureAirport"));
-            int destinationAirportId = Integer.parseInt(request.getParameter("destinationAirport"));
-            request.setAttribute("id", id);
+            int departureAirportId = ad.getAirportIdByName(request.getParameter("departureAirport"));
+            int destinationAirportId = ad.getAirportIdByName(request.getParameter("destinationAirport"));
+//            int departureAirportId = Integer.parseInt(request.getParameter("departureAirport"));
+//             int destinationAirportId = Integer.parseInt(request.getParameter("destinationAirportId"));
+            int airlineid = Integer.parseInt(request.getParameter("airlineId"));
 
             if (departureAirportId != destinationAirportId) {
-                Flights newFlight = new Flights(id, minutes, departureAirportId, destinationAirportId, id);
+                Flights newFlight = new Flights(id, minutes, departureAirportId, destinationAirportId, airlineid);
                 boolean check = fmd.checkDuplicated(newFlight);
                 if (check == true) {
                     fmd.updateFlight(newFlight);
                     response.sendRedirect("flightManagement");
                 } else {
+                    request.setAttribute("id", id);
                     String errorUpdate = "Departure Airport and Destination Airport already exists, please enter again !";
                     request.setAttribute("errorUpdate", errorUpdate);
 

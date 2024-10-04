@@ -26,6 +26,7 @@
         <link rel="shortcut icon" type="image/png" href="img/flyezy-logo3.png" />
         <link rel="stylesheet" href="css/styleAdminController.css">
         <link rel="stylesheet" href="css/styleFlightManagement.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.css">
 
@@ -247,8 +248,7 @@
                                                     </c:if>
                                                     <form  action="flightManagement" method="post"> 
                                                         <input type="hidden" name="action" value="update"/>
-                                                        <input type="hidden" name="airlineId" value="${requestScope.account.getAirlineId()}"/>
-                                                        <input type="hidden" name="airlineId" value="${requestScope.account.getAirlineId()}"/>
+                                                        <input type="hidden" name="airlineId" value="${requestScope.account.getAirlineId()}" readonly=""/>
                                                         <label for="usrname"><span class="glyphicon glyphicon-globe"></span>ID:</label>
                                                         <input type="text" class="form-control" id="usrname" name="id" value="<%=rsFlightManage.getInt(1) %>" readonly="">
 
@@ -297,7 +297,7 @@
 
                                                                 <strong>DES Location:</strong>
                                                                 <select class="flight-select" name="destinationLocation" id="destinationLocation2">
-                                                                    <option value="">Select Location</option>
+                                                                    <option >Select Location</option>
                                                                     <% for (Location l : (List<Location>) ld.getLocationsByCountryId(cd.getIdByCountryName(rsFlightManage.getString(8)))) { %>
                                                                     <option value="<%= l.getName() %>" <%= (l.getName().equals(rsFlightManage.getString(7)) ? "selected" : "") %>><%= l.getName() %></option>
                                                                     <% } %>
@@ -306,7 +306,7 @@
 
                                                                 <strong>DES Airport:</strong>
                                                                 <select class="flight-select" name="destinationAirport" id="destinationAirport2">
-                                                                    <option value="">Select Airport</option>
+                                                                    <option>Select Airport</option>
                                                                     <% for (Airport ap : (List<Airport>) aird.getAirportsByLocationId(ld.getIdByLocationName(rsFlightManage.getString(7)))) { %>
                                                                     <option value="<%= ap.getName() %>" <%= (ap.getName().equals(rsFlightManage.getString(6)) ? "selected" : "") %>><%= ap.getName() %></option>
                                                                     <% } %>
@@ -332,6 +332,7 @@
                 <div class="col-md-4">
                     <form class="flight-form" action="flightManagement" method="GET" style="display: flex; width: 78%; align-items: center;">
                         <input type="hidden" name="action" value="search"/>
+                        <input type="hidden" class="form-control" name="airlineId" value="${requestScope.account.getAirlineId()}" >
                         <div class="flight-form-group">
                             <strong>DEP Country:</strong>
                             <select class="flight-select" name="departureCountry" id="departureCountry3">
@@ -420,34 +421,34 @@
             var countries = {
                 "All": {
                     locations: ["All"],
-                    airports: { "All": ["All"] }
+                    airports: {"All": ["All"]}
                 }
             };
 
-            <%
+        <%
                 LocationDAO ld2 = new LocationDAO();
                 AirportDAO aird2 = new AirportDAO();
                 List<Country> listCountry = (List<Country>) request.getAttribute("listC");
 
                 for (Country c : listCountry) { 
                     List<Location> listLocation = ld2.getLocationsByCountryId(c.getId());
-            %>
+        %>
 
             countries["<%= c.getName() %>"] = {
-                locations: [
-                    <% 
+            locations: [
+        <% 
                         for (Location l : listLocation) { 
-                    %>
-                    "<%= l.getName() %>",
-                    <% } %>
-                ],
-                airports: {
-                    <% 
+        %>
+            "<%= l.getName() %>",
+        <% } %>
+            ],
+                    airports: {
+        <% 
                         for (Location l : listLocation) { 
                             List<Airport> listAirport = aird2.getAirportsByLocationId(l.getId());
-                    %>
+        %>
                     "<%= l.getName() %>": [
-                        <% 
+        <% 
                             for (int i = 0; i < listAirport.size(); i++) {
                                 Airport airport = listAirport.get(i);
                                 out.print("\"" + airport.getName() + "\"");
@@ -455,12 +456,12 @@
                                     out.print(", ");
                                 }
                             }
-                        %>
+        %>
                     ],
-                    <% } %>
-                }
+        <% } %>
+                    }
             };
-            <% } %>
+        <% } %>
 
             function updateLocationOptions(countrySelector, locationSelector, airportSelector) {
                 $(countrySelector).change(function () {
@@ -507,6 +508,6 @@
             updateLocationOptions("#destinationCountry3", "#destinationLocation3", "#destinationAirport3");
         });
     </script>
-  
+
 </body>
 </html>
