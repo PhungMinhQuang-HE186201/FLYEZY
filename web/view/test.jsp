@@ -1,63 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>CKEditor 5 - Quick start CDN</title>
-        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.css">
-        <style>
-            .main-container {
-                width: 795px;
-                margin-left: auto;
-                margin-right: auto;
-            }
-        </style>
+        <title>Flight Management</title>
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     </head>
     <body>
-        <div class="main-container">
-            <div id="editor">
-                <p>Hello from CKEditor 5!</p>
-            </div>
-        </div>
-        <script type="importmap">
-            {
-            "imports": {
-            "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.js",
-            "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.1.0/"
-            }
-            }
-        </script>
-        <script type="module">
-            import {
-            ClassicEditor,
-                    Essentials,
-                    Paragraph,
-                    Bold,
-                    Italic,
-                    Font
-            } from 'ckeditor5';
-            ClassicEditor
-                    .create(document.querySelector('#editor'), {
-                        plugins: [Essentials, Paragraph, Bold, Italic, Font],
-                        toolbar: [
-                            'undo', 'redo', '|', 'bold', 'italic', '|',
-                            'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
-                        ]
-                    })
-                    .then(editor => {
-                        window.editor = editor;
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
-        </script>
-        <!-- A friendly reminder to run on a server, remove this during the integration. -->
-        <script>
-            window.onload = function () {
-                if (window.location.protocol === 'file:') {
-                    alert('This sample requires an HTTP server. Please serve this file with a web server.');
-                }
-            };
-        </script>
+        <h1>${requestScope.result}</h1>
+        <form action="flightTickets">
+            <input type="number" name="departureAirport"/>
+            <input type="number" name="destinationAirport"/>
+            <input type="date" name="departureDate"/>
+            <input type="submit" value="OK"/>
+        </form>
     </body>
+
+    <script>
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "3500",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+
+        function successful(message) {
+            toastr["success"](message, "Successful");
+        };
+        
+        $(document).ready(function() {
+            <% if (request.getAttribute("result") != null) { %>
+                successful("Add successful");
+            <% } %>
+        });
+    </script>
+
+
 </html>

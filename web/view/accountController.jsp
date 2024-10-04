@@ -151,6 +151,7 @@
                                     <button type="submit" class="btn btn-success btn-block">
                                         Confirm
                                     </button>
+                                    <p style="color: red; font-size: 20px">${message}</p>
                                 </form>
                             </div>
                         </div>
@@ -196,7 +197,11 @@
 
                         <td>
                             <a class="btn btn-info" style="text-decoration: none" id="myBtn<%= list.getId() %>" onclick="openModal(<%= list.getId() %>)">Update</a>
-                            <a class="btn btn-danger" style="text-decoration: none" onclick="doDelete('<%= list.getId() %>', '<%= list.getName() %>')">Delete</a>
+                            <%if(list.getStatus_id()== 1 ){%>
+                            <a class="btn btn-danger" style="text-decoration: none; background-color: green;" onclick="doActivateDeactivate('<%= list.getId() %>', '<%= list.getName() %>','Deactivate')">Activated</a>
+                            <%}else{%>
+                            <a class="btn btn-danger" style="text-decoration: none" onclick="doActivateDeactivate('<%= list.getId() %>', '<%= list.getName() %>','Activate')">Deactivated</a>
+                            <%}%>
                             <!-- Modal: Update account -->
                             <div class="modal fade" id="myModal<%= list.getId() %>" role="dialog">
                                 <div class="modal-dialog">
@@ -295,7 +300,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="deleteModalLabel">Xác nhận xoá tài khoản</h5>
+                        <h5 class="modal-title" id="deleteModalLabel">Xác nhận chuyển trạng thái tài khoản tài khoản</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -305,7 +310,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Xóa</button>
+                        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Xác nhận</button>
                     </div>
                 </div>
             </div>
@@ -323,6 +328,20 @@
                 confirmDeleteBtn.onclick = function () {
                     // Chuyển hướng tới trang xử lý xoá tài khoản
                     window.location = "accountController?action=remove&idAcc=" + id;
+                };
+
+                // Hiển thị modal
+                $('#deleteModal').modal('show');
+            }
+            function doActivateDeactivate(id, name,action) {
+                // Hiển thị thông tin tài khoản cần xoá trong modal
+                document.getElementById('modalMessage').innerHTML = "Bạn có chắc chắn muốn "+ action +" tài khoản <strong>" + name + "</strong>?";
+
+                // Lưu ID của tài khoản để sử dụng sau khi xác nhận xóa
+                const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+                confirmDeleteBtn.onclick = function () {
+                    // Chuyển hướng tới trang xử lý xoá tài khoản
+                    window.location = "accountController?action=changeStatus&idAcc=" + id;
                 };
 
                 // Hiển thị modal

@@ -35,20 +35,103 @@ public class FlightManageDAO extends DBConnect {
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
+        return list;
+    }
+    public List<Flights> getAllFlightsByDepartAndDes(int departureAirportId, int destinationAirportId) {
+        List<Flights> list = new ArrayList<>();
+        String sql = "select * from flyezy.Flight where Flight.departureAirportid = ? and Flight.destinationAirportid = ?";
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            prepare.setInt(1, departureAirportId);
+            prepare.setInt(2, destinationAirportId);
+            ResultSet resultSet = prepare.executeQuery();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                int minutes = resultSet.getInt("minutes");
+                departureAirportId = resultSet.getInt("departureAirportId");
+                destinationAirportId = resultSet.getInt("destinationAirportId");
+                int statusId = resultSet.getInt("Status_id");
+
+                list.add(new Flights(id, minutes, departureAirportId, destinationAirportId, statusId));
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
 
         return list;
     }
 
+    public Flights getFlightById(int id) {
+        String sql = "SELECT * FROM Flight WHERE id = ?";
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            prepare.setInt(1, id);
+            ResultSet resultSet = prepare.executeQuery();
+
+            if (resultSet.next()) {
+                int flightId = resultSet.getInt("id");
+                int minutes = resultSet.getInt("minutes");
+                int departureAirportId = resultSet.getInt("departureAirportId");
+                int destinationAirportId = resultSet.getInt("destinationAirportId");
+                int statusId = resultSet.getInt("Status_id");
+
+                return new Flights(flightId, minutes, departureAirportId, destinationAirportId, statusId);
+            }
+        } catch (Exception e) {
+        }
+
+        return null;
+    }
+
+    public boolean checkDuplicated(Flights flight) {
+        String departureAirportid = "SELECT * FROM Flight WHERE departureAirportid = ? && destinationAirportid = ?";
+
+        try {
+            // Kiểm tra email
+            PreparedStatement departureCheck = conn.prepareStatement(departureAirportid);
+            departureCheck.setInt(1, flight.getDepartureAirportId());
+            departureCheck.setInt(2, flight.getDestinationAirportId());
+            ResultSet departureResultSet = departureCheck.executeQuery();
+            if (departureResultSet.next()) {
+                return false;  //  đã tồn tại
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true; //chua ton tai
+    }
+
+    public Flights getAllFlight() {
+        String sql = "select * from Flight";
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            ResultSet resultSet = prepare.executeQuery();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                int minutes = resultSet.getInt("minutes");
+                int departureAirportId = resultSet.getInt("departureAirportId");
+                int destinationAirportId = resultSet.getInt("destinationAirportId");
+                int statusId = resultSet.getInt("Status_id");
+                Flights f = new Flights(id, minutes, departureAirportId, destinationAirportId, statusId, statusId);
+                return f;
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return null;
+    }
+
     public int createFlight(Flights flight) {
         int n = 0;
-        String sql = """
-                 INSERT INTO `flyezy`.`Flight`
-                 (
-                 `minutes`,
-                 `departureAirportid`,
-                 `destinationAirportid`,
-                 `Status_id`)
-                 VALUES (?,?,?,1)""";
+        String sql = "INSERT INTO `flyezy`.`Flight`\n"
+                + "(\n"
+                + "`minutes`,\n"
+                + "`departureAirportid`,\n"
+                + "`destinationAirportid`,\n"
+                + "`Status_id`,\n"
+                + "`Airline_id`)\n"
+                + "VALUES\n"
+                + "(?,?,?,1,?);";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
 
@@ -57,7 +140,7 @@ public class FlightManageDAO extends DBConnect {
             ps.setInt(1, flight.getMinutes());
             ps.setInt(2, flight.getDepartureAirportId());
             ps.setInt(3, flight.getDestinationAirportId());
-
+            ps.setInt(4, flight.getAirlineId());
             n = ps.executeUpdate();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -66,11 +149,12 @@ public class FlightManageDAO extends DBConnect {
     }
 
     public void updateFlight(Flights flight) {
-        String sql = "UPDATE `flyezy`.`Flight`\n"
+        String sql = "UPDATE `flyezy`.`flight`\n"
                 + "SET\n"
                 + "`minutes` = ?,\n"
                 + "`departureAirportid` = ?,\n"
-                + "`destinationAirportid` = ?\n"
+                + "`destinationAirportid` = ?,\n"
+                + "`Airline_id` = ?\n"
                 + "WHERE `id` = ?;";
 
         try {
@@ -78,7 +162,9 @@ public class FlightManageDAO extends DBConnect {
             pre.setInt(1, flight.getMinutes());
             pre.setInt(2, flight.getDepartureAirportId());
             pre.setInt(3, flight.getDestinationAirportId());
-            pre.setInt(4, flight.getId());
+            pre.setInt(4, flight.getAirlineId());
+            pre.setInt(5, flight.getId());
+
             pre.executeUpdate();
         } catch (Exception ex) {
             System.out.println(ex);
@@ -102,10 +188,9 @@ public class FlightManageDAO extends DBConnect {
 
     public static void main(String[] args) {
         FlightManageDAO dao = new FlightManageDAO();
-        List<Flights> ls = dao.getAllFlights();
+        Flights f = new Flights(1, 3, 2, 3);
+        dao.updateFlight(f);
 
-        for (Flights flight : ls) {
-            System.out.println(flight.getId());
-            }
-        }
     }
+
+}

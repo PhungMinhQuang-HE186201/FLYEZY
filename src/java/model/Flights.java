@@ -11,36 +11,45 @@ public class Flights {
     private int departureAirportId;
     private int destinationAirportId;
     private int statusId;
+    private int airlineId;
  
 
     public Flights() {
     }
 
-
-    
-    
-    public Flights(int id, int minutes, int departureAirportId, int destinationAirportId){
+        
+    public Flights(int id, int minutes, int departureAirportId, int destinationAirportId, int airlineId){
         this.id = id;
         this.minutes = minutes;
         this.departureAirportId = departureAirportId;
         this.destinationAirportId = destinationAirportId;   
+        this.airlineId = airlineId;
     }
     
     
     
-    public Flights(int minutes, int departureAirportId, int destinationAirportId) {
+    public Flights(int minutes, int departureAirportId, int destinationAirportId,int airlineId ) {
         this.minutes = minutes;
         this.departureAirportId = departureAirportId;
         this.destinationAirportId = destinationAirportId;
-    
+         this.airlineId = airlineId;
     }
 
-    public Flights(int id, int minutes, int departureAirportId, int destinationAirportId, int statusId) {
+    public Flights(int id, int minutes, int departureAirportId, int destinationAirportId, int statusId, int airlineId) {
         this.id = id;
         this.minutes = minutes;
         this.departureAirportId = departureAirportId;
         this.destinationAirportId = destinationAirportId;
         this.statusId = statusId;
+        this.airlineId = airlineId;
+    }
+
+    public int getAirlineId() {
+        return airlineId;
+    }
+
+    public void setAirlineId(int airlineId) {
+        this.airlineId = airlineId;
     }
          
 
@@ -83,6 +92,11 @@ public class Flights {
 
     public void setStatusId(int statusId) {
         this.statusId = statusId;
+    }
+
+    @Override
+    public String toString() {
+        return "Flights{" + "id=" + id + ", minutes=" + minutes + ", departureAirportId=" + departureAirportId + ", destinationAirportId=" + destinationAirportId + ", statusId=" + statusId + ", airlineId=" + airlineId + '}';
     }
     
 

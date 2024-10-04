@@ -69,41 +69,53 @@ public class PlaneCategoryControllerServlet extends HttpServlet {
         SeatCategoryDAO scd = new SeatCategoryDAO();
         HttpSession session = request.getSession();
 
+        String statusMessage = (String) session.getAttribute("result");
+        if (statusMessage != null) {
+            request.setAttribute("result", statusMessage);
+            session.removeAttribute("result"); 
+        }
+
         // DuongNT: Retrieve the account information of the currently logged-in user using session
         Integer idd = (Integer) session.getAttribute("id");
-        int i = (idd != null) ? idd : -1;
-        Accounts acc = ad.getAccountsById(i);
-        request.setAttribute("account", acc);
-
-        String action = request.getParameter("action");
-        if (action == null) {
-            List<PlaneCategory> planeCategoryList = pcd.getAllPlaneCategoryByAirlineId(acc.getAirlineId());
-            request.setAttribute("planeCategoryList", planeCategoryList);
-            request.getRequestDispatcher("view/planeCategoryController.jsp").forward(request, response);
-        } else if (action.equals("changeStatus")) { //ok
-            int id = Integer.parseInt(request.getParameter("id"));
-            if (pcd.getPlaneCategoryById(id).getStatusId() == 1) {
-                scd.deactivateAllSeatCategoryByPlaneCategoryId(id);
-                pcd.deactivatePlaneCategoryById(id);
-            } else {
-                scd.activateAllSeatCategoryByPlaneCategoryId(id);
-                pcd.activatePlaneCategoryById(id);
-            }
-            response.sendRedirect("planeCategoryController");
-        } else if (action.equals("search")) {
-            String fName = request.getParameter("fName").trim();
-            String fStatus = request.getParameter("fStatus");
-            int fStatusId = -1;
-            if (fStatus != null) {
-                try {
-                    fStatusId = Integer.parseInt(fStatus);
-                } catch (Exception e) {
+        if (idd == null) {
+            response.sendRedirect("login");
+            return;
+        } else {
+            int i = idd;
+            Accounts acc = ad.getAccountsById(i);
+            request.setAttribute("account", acc);
+            String action = request.getParameter("action");
+            if (action == null) {
+                List<PlaneCategory> planeCategoryList = pcd.getAllPlaneCategoryByAirlineId(acc.getAirlineId());
+                request.setAttribute("planeCategoryList", planeCategoryList);
+                request.getRequestDispatcher("view/planeCategoryController.jsp").forward(request, response);
+            } else if (action.equals("changeStatus")) { //ok
+                int id = Integer.parseInt(request.getParameter("id"));
+                if (pcd.getPlaneCategoryById(id).getStatusId() == 1) {
+                    scd.deactivateAllSeatCategoryByPlaneCategoryId(id);
+                    pcd.deactivatePlaneCategoryById(id);
+                } else {
+                    scd.activateAllSeatCategoryByPlaneCategoryId(id);
+                    pcd.activatePlaneCategoryById(id);
                 }
+                session.setAttribute("result", "Change plane category status successfully!");
+                response.sendRedirect("planeCategoryController");
+            } else if (action.equals("search")) {
+                String fName = request.getParameter("fName").trim();
+                String fStatus = request.getParameter("fStatus");
+                int fStatusId = -1;
+                if (fStatus != null) {
+                    try {
+                        fStatusId = Integer.parseInt(fStatus);
+                    } catch (Exception e) {
+                    }
+                }
+                List<PlaneCategory> accountList = pcd.searchPlaneCategory(fName, fStatusId, acc.getAirlineId());
+                request.setAttribute("planeCategoryList", accountList);
+                request.getRequestDispatcher("view/planeCategoryController.jsp").forward(request, response);
             }
-            List<PlaneCategory> accountList = pcd.searchPlaneCategory(fName, fStatusId, acc.getAirlineId());
-            request.setAttribute("planeCategoryList", accountList);
-            request.getRequestDispatcher("view/planeCategoryController.jsp").forward(request, response);
         }
+
     }
 
     /**
@@ -117,6 +129,8 @@ public class PlaneCategoryControllerServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        AccountsDAO ad = new AccountsDAO();
         PlaneCategoryDAO pcd = new PlaneCategoryDAO();
         String idStr = request.getParameter("id");
         String name = request.getParameter("name");
@@ -131,22 +145,40 @@ public class PlaneCategoryControllerServlet extends HttpServlet {
             statusId = Integer.parseInt(statusIdStr);
         } catch (Exception e) {
         }
-        if (idStr != null && !idStr.isEmpty()) {
-            try {
+        String result = "";
+
+        try {
+            if (idStr != null && !idStr.isEmpty()) {
                 int id = Integer.parseInt(idStr);
                 if (image.equals("img/")) {
                     image = pcd.getPlaneCategoryById(id).getImage();
                 }
                 PlaneCategory pc = new PlaneCategory(id, name, image, info, airlineId, statusId);
                 pcd.updatePlaneCategoryById(pc);
-                response.sendRedirect("planeCategoryController");
-            } catch (Exception e) {
-                response.sendRedirect("home");
+                result = "Update plane category successfully!";
+            } else {
+                PlaneCategory pc = new PlaneCategory(name, image, info, airlineId, statusId);
+                pcd.addPlaneCategory(pc);
+                result = "Add plane category successfully!";
             }
-        } else {
-            PlaneCategory pc = new PlaneCategory(name, image, info, airlineId, statusId);
-            pcd.addPlaneCategory(pc);
-            response.sendRedirect("planeCategoryController");
+
+            // DuongNT: Retrieve the account information of the currently logged-in user using session
+            Integer idd = (Integer) session.getAttribute("id");
+            if (idd == null) {
+                response.sendRedirect("login");
+                return;
+            } else {
+                int i = idd;
+                Accounts acc = ad.getAccountsById(i);
+                request.setAttribute("account", acc);
+                request.setAttribute("result", result);
+                List<PlaneCategory> planeCategoryList = pcd.getAllPlaneCategoryByAirlineId(airlineId);
+                request.setAttribute("planeCategoryList", planeCategoryList);
+                request.getRequestDispatcher("view/planeCategoryController.jsp").forward(request, response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("home");
         }
     }
 

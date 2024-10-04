@@ -13,18 +13,44 @@ import java.sql.Date;
 public class FlightDetails {
 
     private int id;
-    private Date date;           // Ngày của chuyến bay
-    private Time time;           // Thời gian của chuyến bay (kiểu java.sql.Time)
-    private int price;        // Giá vé
-    private int flightId;       // ID của chuyến bay
-    private int planeCategoryId; // ID của loại máy bay
-    private int statusId;       // ID của trạng thái chuyến bay
+    private Date date;         
+    private Time time;          
+    private int price;        
+    private int flightId;       
+    private int planeCategoryId; 
+    private int statusId;      
 
-    // Constructors
     public FlightDetails() {
     }
 
-    // Getters and Setters
+    public FlightDetails( Date date, Time time, int price, int flightId, int planeCategoryId) {
+        this.date = date;
+        this.time = time;
+        this.price = price;
+        this.flightId = flightId;
+        this.planeCategoryId = planeCategoryId;
+    }
+
+
+    public FlightDetails(Date date, Time time, int price, int flightId, int planeCategoryId, int statusId) {
+        this.date = date;
+        this.time = time;
+        this.price = price;
+        this.flightId = flightId;
+        this.planeCategoryId = planeCategoryId;
+        this.statusId = statusId;
+    }
+
+    public FlightDetails(int id, Date date, Time time, int price, int flightId, int planeCategoryId, int statusId) {
+        this.id = id;
+        this.date = date;
+        this.time = time;
+        this.price = price;
+        this.flightId = flightId;
+        this.planeCategoryId = planeCategoryId;
+        this.statusId = statusId;
+    }
+    
     public int getId() {
         return id;
     }

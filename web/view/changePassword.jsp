@@ -18,10 +18,15 @@
             body{
                 background-image: none !important;
             }
+            
+            label {
+                font-weight: 500 !important
+            }
         </style>
     </head>
     <body>
-        <%@include file="view/header.jsp" %> 
+        <%@include file="header.jsp" %>
+        
          <%
             EncodeController ec = new EncodeController();
          %>
