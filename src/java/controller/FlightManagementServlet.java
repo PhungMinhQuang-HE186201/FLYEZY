@@ -19,16 +19,23 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 import model.Accounts;
+import model.FlightDetails;
 import model.Flights;
+import model.FlightDetails;
+import dal.FlightDetailDAO;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author user
  */
 public class FlightManagementServlet extends HttpServlet {
-
+    FlightDetailDAO dal = new FlightDetailDAO();
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -151,7 +158,9 @@ public class FlightManagementServlet extends HttpServlet {
         request.setAttribute("listA", ad.getAllAirport());
         request.setAttribute("listL", ld.getAllLocation());
         request.setAttribute("listC", cd.getAllCountry());
-
+         List<FlightDetails> ls = new ArrayList<>();
+        ls = dal.getAll();
+        request.setAttribute("listFlightDetails", ls);
         request.getRequestDispatcher("view/flightManagement.jsp").forward(request, response);
 
     }

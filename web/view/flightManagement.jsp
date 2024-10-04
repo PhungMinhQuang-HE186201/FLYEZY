@@ -12,10 +12,12 @@
 <%@page import="dal.CountryDAO"%>
 <%@page import="dal.FlightManageDAO"%>
 <%@page import="dal.StatusDAO"%>
+<%@page import="dal.PlaneCategoryDAO"%>
 <%@page import="dal.LocationDAO"%>
 <%@page import="dal.AirlineManageDAO"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.util.List"%>
+<%@page import="model.FlightDetails"%>
 <!DOCTYPE html>
 
 <html>
@@ -231,7 +233,9 @@
                                 </td>
                                 <td style="background-color:  <%= (rsFlightManage.getInt(12) == 1) ? "" : "#ccc" %>">  
                                     <button class="btn btn-info" data-toggle="modal" data-target="#update-flight-<%=rsFlightManage.getInt(1) %>">Update</button>
-
+                                    <button class="btn btn-warning" onclick="toggleFlightDetails(<%= rsFlightManage.getInt(1) %>)">Flight Detail
+                                        <span id="arrow<%= rsFlightManage.getInt(1) %>" style="margin-left: 8px" class="glyphicon glyphicon-menu-down"></span>
+                                    </button>
                                     <!--update modal-->
                                     <div class="modal fade" id="update-flight-<%=rsFlightManage.getInt(1) %>" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog" role="document">
@@ -322,6 +326,14 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
+                                </td>
+                                <!--Quanht: hidden flight details-->
+                            <tr id="flight-details-<%= rsFlightManage.getInt(1) %>" style="display: none;">
+                                <td colspan="4">
+                                    <div id="flight-content-<%= rsFlightManage.getInt(1) %>">
+                                        <!-- Initial loading or placeholder content -->
+                                        <%@include file="flightdetail_Q.jsp" %>
                                     </div>
                                 </td>
                             </tr>
@@ -417,6 +429,43 @@
     </script>
 
     <script>
+          function toggleFlightDetails(flightid) {
+                var detailsRow = document.getElementById('flight-details-' + flightid);
+                var arrow = document.getElementById("arrow" + flightid);
+
+                if (detailsRow.style.display === 'table-row') {
+                    detailsRow.style.display = 'none';
+                    arrow.classList.remove("glyphicon-menu-up");
+                    arrow.classList.add("glyphicon-menu-down");
+                } else {
+                    detailsRow.style.display = 'table-row';
+                    arrow.classList.remove("glyphicon-menu-down");
+                    arrow.classList.add("glyphicon-menu-up");
+
+                    fetch('flightDetails?flightId=' + flightid)
+                            .then(response => response.json())
+                            .then(data => {
+                                var flightContent = document.getElementById('flight-content-' + flightid);
+                                flightContent.innerHTML = '';
+
+                                if (data.length > 0) {
+                                    var table = '<table class="table table-bordered"><thead><tr><th>Flight ID</th><th>Date</th><th>Time</th><th>Price ($)</th></tr></thead><tbody>';
+                                    data.forEach(function (flight) {
+                                        table += '<tr><td>' + flight.flightId + '</td><td>' + flight.date + '</td><td>' + flight.time + '</td><td>' + flight.price + '</td></tr>';
+                                    });
+                                    table += '</tbody></table>';
+                                    flightContent.innerHTML = table;
+                                } else {
+                                    flightContent.innerHTML = '<p>No details available for this flight.</p>';
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error fetching flight details:', error);
+                                flightContent.innerHTML = '<p>Error loading flight details.</p>';
+                            });
+                }
+            }
+            
         $(document).ready(function () {
             // Create an empty countries object
             var countries = {
