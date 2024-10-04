@@ -30,6 +30,22 @@ public class Accounts {
     public Accounts() {
     }
 
+    public Accounts(int id, String name, String email, String password, String phoneNumber, String address, String image, Date dob, int roleId, int airlineId, Timestamp created_at, Timestamp updated_at, int Status_id) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.image = image;
+        this.dob = dob;
+        this.roleId = roleId;
+        this.airlineId = airlineId;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.Status_id = Status_id;
+    }
+
     public Accounts(String name, String email, String password, String phoneNumber, String address, String image, Date dob, int roleId, int airlineId, Timestamp created_at,int status_id) {
         this.name = name;
         this.email = email;

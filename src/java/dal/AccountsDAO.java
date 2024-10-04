@@ -31,7 +31,7 @@ public class AccountsDAO extends DBConnect {
                 Accounts a = new Accounts(rs.getInt("id"), rs.getString("name"), rs.getString("email"),
                         rs.getString("password"), rs.getString("phoneNumber"),
                         rs.getString("address"), rs.getString("image"), rs.getDate("dob"), rs.getInt("Rolesid"), rs.getInt("Airlineid"),
-                        rs.getTimestamp("created_at"), rs.getTimestamp("updated_at"));
+                        rs.getTimestamp("created_at"), rs.getTimestamp("updated_at"), rs.getInt("Status_id"));
                 ls.add(a);
             }
             return ls;
@@ -72,7 +72,7 @@ public class AccountsDAO extends DBConnect {
                 Accounts a = new Accounts(rs.getInt("id"), rs.getString("name"), rs.getString("email"),
                         rs.getString("password"), rs.getString("phoneNumber"),
                         rs.getString("address"), rs.getString("image"), rs.getDate("dob"), rs.getInt("Rolesid"), rs.getInt("Airlineid"),
-                        rs.getTimestamp("created_at"), rs.getTimestamp("updated_at"));
+                        rs.getTimestamp("created_at"), rs.getTimestamp("updated_at"),rs.getInt("Status_id"));
                 return a;
             }
         } catch (SQLException e) {
@@ -109,6 +109,23 @@ public class AccountsDAO extends DBConnect {
             pre.setDate(9, account.getDob());
             pre.setTimestamp(10, account.getUpdated_at());
             pre.setInt(11, account.getId());
+
+            pre.executeUpdate();
+
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+    }
+
+    public void changeStatusAccount(int id,int status) {
+        String sql = "UPDATE Accounts\n"
+                + "   SET Status_id=?"
+                + " WHERE id=?";
+
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setInt(1, status);
+            pre.setInt(2, id);
 
             pre.executeUpdate();
 
@@ -227,7 +244,7 @@ public class AccountsDAO extends DBConnect {
             ps.setInt(8, accounts.getRoleId());
             ps.setTimestamp(9, accounts.getCreated_at());
             ps.setInt(10, accounts.getAirlineId());
-            ps.setInt(11,accounts.getStatus_id());
+            ps.setInt(11, accounts.getStatus_id());
             n = ps.executeUpdate();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -329,9 +346,9 @@ public class AccountsDAO extends DBConnect {
         }
         return sb.toString();
     }
-
+    
     public static void main(String[] args) {
         AccountsDAO dao = new AccountsDAO();
-        dao.updateAccount(new Accounts(23,"Ngo Tung Duong222", "abccccc@gmail.com", "1", "0123456789", null, null, new Date(2000, 12, 11), 1, 1, null, null));
+        dao.updateAccount(new Accounts(23, "Ngo Tung Duong222", "abccccc@gmail.com", "1", "0123456789", null, null, new Date(2000, 12, 11), 1, 1, null, null));
     }
 }

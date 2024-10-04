@@ -53,6 +53,20 @@ public class AirlineManageDAO extends DBConnect {
         return null;
     }
 
+    public String getImageById(int id) {
+        String sql = "select * from Airline where id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("image");
+            }
+        } catch (Exception e) {
+        }
+        return null;
+    }
+
     public int getStatusById(int id) {
         String sql = "select * from Airline where id = ?";
         int statusId = -1;

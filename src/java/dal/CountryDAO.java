@@ -34,6 +34,24 @@ public class CountryDAO extends DBConnect {
         return list;
     }
 
+    public Country getCountryById(int id) {
+        String sql = "SELECT * FROM Country WHERE id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id); 
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int countryId = rs.getInt("id");
+                String name = rs.getString("name");
+                Country c = new Country(countryId, name);
+                return c;
+            }
+        } catch (Exception ex) {
+        }
+
+        return null;
+    }
+
     public int getIdByCountryName(String name) {
         String sql = "Select * from Country where name = ?";
         try {
