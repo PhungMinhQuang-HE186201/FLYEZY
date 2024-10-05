@@ -330,10 +330,10 @@
                                 </td>
                                 <!--Quanht: hidden flight details-->
                             <tr id="flight-details-<%= rsFlightManage.getInt(1) %>" style="display: none;">
-                                <td colspan="4">
+                                <td colspan="9">
                                     <div id="flight-content-<%= rsFlightManage.getInt(1) %>">
                                         <!-- Initial loading or placeholder content -->
-                                        <%@include file="flightdetail_Q.jsp" %>
+                                        <%@include file="flightDetailsManagement.jsp" %>
                                     </div>
                                 </td>
                             </tr>

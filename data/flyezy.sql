@@ -530,10 +530,10 @@ VALUES
   (6,'AIRBUS A350','img/vnairline-AIRBUS A350.png',2,'<p>Nhà sản xuất: Airbus</p><p>Khoảng cách tối đa (km): 14.350 km</p><p>Vận tốc (km/h): 901 km/h</p><p>Tổng chiều dài: 66.89 m</p><p>Sải cánh: 64.75 m</p><p>Chiều cao: 17.05 m</p>',1),
   (7,'AIRBUS A320 NEO','img/vnairline-AIRBUS A320 NEO.png',2,'<p>Nhà sản xuất: Airbus</p><p>Khoảng cách tối đa (km): 6.300 km</p><p>Vận tốc (km/h): 1.005 km/h</p><p>Tổng chiều dài: 37,57 m</p><p>Sải cánh: 35,8 m</p><p>Chiều cao: 11,76 m</p>',1);
 
-INSERT INTO Seat_Category 
+INSERT INTO `Seat_Category` 
 VALUES 
-  (1,'Economy',184,'img/bamboo-economy.jpg',1,NULL,NULL,1),
-  (2,'Business',8,'img/bamboo-business.jpg',1,NULL,NULL,1),
+  (1,'Economy',184,'img/bamboo-economy.jpg',1,'<ul><li><span style=\"background-color:rgb(255,255,255);color:rgb(52,64,84);\">Hành lý xách tay: 7kg</span></li><li><span style=\"background-color:rgb(255,255,255);color:rgb(52,64,84);\">Thay đổi trước giờ khởi hành: 600.000 VND (*)</span><br><span style=\"background-color:rgb(255,255,255);color:rgb(52,64,84);\">Không thay đổi sau giờ khởi hành (*)</span></li><li><span style=\"background-color:rgb(255,255,255);color:rgb(52,64,84);\">Hệ số cộng điểm Flyezy Club: 0.25</span></li></ul>',0,1),
+  (2,'Business',8,'img/bamboo-business.jpg',1,'<ul><li><span style=\"background-color:rgb(255,255,255);color:rgb(52,64,84);\">Hành lý xách tay: 2 kiện, 7kg/kiện</span></li><li><span style=\"background-color:rgb(255,255,255);color:rgb(52,64,84);\">01 kiện hành lý ký gửi 40kg</span></li><li><span style=\"background-color:rgb(255,255,255);color:rgb(52,64,84);\">Hoàn/huỷ trước giờ khởi hành: 300.000 VND (*)</span><br><span style=\"background-color:rgb(255,255,255);color:rgb(52,64,84);\">Hoàn/huỷ sau giờ khởi hành: 300.000 VND (*)</span></li><li><span style=\"background-color:rgb(255,255,255);color:rgb(52,64,84);\">Hệ số cộng điểm Flyezy Club: 2</span></li><li><span style=\"background-color:rgb(255,255,255);color:rgb(52,64,84);\">Thay đổi miễn phí</span></li><li><span style=\"background-color:rgb(255,255,255);color:rgb(52,64,84);\">Chọn ghế ngồi miễn phí</span></li><li><span style=\"background-color:rgb(255,255,255);color:rgb(52,64,84);\">Đổi chuyến tại sân bay miễn phí</span></li></ul>',0.5,1),
   (3,'Economy',168,'img/bamboo-economy.jpg',2,NULL,NULL,1),
   (4,'Business',8,'img/bamboo-business.jpg',2,NULL,NULL,1),
   (5,'Economy',162,'img/bamboo-economy.jpg',3,NULL,NULL,1),
@@ -547,7 +547,9 @@ VALUES
   (13,'Hạng Phổ Thông Đặc Biệt',45,'img/vnairline-A350-GhePhoThongDacBiet.png',6,NULL,NULL,1),
   (14,'Hạng Phổ Thông',231,'img/vnairline-A350-GhePhoThong.png',6,NULL,NULL,1),
   (15,'Hạng Thương Gia',8,'img/vnairline-A320neo-Thuong gia.png',7,NULL,NULL,1),
-  (16,'Hạng Phổ Thông',180,'img/vnairline-A320neo-PhoThong.png',7,NULL,NULL,1);
+  (16,'Hạng Phổ Thông',180,'img/vnairline-A320neo-PhoThong.png',7,NULL,NULL,1),
+  (20,'Max Business',10,'img/jack.png',1,'',1,1);
+
 
 
 INSERT INTO Country (id,name)
@@ -575,7 +577,7 @@ VALUES
     (6,'Gimhae International Airport', 6);
 
 INSERT INTO `Flight` VALUES (1,120,1,2,1,3),(2,120,2,1,1,3),(3,360,1,3,1,3),(4,360,3,1,1,3),(5,360,2,3,1,3),(6,360,3,2,1,3),(7,300,1,4,1,2),(8,300,4,1,1,2),(9,300,2,6,1,2),(10,300,6,2,1,2);
-INSERT INTO `Flight_Detail` VALUES (1,'2024-10-01','14:30:00',1200000,1,1,9),(2,'2024-10-02','15:45:00',1350000,1,2,9),(3,'2024-10-03','10:00:00',1500000,1,3,9);
+INSERT INTO `Flight_Detail` VALUES (1,'2024-10-01','14:30:00',1200000,1,1,3),(2,'2024-10-02','15:45:00',1350000,1,2,3),(3,'2024-10-03','10:00:00',1500000,1,3,3);
 INSERT INTO `Flight_Type` VALUES (1,'Outbound '),(2,'RT-Outbound'),(3,'RT-Inbound');
 INSERT INTO `Passenger_Types` VALUES (1,'Adult'),(2,'Children'),(3,'Newborn');
 

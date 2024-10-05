@@ -18,7 +18,7 @@ import model.PlaneCategory;
 public class FlightDetailDAO extends DBConnect {
         public List<FlightDetails> getByDate(Date date) {
         List<FlightDetails> list = new ArrayList<>();
-        String sql = "select * from flyezy.flight_detail where flight_detail.date =?";
+        String sql = "select * from flyezy.Flight_Detail where Flight_Detail.date =?";
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
             prepare.setDate(1, date);
@@ -120,7 +120,7 @@ public class FlightDetailDAO extends DBConnect {
     }
     public List<FlightDetails> getAll() {
         List<FlightDetails> ls = new ArrayList<>();
-        String sql = "SELECT * FROM flyezy.flight_detail";
+        String sql = "SELECT * FROM flyezy.Flight_Detail";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
@@ -142,7 +142,7 @@ public class FlightDetailDAO extends DBConnect {
         return ls;
     }
     public void addnew(FlightDetails flightDetail) {
-        String sql = "INSERT INTO flight_detail (date, time, price, flightid, Plane_Categoryid, Status_id) VALUES (?, ?, ?, ?, ?, 3)";
+        String sql = "INSERT INTO Flight_Detail (date, time, price, flightid, Plane_Categoryid, Status_id) VALUES (?, ?, ?, ?, ?, 3)";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
 
@@ -164,7 +164,7 @@ public class FlightDetailDAO extends DBConnect {
     }
 
     public boolean updateFlightDetail(FlightDetails flightDetail, int id) {
-        String sql = "UPDATE flight_detail SET date = ?, time = ?, price = ?, flightid = ?, plane_categoryid = ? WHERE id = ? ";
+        String sql = "UPDATE Flight_Detail SET date = ?, time = ?, price = ?, flightid = ?, plane_categoryid = ? WHERE id = ? ";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setDate(1, flightDetail.getDate());
             ps.setTime(2, flightDetail.getTime());
@@ -180,7 +180,7 @@ public class FlightDetailDAO extends DBConnect {
         return false;
     }
     public void updateFlightStatus(int Id, int status) {
-        String sql = "UPDATE flight_detail SET Status_id = ? WHERE id = ?";
+        String sql = "UPDATE Flight_Detail SET Status_id = ? WHERE id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, status);
             ps.setInt(2, Id);
