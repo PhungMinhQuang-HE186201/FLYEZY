@@ -271,7 +271,7 @@ public class AirlineManageDAO extends DBConnect {
     public void changeStatus(int id, int statusId) {
         // Kiểm tra nếu statusId chỉ là 1 hoặc 2
         if (statusId == 1 || statusId == 2) {
-            String updateSql = "UPDATE `flyezy`.`airline`\n"
+            String updateSql = "UPDATE `flyezy`.`Airline`\n"
                     + "SET\n"
                     + "`Status_id` = ?\n"
                     + "WHERE `id` = ?";

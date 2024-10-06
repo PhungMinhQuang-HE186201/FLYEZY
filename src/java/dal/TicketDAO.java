@@ -18,10 +18,39 @@ import model.Ticket;
  * @author Fantasy
  */
 public class TicketDAO extends DBConnect {
-
     public List<Ticket> getAllTickets() {
         List<Ticket> ls = new ArrayList<>();
         String sql = "select * from Ticket";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Ticket t = new Ticket(rs.getInt("id"),
+                        rs.getInt("Flight_Detailid"),
+                        rs.getInt("Seat_Categoryid"),
+                        rs.getString("name"),
+                        rs.getString("pName"),
+                        rs.getInt("pSex"),
+                        rs.getString("pPhoneNumber"),
+                        rs.getDate("pDob"),
+                        rs.getTimestamp("paymentTime"),
+                        rs.getInt("PaymentTypeid"),
+                        rs.getInt("Accountsid"),
+                        rs.getInt("Passenger_Typesid"),
+                        rs.getInt("Baggagesid"),
+                        rs.getInt("Statusid"),
+                        rs.getInt("Flight_Type_id"));
+                ls.add(t);
+            }
+            return ls;
+
+        } catch (Exception e) {
+        }
+        return null;
+    }
+    public List<Ticket> getAllTicketsById(int flightDetailID) {
+        List<Ticket> ls = new ArrayList<>();
+        String sql = "select * from Ticket where Flight_Detailid= "+flightDetailID;
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();

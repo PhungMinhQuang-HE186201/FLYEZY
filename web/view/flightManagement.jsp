@@ -29,10 +29,16 @@
         <link rel="shortcut icon" type="image/png" href="img/flyezy-logo3.png" />
         <link rel="stylesheet" href="css/styleAdminController.css">
         <link rel="stylesheet" href="css/styleFlightManagement.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="css/styleToastNotification.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.css">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
         <style>
             .modal-body{
@@ -41,13 +47,15 @@
             .modal-body span{
                 margin-right: 5px
             }
+            
         </style>
     </head>
     <body>
         <%@include file="header.jsp" %>
         <%@include file="admin-sideBar.jsp" %>
 
-        <div class="modal fade" id="addAirline" tabindex="-1" role="dialog" aria-labelledby="addModal" aria-hidden="true">
+        <!--MODAL: Add new flight-->
+        <div class="modal fade" id="addFlight" tabindex="-1" role="dialog" aria-labelledby="addModal" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -58,10 +66,6 @@
 
                     </div>
                     <div class="modal-body">
-                        <c:if test="${not empty error}">
-                            <p id="error" class="text-danger"><%= request.getAttribute("error") != null ? request.getAttribute("error") : "" %></p>
-                        </c:if>
-
                         <form id="addProductForm" action="flightManagement" method="POST">
                             <input type="hidden" name="action" value="create">     
                             <!-- Name -->
@@ -139,12 +143,10 @@
             </div>
         </div>
 
-
         <div id="main-content">
             <div>
-                <!-- Trigger the modal with a button -->
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addAirline"  style="margin-top: 20px;flex-shrink: 0;">
-                    Add New Airline
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addFlight"  style="margin-top: 20px;flex-shrink: 0;">
+                    Add New Flight
                 </button>
             </div>
 
@@ -172,6 +174,7 @@
                             } else {
                                 rsFlightManage = null;
                             }
+                            int i = 0;
                             while(rsFlightManage != null && rsFlightManage.next()) {%>
                             <tr>
                                 <td style="background-color:  <%= (rsFlightManage.getInt(12) == 1) ? "" : "#ccc" %>"><%=rsFlightManage.getString(5)%></td>
@@ -189,7 +192,7 @@
                                     <button class="btn btn-danger" data-toggle="modal" data-target="#changeActive-airline-<%=rsFlightManage.getInt(1) %>">Deactivated</button>
                                     <%}%>
 
-                                    <!-- Change active -->
+                                    <!-- MODAL: Change status -->
                                     <div class="modal fade" id="changeActive-airline-<%=rsFlightManage.getInt(1) %>" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog" role="document">
                                             <div class="modal-content">
@@ -231,13 +234,15 @@
                                             </div>
                                         </div>
                                     </div>
+
                                 </td>
+
                                 <td style="background-color:  <%= (rsFlightManage.getInt(12) == 1) ? "" : "#ccc" %>">  
                                     <button class="btn btn-info" data-toggle="modal" data-target="#update-flight-<%=rsFlightManage.getInt(1) %>">Update</button>
                                     <button class="btn btn-warning" onclick="toggleFlightDetails(<%= rsFlightManage.getInt(1) %>)">Flight Detail
                                         <span id="arrow<%= rsFlightManage.getInt(1) %>" style="margin-left: 8px" class="glyphicon glyphicon-menu-down"></span>
                                     </button>
-                                    <!--update modal-->
+                                    <!-- MODAL: Update flight-->
                                     <div class="modal fade" id="update-flight-<%=rsFlightManage.getInt(1) %>" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog" role="document">
                                             <div class="modal-content">
@@ -248,10 +253,6 @@
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
-
-                                                    <c:if test="${not empty errorUpdate}">
-                                                        <p id="update-<%=rsFlightManage.getInt(1) %>" class="text-danger"> </p>                                             
-                                                    </c:if>
                                                     <form  action="flightManagement" method="post"> 
                                                         <input type="hidden" name="action" value="update"/>
                                                         <input type="hidden" name="airlineId" value="${requestScope.account.getAirlineId()}" readonly=""/>
@@ -268,7 +269,7 @@
                                                         <div class="row" >
                                                             <div class="flight-form-group col-md-6">
                                                                 <strong>DEP Country:</strong>
-                                                                <select class="flight-select" name="departureCountry" id="departureCountry2">
+                                                                <select class="flight-select" name="departureCountry" id="departureCountry2<%=i%>">
                                                                     <option value="">Select Country</option>
                                                                     <% for (Country c : (List<Country>) request.getAttribute("listC")) { %>
                                                                     <option value="<%= c.getName() %>" <%= (c.getName().equals(rsFlightManage.getString(5)) ? "selected" : "") %>><%= c.getName() %></option>
@@ -276,7 +277,7 @@
                                                                 </select>
 
                                                                 <strong>DEP Location:</strong>
-                                                                <select class="flight-select" name="departureLocation" id="departureLocation2">
+                                                                <select class="flight-select" name="departureLocation" id="departureLocation2<%=i%>">
                                                                     <option value="">Select Location</option>
                                                                     <% for (Location l : (List<Location>) ld.getLocationsByCountryId(cd.getIdByCountryName(rsFlightManage.getString(5)))) { %>
                                                                     <option value="<%= l.getName() %>" <%= (l.getName().equals(rsFlightManage.getString(4)) ? "selected" : "") %>><%= l.getName() %></option>
@@ -284,7 +285,7 @@
                                                                 </select>
 
                                                                 <strong>DEP Airport:</strong>
-                                                                <select class="flight-select" name="departureAirport" id="departureAirport2">
+                                                                <select class="flight-select" name="departureAirport" id="departureAirport2<%=i%>">
                                                                     <option value="">Select Airport</option>
                                                                     <% for (Airport ap : (List<Airport>) aird.getAirportsByLocationId(ld.getIdByLocationName(rsFlightManage.getString(4)))) { %>
                                                                     <option value="<%= ap.getName() %>" <%= (ap.getName().equals(rsFlightManage.getString(3)) ? "selected" : "") %>><%= ap.getName() %></option>
@@ -294,7 +295,7 @@
 
                                                             <div class="flight-form-group col-md-6">
                                                                 <strong>DES Country:</strong>
-                                                                <select class="flight-select" name="destinationCountry" id="destinationCountry2">
+                                                                <select class="flight-select" name="destinationCountry" id="destinationCountry2<%=i%>">
                                                                     <option value="">Select Country</option>
                                                                     <% for (Country c : (List<Country>) request.getAttribute("listC")) { %>
                                                                     <option value="<%= c.getName() %>" <%= (c.getName().equals(rsFlightManage.getString(8)) ? "selected" : "") %>><%= c.getName() %></option>
@@ -302,7 +303,7 @@
                                                                 </select>
 
                                                                 <strong>DES Location:</strong>
-                                                                <select class="flight-select" name="destinationLocation" id="destinationLocation2">
+                                                                <select class="flight-select" name="destinationLocation" id="destinationLocation2<%=i%>">
                                                                     <option >Select Location</option>
                                                                     <% for (Location l : (List<Location>) ld.getLocationsByCountryId(cd.getIdByCountryName(rsFlightManage.getString(8)))) { %>
                                                                     <option value="<%= l.getName() %>" <%= (l.getName().equals(rsFlightManage.getString(7)) ? "selected" : "") %>><%= l.getName() %></option>
@@ -311,7 +312,7 @@
 
 
                                                                 <strong>DES Airport:</strong>
-                                                                <select class="flight-select" name="destinationAirport" id="destinationAirport2">
+                                                                <select class="flight-select" name="destinationAirport" id="destinationAirport2<%=i%>">
                                                                     <option>Select Airport</option>
                                                                     <% for (Airport ap : (List<Airport>) aird.getAirportsByLocationId(ld.getIdByLocationName(rsFlightManage.getString(7)))) { %>
                                                                     <option value="<%= ap.getName() %>" <%= (ap.getName().equals(rsFlightManage.getString(6)) ? "selected" : "") %>><%= ap.getName() %></option>
@@ -329,20 +330,24 @@
                                         </div>
                                     </div>
                                 </td>
+
+
                                 <!--Quanht: hidden flight details-->
                             <tr id="flight-details-<%= rsFlightManage.getInt(1) %>" style="display: none;">
                                 <td colspan="9">
-                                    <div id="flight-content-<%= rsFlightManage.getInt(1) %>">
+                                    <div>
                                         <!-- Initial loading or placeholder content -->
                                         <%@include file="flightDetailsManagement.jsp" %>
                                     </div>
                                 </td>
                             </tr>
-                            <%}%>
+                            <%i++;}%>
+
                         </tbody>
                     </table>
                 </div>
-                <!-- Search bar -->
+
+                <!-- SEARCH FLIGHT FORM -->
                 <div class="col-md-4">
                     <form class="flight-form" action="flightManagement" method="GET" style="display: flex; width: 78%; align-items: center;">
                         <input type="hidden" name="action" value="search"/>
@@ -405,32 +410,60 @@
                             <a class="btn btn-danger" href="flightManagement">Cancel</a>
                         </div>
                     </form>
-
                 </div>
             </div>
         </div>
 
+        <div class="ck-body-wrapper">
+            <div class="ck ck-reset_all ck-body ck-rounded-corners" dir="ltr" role="application">
+                <div class="ck ck-clipboard-drop-target-line ck-hidden"></div>
+                <div class="ck ck-aria-live-announcer"><div aria-live="polite" aria-relevant="additions">
+                        <ul class="ck ck-aria-live-region-list"></ul></div><div aria-live="assertive" aria-relevant="additions">
+                        <ul class="ck ck-aria-live-region-list"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <script type="importmap">
+            {
+            "imports": {
+            "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.js",
+            "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.1.0/"
+            }
+            }
+        </script>
+        <script>
+            //TOAST Notification:
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "3500",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+            function successful(message) {
+                toastr["success"](message, "Successful");
+            };
+            
+            function error(message) {
+                toastr["error"](message, "Failed");
+            };
+            console.log("<%=request.getAttribute("error")%>");
 
-
-
-        <div class="ck-body-wrapper"><div class="ck ck-reset_all ck-body ck-rounded-corners" dir="ltr" role="application"><div class="ck ck-clipboard-drop-target-line ck-hidden"></div><div class="ck ck-aria-live-announcer"><div aria-live="polite" aria-relevant="additions"><ul class="ck ck-aria-live-region-list"></ul></div><div aria-live="assertive" aria-relevant="additions"><ul class="ck ck-aria-live-region-list"></ul></div></div></div></div></body>
-
-
-    <script type="importmap">
-        {
-        "imports": {
-        "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.js",
-        "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.1.0/"
-        }
-        }
-    </script>
-
-    <script>
-          function toggleFlightDetails(flightid) {
+            //SHOW Flight Detail of each flight
+            function toggleFlightDetails(flightid) {
                 var detailsRow = document.getElementById('flight-details-' + flightid);
                 var arrow = document.getElementById("arrow" + flightid);
 
@@ -442,123 +475,103 @@
                     detailsRow.style.display = 'table-row';
                     arrow.classList.remove("glyphicon-menu-down");
                     arrow.classList.add("glyphicon-menu-up");
-
-                    fetch('flightDetails?flightId=' + flightid)
-                            .then(response => response.json())
-                            .then(data => {
-                                var flightContent = document.getElementById('flight-content-' + flightid);
-                                flightContent.innerHTML = '';
-
-                                if (data.length > 0) {
-                                    var table = '<table class="table table-bordered"><thead><tr><th>Flight ID</th><th>Date</th><th>Time</th><th>Price ($)</th></tr></thead><tbody>';
-                                    data.forEach(function (flight) {
-                                        table += '<tr><td>' + flight.flightId + '</td><td>' + flight.date + '</td><td>' + flight.time + '</td><td>' + flight.price + '</td></tr>';
-                                    });
-                                    table += '</tbody></table>';
-                                    flightContent.innerHTML = table;
-                                } else {
-                                    flightContent.innerHTML = '<p>No details available for this flight.</p>';
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error fetching flight details:', error);
-                                flightContent.innerHTML = '<p>Error loading flight details.</p>';
-                            });
                 }
             }
-            
-        $(document).ready(function () {
-            // Create an empty countries object
-            var countries = {
-                "All": {
-                    locations: ["All"],
-                    airports: {"All": ["All"]}
-                }
-            };
 
-        <%
+
+            $(document).ready(function () {
+                //Toast notification:
+                <% if (request.getAttribute("error") != null) { %>
+                    error("<%= request.getAttribute("error").toString()%>");
+                <% }%>
+                // Create an empty countries object
+                var countries = {
+                    "All": {
+                        locations: ["All"],
+                        airports: {"All": ["All"]}
+                    }
+                };
+
+            <%
                 LocationDAO ld2 = new LocationDAO();
                 AirportDAO aird2 = new AirportDAO();
                 List<Country> listCountry = (List<Country>) request.getAttribute("listC");
 
                 for (Country c : listCountry) { 
                     List<Location> listLocation = ld2.getLocationsByCountryId(c.getId());
-        %>
+            %>
 
-            countries["<%= c.getName() %>"] = {
-            locations: [
-        <% 
-                        for (Location l : listLocation) { 
-        %>
-            "<%= l.getName() %>",
-        <% } %>
-            ],
-                    airports: {
-        <% 
-                        for (Location l : listLocation) { 
-                            List<Airport> listAirport = aird2.getAirportsByLocationId(l.getId());
-        %>
-                    "<%= l.getName() %>": [
-        <% 
-                            for (int i = 0; i < listAirport.size(); i++) {
-                                Airport airport = listAirport.get(i);
-                                out.print("\"" + airport.getName() + "\"");
-                                if (i < listAirport.size() - 1) {
-                                    out.print(", ");
-                                }
+                countries["<%= c.getName() %>"] = {
+                locations: [
+            <% for (Location l : listLocation) { %>
+                "<%= l.getName() %>",
+            <% } %>
+                ],
+                        airports: {
+            <% for (Location l : listLocation) {
+                        List<Airport> listAirport = aird2.getAirportsByLocationId(l.getId());
+            %>
+                        "<%= l.getName() %>": [
+            <% for (int j = 0; j < listAirport.size(); j++) {
+                            Airport airport = listAirport.get(j);
+                            out.print("\"" + airport.getName() + "\"");
+                            if (j < listAirport.size() - 1) {
+                                out.print(", ");
                             }
-        %>
-                    ],
-        <% } %>
-                    }
-            };
-        <% } %>
+                        } %>
+                        ],
+            <% } %>
+                        }
+                };
+            <% } %>
 
-            function updateLocationOptions(countrySelector, locationSelector, airportSelector) {
-                $(countrySelector).change(function () {
-                    console.log("Selected country: " + $(this).val());
-                    var selectedCountry = $(this).val();
-                    var locationOptions = "<option value=''>Select Location</option>";
+                function updateLocationOptions(countrySelector, locationSelector, airportSelector) {
+                    $(countrySelector).change(function () {
+                        console.log("Selected country: " + $(this).val());
+                        var selectedCountry = $(this).val();
+                        var locationOptions = "<option value=''>Select Location</option>";
 
-                    if (selectedCountry && countries[selectedCountry]) {
-                        var locations = countries[selectedCountry]["locations"];
-                        locations.forEach(function (location) {
-                            locationOptions += "<option value='" + location + "'>" + location + "</option>";
-                        });
-                        $(locationSelector).html(locationOptions);
-                    } else {
-                        $(locationSelector).empty();
-                        $(airportSelector).empty();
-                    }
-                });
+                        if (selectedCountry && countries[selectedCountry]) {
+                            var locations = countries[selectedCountry]["locations"];
+                            locations.forEach(function (location) {
+                                locationOptions += "<option value='" + location + "'>" + location + "</option>";
+                            });
+                            $(locationSelector).html(locationOptions);
+                        } else {
+                            $(locationSelector).empty();
+                            $(airportSelector).empty();
+                        }
+                    });
 
-                $(locationSelector).change(function () {
-                    console.log("Selected location: " + $(this).val());
-                    var selectedCountry = $(countrySelector).val();
-                    var selectedLocation = $(this).val();
-                    var airportOptions = "<option value=''>Select Airport</option>";
+                    $(locationSelector).change(function () {
+                        console.log("Selected location: " + $(this).val());
+                        var selectedCountry = $(countrySelector).val();
+                        var selectedLocation = $(this).val();
+                        var airportOptions = "<option value=''>Select Airport</option>";
 
-                    if (selectedLocation && countries[selectedCountry]) {
-                        var airports = countries[selectedCountry]["airports"][selectedLocation];
-                        airports.forEach(function (airport) {
-                            airportOptions += "<option value='" + airport + "'>" + airport + "</option>";
-                        });
-                        $(airportSelector).html(airportOptions);
-                    } else {
-                        $(airportSelector).empty();
-                    }
-                });
-            }
+                        if (selectedLocation && countries[selectedCountry]) {
+                            var airports = countries[selectedCountry]["airports"][selectedLocation];
+                            airports.forEach(function (airport) {
+                                airportOptions += "<option value='" + airport + "'>" + airport + "</option>";
+                            });
+                            $(airportSelector).html(airportOptions);
+                        } else {
+                            $(airportSelector).empty();
+                        }
+                    });
+                }
+                
+                //var numberOfFlight = <%=i%>;
 
-            // Initialize location options for multiple country-location-airport pairs
-            updateLocationOptions("#departureCountry1", "#departureLocation1", "#departureAirport1");
-            updateLocationOptions("#destinationCountry1", "#destinationLocation1", "#destinationAirport1");
-            updateLocationOptions("#departureCountry2", "#departureLocation2", "#departureAirport2");
-            updateLocationOptions("#destinationCountry2", "#destinationLocation2", "#destinationAirport2");
-            updateLocationOptions("#departureCountry3", "#departureLocation3", "#departureAirport3");
-            updateLocationOptions("#destinationCountry3", "#destinationLocation3", "#destinationAirport3");
-        });
-    </script>
-
-</body>
+                updateLocationOptions("#departureCountry1", "#departureLocation1", "#departureAirport1");
+                updateLocationOptions("#destinationCountry1", "#destinationLocation1", "#destinationAirport1");
+                <% for(int k = 0; k<i;k++){%>
+                    updateLocationOptions("#departureCountry2<%=k%>", "#departureLocation2<%=k%>", "#departureAirport2<%=k%>");
+                    updateLocationOptions("#destinationCountry2<%=k%>", "#destinationLocation2<%=k%>", "#destinationAirport2<%=k%>");
+                <%}%>
+                updateLocationOptions("#departureCountry3", "#departureLocation3", "#departureAirport3");
+                updateLocationOptions("#destinationCountry3", "#destinationLocation3", "#destinationAirport3");
+            });
+        </script>
+    </body>
 </html>

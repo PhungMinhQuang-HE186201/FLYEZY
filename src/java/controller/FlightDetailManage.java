@@ -66,12 +66,7 @@ public class FlightDetailManage extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        HttpSession session = request.getSession();
-//        List<FlightDetails> ls = new ArrayList<>();
-//        ls = dao.getAll();
-//        request.setAttribute("listFlightDetails", ls);
-//        request.getRequestDispatcher("view/flightManagement.jsp").forward(request, response);
-
+        doPost(request, response);
     }
 
     /**
@@ -97,10 +92,21 @@ public class FlightDetailManage extends HttpServlet {
             case "updstatus":
                 handleUpdateFlightStatus(request, response);
                 break;
+            case "changeDetail":
+                changeToTicket(request, response);
+                break;
             default:
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid action");
                 break;
         }
+    }
+
+    private void changeToTicket(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        HttpSession session = request.getSession();
+        int flightDetailID = Integer.parseInt(request.getParameter("flightDetailID"));
+        session.setAttribute("flightDetailID", flightDetailID);
+        response.sendRedirect("TicketController?flightDetailID=" + flightDetailID);
     }
 
     private void handleAddFlightDetail(HttpServletRequest request, HttpServletResponse response)

@@ -81,8 +81,7 @@ public class PlaneCategoryControllerServlet extends HttpServlet {
             response.sendRedirect("login");
             return;
         } else {
-            int i = idd;
-            Accounts acc = ad.getAccountsById(i);
+            Accounts acc = ad.getAccountsById(idd);
             request.setAttribute("account", acc);
             String action = request.getParameter("action");
             if (action == null) {
