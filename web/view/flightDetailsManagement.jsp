@@ -17,7 +17,6 @@
         <table class="entity" >
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Date</th>
                     <th>Time</th>
                     <th>Price</th>
@@ -28,7 +27,8 @@
             </thead>
             <tbody>
                 <%
-                PlaneCategoryDAO planeCategoryDAO = new PlaneCategoryDAO();
+                PlaneCategoryDAO planeCategoryDAO =  new PlaneCategoryDAO();
+                List<PlaneCategory> categories = (List<PlaneCategory>) planeCategoryDAO.getAllCategories();
                 %>
                 <%
                     int flightIdFromDb = 0;
@@ -42,7 +42,6 @@
                 %>
                 <tr>
 
-                    <td><%= fd.getId() %></td>
                     <td><%= fd.getDate() %></td>
                     <td><%= fd.getTime() %></td>
                     <td><%= fd.getPrice() %></td>
@@ -93,8 +92,7 @@
                         </div>
                         <div class="modal-body">
                             <form id="updateFlightForm" method="post" action="FlightDetailManage?action=update">
-                                <label for="id" class="form-label">Id: </label>
-                                <input type="number" id="uid" name="id" value="<%=fd.getId()%>">
+                                <input type="hidden" id="uid" name="id" value="<%=fd.getId()%>">
                                 <div class="mb-3">
                                     <label for="flightDate" class="form-label">Date: </label>
                                     <input type="date" class="form-control" id="uflightDate" name="date" value=<%= fd.getDate()%> required>
@@ -113,11 +111,14 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="planeCategoryId" class="form-label">Plane Category: </label>
-                                    <select class="form-select" id="uPlaneCategoryId" name="planeCategoryId" required>
-                                        <option value="1">Airbus A321CEO</option>
-                                        <option value="2">Airbus A320NEO</option>
-                                        <option value="3">Airbus A320CEO</option>
-                                        <option value="4">Airbus A321</option>
+                                    <select name="planeCategoryId">
+                                        <%
+                                            for (PlaneCategory category : categories) {
+                                        %>
+                                        <option value="<%=category.getId()%>"><%=category.getName()%></option>
+                                        <%
+                                            }
+                                        %>
                                     </select>
                                 </div>
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -165,12 +166,15 @@
                             <input type="hidden" class="form-control" id="flightId" name="flightId" value="<%= flightIdFromDb %>">
                         </div>
                         <div class="form-group">
-                            <label for="planeCategoryId">Plane Categories:</label>
-                            <select class="form-select" id="planeCategoryId" name="planeCategoryId" required>
-                                <option value="1">Airbus A321CEO</option>
-                                <option value="2">Airbus A320NEO</option>
-                                <option value="3">Airbus A320CEO</option>
-                                <option value="4">Airbus A321</option>
+                            <label for="planeCategoryId" class="form-label">Plane Category: </label>
+                            <select name="planeCategoryId">
+                                <%
+                                    for (PlaneCategory category : categories) {
+                                %>
+                                <option value="<%=category.getId()%>"><%=category.getName()%></option>
+                                <%
+                                    }
+                                %>
                             </select>
                         </div>
 

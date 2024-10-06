@@ -12,12 +12,13 @@
 <%@page import="dal.CountryDAO"%>
 <%@page import="dal.FlightManageDAO"%>
 <%@page import="dal.StatusDAO"%>
-<%@page import="dal.PlaneCategoryDAO"%>
+<%@page import="dal.PlaneCategoryDAO" %>
 <%@page import="dal.LocationDAO"%>
 <%@page import="dal.AirlineManageDAO"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.util.List"%>
 <%@page import="model.FlightDetails"%>
+<%@page import="model.PlaneCategory"%>
 <!DOCTYPE html>
 
 <html>
