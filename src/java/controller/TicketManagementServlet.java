@@ -77,13 +77,14 @@ public class TicketManagementServlet extends HttpServlet {
         PassengerTypeDAO ptd = new PassengerTypeDAO();
         StatusDAO sd = new StatusDAO();
         HttpSession session = request.getSession();
+        int flightDetailID = (int)session.getAttribute("flightDetailID");
 
         Integer idd = (Integer) session.getAttribute("id");
         int i = (idd != null) ? idd : -1;
         Accounts acc = ad.getAccountsById(i);
         request.setAttribute("account", acc);
 
-        List<Ticket> ticketList = td.getAllTickets();
+        List<Ticket> ticketList = td.getAllTicketsById(flightDetailID);
         request.setAttribute("ticketList", ticketList);
 
         List<FlightType> flightTypeList = ftd.getAllFlightType();
@@ -129,15 +130,19 @@ public class TicketManagementServlet extends HttpServlet {
         PassengerTypeDAO ptd = new PassengerTypeDAO();
         StatusDAO sd = new StatusDAO();
         HttpSession session = request.getSession();
-
+        int flightDetailID = (int)session.getAttribute("flightDetailID");
+        
         Integer idd = (Integer) session.getAttribute("id");
         int i = (idd != null) ? idd : -1;
         Accounts acc = ad.getAccountsById(i);
         request.setAttribute("account", acc);
 
-        List<Ticket> ticketList = td.getAllTickets();
+        List<Ticket> ticketList = td.getAllTicketsById(flightDetailID);
         request.setAttribute("ticketList", ticketList);
-
+        
+        List<Ticket> allTicketList = td.getAllTickets();
+        request.setAttribute("ticketList", ticketList);
+        
         List<FlightType> flightTypeList = ftd.getAllFlightType();
         request.setAttribute("flightTypeList", flightTypeList);
 
@@ -155,7 +160,7 @@ public class TicketManagementServlet extends HttpServlet {
             int id = Integer.parseInt(request.getParameter("id"));
             sd.changeStatusTicket(id, status);
             if (status == 7) {
-               int n = ticketList.size()+1;
+               int n = allTicketList.size()+1;
                Ticket ticket = td.getTicketById(id);
                int a = td.createTicketWhenChangeStatus(n, ticket);
             }

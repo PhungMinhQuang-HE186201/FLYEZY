@@ -31,12 +31,7 @@ Admin --%> <%@page contentType="text/html" pageEncoding="UTF-8"%>
                         Quản lý chuyến bay
                     </a>
                 </li>
-                <li>
-                    <a href="TicketController" class="<%= currentPage.equals("/flyezy/view/ticketManagement.jsp") ? "current-page" : "" %>">
-                        Quản lý vé máy bay 
-                    </a>
-                </li>
-
+                
             </ul>
         </div>
     </body>

@@ -58,9 +58,9 @@
                     </td>
                     <td>
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#update-<%=fd.getId()%>">
-
                             Update
                         </button>
+                            <a class="btn btn-danger" style="text-decoration: none; background-color: green;" href="FlightDetailManage?action=changeDetail&flightDetailID=<%= fd.getId() %>">Detail</a>
                     </td>
                 </tr>
 
