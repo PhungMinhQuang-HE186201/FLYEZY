@@ -14,6 +14,7 @@
         <title>Quản lý loại máy bay</title>
         <link rel="shortcut icon" type="image/png" href="img/flyezy-logo3.png" />
         <link rel="stylesheet" href="css/styleAdminController.css">
+        <link rel="stylesheet" href="css/styleToastNotification.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.css">
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
@@ -27,12 +28,7 @@
             .modal-body span{
                 margin-right: 5px
             }
-            #toast-container > .toast {
-                top: 80px;     
-                right: 0.5%;    
-                left:  auto;   
-                position: fixed; 
-            }
+            
         </style>
     </head>
     <body>
@@ -173,7 +169,6 @@
                                                     <div class="col-md-6">
                                                         <img  id="previewImage1" src="#" alt="Preview"
                                                               style="display: none; height: 100%; float: right;">
-
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -239,9 +234,6 @@
                                         </td>
                                         <td style="background-color:  <%= (sc.getStatusId() == 1) ? "" : "#ccc" %>">
                                             <a class="btn btn-info" style="text-decoration: none" onclick="openModalSeatCategory('<%= sc.getId() %>')">Update</a>
-
-
-
                                         </td>
                                     </tr>
                                     <!-- Modal for updating seat category -->
@@ -299,292 +291,290 @@
                                     </div>
                                 </div>
                                 <%
-                                    }
+                                }
                                 %>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <!-- Modal for updating plane category -->
+                <div class="modal fade" id="myModal<%= pc.getId() %>" role="dialog">
+                    <div class="modal-dialog">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header" style="padding:5px 5px;">
+                                <button type="button" class="close" style="font-size: 30px; margin-right: 12px;" data-dismiss="modal">&times;</button>
+                                <h4 style="margin-left: 12px">Update</h4>
+                            </div>
+                            <div class="modal-body" style="padding:40px 50px;">
+                                <form role="form" action="planeCategoryController" method="post">
+                                    <div class="row">
+                                        <input type="hidden" value="<%= pc.getAirlineid() %>" name="airlineId"/>
+                                        <input type="hidden" class="form-control" name="status" value="<%= pc.getStatusId() %>"/>
+                                        <div class="form-group col-md-2">
+                                            <label> <span class="glyphicon glyphicon-globe"></span>ID:</label>
+                                            <input type="text" class="form-control" name="id" value="<%= pc.getId() %>" readonly>
+                                        </div>
+                                        <div class="form-group col-md-7">
+                                            <label><span class="glyphicon glyphicon-picture"></span>Image:</label>
+                                            <input type="file" class="form-control" name="image" onchange="displayImage2(this,<%= pc.getId() %>)">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <img id="hideImage<%= pc.getId() %>" src="<%= pc.getImage() %>" alt="Avatar" class="img-thumbnail" style="height: 100%; float: right;">
+                                        <img id="preImage2<%= pc.getId() %>" src="#" alt="Preview" style="display: none; width: 100%">
+                                    </div>
+                                    <div class="form-group">
+                                        <label><span class="glyphicon glyphicon-picture"></span>Name:</label>
+                                        <input type="text" class="form-control" name="name" value="<%= pc.getName() %>" required/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><span class="glyphicon glyphicon-info-sign"></span>Info:</label>
+                                        <div class="editor-container">
+                                            <textarea type="text" class="editor" name="info"><%= pc.getInfo() %></textarea>
+                                        </div>
+
+                                    </div>  
+                                    <button type="submit" class="btn btn-success btn-block">
+                                        Confirm
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <%
+                }
+                %>
                 </tbody>
             </table>
-        </td>
-    </tr>
-    <!-- Modal for updating plane category -->
-    <div class="modal fade" id="myModal<%= pc.getId() %>" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header" style="padding:5px 5px;">
-                    <button type="button" class="close" style="font-size: 30px; margin-right: 12px;" data-dismiss="modal">&times;</button>
-                    <h4 style="margin-left: 12px">Update</h4>
-                </div>
-                <div class="modal-body" style="padding:40px 50px;">
-                    <form role="form" action="planeCategoryController" method="post">
-                        <div class="row">
-                            <input type="hidden" value="<%= pc.getAirlineid() %>" name="airlineId"/>
-                            <input type="hidden" class="form-control" name="status" value="<%= pc.getStatusId() %>"/>
-                            <div class="form-group col-md-2">
-                                <label> <span class="glyphicon glyphicon-globe"></span>ID:</label>
-                                <input type="text" class="form-control" name="id" value="<%= pc.getId() %>" readonly>
-                            </div>
-                            <div class="form-group col-md-7">
-                                <label><span class="glyphicon glyphicon-picture"></span>Image:</label>
-                                <input type="file" class="form-control" name="image" onchange="displayImage2(this,<%= pc.getId() %>)">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <img id="hideImage<%= pc.getId() %>" src="<%= pc.getImage() %>" alt="Avatar" class="img-thumbnail" style="height: 100%; float: right;">
-                            <img id="preImage2<%= pc.getId() %>" src="#" alt="Preview" style="display: none; width: 100%">
-                        </div>
-                        <div class="form-group">
-                            <label><span class="glyphicon glyphicon-picture"></span>Name:</label>
-                            <input type="text" class="form-control" name="name" value="<%= pc.getName() %>" required/>
-                        </div>
-                        <div class="form-group">
-                            <label><span class="glyphicon glyphicon-info-sign"></span>Info:</label>
-                            <div class="editor-container">
-                                <textarea type="text" class="editor" name="info"><%= pc.getInfo() %></textarea>
-                            </div>
-
-                        </div>  
-                        <button type="submit" class="btn btn-success btn-block">
-                            Confirm
-                        </button>
-                    </form>
+        </div>
+        <!-- Modal change status plane category -->
+        <div class="modal fade" id="changePlaneCategoryStatusModal" tabindex="-1" aria-labelledby="changePlaneCategoryModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="changePlaneCategoryModalLabel">Confirm <span id="status1"></span> plane category</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Do you want to <span style="font-weight: bold" id="status2"></span><span id="planeCategoryName"></span>?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" id="confirmChangeStatusPlaneCategory">Confirm</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <%
-    }
-    %>
-</tbody>
-</table>
-</div>
-<!-- Modal change status plane category -->
-<div class="modal fade" id="changePlaneCategoryStatusModal" tabindex="-1" aria-labelledby="changePlaneCategoryModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="changePlaneCategoryModalLabel">Confirm <span id="status1"></span> plane category</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Do you want to <span style="font-weight: bold" id="status2"></span><span id="planeCategoryName"></span>?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" id="confirmChangeStatusPlaneCategory">Confirm</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
+        <!-- Modal change status seat category -->
+        <div class="modal fade" id="changeSeatCategoryStatusModal" tabindex="-1" aria-labelledby="deleteSeatCategoryModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteSeatCategoryModalLabel">Confirm <span id="status3"></span> seat category</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Do you want to <span style="font-weight: bold" id="status4"></span><span id="seatCategoryName"></span>?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" id="confirmChangeSeatCategoryStatus">Confirm</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancle</button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
 
-<!-- Modal change status seat category -->
+        <script>
+            function openModal(id) {
+                $("#myModal" + id).modal('show');
+            }
+            function openModalSeatCategory(id) {
+                $("#myModalSeatCategory" + id).modal('show');
+            }
+            function openModalInsertSeatCategory(id) {
+                $("#myModalInsertSeatCategory" + id).modal('show');
+            }
+            function openSeatCategoryDashboard(id) {
+                var dashboard = document.getElementById("seatCategoryDashboard" + id);
+                var arrow = document.getElementById("arrow" + id);
+                if (dashboard.style.display === 'none') {
+                    dashboard.style.display = 'table-row';
+                    arrow.classList.remove("glyphicon-menu-down");
+                    arrow.classList.add("glyphicon-menu-up");
+                } else {
+                    dashboard.style.display = 'none';
+                    arrow.classList.remove("glyphicon-menu-up");
+                    arrow.classList.add("glyphicon-menu-down");
+                }
+            }
 
-<div class="modal fade" id="changeSeatCategoryStatusModal" tabindex="-1" aria-labelledby="deleteSeatCategoryModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteSeatCategoryModalLabel">Confirm <span id="status3"></span> seat category</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Do you want to <span style="font-weight: bold" id="status4"></span><span id="seatCategoryName"></span>?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" id="confirmChangeSeatCategoryStatus">Confirm</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancle</button>
-            </div>
-        </div>
-    </div>
-</div>
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "3500",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
 
-<script>
-    function openModal(id) {
-        $("#myModal" + id).modal('show');
-    }
-    function openModalSeatCategory(id) {
-        $("#myModalSeatCategory" + id).modal('show');
-    }
-    function openModalInsertSeatCategory(id) {
-        $("#myModalInsertSeatCategory" + id).modal('show');
-    }
-    function openSeatCategoryDashboard(id) {
-        var dashboard = document.getElementById("seatCategoryDashboard" + id);
-        var arrow = document.getElementById("arrow" + id);
-        if (dashboard.style.display === 'none') {
-            dashboard.style.display = 'table-row';
-            arrow.classList.remove("glyphicon-menu-down");
-            arrow.classList.add("glyphicon-menu-up");
-        } else {
-            dashboard.style.display = 'none';
-            arrow.classList.remove("glyphicon-menu-up");
-            arrow.classList.add("glyphicon-menu-down");
-        }
-    }
+            function successful(message) {
+                toastr.success(message, 'Successful');
+            };
 
-    toastr.options = {
-        "closeButton": true,
-        "debug": false,
-        "newestOnTop": false,
-        "progressBar": true,
-        "positionClass": "",
-        "preventDuplicates": false,
-        "onclick": null,
-        "showDuration": "300",
-        "hideDuration": "1000",
-        "timeOut": "3500",
-        "extendedTimeOut": "1000",
-        "showEasing": "swing",
-        "hideEasing": "linear",
-        "showMethod": "fadeIn",
-        "hideMethod": "fadeOut"
-    };
+            $(document).ready(function () {
+            <% if (request.getAttribute("result") != null) { %>
+                successful("<%= request.getAttribute("result").toString()%>");
+            <% } %>
 
-    function successful(message) {
-        toastr["success"](message, "Successful");
-    }
-    ;
+            });
 
-    $(document).ready(function () {
-    <% if (request.getAttribute("result") != null) { %>
-        successful("<%= request.getAttribute("result").toString()%>");
-    <% } %>
-        
-    });
+            //func change plane category status
+            let changePlaneCategoryStatusUrl = "";
+            function changePlaneCategoryStatus(id, name, status) {
+                // Cập nhật tên loại máy bay trong modal
+                document.getElementById('planeCategoryName').textContent = name;
+                let statusText = (status === "1") ? "deactivate" : "activate";
+                document.getElementById('status1').textContent = statusText;
+                document.getElementById('status2').textContent = statusText;
 
-    //func change plane category status
-    let changePlaneCategoryStatusUrl = "";
-    function changePlaneCategoryStatus(id, name, status) {
-        // Cập nhật tên loại máy bay trong modal
-        document.getElementById('planeCategoryName').textContent = name;
-        let statusText = (status === "1") ? "deactivate" : "activate";
-        document.getElementById('status1').textContent = statusText;
-        document.getElementById('status2').textContent = statusText;
+                changePlaneCategoryStatusUrl = "planeCategoryController?action=changeStatus&id=" + id;
 
-        changePlaneCategoryStatusUrl = "planeCategoryController?action=changeStatus&id=" + id;
+                $('#changePlaneCategoryStatusModal').modal('show');
+            }
+            document.getElementById('confirmChangeStatusPlaneCategory').onclick = function () {
+                window.location = changePlaneCategoryStatusUrl;
+            };
 
-        $('#changePlaneCategoryStatusModal').modal('show');
-    }
-    document.getElementById('confirmChangeStatusPlaneCategory').onclick = function () {
-        window.location = changePlaneCategoryStatusUrl;
-    };
+            // func change seat category status
+            let changeSeatCategoryStatusUrl = "";
+            function changeSeatCategoryStatus(id, name, status) {
+                document.getElementById('seatCategoryName').textContent = name;
+                let statusText = (status === "1") ? "deactivate" : "activate";
+                console.log(statusText);
+                document.getElementById('status3').textContent = statusText;
+                document.getElementById('status4').textContent = statusText;
 
-    // func change seat category status
-    let changeSeatCategoryStatusUrl = "";
-    function changeSeatCategoryStatus(id, name, status) {
-        document.getElementById('seatCategoryName').textContent = name;
-        let statusText = (status === "1") ? "deactivate" : "activate";
-        console.log(statusText);
-        document.getElementById('status3').textContent = statusText;
-        document.getElementById('status4').textContent = statusText;
+                changeSeatCategoryStatusUrl = "seatCategoryController?action=changeStatus&id=" + id;
 
-        changeSeatCategoryStatusUrl = "seatCategoryController?action=changeStatus&id=" + id;
+                $('#changeSeatCategoryStatusModal').modal('show');
+            }
 
-        $('#changeSeatCategoryStatusModal').modal('show');
-    }
+            document.getElementById('confirmChangeSeatCategoryStatus').onclick = function () {
+                window.location = changeSeatCategoryStatusUrl;
+            };
 
-    document.getElementById('confirmChangeSeatCategoryStatus').onclick = function () {
-        window.location = changeSeatCategoryStatusUrl;
-    };
+            window.onload = function () {
+                if (window.location.protocol === 'file:') {
+                    alert('This sample requires an HTTP server. Please serve this file with a web server.');
+                }
+            };
+            function displayImage(input) {
+                var previewImage = document.getElementById("previewImage");
+                var file = input.files[0];
+                var reader = new FileReader();
 
-    window.onload = function () {
-        if (window.location.protocol === 'file:') {
-            alert('This sample requires an HTTP server. Please serve this file with a web server.');
-        }
-    };
-    function displayImage(input) {
-        var previewImage = document.getElementById("previewImage");
-        var file = input.files[0];
-        var reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = "block";
+                };
 
-        reader.onload = function (e) {
-            previewImage.src = e.target.result;
-            previewImage.style.display = "block";
-        };
+                reader.readAsDataURL(file);
+            }
+            function displayImage1(input) {
+                var previewImage = document.getElementById("previewImage1");
+                var file = input.files[0];
+                var reader = new FileReader();
 
-        reader.readAsDataURL(file);
-    }
-    function displayImage1(input) {
-        var previewImage = document.getElementById("previewImage1");
-        var file = input.files[0];
-        var reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = "block";
+                };
 
-        reader.onload = function (e) {
-            previewImage.src = e.target.result;
-            previewImage.style.display = "block";
-        };
+                reader.readAsDataURL(file);
+            }
+            function displayImage2(input, id) {
+                var i = id;
+                var hideImage = document.getElementById(`hideImage` + i);
+                var previewImage2 = document.getElementById(`preImage2` + i);
+                var file = input.files[0];
+                var reader = new FileReader();
 
-        reader.readAsDataURL(file);
-    }
-    function displayImage2(input, id) {
-        var i = id;
-        var hideImage = document.getElementById(`hideImage` + i);
-        var previewImage2 = document.getElementById(`preImage2` + i);
-        var file = input.files[0];
-        var reader = new FileReader();
+                console.log(hideImage, previewImage2);
 
-        console.log(hideImage, previewImage2);
+                reader.onload = function (e) {
+                    hideImage.style.display = "none";
+                    previewImage2.src = e.target.result;
+                    previewImage2.style.display = "block";
+                };
 
-        reader.onload = function (e) {
-            hideImage.style.display = "none";
-            previewImage2.src = e.target.result;
-            previewImage2.style.display = "block";
-        };
+                reader.readAsDataURL(file);
+            }
+            function displayImage3(input, id) {
+                var i = id;
+                var hideImage = document.getElementById(`hideImage1` + i);
+                var previewImage2 = document.getElementById(`preImage3` + i);
+                var file = input.files[0];
+                var reader = new FileReader();
 
-        reader.readAsDataURL(file);
-    }
-    function displayImage3(input, id) {
-        var i = id;
-        var hideImage = document.getElementById(`hideImage1` + i);
-        var previewImage2 = document.getElementById(`preImage3` + i);
-        var file = input.files[0];
-        var reader = new FileReader();
+                console.log(hideImage, previewImage2);
 
-        console.log(hideImage, previewImage2);
+                reader.onload = function (e) {
+                    hideImage.style.display = "none";
+                    previewImage2.src = e.target.result;
+                    previewImage2.style.display = "block";
+                };
 
-        reader.onload = function (e) {
-            hideImage.style.display = "none";
-            previewImage2.src = e.target.result;
-            previewImage2.style.display = "block";
-        };
+                reader.readAsDataURL(file);
+            }
+        </script>
 
-        reader.readAsDataURL(file);
-    }
-</script>
-
-<script type="importmap">
-    {
-    "imports": {
-    "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.js",
-    "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.1.0/"
-    }
-    }
-</script>
-<script type="module">
-    import {
-    ClassicEditor,
-            Essentials,
-            Paragraph,
-            Bold,
-            Italic,
-            Font,
-            List
-    } from 'ckeditor5';
-    document.querySelectorAll('.editor').forEach((editorElement) => {
-        ClassicEditor
-                .create(editorElement, {
-                    plugins: [Essentials, Paragraph, Bold, Italic, Font, List],
-                    toolbar: [
-                        'undo', 'redo', '|', 'bold', 'italic', '|',
-                        'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
-                        '|', 'bulletedList', 'numberedList'
-                    ]
-                })
-                .then(editor => {
-                    console.log('Editor initialized:', editor);
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-    });
-</script>
-</body>
+        <script type="importmap">
+            {
+            "imports": {
+            "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.js",
+            "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.1.0/"
+            }
+            }
+        </script>
+        <script type="module">
+            import {
+            ClassicEditor,
+                    Essentials,
+                    Paragraph,
+                    Bold,
+                    Italic,
+                    Font,
+                    List
+            } from 'ckeditor5';
+            document.querySelectorAll('.editor').forEach((editorElement) => {
+                ClassicEditor
+                        .create(editorElement, {
+                            plugins: [Essentials, Paragraph, Bold, Italic, Font, List],
+                            toolbar: [
+                                'undo', 'redo', '|', 'bold', 'italic', '|',
+                                'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
+                                '|', 'bulletedList', 'numberedList'
+                            ]
+                        })
+                        .then(editor => {
+                            console.log('Editor initialized:', editor);
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+            });
+        </script>
+    </body>
 </html>

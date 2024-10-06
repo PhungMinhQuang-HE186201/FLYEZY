@@ -149,12 +149,11 @@ public class FlightManageDAO extends DBConnect {
     }
 
     public void updateFlight(Flights flight) {
-        String sql = "UPDATE `flyezy`.`flight`\n"
+        String sql = "UPDATE `flyezy`.`Flight`\n"
                 + "SET\n"
                 + "`minutes` = ?,\n"
                 + "`departureAirportid` = ?,\n"
-                + "`destinationAirportid` = ?,\n"
-                + "`Airline_id` = ?\n"
+                + "`destinationAirportid` = ?\n"
                 + "WHERE `id` = ?;";
 
         try {
@@ -162,8 +161,7 @@ public class FlightManageDAO extends DBConnect {
             pre.setInt(1, flight.getMinutes());
             pre.setInt(2, flight.getDepartureAirportId());
             pre.setInt(3, flight.getDestinationAirportId());
-            pre.setInt(4, flight.getAirlineId());
-            pre.setInt(5, flight.getId());
+            pre.setInt(4, flight.getId());
 
             pre.executeUpdate();
         } catch (Exception ex) {
@@ -188,8 +186,7 @@ public class FlightManageDAO extends DBConnect {
 
     public static void main(String[] args) {
         FlightManageDAO dao = new FlightManageDAO();
-        Flights f = new Flights(1, 3, 2, 3);
-        dao.updateFlight(f);
+        System.out.println(dao.getAllFlights());
 
     }
 
