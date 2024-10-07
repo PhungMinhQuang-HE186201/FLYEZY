@@ -144,6 +144,29 @@ public class FlightDetailDAO extends DBConnect {
         }
         return ls;
     }
+    public FlightDetails getFlightDetailsByID(int id) {
+        List<FlightDetails> ls = new ArrayList<>();
+        String sql = "SELECT * FROM flyezy.Flight_Detail where id = "+id;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                FlightDetails flightDetail = new FlightDetails();
+                flightDetail.setId(rs.getInt("id"));
+                flightDetail.setDate(rs.getDate("date"));
+                flightDetail.setTime(rs.getTime("time"));  // Chuyển đổi từ SQL Time sang LocalTime
+                flightDetail.setPrice(rs.getInt("price"));
+                flightDetail.setFlightId(rs.getInt("Flightid"));
+                flightDetail.setPlaneCategoryId(rs.getInt("Plane_Categoryid"));
+                flightDetail.setStatusId(rs.getInt("Status_id"));
+                return flightDetail;
+            }
+
+        } catch (SQLException e) {
+            e.getMessage();
+        }
+        return null;
+    }
 
     public void addnew(FlightDetails flightDetail) {
         String sql = "INSERT INTO Flight_Detail (date, time, price, flightid, Plane_Categoryid, Status_id) VALUES (?, ?, ?, ?, ?, 3)";
@@ -240,7 +263,7 @@ public class FlightDetailDAO extends DBConnect {
 
         return list;
     }
-
+    
     public static void main(String[] args) {
         FlightDetailDAO fdd = new FlightDetailDAO();
         Date date = Date.valueOf("2024-10-01");

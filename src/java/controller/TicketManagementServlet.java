@@ -16,6 +16,12 @@ import dal.TicketDAO;
 import dal.FlightTypeDAO;
 import dal.PassengerTypeDAO;
 import dal.StatusDAO;
+import dal.AirportDAO;
+import dal.FlightDetailDAO;
+import dal.FlightManageDAO;
+import dal.PlaneCategoryDAO;
+import dal.LocationDAO;
+import dal.CountryDAO;
 import jakarta.servlet.http.HttpSession;
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -23,9 +29,14 @@ import java.util.List;
 import model.Accounts;
 import model.Ticket;
 import model.FlightType;
+import model.PlaneCategory;
+import model.FlightDetails;
+import model.Flights;
 import model.PassengerType;
 import model.Status;
-
+import model.Airport;
+import model.Location;
+import model.Country;
 /**
  *
  * @author Fantasy
@@ -75,9 +86,39 @@ public class TicketManagementServlet extends HttpServlet {
         AccountsDAO ad = new AccountsDAO();
         FlightTypeDAO ftd = new FlightTypeDAO();
         PassengerTypeDAO ptd = new PassengerTypeDAO();
+        FlightDetailDAO fdd = new FlightDetailDAO();
+        FlightManageDAO fmd = new FlightManageDAO();
+        AirportDAO aid = new AirportDAO();
+        LocationDAO ld = new LocationDAO();
         StatusDAO sd = new StatusDAO();
+        CountryDAO cd = new CountryDAO();
+        PlaneCategoryDAO pcd = new PlaneCategoryDAO();
+        
         HttpSession session = request.getSession();
+        
         int flightDetailID = (int)session.getAttribute("flightDetailID");
+        
+        Flights flight = fdd.getFlightByFlightDetailId(flightDetailID);
+        request.setAttribute("flight", flight);
+        
+        Airport airportDep = aid.getAirportById(flight.getDepartureAirportId());
+        request.setAttribute("airportDep", airportDep);
+        Location locationDep = ld.getLocationById(airportDep.getId());
+        request.setAttribute("locationDep", locationDep);
+        Country countryDep = cd.getCountryById(locationDep.getCountryId());
+        request.setAttribute("countryDep", countryDep);
+        
+        Airport airportDes = aid.getAirportById(flight.getDestinationAirportId());
+        request.setAttribute("airportDes", airportDes);
+        Location locationDes = ld.getLocationById(airportDes.getId());
+        request.setAttribute("locationDes", locationDes);
+        Country countryDes = cd.getCountryById(locationDes.getCountryId());
+        request.setAttribute("countryDes", countryDes);
+        
+        FlightDetails flightDetail = fdd.getFlightDetailsByID(flightDetailID);
+        request.setAttribute("flightDetail", flightDetail);
+        PlaneCategory planeCatrgory = pcd.getPlaneCategoryById(flightDetail.getPlaneCategoryId());
+        request.setAttribute("planeCatrgory", planeCatrgory);
 
         Integer idd = (Integer) session.getAttribute("id");
         int i = (idd != null) ? idd : -1;
@@ -107,7 +148,7 @@ public class TicketManagementServlet extends HttpServlet {
             String fPhoneNumber = request.getParameter("fPhoneNumber").trim();
 //            List<Accounts> accountList = ad.searchAccounts(fRole, fName, fPhoneNumber);
 //            request.setAttribute("accountList", accountList);
-            List<Ticket> ticketSearchList = td.searchTickets(flightType, passengerType, statusTicket, fName, fPhoneNumber);
+            List<Ticket> ticketSearchList = td.searchTickets(flightType, passengerType, statusTicket, fName, fPhoneNumber,flightDetailID);
             request.setAttribute("ticketList", ticketSearchList);
             request.getRequestDispatcher("view/ticketManagement.jsp").forward(request, response);
         }
@@ -128,9 +169,36 @@ public class TicketManagementServlet extends HttpServlet {
         AccountsDAO ad = new AccountsDAO();
         FlightTypeDAO ftd = new FlightTypeDAO();
         PassengerTypeDAO ptd = new PassengerTypeDAO();
+        FlightDetailDAO fdd = new FlightDetailDAO();
+        FlightManageDAO fmd = new FlightManageDAO();
+        AirportDAO aid = new AirportDAO();
+        LocationDAO ld = new LocationDAO();
         StatusDAO sd = new StatusDAO();
+        CountryDAO cd = new CountryDAO();
+        PlaneCategoryDAO pcd = new PlaneCategoryDAO();
         HttpSession session = request.getSession();
         int flightDetailID = (int)session.getAttribute("flightDetailID");
+        
+        Flights flight = fdd.getFlightByFlightDetailId(flightDetailID);
+        request.setAttribute("flight", flight);
+        Airport airportDep = aid.getAirportById(flight.getDepartureAirportId());
+        request.setAttribute("airportDep", airportDep);
+        Location locationDep = ld.getLocationById(airportDep.getId());
+        request.setAttribute("locationDep", locationDep);
+        Country countryDep = cd.getCountryById(locationDep.getCountryId());
+        request.setAttribute("countryDep", countryDep);
+        
+        Airport airportDes = aid.getAirportById(flight.getDestinationAirportId());
+        request.setAttribute("airportDes", airportDes);
+        Location locationDes = ld.getLocationById(airportDes.getId());
+        request.setAttribute("locationDes", locationDes);
+        Country countryDes = cd.getCountryById(locationDes.getCountryId());
+        request.setAttribute("countryDes", countryDes);
+        
+        FlightDetails flightDetail = fdd.getFlightDetailsByID(flightDetailID);
+        request.setAttribute("flightDetail", flightDetail);
+        PlaneCategory planeCatrgory = pcd.getPlaneCategoryById(flightDetail.getPlaneCategoryId());
+        request.setAttribute("planeCatrgory", planeCatrgory);
         
         Integer idd = (Integer) session.getAttribute("id");
         int i = (idd != null) ? idd : -1;
