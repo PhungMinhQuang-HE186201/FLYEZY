@@ -103,7 +103,7 @@ public class AirlineManageDAO extends DBConnect {
         return list.get(0);
     }
 
-    public List<Airline> searchAirline(String name, Integer statusId) {
+    public List<Airline> searchAirline(String name, int statusId) {
         List<Airline> list = new ArrayList<>();
         StringBuilder sql = new StringBuilder("SELECT * FROM Airline WHERE 1=1"); // Base query
 
@@ -117,7 +117,7 @@ public class AirlineManageDAO extends DBConnect {
         }
 
         // Check if statusId is not null
-        if (statusId != null) {
+        if (statusId != -1) {
             sql.append(" AND Status_id = ?");
             parameters.add(statusId); // Add the parameter for statusId
         }

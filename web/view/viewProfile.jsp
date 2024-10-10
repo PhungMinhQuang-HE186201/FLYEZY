@@ -15,6 +15,7 @@
         <title>Thông tin cá nhân</title>
         <link rel="shortcut icon" type="image/jpg" href="image/logo-icon.png" />
         <link rel="stylesheet" href="css/styleInfo.css" />
+        <script src="js/validation.js"></script>
         <link rel="stylesheet" href="icon/themify-icons/themify-icons.css" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 
@@ -53,8 +54,12 @@
                         <strong>Address:</strong>
                         <p>${requestScope.account.address}</p>
 
-                        <button id="info-update" data-toggle="modal" data-target="#myModal-${requestScope.account.getId()}" >Cập nhật</button>
-                        <button id="info-home" onclick="window.location.href = 'home'">Trở lại</button>
+                        <div style="width: 100%;
+                             display: flex;
+                             justify-content: space-around; ">
+                            <button style="width: 40%;height: 45px" class="btn btn-success" data-toggle="modal" data-target="#myModal-${requestScope.account.getId()}" >Update profile</button>
+                            <button style="width: 40%" class="btn btn-danger" onclick="window.location.href = 'home'">Home</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -68,14 +73,15 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title" style="font-weight:bold;">Cập nhật thông tin cá nhân</h4>
+                        <h4 class="modal-title" style="font-weight:bold;">Update profile</h4>
                     </div>
                     <div class="modal-body">
                         <form action="infoUpdateServlet" method="post" >
                             <div class="row">
                                 <div class="form-group col-md-6">
-                                    <label for="image" class="control-label">Ảnh đại diện</label>
-                                    <input type="file" name="image" value="${requestScope.account.image}" class="form-control" style="padding:5px;" onchange="displayImage2(this,${requestScope.account.id})">
+                                    <label for="image" class="control-label">Avatar</label>
+                                    <input type="file" name="image" onchange="validateImageInput(this,${requestScope.account.id})" value="${requestScope.account.image}" class="form-control"
+                                           style="padding:5px;" >
                                 </div>
                                 <div class="form-group col-md-6" >
                                     <img id="hideImage${requestScope.account.id}" src="${requestScope.account.image}" style="float: right" width="50%" height="50%"/>
@@ -85,28 +91,30 @@
                             <input type="hidden" name="id" value="${requestScope.account.id}"/>
                             <!-- Full Name -->
                             <div class="form-group">
-                                <label for="name" class="control-label">Họ và tên:</label>
-                                <input type="text" name="name" value="${requestScope.account.name}" class="form-control" />
+                                <label for="name" class="control-label">Full name:</label>
+                                <input type="text" name="name" value="${requestScope.account.name}" class="form-control" 
+                                       pattern="^[\p{L}\s]+$" required />
                             </div>
                             <div class="form-group">
-                                <label for="birth" class="control-label">Ngày sinh:</label>
+                                <label for="birth" class="control-label">Date of birth:</label>
                                 <input type="date" name="birth" value="${requestScope.account.dob}" class="form-control" required />
                             </div>
                             <div class="form-group">
                                 <label for="email" class="control-label">Email:</label>
-                                <input type="email" name="email" value="${requestScope.account.email}" class="form-control" />
+                                <input type="email" name="email" value="${requestScope.account.email}" class="form-control" required/>
                             </div>
                             <div class="form-group">
-                                <label for="phone" class="control-label">Số điện thoại:</label>
-                                <input type="text" name="phone" value="${requestScope.account.phoneNumber}" class="form-control" />
+                                <label for="phone" class="control-label">Phone number:</label>
+                                <input type="text" name="phone" value="${requestScope.account.phoneNumber}" class="form-control" 
+                                       pattern="^\d{10}$" required oninput="validatePhone(this)" />
                             </div>
                             <div class="form-group">
-                                <label for="address" class="control-label">Địa chỉ:</label>
-                                <textarea name="address" class="form-control" rows="3">${requestScope.account.address}</textarea>
+                                <label for="address" class="control-label">Address:</label>
+                                <textarea name="address" class="form-control" pattern="/^[\p{L}\s]+$" rows="3">${requestScope.account.address}</textarea>
                             </div>
                             <div class="form-group text-right">
-                                <button type="submit" class="btn btn-primary">Cập nhật</button>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Huỷ</button>
+                                <button type="submit" class="btn btn-success">Update</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                             </div>
                         </form>
                     </div>
@@ -116,6 +124,19 @@
             </div>
         </div>
         <script>
+            function validateImageInput(input, id) {
+                const filePath = input.value;
+                const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+
+                if (!allowedExtensions.exec(filePath)) {
+                    alert('Please select a file in .jpg or .png format.');
+                    input.value = '';
+                    return false;
+                } else {
+                    displayImage2(input, id);
+                }
+            }
+
             function displayImage2(input, id) {
                 var i = id;
                 var hideImage = document.getElementById(`hideImage` + i);

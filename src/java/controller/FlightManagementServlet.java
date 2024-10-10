@@ -5,12 +5,10 @@
 package controller;
 
 import dal.AccountsDAO;
-import dal.AirlineManageDAO;
 import dal.AirportDAO;
 import dal.CountryDAO;
 import dal.FlightManageDAO;
 import dal.LocationDAO;
-import dal.StatusDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -19,11 +17,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
 import model.Accounts;
 import model.Flights;
-import model.FlightDetails;
 import dal.FlightDetailDAO;
 
 /**
@@ -188,7 +183,7 @@ public class FlightManagementServlet extends HttpServlet {
                 session.setAttribute("error", "Cannot be duplicated, please enter again!");
             } else {
                 Flights newFlight = new Flights(minutes, departureAirportId, destinationAirportId, airlineId);
-                boolean check = fmd.checkDuplicated(newFlight);
+                boolean check = fmd.checkDuplicated(newFlight, airlineId);
                 if (check == true) {
                     int n = fmd.createFlight(newFlight);
                 } else {
@@ -206,7 +201,7 @@ public class FlightManagementServlet extends HttpServlet {
 
             if (departureAirportId != destinationAirportId) {
                 Flights newFlight = new Flights(id, minutes, departureAirportId, destinationAirportId, airlineid);
-                boolean check = fmd.checkDuplicated(newFlight);
+                boolean check = fmd.checkDuplicated(newFlight, airlineid);
                 if (check == true) {
                     fmd.updateFlight(newFlight);
                 } else {

@@ -13,22 +13,22 @@ Admin --%> <%@page contentType="text/html" pageEncoding="UTF-8"%>
             <ul>
                 <li>
                     <a href="accountController" class="<%= currentPage.equals("/flyezy/view/accountController.jsp") ? "current-page" : "" %>">
-                        Quản lý tài khoản 
+                        Account Management
                     </a>
                 </li>
                 <li>
                     <a href="airlineController" class="<%= currentPage.equals("/flyezy/view/airlineManagement.jsp") ? "current-page" : "" %>">
-                        Quản lý hãng hàng không
+                        Airline Management
                     </a>
                 </li>
                 <li>
                     <a href="planeCategoryController" class="<%= currentPage.equals("/flyezy/view/planeCategoryController.jsp") ? "current-page" : "" %>">
-                        Quản lý loại máy bay
+                        Plane Category Management
                     </a>
                 </li>
                 <li>
                     <a href="flightManagement" class="<%= currentPage.equals("/flyezy/view/flightManagement.jsp") ? "current-page" : "" %>">
-                        Quản lý chuyến bay
+                        Flight Management
                     </a>
                 </li>
                 

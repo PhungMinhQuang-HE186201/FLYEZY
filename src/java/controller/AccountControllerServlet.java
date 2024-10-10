@@ -67,38 +67,43 @@ public class AccountControllerServlet extends HttpServlet {
         HttpSession session = request.getSession();
 
         Integer idd = (Integer) session.getAttribute("id");
-        int i = (idd != null) ? idd : -1;
-        Accounts acc = ad.getAccountsById(i);
-        request.setAttribute("account", acc);
+        if (idd == null) {
+            response.sendRedirect("login");
+            return;
+        } else {
+            int i = (idd != null) ? idd : -1;
+            Accounts acc = ad.getAccountsById(i);
+            request.setAttribute("account", acc);
 
-        List<Roles> rolesList = rd.getAllRoles();
-        request.setAttribute("rolesList", rolesList);
+            List<Roles> rolesList = rd.getAllRoles();
+            request.setAttribute("rolesList", rolesList);
 
-        List<Airline> airlineList = amd.getAllAirline();
-        request.setAttribute("airlineList", airlineList);
+            List<Airline> airlineList = amd.getAllAirline();
+            request.setAttribute("airlineList", airlineList);
 
-        String action = request.getParameter("action");
-        if (action == null) {
-            List<Accounts> accountList = ad.getAllAccounts();
-            request.setAttribute("accountList", accountList);
-            request.getRequestDispatcher("view/accountController.jsp").forward(request, response);
-        } else if (action.equals("changeStatus")) { //ok
-            int id = Integer.parseInt(request.getParameter("idAcc"));
-            Accounts account = ad.getAccountsById(id);
-            int status = account.getStatus_id();
-            if (status == 1) {
-                ad.changeStatusAccount(id, 2);
-            } else {
-                ad.changeStatusAccount(id, 1);
+            String action = request.getParameter("action");
+            if (action == null) {
+                List<Accounts> accountList = ad.getAllAccounts();
+                request.setAttribute("accountList", accountList);
+                request.getRequestDispatcher("view/accountController.jsp").forward(request, response);
+            } else if (action.equals("changeStatus")) { //ok
+                int id = Integer.parseInt(request.getParameter("idAcc"));
+                Accounts account = ad.getAccountsById(id);
+                int status = account.getStatus_id();
+                if (status == 1) {
+                    ad.changeStatusAccount(id, 2);
+                } else {
+                    ad.changeStatusAccount(id, 1);
+                }
+                response.sendRedirect("accountController");
+            } else if (action.equals("search")) {
+                String fRole = request.getParameter("fRole");
+                String fName = request.getParameter("fName").trim();
+                String fPhoneNumber = request.getParameter("fPhoneNumber").trim();
+                List<Accounts> accountList = ad.searchAccounts(fRole, fName, fPhoneNumber);
+                request.setAttribute("accountList", accountList);
+                request.getRequestDispatcher("view/accountController.jsp").forward(request, response);
             }
-            response.sendRedirect("accountController");
-        } else if (action.equals("search")) {
-            String fRole = request.getParameter("fRole");
-            String fName = request.getParameter("fName").trim();
-            String fPhoneNumber = request.getParameter("fPhoneNumber").trim();
-            List<Accounts> accountList = ad.searchAccounts(fRole, fName, fPhoneNumber);
-            request.setAttribute("accountList", accountList);
-            request.getRequestDispatcher("view/accountController.jsp").forward(request, response);
         }
 
     }

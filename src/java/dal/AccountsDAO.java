@@ -201,7 +201,8 @@ public class AccountsDAO extends DBConnect {
                 Accounts a = new Accounts(rs.getInt("id"), rs.getString("name"), rs.getString("email"),
                         rs.getString("password"), rs.getString("phoneNumber"),
                         rs.getString("address"), rs.getString("image"), rs.getDate("dob"), rs.getInt("Rolesid"), rs.getInt("Airlineid"),
-                        rs.getTimestamp("created_at"), rs.getTimestamp("updated_at"));
+                        rs.getTimestamp("created_at"), rs.getTimestamp("updated_at"), rs.getInt("Status_id"));
+                
                 ls.add(a);
             }
         } catch (Exception e) {

@@ -17,6 +17,7 @@
         <title>Phương tiện</title>
         <link rel="shortcut icon" type="image/jpg" href="image/logo-icon.png" />
         <link rel="stylesheet" href="css/styleAdminController.css">
+        <link rel="stylesheet" href="css/styleGeneral.css"/>
         <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -44,18 +45,18 @@
                             <!-- Name -->
                             <div class="form-group">
                                 <label for="nameInput"><span class="glyphicon glyphicon-plane"></span> Airline Name:</label>
-                                <input type="text" class="form-control" id="nameInput" name="airlineName" required>
+                                <input pattern="^[\p{L}\s]+$" type="text" class="form-control" id="nameInput" name="airlineName" required>
                                 <div id="nameError" class="error"></div>
                             </div>
 
                             <!-- Image -->
                             <div class="row">
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-8">
                                     <label for="imageInput"><span class="glyphicon glyphicon-paperclip"></span> Image URL:</label>
                                     <input type="file" class="form-control-file" id="image" name="airlineImage" onchange="displayImage(this)" required>
                                     <div id="imageError" class="error"></div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <img  id="previewImage" src="#" alt="Preview"
                                           style="display: none; max-width: 130px; float: left">
                                 </div>
@@ -65,7 +66,7 @@
                             <div class="form-group">
                                 <label><span class="glyphicon glyphicon-info-sign"></span> Information:</label>
                                 <div class="editor-container">
-                                    <textarea class="editor" name="airlineInfo"></textarea>
+                                    <textarea pattern="^[\p{L}\s]+$" class="editor" name="airlineInfo"></textarea>
                                 </div>
                             </div>  
 
@@ -88,8 +89,8 @@
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary" form="addProductForm">Add</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     </div>
 
                 </div>
@@ -102,8 +103,6 @@
                 <div style="max-width: 60%;">
                     <form action="airlineController" method="GET" style="display: flex; width: 50%; align-items: center;">
                         <input type="hidden" name="search" value="search">
-                        <strong>Name: </strong>
-                        <input class="filterElm" type="text" placeholder="Airline Name ..." name="keyword" style="margin-left:5px"/>
                         <strong class="filterElm">Status:</strong>
                         <select class="filterElm" name="status">
                             <option value="" ${param.status == null ? 'selected' : ''}>All</option>
@@ -115,8 +114,10 @@
                                 </c:if>
                             </c:forEach>
                         </select>
+                        <strong>Name: </strong>
+                        <input class="filterElm" value="${param.keyword}" type="text" pattern="^[\p{L}\s]+$" placeholder="Airline Name ..." name="keyword" style="margin-left:5px"/>
                         <input type="submit" class="btn btn-info" name="submit" value="Search" style="margin-right: 5px">
-                        <input type="reset" class="btn btn-danger" value="Cancle">
+                        <a class="btn btn-danger" href="airlineController">Cancel</a>
                     </form>
                 </div>
 
@@ -204,13 +205,14 @@
                                                 <div class="form-group" style="display: none">
                                                     <input type="text" class="form-control" id="idDeleteInput" name="airlineStatus" value="${airline.getStatusId()}">
                                                 </div>
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+
                                                 <c:if test="${airline.getStatusId() == 1}">
                                                     <button type="submit" class="btn btn-danger">Yes</button>
                                                 </c:if>
                                                 <c:if test="${airline.getStatusId() == 2}">
                                                     <button type="submit" class="btn btn-success">Yes</button>
                                                 </c:if>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
                                             </form>
                                         </div>
                                     </div>
@@ -233,7 +235,7 @@
                                                 <!-- Name -->
                                                 <div class="form-group">
                                                     <label for="nameInput" style="text-align: left; display: block;"><span class="glyphicon glyphicon-plane"></span> Airline Name:</label>
-                                                    <input type="text" class="form-control" id="nameInput" name="airlineName" value="${airline.getName()}" required>
+                                                    <input pattern="^[\p{L}\s]+$" type="text" class="form-control" id="nameInput" name="airlineName" value="${airline.getName()}" required>
                                                     <div id="nameError" class="error"></div>
                                                 </div>
 
@@ -254,185 +256,199 @@
                                                 <div class="form-group">
                                                     <label><span class="glyphicon glyphicon-info-sign"></span> Information:</label>
                                                     <div class="editor-container">
-                                                        <textarea class="editor" name="airlineInfo">${airline.getInfo()}</textarea>
+                                                        <textarea pattern="^[\p{L}\s]+$" class="editor" name="airlineInfo">${airline.getInfo()}</textarea>
                                                     </div>
                                                 </div>
                                                 <input type="hidden" value="${airline.getId()}" name="airlineId">
-                                                <div style="text-align: right;">
-                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                                </div>
+                                                <div class="modal-footer" style="text-align: right;">
                                                     <button type="submit" class="btn btn-primary" >Update</button>
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                                 </div>
                                             </form>
+
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- Hidden row for baggage details -->
-                            <tr id="baggage-details-${airline.id}" style="display: none;">
+                                <!-- Hidden row for baggage details -->
+                                <tr id="baggage-details-${airline.id}" style="display: none;">
 
-                                <td colspan="4">
-                                    <div id="baggage-content-${airline.id}">
-                                        <!-- This is where the baggage details will be loaded -->
-                                        <!-- Trigger the modal with a button -->
-                                        <div style="display: flex; justify-content: start; margin-bottom: 2%;">
-                                            <button type="button" class="btn btn-success" 
-                                                    data-toggle="modal" 
-                                                    data-target="#addBaggages-${airline.id}">
-                                                Add Another Baggage
-                                            </button>
+                                    <td colspan="5">
+                                        <div id="baggage-content-${airline.id}">
+                                            <!-- This is where the baggage details will be loaded -->
+                                            <!-- Trigger the modal with a button -->
+                                            <div style="display: flex; justify-content: start; margin-bottom: 2%;">
+                                                <button type="button" class="btn btn-success" 
+                                                        data-toggle="modal" 
+                                                        data-target="#addBaggages-${airline.id}">
+                                                    Add Another Baggage
+                                                </button>
 
-                                        </div>
-                                        <table>
-                                            <thead>
-                                                <tr>
-                                                    <th>No</th>
-                                                    <th>Weight</th>
-                                                    <th>Price</th>
-                                                    <th>Status</th>
-                                                    <th style="min-width: 156px">Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <c:forEach items="${requestScope.listBaggage}" var="baggage">
+                                            </div>
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <th>No</th>
+                                                        <th>Weight</th>
+                                                        <th>Price</th>
+                                                        <th>Status</th>
+                                                        <th style="min-width: 156px">Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <c:set var="counter" value="0" />
+                                                    <c:forEach items="${requestScope.listBaggage}" var="baggage">
 
-                                                    <c:if test="${baggage.airlineId == airline.id}">
-                                                        <c:set var="counter" value="0" />
-                                                        <tr>
-                                                            <td><c:set var="counter" value="${counter + 1}" />${counter}</td>
-                                                            <td>${baggage.getWeight()}</td>
-                                                            <td>${baggage.getPrice()}</td>
-                                                            <td>
-                                                                <c:forEach items="${requestScope.listStatus}" var="status">
-                                                                    <c:if test="${status.getId() == baggage.getStatusId()}">
-                                                                        <c:if test="${baggage.getStatusId() == 1}">
-                                                                            <button class="btn btn-success" data-toggle="modal" data-target="#changeActive-baggage-${baggage.getId()}">Activate</button>
+                                                        <c:if test="${baggage.airlineId == airline.id}">
+
+                                                            <tr>
+                                                                <td><c:set var="counter" value="${counter+1}" />${counter}</td>
+                                                                <td>${baggage.getWeight()}</td>
+                                                                <td>${baggage.getPrice()}</td>
+                                                                <td>
+                                                                    <c:forEach items="${requestScope.listStatus}" var="status">
+                                                                        <c:if test="${status.getId() == baggage.getStatusId()}">
+                                                                            <c:if test="${baggage.getStatusId() == 1}">
+                                                                                <button class="btn btn-success" data-toggle="modal" data-target="#changeActive-baggage-${baggage.getId()}">Activate</button>
+                                                                            </c:if>
+                                                                            <c:if test="${baggage.getStatusId() == 2}">
+                                                                                <button class="btn btn-danger" data-toggle="modal" data-target="#changeActive-baggage-${baggage.getId()}">Deactivate</button>
+                                                                            </c:if>
                                                                         </c:if>
-                                                                        <c:if test="${baggage.getStatusId() == 2}">
-                                                                            <button class="btn btn-danger" data-toggle="modal" data-target="#changeActive-baggage-${baggage.getId()}">Deactivate</button>
-                                                                        </c:if>
+                                                                    </c:forEach>
+                                                                </td>
+                                                                <td>
+                                                                    <button 
+                                                                        class="btn btn-info"
+                                                                        data-toggle="modal" data-target="#update-baggage-${baggage.id}">Update</button>
+                                                                </td>
+                                                            </tr>
+                                                            <!--change status baggage modal-->
+                                                        <div class="modal fade" id="changeActive-baggage-${baggage.id}" tabindex="-1" role="dialog" aria-labelledby="delete-modal-label" aria-hidden="true">
+                                                            <div class="modal-dialog" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="delete-modal-label">Change Status</h5>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <c:if test="${baggage.getStatusId() == 1}">
+                                                                        <div class="modal-body">
+                                                                            <p>Do you want to deactivate this baggage?</p>
+                                                                        </div>
                                                                     </c:if>
-                                                                </c:forEach>
-                                                            </td>
-                                                            <td>
-                                                                <button 
-                                                                    class="btn btn-info"
-                                                                    data-toggle="modal" data-target="#update-baggage-${baggage.id}">Update</button>
-                                                            </td>
-                                                        </tr>
-                                                        <!--change status baggage modal-->
-                                                    <div class="modal fade" id="changeActive-baggage-${baggage.id}" tabindex="-1" role="dialog" aria-labelledby="delete-modal-label" aria-hidden="true">
-                                                        <div class="modal-dialog" role="document">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title" id="delete-modal-label">Delete</h5>
-                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                        <span aria-hidden="true">&times;</span>
-                                                                    </button>
-                                                                </div>
-                                                                <c:if test="${baggage.getStatusId() == 1}">
-                                                                    <div class="modal-body">
-                                                                        <p>Do you want to deactivate this baggage?</p>
-                                                                    </div>
-                                                                </c:if>
-                                                                <c:if test="${baggage.getStatusId() == 2}">
-                                                                    <div class="modal-body">
-                                                                        <p>Do you want to reactivate this baggage?</p>
-                                                                    </div>
-                                                                </c:if>
-                                                                <div class="modal-footer">
-                                                                    <form action="baggageManagement" method="POST">
-                                                                        <input type="hidden" name="action" value="changeStatus">
-                                                                        <div class="form-group" style="display: none">
-                                                                            <input type="text" class="form-control" id="idDeleteInput" name="baggageId" value="${baggage.id}">
+                                                                    <c:if test="${baggage.getStatusId() == 2}">
+                                                                        <div class="modal-body">
+                                                                            <p>Do you want to reactivate this baggage?</p>
                                                                         </div>
-                                                                        <div class="form-group" style="display: none">
-                                                                            <input type="text" class="form-control" id="idDeleteInput" name="baggageStatus" value="${baggage.getStatusId()}">
-                                                                        </div>
-                                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                                                                        <button type="submit" class="btn btn-danger">Yes</button>
-                                                                    </form>
+                                                                    </c:if>
+                                                                    <div class="modal-footer">
+                                                                        <form action="baggageManagement" method="POST">
+                                                                            <input type="hidden" name="action" value="changeStatus">
+                                                                            <div class="form-group" style="display: none">
+                                                                                <input type="text" class="form-control" id="idDeleteInput" name="baggageId" value="${baggage.id}">
+                                                                            </div>
+                                                                            <div class="form-group" style="display: none">
+                                                                                <input type="text" class="form-control" id="idDeleteInput" name="baggageStatus" value="${baggage.getStatusId()}">
+                                                                            </div>
+                                                                            <button type="submit" class="btn btn-danger">Yes</button>
+                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+
+                                                                        </form>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
 
-                                                    <!--update baggage modal-->
-                                                    <div class="modal fade" id="update-baggage-${baggage.id}" tabindex="-1" role="dialog" aria-labelledby="updateBaggageModal" aria-hidden="true">
-                                                        <div class="modal-dialog" role="document">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title" style="text-align: left;">Update Baggage</h5>
-                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                        <span aria-hidden="true">&times;</span>
-                                                                    </button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <form action="baggageManagement" method="POST">
-                                                                        <input type="hidden" name="action" value="update"/>
-                                                                        <div class="form-group">
-                                                                            <label for="nameInput-${baggage.id}" style="text-align: left; display: block;">Weight:</label>
-                                                                            <input type="text" class="form-control" id="nameInput-${baggage.id}" name="baggageWeight" value="${baggage.weight}" required>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label for="imageInput-${baggage.id}" style="text-align: left; display: block;">Price:</label>
-                                                                            <input type="text" class="form-control" id="imageInput-${baggage.id}" name="baggagePrice" value="${baggage.price}" required>
-                                                                        </div>
-                                                                        <input type="hidden" name="baggageId" value="${baggage.id}">
-                                                                        <div style="text-align: right;">
-                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                                                            <button type="submit" class="btn btn-primary" >Update</button>
-                                                                        </div>
-                                                                    </form>
+                                                        <!--update baggage modal-->
+                                                        <div class="modal fade" id="update-baggage-${baggage.id}" tabindex="-1" role="dialog" aria-labelledby="updateBaggageModal" aria-hidden="true">
+                                                            <div class="modal-dialog" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" style="text-align: left;">Update Baggage</h5>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <form action="baggageManagement" method="POST">
+                                                                            <input type="hidden" name="action" value="update"/>
+                                                                            <!-- Weight -->
+                                                                            <div class="form-group" style="display: flex">
+                                                                                <label style="width: 10%" for="nameInput" style="display: flex; justify-content: start;">Weight:</label>
+                                                                                <input pattern="^\d{1,3}(\.\d+)?$" style="width: 40%" type="text" class="form-control" id="nameInput" value="${baggage.weight}" name="baggageWeight" required> 
+                                                                                <div style="margin-left: 10px">kg</div>
+                                                                                <div id="nameError" class="error"></div>
+                                                                            </div>
+                                                                            <!-- Price -->
+                                                                            <div class="form-group"  style="display: flex">
+                                                                                <label style="width: 10%" for="imageInput" style="display: flex; justify-content: start;">Price:</label>
+                                                                                <input pattern="\d{1,8}" style="width: 40%" type="text" class="form-control" id="imageInput" value="${baggage.price}" name="baggagePrice" required>
+                                                                                <div style="margin-left: 10px">VND</div>
+                                                                                <div id="imageError" class="error"></div>
+                                                                            </div>
+                                                                            <input type="hidden" name="baggageId" value="${baggage.id}">
+                                                                            </div>
+                                                                            <div class="modal-footer" style="text-align: right;">
+                                                                                <button type="submit" class="btn btn-primary" >Update</button>
+                                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
+                                                                            </div>
+                                                                        </form>
+
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        </c:if>
+                                                    </c:forEach>
+                                                    </tbody>
+                                            </table>
+                                        </div>
+                                    </td>
+                                    <!-- add baggage Modal -->
+                                <div class="modal fade" id="addBaggages-${airline.id}" tabindex="-1" role="dialog" aria-labelledby="addModal" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="addBookModalLabel" style="text-align: left;">Add New Baggage</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form id="addBaggage-${airline.id}" action="baggageManagement" method="POST">
+                                                    <input type="hidden" name="action" value="add"/> 
+                                                    <!-- Weight -->
+                                                    <div class="form-group" style="display: flex">
+                                                        <label style="width: 10%" for="nameInput" style="display: flex; justify-content: start;">Weight:</label>
+                                                        <input pattern="^\d{1,3}(\.\d+)?$" style="width: 40%" type="text" class="form-control" id="nameInput" name="baggageWeight" required> 
+                                                        <div style="margin-left: 10px">kg</div>
+                                                        <div id="nameError" class="error"></div>
                                                     </div>
-                                                </c:if>
-                                            </c:forEach>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </td>
-                                <!-- add baggage Modal -->
-                            <div class="modal fade" id="addBaggages-${airline.id}" tabindex="-1" role="dialog" aria-labelledby="addModal" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="addBookModalLabel" style="text-align: left;">Add New Baggage</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form id="addBaggage-${airline.id}" action="baggageManagement" method="POST">
-                                                <input type="hidden" name="action" value="add"/> 
-                                                <!-- Weight -->
-                                                <div class="form-group">
-                                                    <label for="nameInput" style="display: flex; justify-content: start;">Weight:</label>
-                                                    <input type="text" class="form-control" id="nameInput" name="baggageWeight" required>
-                                                    <div id="nameError" class="error"></div>
-                                                </div>
-                                                <!-- Price -->
-                                                <div class="form-group">
-                                                    <label for="imageInput" style="display: flex; justify-content: start;">Price:</label>
-                                                    <input type="text" class="form-control" id="imageInput" name="baggagePrice" required>
-                                                    <div id="imageError" class="error"></div>
-                                                </div>
-                                                <input type="hidden" name="airlineIdBaggage" value="${airline.id}">
-                                            </form>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                            <button type="submit" class="btn btn-primary" form="addBaggage-${airline.id}">Add</button>
-                                        </div>
+                                                    <!-- Price -->
+                                                    <div class="form-group"  style="display: flex">
+                                                        <label style="width: 10%" for="imageInput" style="display: flex; justify-content: start;">Price:</label>
+                                                        <input pattern="\d{1,8}" style="width: 40%" type="text" class="form-control" id="imageInput" name="baggagePrice" required>
+                                                        <div style="margin-left: 10px">VND</div>
+                                                        <div id="imageError" class="error"></div>
+                                                    </div>
+                                                    <input type="hidden" name="airlineIdBaggage" value="${airline.id}">
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-primary" form="addBaggage-${airline.id}">Add</button>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                            </div>
 
+
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            </tr>
-                        </c:forEach>
-                        </tbody>
+                                </tr>
+                            </c:forEach>
+                            </tbody>
                     </table>
                 </div>
             </div>

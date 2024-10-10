@@ -113,10 +113,8 @@ public class AirlineManagementServlet extends HttpServlet {
                 }
             }
         } catch (NumberFormatException e) {
-            // Xử lý lỗi khi chuyển đổi số
             e.printStackTrace();
         } catch (Exception e) {
-            // Xử lý lỗi khác
             e.printStackTrace();
         }
 

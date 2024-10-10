@@ -30,6 +30,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/styleGeneral.css"/>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     </head>
@@ -303,8 +304,12 @@
                                     <div class="ticket-category-info" style="font-size: 13px; margin-top: 12px">
                                         <%=ticketCatList.get(i).getInfo()%>
                                     </div>
-                                    <form class="ticket-category-form" action="" method="" style="display: flex; justify-content: center; ">
+                                    <form class="ticket-category-form" action="bookingFlightTickets" style="display: flex; justify-content: center; ">
                                         <input type="hidden" name="seatCategory" value="<%=ticketCatList.get(i).getId()%>"/>
+                                        <input type="hidden" name="flightDetailId" value="<%=fd.getId()%>"/>
+                                        <input type="hidden" name="adult" value="${param.adult}"/>
+                                        <input type="hidden" name="child" value="${param.child}"/>
+                                        <input type="hidden" name="infant" value="${param.infant}"/>
                                         <button style="background-color: <%= colors[i] %>;" type="submit">Buy Ticket</button>
                                     </form>
                                 </div>
@@ -329,7 +334,7 @@
                                         </h3>
                                     </div>
                                     <div class="modal-body row" style="padding:18px 50px;">
-                                        <div class="col-md-5">
+                                        <div class="col-md-4">
                                             <p>Departs: <span class="departure-time"><%=dateFmt.format(fd.getDate()) %></span></p>
                                             <p>Total time: <span class="total-time"><%= flight.getMinutes() %> minutes</span></p>
                                             <div>
@@ -340,10 +345,8 @@
                                                 <p class="aircraft"><strong>Plane: </strong><%= planeCategory.getName()%></p>
                                             </div>
                                         </div>
-                                        <div class="col-md-1">
-
-                                        </div>
-                                        <div class="col-md-6" style="display: flex">
+                                        <div class="col-md-1"></div>
+                                        <div class="col-md-7" style="display: flex">
                                             <div>
                                                 <svg height="200" width="10" xmlns="http://www.w3.org/2000/svg">
                                                 <line x1="0" y1="0" x2="0" y2="200" style="stroke:black;stroke-width:5px; stroke-dasharray:10,5" />
@@ -353,8 +356,8 @@
                                             <div style="position: relative; width: 100%">
                                                 <div>
                                                     <p>
-                                                        <span class="departure-time"><%= timeFmt.format(fd.getTime()) %>
-                                                            <span class="location"><%= depLocation.getName() %></span>
+                                                        <span class="departure-time"><%= timeFmt.format(fd.getTime()) %> - 
+                                                            <span class="location"><%= depLocation.getName() %>, <%=depCountry.getName()%></span>
                                                         </span>
                                                     </p>
                                                     <p><span class="airport"><%= depAirport.getName() %></span></p>
@@ -363,8 +366,8 @@
 
                                                 <div style="position: absolute; bottom: 0">
                                                     <p>
-                                                        <span class="destination-time"><%= timeFmt.format(cal.getTime()) %>
-                                                            <span class="location"><%= desLocation.getName() %></span>
+                                                        <span class="destination-time"><%= timeFmt.format(cal.getTime()) %> - 
+                                                            <span class="location"><%= desLocation.getName() %>, <%=desCountry.getName()%></span>
                                                         </span>
                                                     </p>
                                                     <p><span class="airport"><%= desAirport.getName() %></span></p>
@@ -372,8 +375,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="modal-footer" style="background-image:url('./img/modal-footer.png')">
-                                        <button style="color: #3C6E57; font-weight: bold; background-color: white;" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                     </div>
 
                                 </div>

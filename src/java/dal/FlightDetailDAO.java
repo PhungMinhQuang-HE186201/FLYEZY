@@ -16,7 +16,8 @@ import model.PlaneCategory;
  * @author Admin
  */
 public class FlightDetailDAO extends DBConnect {
-        public List<FlightDetails> getByDate(Date date) {
+
+    public List<FlightDetails> getByDate(Date date) {
         List<FlightDetails> list = new ArrayList<>();
         String sql = "select * from flyezy.Flight_Detail where Flight_Detail.date =?";
         try {
@@ -39,6 +40,30 @@ public class FlightDetailDAO extends DBConnect {
 
         return list;
     }
+    
+    public FlightDetails getFlightDetailById(int idd) {
+        String sql = "select * from flyezy.Flight_Detail where id =?";
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            prepare.setInt(1, idd);
+            ResultSet resultSet = prepare.executeQuery();
+            if (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                Date date = resultSet.getDate("date");
+                Time time = resultSet.getTime("time");
+                int price = resultSet.getInt("price");
+                int flightId = resultSet.getInt("Flightid");
+                int planeCategoryId = resultSet.getInt("Plane_Categoryid");
+                int statusId = resultSet.getInt("Status_id");
+                return (new FlightDetails(id, date, time, price, flightId, planeCategoryId, statusId));
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+
+        return null;
+    }
+
     public List<FlightDetails> getFlightDetailsByAirportAndDDate(int depAirportId, int desAirportId, Date date) {
         List<FlightDetails> ls = new ArrayList<>();
         String sql = "SELECT fd.* FROM Flight_Detail fd "
@@ -62,8 +87,8 @@ public class FlightDetailDAO extends DBConnect {
         }
         return null;
     }
-    
-    public Flights getFlightByFlightDetailId(int id){
+
+    public Flights getFlightByFlightDetailId(int id) {
         String sql = "SELECT f.* FROM Flight f  "
                 + "JOIN Flight_Detail fd ON f.id = fd.Flightid "
                 + "WHERE fd.id = ?";
@@ -73,8 +98,8 @@ public class FlightDetailDAO extends DBConnect {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return new Flights(rs.getInt("id"), rs.getInt("minutes"),
-                        rs.getInt("departureAirportid"), 
-                        rs.getInt("destinationAirportid"), 
+                        rs.getInt("departureAirportid"),
+                        rs.getInt("destinationAirportid"),
                         rs.getInt("Status_id"), rs.getInt("Airline_id"));
             }
         } catch (Exception e) {
@@ -82,8 +107,8 @@ public class FlightDetailDAO extends DBConnect {
         }
         return null;
     }
-    
-    public PlaneCategory getPlaneCategoryByFlightDetailId(int id){
+
+    public PlaneCategory getPlaneCategoryByFlightDetailId(int id) {
         String sql = "SELECT pc.* FROM Plane_Category pc  "
                 + "JOIN Flight_Detail fd ON pc.id = fd.Plane_Categoryid "
                 + "WHERE fd.id = ?";
@@ -92,8 +117,8 @@ public class FlightDetailDAO extends DBConnect {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                return new PlaneCategory(rs.getInt("id"), rs.getString("name"), 
-                        rs.getString("image"), rs.getString("info"), 
+                return new PlaneCategory(rs.getInt("id"), rs.getString("name"),
+                        rs.getString("image"), rs.getString("info"),
                         rs.getInt("Airlineid"), rs.getInt("Status_id"));
             }
         } catch (Exception e) {
@@ -101,8 +126,8 @@ public class FlightDetailDAO extends DBConnect {
         }
         return null;
     }
-    
-    public int getAirlineIdByFlightDetailId(int id){
+
+    public int getAirlineIdByFlightDetailId(int id) {
         String sql = "SELECT f.* FROM Flight_Detail fd "
                 + "JOIN Flight f ON fd.Flightid = f.id "
                 + "WHERE fd.id = ?";
@@ -118,6 +143,7 @@ public class FlightDetailDAO extends DBConnect {
         }
         return -1;
     }
+
     public List<FlightDetails> getAll() {
         List<FlightDetails> ls = new ArrayList<>();
         String sql = "SELECT * FROM flyezy.Flight_Detail";
@@ -141,6 +167,7 @@ public class FlightDetailDAO extends DBConnect {
         }
         return ls;
     }
+
     public void addnew(FlightDetails flightDetail) {
         String sql = "INSERT INTO Flight_Detail (date, time, price, flightid, Plane_Categoryid, Status_id) VALUES (?, ?, ?, ?, ?, 3)";
         try {
@@ -179,6 +206,7 @@ public class FlightDetailDAO extends DBConnect {
         }
         return false;
     }
+
     public void updateFlightStatus(int Id, int status) {
         String sql = "UPDATE Flight_Detail SET Status_id = ? WHERE id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -189,9 +217,9 @@ public class FlightDetailDAO extends DBConnect {
             System.out.println(e.getMessage());
         }
     }
-    
+
     public static void main(String[] args) {
         FlightDetailDAO fdd = new FlightDetailDAO();
-        System.out.println(fdd.getPlaneCategoryByFlightDetailId(1));
+        System.out.println(fdd.getFlightDetailById(1));
     }
 }
