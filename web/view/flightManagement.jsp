@@ -7,16 +7,16 @@
 <%@page import="model.Location"%>
 <%@page import="model.Status"%>
 <%@page import="model.Airline"%>
-<%@page import="java.util.List"%>
 <%@page import="dal.AirportDAO"%>
 <%@page import="dal.CountryDAO"%>
 <%@page import="dal.FlightManageDAO"%>
-<%@page import="dal.StatusDAO"%>
-<%@page import="dal.PlaneCategoryDAO" %>
 <%@page import="dal.LocationDAO"%>
 <%@page import="dal.AirlineManageDAO"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.util.List"%>
+<%@page import="java.util.List"%>
+<%@page import="dal.PlaneCategoryDAO" %>
+<%@page import="dal.StatusDAO"%>
 <%@page import="model.FlightDetails"%>
 <%@page import="model.PlaneCategory"%>
 <!DOCTYPE html>
@@ -239,9 +239,9 @@
 
                                 <td style="background-color:  <%= (rsFlightManage.getInt(12) == 1) ? "" : "#ccc" %>">  
                                     <button class="btn btn-info" data-toggle="modal" data-target="#update-flight-<%=rsFlightManage.getInt(1) %>">Update</button>
-                                    <button class="btn btn-warning" onclick="toggleFlightDetails(<%= rsFlightManage.getInt(1) %>)">Flight Detail
-                                        <span id="arrow<%= rsFlightManage.getInt(1) %>" style="margin-left: 8px" class="glyphicon glyphicon-menu-down"></span>
-                                    </button>
+                                    <a href="flightDetailManagement?flightId=<%= rsFlightManage.getInt(1) %>&airlineId=${requestScope.account.getAirlineId()}" class="btn btn-warning">
+                                        Flight Detail
+                                    </a>
                                     <!-- MODAL: Update flight-->
                                     <div class="modal fade" id="update-flight-<%=rsFlightManage.getInt(1) %>" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog" role="document">
@@ -332,16 +332,7 @@
                                 </td>
 
 
-                                <!--Quanht: hidden flight details-->
-                            <tr id="flight-details-<%= rsFlightManage.getInt(1) %>" style="display: none;">
-                                <td colspan="9">
-                                    <div>
-                                        <!-- Initial loading or placeholder content -->
-                                        <%@include file="flightDetailsManagement.jsp" %>
-                                    </div>
-                                </td>
-                            </tr>
-                            <%i++;}%>
+                                <%i++;}%>
 
                         </tbody>
                     </table>
@@ -455,11 +446,13 @@
 
             function successful(message) {
                 toastr["success"](message, "Successful");
-            };
-            
+            }
+            ;
+
             function error(message) {
                 toastr["error"](message, "Failed");
-            };
+            }
+            ;
             console.log("<%=request.getAttribute("error")%>");
 
             //SHOW Flight Detail of each flight
@@ -481,9 +474,9 @@
 
             $(document).ready(function () {
                 //Toast notification:
-                <% if (request.getAttribute("error") != null) { %>
-                    error("<%= request.getAttribute("error").toString()%>");
-                <% }%>
+            <% if (request.getAttribute("error") != null) { %>
+                error("<%= request.getAttribute("error").toString()%>");
+            <% }%>
                 // Create an empty countries object
                 var countries = {
                     "All": {
@@ -560,15 +553,15 @@
                         }
                     });
                 }
-                
+
                 //var numberOfFlight = <%=i%>;
 
                 updateLocationOptions("#departureCountry1", "#departureLocation1", "#departureAirport1");
                 updateLocationOptions("#destinationCountry1", "#destinationLocation1", "#destinationAirport1");
-                <% for(int k = 0; k<i;k++){%>
-                    updateLocationOptions("#departureCountry2<%=k%>", "#departureLocation2<%=k%>", "#departureAirport2<%=k%>");
-                    updateLocationOptions("#destinationCountry2<%=k%>", "#destinationLocation2<%=k%>", "#destinationAirport2<%=k%>");
-                <%}%>
+            <% for(int k = 0; k<i;k++){%>
+                updateLocationOptions("#departureCountry2<%=k%>", "#departureLocation2<%=k%>", "#departureAirport2<%=k%>");
+                updateLocationOptions("#destinationCountry2<%=k%>", "#destinationLocation2<%=k%>", "#destinationAirport2<%=k%>");
+            <%}%>
                 updateLocationOptions("#departureCountry3", "#departureLocation3", "#departureAirport3");
                 updateLocationOptions("#destinationCountry3", "#destinationLocation3", "#destinationAirport3");
             });

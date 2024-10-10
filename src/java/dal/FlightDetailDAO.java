@@ -121,6 +121,29 @@ public class FlightDetailDAO extends DBConnect {
         return -1;
     }
 
+    public List<FlightDetails> getAllDetailByFlightId(int flightid) {
+        List<FlightDetails> ls = new ArrayList<>();
+        String sql = "SELECT * FROM flyezy.Flight_Detail WHERE flightid = ? ";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, flightid);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                FlightDetails flightDetail = new FlightDetails();
+                flightDetail.setId(rs.getInt("id"));
+                flightDetail.setDate(rs.getDate("date"));
+                flightDetail.setTime(rs.getTime("time"));  // Chuyển đổi từ SQL Time sang LocalTime
+                flightDetail.setPrice(rs.getInt("price"));
+                flightDetail.setFlightId(rs.getInt("Flightid"));
+                flightDetail.setPlaneCategoryId(rs.getInt("Plane_Categoryid"));
+                flightDetail.setStatusId(rs.getInt("Status_id"));
+                ls.add(flightDetail);
+            }
+        } catch (Exception e) {
+        }
+        return ls;
+    }
+
     public List<FlightDetails> getAll() {
         List<FlightDetails> ls = new ArrayList<>();
         String sql = "SELECT * FROM flyezy.Flight_Detail";
@@ -244,11 +267,12 @@ public class FlightDetailDAO extends DBConnect {
     public static void main(String[] args) {
         FlightDetailDAO fdd = new FlightDetailDAO();
         Date date = Date.valueOf("2024-10-01");
-       List<FlightDetails> ls = fdd.getByDate(date);
-            for (FlightDetails f : ls) {
-                System.out.println(f.getDate());
-                System.out.println(f.getPlaneCategoryId());
-}
+        List<FlightDetails> ls = fdd.getAllDetailByFlightId(3);
+        for (FlightDetails f : ls) {
+            System.out.println(f.getPrice());
+            System.out.println(f.getDate());
+            System.out.println(f.getPlaneCategoryId());
+        }
 
     }
 }
