@@ -6,18 +6,47 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@page import="java.util.List"%>
+<%@page import="dal.PlaneCategoryDAO" %>
+<%@page import="dal.StatusDAO"%>
+<%@page import="model.FlightDetails"%>
+<%@page import="model.PlaneCategory"%>
+<%@page import="model.Status"%>
 <html>
     <head>
+        <link rel="stylesheet" href="../css/styleAdminController.css"/>
+        <link rel="shortcut icon" type="image/png" href="img/flyezy-logo3.png" />
+        <link rel="stylesheet" href="css/styleAdminController.css">
+        <link rel="stylesheet" href="css/styleFlightManagement.css">
+        <link rel="stylesheet" href="css/styleToastNotification.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.css">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
     </head>
     <body>
-        <div style="display: flex; margin-bottom: 20px">
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#add-<%=rsFlightManage.getInt(1)%>">Add New Flight Detail</button>
+        <%@include file="header.jsp" %>
+        <%@include file="admin-sideBar.jsp" %>
+        <%
+            String flight_id = (String) session.getAttribute("fid");
+            int fid = Integer.parseInt(flight_id);
+        %>
+        <div id="back" style="margin-left: 210px;margin-top: 60px;margin-bottom: -100px " > 
+            <a href="flightManagement" class="btn btn-warning" >Back</a>
         </div>
-        <table class="entity" >
+
+        <div style="display: flex; margin-left: 210px;margin-top: 100px">
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#add-<%=fid%>">Add New Flight Detail</button>
+        </div>
+        <table class="entity" style="margin-left: 210px;" >
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Date</th>
                     <th>Time</th>
                     <th>Price</th>
@@ -28,21 +57,19 @@
             </thead>
             <tbody>
                 <%
-                PlaneCategoryDAO planeCategoryDAO = new PlaneCategoryDAO();
+                String airlineId = (String)session.getAttribute("aid");
+                int aid = Integer.parseInt(airlineId);
+                PlaneCategoryDAO planeCategoryDAO =  new PlaneCategoryDAO();
+                List<PlaneCategory> categories = (List<PlaneCategory>) planeCategoryDAO.getAllPlaneCategoryByAirlineId(aid);
                 %>
                 <%
-                    int flightIdFromDb = 0;
-                    flightIdFromDb = rsFlightManage.getInt(1); 
                     List<FlightDetails> listFlightDetails = (List<FlightDetails>) request.getAttribute("listFlightDetails");
                     if (listFlightDetails != null) {
                         for (FlightDetails fd : listFlightDetails) {
-                            if (fd.getFlightId() == flightIdFromDb) {
-                                // Lấy tên PlaneCategory từ DAO
                                 String planeCategoryName = planeCategoryDAO.getNameById(fd.getPlaneCategoryId());
                 %>
                 <tr>
 
-                    <td><%= fd.getId() %></td>
                     <td><%= fd.getDate() %></td>
                     <td><%= fd.getTime() %></td>
                     <td><%= fd.getPrice() %></td>
@@ -92,9 +119,8 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form id="updateFlightForm" method="post" action="FlightDetailManage?action=update">
-                                <label for="id" class="form-label">Id: </label>
-                                <input type="number" id="uid" name="id" value="<%=fd.getId()%>">
+                            <form id="updateFlightForm" method="post" action="flightDetailManagement?action=update">
+                                <input type="hidden" id="uid" name="id" value="<%=fd.getId()%>">
                                 <div class="mb-3">
                                     <label for="flightDate" class="form-label">Date: </label>
                                     <input type="date" class="form-control" id="uflightDate" name="date" value=<%= fd.getDate()%> required>
@@ -108,16 +134,18 @@
                                     <input type="number" class="form-control" id="uflightPrice" name="price" value="<%= fd.getPrice() %>" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="flightId" class="form-label">Flight ID: </label>
-                                    <input type="number" class="form-control" id="uFlightId" name="flightId" value="<%= fd.getFlightId() %>" required="">
+                                    <input type="hidden" class="form-control" id="uFlightId" name="flightId" value="<%= fd.getFlightId() %>" required="">
                                 </div>
                                 <div class="mb-3">
                                     <label for="planeCategoryId" class="form-label">Plane Category: </label>
-                                    <select class="form-select" id="uPlaneCategoryId" name="planeCategoryId" required>
-                                        <option value="1">Airbus A321CEO</option>
-                                        <option value="2">Airbus A320NEO</option>
-                                        <option value="3">Airbus A320CEO</option>
-                                        <option value="4">Airbus A321</option>
+                                    <select name="planeCategoryId">
+                                        <%
+                                            for (PlaneCategory category : categories) {
+                                        %>
+                                        <option value="<%=category.getId()%>"><%=category.getName()%></option>
+                                        <%
+                                            }
+                                        %>
                                     </select>
                                 </div>
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -128,7 +156,6 @@
                 </div>
             </div>
             <%
-                   }
                }
            }
             %>
@@ -137,7 +164,7 @@
         </tbody>
     </table>
     <!-- Modal to Add Flight Detail -->
-    <div class="modal fade" id="add-<%=rsFlightManage.getInt(1)%>" tabindex="-1" role="dialog" aria-labelledby="addFlightDetailModalLabel" aria-hidden="true">
+    <div class="modal fade" id="add-<%=fid%>" tabindex="-1" role="dialog" aria-labelledby="addFlightDetailModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -146,7 +173,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="FlightDetailManage" method="POST">
+                <form action="flightDetailManagement" method="POST">
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="date">Date:</label>
@@ -162,15 +189,18 @@
                             <input type="number" class="form-control" id="price" name="price" required>
                         </div>
                         <div class="form-group">
-                            <input type="hidden" class="form-control" id="flightId" name="flightId" value="<%= flightIdFromDb %>">
+                            <input type="hidden" class="form-control" id="flightId" name="flightId" value="<%=fid%>">
                         </div>
                         <div class="form-group">
-                            <label for="planeCategoryId">Plane Categories:</label>
-                            <select class="form-select" id="planeCategoryId" name="planeCategoryId" required>
-                                <option value="1">Airbus A321CEO</option>
-                                <option value="2">Airbus A320NEO</option>
-                                <option value="3">Airbus A320CEO</option>
-                                <option value="4">Airbus A321</option>
+                            <label for="planeCategoryId" class="form-label">Plane Category: </label>
+                            <select name="planeCategoryId">
+                                <%
+                                    for (PlaneCategory category : categories) {
+                                %>
+                                <option value="<%=category.getId()%>"><%=category.getName()%></option>
+                                <%
+                                    }
+                                %>
                             </select>
                         </div>
 
@@ -206,7 +236,7 @@
                 // Create the form dynamically
                 const form = document.createElement("form");
                 form.method = "post";
-                form.action = "FlightDetailManage?action=updstatus";
+                form.action = "flightDetailManagement?action=updstatus";
 
                 const idInput = document.createElement("input");
                 idInput.type = "hidden";

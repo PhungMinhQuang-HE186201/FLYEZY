@@ -18,15 +18,18 @@ import java.util.List;
 import java.sql.Date;
 import java.sql.Time;
 import model.FlightDetails;
+import dal.AccountsDAO;
+import model.Accounts;
 
 /**
  *
  * @author Admin
  */
-@WebServlet(name = "FlightDetailManage", urlPatterns = {"/FlightDetailManage"})
-public class FlightDetailManage extends HttpServlet {
+@WebServlet(name = "FlightDetailManage", urlPatterns = {"/flightDetailManagement"})
+public class FlightDetailManagement extends HttpServlet {
 
     FlightDetailDAO dao = new FlightDetailDAO();
+    AccountsDAO ad = new AccountsDAO();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -66,7 +69,28 @@ public class FlightDetailManage extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        doPost(request, response);
+//        doPost(request, response);
+        HttpSession session = request.getSession();
+        Integer idd = (Integer) session.getAttribute("id");
+        if (idd == null) {
+            response.sendRedirect("login");
+            return;
+        } else {
+            Accounts acc = ad.getAccountsById(idd);
+            request.setAttribute("account", acc);
+        }
+        String airlineId = request.getParameter("airlineId");
+        if(airlineId != null){
+            session.setAttribute("aid", airlineId);
+        }
+        String flightid = request.getParameter("flightId");
+        int fid = Integer.parseInt(flightid);
+
+        List<FlightDetails> detail_ls = dao.getAllDetailByFlightId(fid);
+        session.setAttribute("fid", flightid);
+        request.setAttribute("listFlightDetails", detail_ls);
+        request.getRequestDispatcher("view/flightDetailsManagement.jsp").forward(request, response);
+
     }
 
     /**
@@ -111,25 +135,31 @@ public class FlightDetailManage extends HttpServlet {
 
     private void handleAddFlightDetail(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
+        HttpSession session = request.getSession();
+        int flightId = Integer.parseInt((String) session.getAttribute("fid"));
         FlightDetails newFlightDetail = createFlightDetailFromRequest(request);
         dao.addnew(newFlightDetail);
-        response.sendRedirect("flightManagement");
+        response.sendRedirect("flightDetailManagement?flightId=" + flightId);
     }
 
     private void handleUpdateFlightDetail(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
+        HttpSession session = request.getSession();
+        int flightId = Integer.parseInt((String) session.getAttribute("fid"));
         int id = Integer.parseInt(request.getParameter("id"));
         FlightDetails updatedFlightDetail = createFlightDetailFromRequest(request);
         dao.updateFlightDetail(updatedFlightDetail, id);
-        response.sendRedirect("flightManagement");
+        response.sendRedirect("flightDetailManagement?flightId=" + flightId);
     }
 
     private void handleUpdateFlightStatus(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
+        HttpSession session = request.getSession();
+        int flightId = Integer.parseInt((String) session.getAttribute("fid"));
         int id = Integer.parseInt(request.getParameter("id"));
         int status_id = Integer.parseInt(request.getParameter("status"));
         dao.updateFlightStatus(id, status_id);
-        response.sendRedirect("flightManagement");
+        response.sendRedirect("flightDetailManagement?flightId=" + flightId);
     }
 
     private FlightDetails createFlightDetailFromRequest(HttpServletRequest request) {

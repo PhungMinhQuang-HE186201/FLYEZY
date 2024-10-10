@@ -144,6 +144,29 @@ public class FlightDetailDAO extends DBConnect {
         return -1;
     }
 
+    public List<FlightDetails> getAllDetailByFlightId(int flightid) {
+        List<FlightDetails> ls = new ArrayList<>();
+        String sql = "SELECT * FROM flyezy.Flight_Detail WHERE flightid = ? ";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, flightid);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                FlightDetails flightDetail = new FlightDetails();
+                flightDetail.setId(rs.getInt("id"));
+                flightDetail.setDate(rs.getDate("date"));
+                flightDetail.setTime(rs.getTime("time"));  // Chuyển đổi từ SQL Time sang LocalTime
+                flightDetail.setPrice(rs.getInt("price"));
+                flightDetail.setFlightId(rs.getInt("Flightid"));
+                flightDetail.setPlaneCategoryId(rs.getInt("Plane_Categoryid"));
+                flightDetail.setStatusId(rs.getInt("Status_id"));
+                ls.add(flightDetail);
+            }
+        } catch (Exception e) {
+        }
+        return ls;
+    }
+
     public List<FlightDetails> getAll() {
         List<FlightDetails> ls = new ArrayList<>();
         String sql = "SELECT * FROM flyezy.Flight_Detail";
@@ -166,6 +189,29 @@ public class FlightDetailDAO extends DBConnect {
             e.getMessage();
         }
         return ls;
+    }
+    public FlightDetails getFlightDetailsByID(int id) {
+        List<FlightDetails> ls = new ArrayList<>();
+        String sql = "SELECT * FROM flyezy.Flight_Detail where id = "+id;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                FlightDetails flightDetail = new FlightDetails();
+                flightDetail.setId(rs.getInt("id"));
+                flightDetail.setDate(rs.getDate("date"));
+                flightDetail.setTime(rs.getTime("time"));  // Chuyển đổi từ SQL Time sang LocalTime
+                flightDetail.setPrice(rs.getInt("price"));
+                flightDetail.setFlightId(rs.getInt("Flightid"));
+                flightDetail.setPlaneCategoryId(rs.getInt("Plane_Categoryid"));
+                flightDetail.setStatusId(rs.getInt("Status_id"));
+                return flightDetail;
+            }
+
+        } catch (SQLException e) {
+            e.getMessage();
+        }
+        return null;
     }
 
     public void addnew(FlightDetails flightDetail) {
@@ -207,6 +253,7 @@ public class FlightDetailDAO extends DBConnect {
         return false;
     }
 
+
     public void updateFlightStatus(int Id, int status) {
         String sql = "UPDATE Flight_Detail SET Status_id = ? WHERE id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -218,8 +265,61 @@ public class FlightDetailDAO extends DBConnect {
         }
     }
 
+    public List<FlightDetails> getByTime(Time time) {
+        List<FlightDetails> list = new ArrayList<>();
+        String sql = "SELECT * FROM flyezy.Flight_Detail WHERE Flight_Detail.time = ?";
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            prepare.setTime(1, time);
+            ResultSet resultSet = prepare.executeQuery();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                Date date = resultSet.getDate("date");
+                int price = resultSet.getInt("price");
+                int flightId = resultSet.getInt("Flightid");
+                int planeCategoryId = resultSet.getInt("Plane_Categoryid");
+                int statusId = resultSet.getInt("Status_id");
+                list.add(new FlightDetails(id, date, time, price, flightId, planeCategoryId, statusId));
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+
+        return list;
+    }
+
+    public List<FlightDetails> getByDateAndTime(Date date, Time time) {
+        List<FlightDetails> list = new ArrayList<>();
+        String sql = "SELECT * FROM flyezy.Flight_Detail WHERE Flight_Detail.date = ? AND Flight_Detail.time = ?";
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            prepare.setDate(1, date);
+            prepare.setTime(2, time);
+            ResultSet resultSet = prepare.executeQuery();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                int price = resultSet.getInt("price");
+                int flightId = resultSet.getInt("Flightid");
+                int planeCategoryId = resultSet.getInt("Plane_Categoryid");
+                int statusId = resultSet.getInt("Status_id");
+                list.add(new FlightDetails(id, date, time, price, flightId, planeCategoryId, statusId));
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+
+        return list;
+    }
+    
     public static void main(String[] args) {
         FlightDetailDAO fdd = new FlightDetailDAO();
-        System.out.println(fdd.getFlightDetailById(1));
+        Date date = Date.valueOf("2024-10-01");
+        List<FlightDetails> ls = fdd.getAllDetailByFlightId(3);
+        for (FlightDetails f : ls) {
+            System.out.println(f.getPrice());
+            System.out.println(f.getDate());
+            System.out.println(f.getPlaneCategoryId());
+        }
+
     }
 }

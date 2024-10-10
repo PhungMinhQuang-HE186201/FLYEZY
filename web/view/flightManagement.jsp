@@ -7,17 +7,18 @@
 <%@page import="model.Location"%>
 <%@page import="model.Status"%>
 <%@page import="model.Airline"%>
-<%@page import="java.util.List"%>
 <%@page import="dal.AirportDAO"%>
 <%@page import="dal.CountryDAO"%>
 <%@page import="dal.FlightManageDAO"%>
-<%@page import="dal.StatusDAO"%>
-<%@page import="dal.PlaneCategoryDAO"%>
 <%@page import="dal.LocationDAO"%>
 <%@page import="dal.AirlineManageDAO"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.util.List"%>
+<%@page import="java.util.List"%>
+<%@page import="dal.PlaneCategoryDAO" %>
+<%@page import="dal.StatusDAO"%>
 <%@page import="model.FlightDetails"%>
+<%@page import="model.PlaneCategory"%>
 <!DOCTYPE html>
 
 <html>
@@ -237,27 +238,27 @@
 
                                     </td>
 
-                                    <td style="background-color:  <%= (rsFlightManage.getInt(12) == 1) ? "" : "#ccc" %>">  
-                                        <button class="btn btn-info" data-toggle="modal" data-target="#update-flight-<%=rsFlightManage.getInt(1) %>">Update</button>
-                                        <button class="btn btn-warning" onclick="toggleFlightDetails(<%= rsFlightManage.getInt(1) %>)">Flight Detail
-                                            <span id="arrow<%= rsFlightManage.getInt(1) %>" style="margin-left: 8px" class="glyphicon glyphicon-menu-down"></span>
-                                        </button>
-                                        <!-- MODAL: Update flight-->
-                                        <div class="modal fade" id="update-flight-<%=rsFlightManage.getInt(1) %>" tabindex="-1" role="dialog" aria-hidden="true">
-                                            <div class="modal-dialog" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" style="text-align: left;">Update Airline</h5>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <form  action="flightManagement" method="post"> 
-                                                            <input type="hidden" name="action" value="update"/>
-                                                            <input type="hidden" name="airlineId" value="${requestScope.account.getAirlineId()}" readonly=""/>
-                                                            <label for="usrname"><span class="glyphicon glyphicon-globe"></span>ID:</label>
-                                                            <input type="text" class="form-control" id="usrname" name="id" value="<%=rsFlightManage.getInt(1) %>" readonly="">
+                                <td style="background-color:  <%= (rsFlightManage.getInt(12) == 1) ? "" : "#ccc" %>">  
+                                    <button class="btn btn-info" data-toggle="modal" data-target="#update-flight-<%=rsFlightManage.getInt(1) %>">Update</button>
+                                    <a href="flightDetailManagement?flightId=<%= rsFlightManage.getInt(1) %>&airlineId=${requestScope.account.getAirlineId()}" class="btn btn-warning">
+                                        Flight Detail
+                                    </a>
+                                    <!-- MODAL: Update flight-->
+                                    <div class="modal fade" id="update-flight-<%=rsFlightManage.getInt(1) %>" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" style="text-align: left;">Update Airline</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form  action="flightManagement" method="post"> 
+                                                        <input type="hidden" name="action" value="update"/>
+                                                        <input type="hidden" name="airlineId" value="${requestScope.account.getAirlineId()}" readonly=""/>
+                                                        <label for="usrname"><span class="glyphicon glyphicon-globe"></span>ID:</label>
+                                                        <input type="text" class="form-control" id="usrname" name="id" value="<%=rsFlightManage.getInt(1) %>" readonly="">
 
 
                                                             <!-- Minutes -->
@@ -334,15 +335,6 @@
                                     </td>
 
 
-                                    <!--Quanht: hidden flight details-->
-                                <tr id="flight-details-<%= rsFlightManage.getInt(1) %>" style="display: none;">
-                                    <td colspan="9">
-                                        <div>
-                                            <!-- Initial loading or placeholder content -->
-                                            <%@include file="flightDetailsManagement.jsp" %>
-                                        </div>
-                                    </td>
-                                </tr>
                                 <%i++;}%>
 
                             </tbody>
@@ -455,16 +447,16 @@
                     "hideMethod": "fadeOut"
                 };
 
-                function successful(message) {
-                    toastr["success"](message, "Successful");
-                }
-                ;
+            function successful(message) {
+                toastr["success"](message, "Successful");
+            }
+            ;
 
-                function error(message) {
-                    toastr["error"](message, "Failed");
-                }
-                ;
-                console.log("<%=request.getAttribute("error")%>");
+            function error(message) {
+                toastr["error"](message, "Failed");
+            }
+            ;
+            console.log("<%=request.getAttribute("error")%>");
 
                 //SHOW Flight Detail of each flight
                 function toggleFlightDetails(flightid) {
@@ -483,18 +475,18 @@
                 }
 
 
-                $(document).ready(function () {
-                    //Toast notification:
-                <% if (request.getAttribute("error") != null) { %>
-                    error("<%= request.getAttribute("error").toString()%>");
-                <% }%>
-                    // Create an empty countries object
-                    var countries = {
-                        "All": {
-                            locations: ["All"],
-                            airports: {"All": ["All"]}
-                        }
-                    };
+            $(document).ready(function () {
+                //Toast notification:
+            <% if (request.getAttribute("error") != null) { %>
+                error("<%= request.getAttribute("error").toString()%>");
+            <% }%>
+                // Create an empty countries object
+                var countries = {
+                    "All": {
+                        locations: ["All"],
+                        airports: {"All": ["All"]}
+                    }
+                };
 
                 <%
                     LocationDAO ld2 = new LocationDAO();
@@ -553,29 +545,29 @@
                             var selectedLocation = $(this).val();
                             var airportOptions = "<option value=''>Select Airport</option>";
 
-                            if (selectedLocation && countries[selectedCountry]) {
-                                var airports = countries[selectedCountry]["airports"][selectedLocation];
-                                airports.forEach(function (airport) {
-                                    airportOptions += "<option value='" + airport + "'>" + airport + "</option>";
-                                });
-                                $(airportSelector).html(airportOptions);
-                            } else {
-                                $(airportSelector).empty();
-                            }
-                        });
-                    }
+                        if (selectedLocation && countries[selectedCountry]) {
+                            var airports = countries[selectedCountry]["airports"][selectedLocation];
+                            airports.forEach(function (airport) {
+                                airportOptions += "<option value='" + airport + "'>" + airport + "</option>";
+                            });
+                            $(airportSelector).html(airportOptions);
+                        } else {
+                            $(airportSelector).empty();
+                        }
+                    });
+                }
 
-                    //var numberOfFlight = <%=i%>;
+                //var numberOfFlight = <%=i%>;
 
-                    updateLocationOptions("#departureCountry1", "#departureLocation1", "#departureAirport1");
-                    updateLocationOptions("#destinationCountry1", "#destinationLocation1", "#destinationAirport1");
-                <% for(int k = 0; k<i;k++){%>
-                    updateLocationOptions("#departureCountry2<%=k%>", "#departureLocation2<%=k%>", "#departureAirport2<%=k%>");
-                    updateLocationOptions("#destinationCountry2<%=k%>", "#destinationLocation2<%=k%>", "#destinationAirport2<%=k%>");
-                <%}%>
-                    updateLocationOptions("#departureCountry3", "#departureLocation3", "#departureAirport3");
-                    updateLocationOptions("#destinationCountry3", "#destinationLocation3", "#destinationAirport3");
-                });
-            </script>
+                updateLocationOptions("#departureCountry1", "#departureLocation1", "#departureAirport1");
+                updateLocationOptions("#destinationCountry1", "#destinationLocation1", "#destinationAirport1");
+            <% for(int k = 0; k<i;k++){%>
+                updateLocationOptions("#departureCountry2<%=k%>", "#departureLocation2<%=k%>", "#departureAirport2<%=k%>");
+                updateLocationOptions("#destinationCountry2<%=k%>", "#destinationLocation2<%=k%>", "#destinationAirport2<%=k%>");
+            <%}%>
+                updateLocationOptions("#departureCountry3", "#departureLocation3", "#departureAirport3");
+                updateLocationOptions("#destinationCountry3", "#destinationLocation3", "#destinationAirport3");
+            });
+        </script>
     </body>
 </html>

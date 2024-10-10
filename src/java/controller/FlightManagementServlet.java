@@ -9,6 +9,8 @@ import dal.AirportDAO;
 import dal.CountryDAO;
 import dal.FlightManageDAO;
 import dal.LocationDAO;
+import dal.StatusDAO;
+import dal.AirportDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -18,6 +20,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.sql.ResultSet;
 import model.Accounts;
+import model.Airport;
 import model.Flights;
 import dal.FlightDetailDAO;
 
