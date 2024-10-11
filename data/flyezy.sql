@@ -425,8 +425,12 @@ COLLATE = utf8mb4_0900_ai_ci;
 CREATE TABLE IF NOT EXISTS `flyezy`.`Order` (
   `id` INT NOT NULL,
   `Flight_Detail_id` INT NOT NULL,
+  `code` VARCHAR(45) NOT NULL,
+  `contactName` VARCHAR(45) NULL,
+  `contactPhone` VARCHAR(45) NULL,
+  `contactEmail` VARCHAR(45) NULL,
   `totalPrice` INT NOT NULL,
-  `Accounts_id` INT NOT NULL,
+  `Accounts_id` INT NULL,
   `Payment_Types_id` INT NOT NULL,
   `paymentTime` TIMESTAMP NULL,
   `Flight_Type_id` INT NOT NULL,
@@ -472,7 +476,7 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Ticket` (
   `id` INT NOT NULL,
   `Seat_Categoryid` INT NOT NULL,
   `Passenger_Typesid` INT NOT NULL,
-  `name` VARCHAR(255) NOT NULL,
+  `code` VARCHAR(255) NOT NULL,
   `pName` VARCHAR(255) NOT NULL,
   `pSex` BIT(1) NOT NULL,
   `pPhoneNumber` VARCHAR(10) NOT NULL,
@@ -534,6 +538,7 @@ COLLATE = utf8mb4_0900_ai_ci;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
 
 
 
@@ -633,13 +638,13 @@ VALUES
 (2, 'VNPAY');
 
 
-INSERT INTO `Order` (`id`, `Flight_Detail_id`, `totalPrice`, `Accounts_id`, `Payment_Types_id`, `paymentTime`, `Flight_Type_id`, `Discount_id`)
+INSERT INTO `Order` (`id`,`code`,`contactName`,`contactPhone`,`contactEmail`, `Flight_Detail_id`, `totalPrice`, `Accounts_id`, `Payment_Types_id`, `paymentTime`, `Flight_Type_id`, `Discount_id`)
 VALUES 
-(1, 1, 1200000, 1, 1, '2024-10-01 14:00:00', 1, null),
-(2, 2, 1350000, 1, 2, '2024-10-02 15:15:00', 1, null),
-(3, 3, 1500000, 1, 1, '2024-10-03 09:30:00', 1, null);
+(1, 'FJA84IUTJ',null,null,null, 1, 1200000, 1, 1, '2024-10-01 14:00:00', 1, null),
+(2, 'BDNA83JFK',null,null,null, 2, 1350000, 1, 2, '2024-10-02 15:15:00', 1, null),
+(3, 'O3MFKALSS',null,null,null, 3, 1500000, 1, 1, '2024-10-03 09:30:00', 1, null);
 
-INSERT INTO `Ticket` (`id`, `Seat_Categoryid`, `Passenger_Typesid`, `name`, `pName`, `pSex`, `pPhoneNumber`, `pDob`, `Baggagesid`, `Order_id`, `Statusid`)
+INSERT INTO `Ticket` (`id`, `Seat_Categoryid`, `Passenger_Typesid`, `code`, `pName`, `pSex`, `pPhoneNumber`, `pDob`, `Baggagesid`, `Order_id`, `Statusid`)
 VALUES 
 (1, 1, 1, 'John Doe', 'Passenger 1', 1, '0912345678', '1990-01-01', NULL, 1, 10),
 (2, 2, 2, 'Jane Smith', 'Passenger 2', 1, '0987654321', '1992-05-10', null, 1, 10),
