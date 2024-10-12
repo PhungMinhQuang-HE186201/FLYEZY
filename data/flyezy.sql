@@ -435,12 +435,14 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Order` (
   `paymentTime` TIMESTAMP NULL,
   `Flight_Type_id` INT NOT NULL,
   `Discount_id` INT NULL,
+  `Status_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_Order_Accounts1_idx` (`Accounts_id` ASC) VISIBLE,
   INDEX `fk_Order_Payment_Types1_idx` (`Payment_Types_id` ASC) VISIBLE,
   INDEX `fk_Order_Flight_Type1_idx` (`Flight_Type_id` ASC) VISIBLE,
   INDEX `fk_Order_Discount1_idx` (`Discount_id` ASC) VISIBLE,
   INDEX `fk_Order_Flight_Detail1_idx` (`Flight_Detail_id` ASC) VISIBLE,
+  INDEX `fk_Order_Status1_idx` (`Status_id` ASC) VISIBLE,
   CONSTRAINT `fk_Order_Accounts1`
     FOREIGN KEY (`Accounts_id`)
     REFERENCES `flyezy`.`Accounts` (`id`)
@@ -464,6 +466,11 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Order` (
   CONSTRAINT `fk_Order_Flight_Detail1`
     FOREIGN KEY (`Flight_Detail_id`)
     REFERENCES `flyezy`.`Flight_Detail` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Order_Status1`
+    FOREIGN KEY (`Status_id`)
+    REFERENCES `flyezy`.`Status` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -538,9 +545,6 @@ COLLATE = utf8mb4_0900_ai_ci;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
-
-
-
 
 
 
@@ -638,11 +642,11 @@ VALUES
 (2, 'VNPAY');
 
 
-INSERT INTO `Order` (`id`,`code`,`contactName`,`contactPhone`,`contactEmail`, `Flight_Detail_id`, `totalPrice`, `Accounts_id`, `Payment_Types_id`, `paymentTime`, `Flight_Type_id`, `Discount_id`)
+INSERT INTO `Order` (`id`,`code`,`contactName`,`contactPhone`,`contactEmail`, `Flight_Detail_id`, `totalPrice`, `Accounts_id`, `Payment_Types_id`, `paymentTime`, `Flight_Type_id`, `Discount_id`, `Status_id`)
 VALUES 
-(1, 'FJA84IUTJ',null,null,null, 1, 1200000, 1, 1, '2024-10-01 14:00:00', 1, null),
-(2, 'BDNA83JFK',null,null,null, 2, 1350000, 1, 2, '2024-10-02 15:15:00', 1, null),
-(3, 'O3MFKALSS',null,null,null, 3, 1500000, 1, 1, '2024-10-03 09:30:00', 1, null);
+(1, 'FJA84IUTJ',null,null,null, 1, 1200000, 1, 1, '2024-10-01 14:00:00', 1, null, 10),
+(2, 'BDNA83JFK',null,null,null, 2, 1350000, 1, 2, '2024-10-02 15:15:00', 1, null, 10),
+(3, 'O3MFKALSS',null,null,null, 3, 1500000, 1, 1, '2024-10-03 09:30:00', 1, null, 10);
 
 INSERT INTO `Ticket` (`id`, `Seat_Categoryid`, `Passenger_Typesid`, `code`, `pName`, `pSex`, `pPhoneNumber`, `pDob`, `Baggagesid`, `Order_id`, `Statusid`)
 VALUES 
