@@ -16,7 +16,7 @@
         <footer id="footer">
             <div class="row" style="margin: 0">
                 <div class="col-md-2" id="footer-logo">
-                    <img src="img/jack.png" alt="Tripove" />
+                    <img src="img/Messi.jpg" alt="Tripove" />
                 </div>
                 <div class="col-md-2" id="footer-info">
                     <h4>FLYEZY</h4>
