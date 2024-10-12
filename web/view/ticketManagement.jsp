@@ -12,11 +12,17 @@
 <%@page import="model.Ticket"%>
 <%@page import="model.Airline"%>
 <%@page import="model.Status"%>
+<%@page import="model.Airport"%>
+<%@page import="model.Country"%>
 <%@page import="static controller.EncodeController.SECRET_KEY" %>
 <%@page import="java.util.List"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="model.Accounts"%>
 <%@page import="model.Status"%>
+<%@page import="model.Flights"%>
+<%@page import="model.PlaneCategory"%>
+<%@page import="model.FlightDetails"%>
+<%@page import="model.Location"%>
 <%@page import="dal.AirlineManageDAO"%>
 <%@page import="dal.TicketDAO"%>
 <%@page import="dal.AirportDAO"%>
@@ -26,6 +32,7 @@
 <%@page import="dal.PassengerTypeDAO"%>
 <%@page import="dal.StatusDAO"%>
 <%@page import="dal.PaymentTypeDAO"%>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -96,9 +103,35 @@
 
 
             </div>
+                    
+            <div>
+                <%
+                  Flights flight = (Flights)request.getAttribute("flight");
+                  Airport airportDep =(Airport)request.getAttribute("airportDep");
+                  Airport airportDes =(Airport)request.getAttribute("airportDes");
+                  FlightDetails flightDetail = (FlightDetails)request.getAttribute("flightDetail");
+                  Location locationDep = (Location)request.getAttribute("locationDep");
+                  Location locationDes = (Location)request.getAttribute("locationDes");
+                  Country countryDep = (Country)request.getAttribute("countryDep");
+                  Country countryDes = (Country)request.getAttribute("countryDes");
+                  PlaneCategory planeCatrgory = (PlaneCategory)request.getAttribute("planeCatrgory");
+                %>
+
+                <p><%=airportDep.getName()%></p>
+                <p><%=airportDes.getName()%></p>
+                <p><%=locationDep.getName()%></p>
+                <p><%=locationDes.getName()%></p>
+                <p><%=countryDep.getName()%></p>
+                <p><%=countryDes.getName()%></p>
+                <p><%=planeCatrgory.getName()%></p>
+                <p><%=flightDetail.getDate()%></p>  
+                <p><%=flightDetail.getTime()%></p>
+                <p><%=flightDetail.getPrice()%></p>
+                <p><%=flight.getMinutes()%></p>
+                
+            </div>
             <!-- Update Modal -->   
 
-            <h4 style="color : red">${message}</h4>
             <table class="entity" >
                 <thead>
                     <tr>

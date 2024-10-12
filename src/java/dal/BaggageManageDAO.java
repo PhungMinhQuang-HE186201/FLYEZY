@@ -41,7 +41,7 @@ public class BaggageManageDAO extends DBConnect {
     public List<Baggages> getAllBaggagesByAirline(int airlineId) {
         List<Baggages> list = new ArrayList<>();
         String sql = "select * from Baggages\n"
-                + "where airlineid= ?";
+                + "where Airlineid= ?";
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
             prepare.setInt(1, airlineId);
@@ -50,7 +50,7 @@ public class BaggageManageDAO extends DBConnect {
                 int id = resultSet.getInt("id");
                 float weight = resultSet.getFloat("weight");
                 int price = resultSet.getInt("price");
-                int airlineIdFound = resultSet.getInt("airlineId");
+                int airlineIdFound = resultSet.getInt("Airlineid");
                 int statusId = resultSet.getInt("Status_id");
                 list.add(new Baggages(id, weight, price, airlineIdFound, statusId));
             }
@@ -185,7 +185,7 @@ public class BaggageManageDAO extends DBConnect {
     }
 
     public float getWeight(int id) {
-        String sql = "select weight from Baggages where id= "+id;
+        String sql = "select weight from Baggages where id= " + id;
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
             ResultSet resultSet = prepare.executeQuery();
@@ -202,17 +202,7 @@ public class BaggageManageDAO extends DBConnect {
     public static void main(String[] args) {
         BaggageManageDAO dao = new BaggageManageDAO();
 
-////        dao.deleteAllBaggageByAirline(1);
-//        float weight = 3;
-//        int price = 4;
-//        int airlineId = 7;
-//        int n = dao.createBaggages(new Baggages(weight, price, airlineId));
-//        System.out.println("n= " + n);
-//        for (Baggages baggage : dao.getAllBaggages()) {
-//            System.out.println(baggage);
-//        }
-        for (Baggages baggages : dao.getAllBaggages()) {
-            System.out.println(baggages);
-        }
+        System.out.println(dao.getAllBaggagesByAirline(2));
+
     }
 }

@@ -25,17 +25,17 @@
                 </a>
             </div>
             <ul id="header-nav1" style="font-weight: 520">
-                <li "><a href="home" >Trang chủ</a></li>
-                <li "><a href="routeTicket" >Mua vé</a></li>
-                <li "><a href="news">Tin tức</a></li>
-                <li "><a href="#footer" >Liên hệ</a></li>
+                <li "><a href="home" >HOME</a></li>
+                <li "><a href="routeTicket" >TICKETS</a></li>
+                <li "><a href="news">NEWS</a></li>
+                <li "><a href="#footer" >CONTACT</a></li>
             </ul>
 
 
             <c:if test="${requestScope.account==null}">
                 <div id="header-nav2">
-                    <a href="login"><button id="login-button">Đăng nhập</button></a>
-                    <a href="register"><button id="register-button">Đăng ký</button></a>
+                    <a href="login"><button id="login-button">Login</button></a>
+                    <a href="register"><button id="register-button">Register</button></a>
                 </div>
             </c:if>
 
@@ -45,13 +45,13 @@
                         <img class="" src="${requestScope.account.image}" alt="">
                     </div>
                     <ul id="header-subnav" style="display: none;">
-                        <li><a href="info">Thông tin cá nhân</a></li>
+                        <li><a href="info">Account Information</a></li>
                             <c:if test="${requestScope.account.getRoleId()==1}">
-                            <li><a href="accountController">Quản lý</a></li>
+                            <li><a href="accountController">Manage</a></li>
                             </c:if>
-                        <li><a href="buyingHistory">Lịch sử mua vé</a></li>
-                        <li><a href="changePassword">Đổi mật khẩu</a></li>
-                        <li><a style="color: red;" href="logout">Đăng xuất</a></li>
+                        <li><a href="buyingHistory">Ticket Buying History</a></li>
+                        <li><a href="changePassword">Change Password</a></li>
+                        <li><a style="color: red;" href="logout">Log out</a></li>
                     </ul>
                 </div>
             </c:if>

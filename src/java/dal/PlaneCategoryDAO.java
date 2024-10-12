@@ -4,7 +4,6 @@
  */
 package dal;
 
-import com.oracle.wls.shaded.org.apache.bcel.Constants;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

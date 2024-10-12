@@ -1,0 +1,16 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Oct 10, 2024, 7:55:07 PM
+    Author     : Admin
+*/
+.modal-footer{
+    background-image: url('../img/modal-footer.png');
+}
+.modal-footer button{
+    color: #3C6E57;
+    font-weight: bold;
+    background-color: white;
+}

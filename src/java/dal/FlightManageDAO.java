@@ -83,14 +83,15 @@ public class FlightManageDAO extends DBConnect {
         return null;
     }
 
-    public boolean checkDuplicated(Flights flight) {
-        String departureAirportid = "SELECT * FROM Flight WHERE departureAirportid = ? && destinationAirportid = ?";
+    public boolean checkDuplicated(Flights flight, int airlineId) {
+        String departureAirportid = "SELECT * FROM Flight WHERE Airline_id = ? AND departureAirportid = ? && destinationAirportid = ?";
 
         try {
             // Kiểm tra email
             PreparedStatement departureCheck = conn.prepareStatement(departureAirportid);
-            departureCheck.setInt(1, flight.getDepartureAirportId());
-            departureCheck.setInt(2, flight.getDestinationAirportId());
+            departureCheck.setInt(1, airlineId);
+            departureCheck.setInt(2, flight.getDepartureAirportId());
+            departureCheck.setInt(3, flight.getDestinationAirportId());
             ResultSet departureResultSet = departureCheck.executeQuery();
             if (departureResultSet.next()) {
                 return false;  //  đã tồn tại

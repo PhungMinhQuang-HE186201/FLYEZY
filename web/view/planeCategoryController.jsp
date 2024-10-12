@@ -15,6 +15,7 @@
         <link rel="shortcut icon" type="image/png" href="img/flyezy-logo3.png" />
         <link rel="stylesheet" href="css/styleAdminController.css">
         <link rel="stylesheet" href="css/styleToastNotification.css">
+        <link rel="stylesheet" href="css/styleGeneral.css"/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.css">
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
@@ -46,7 +47,7 @@
                         <option value="2" ${param.fStatus != null && (param.fStatus==2) ? 'selected' : ''}>Deactivated</option>
                     </select>
                     <strong>Name: </strong>
-                    <input class="filterElm" type="text" name="fName" value="${param.fName}" placeholder="Enter name">
+                    <input pattern="^[\p{L}\d\s]+$" class="filterElm" type="text" name="fName" value="${param.fName}" placeholder="Enter name">
                     <button class="btn btn-info" type="submit" >
                         Search
                     </button>
@@ -82,12 +83,12 @@
                                 </div>
                                 <div class="form-group">
                                     <label><span class="glyphicon glyphicon-user"></span>Name:</label>
-                                    <input type="text" class="form-control" name="name" required>
+                                    <input pattern="^[\p{L}\d\s]+$" type="text" class="form-control" name="name" required>
                                 </div>
                                 <div class="form-group">
                                     <label><span class="glyphicon glyphicon-info-sign"></span>Info:</label>
                                     <div class="editor-container">
-                                        <textarea class="editor" name="info"></textarea>
+                                        <textarea pattern="^[\p{L}\d\s]+$" class="editor" name="info"></textarea>
                                     </div>
                                 </div>  
                                 <button type="submit" class="btn btn-success btn-block">
@@ -173,7 +174,7 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label><span class="glyphicon glyphicon-user"></span>Name:</label>
-                                                    <input type="text" class="form-control" name="name" required/>
+                                                    <input pattern="^[\p{L}\d\s]+$" type="text" class="form-control" name="name" required/>
                                                 </div>
                                                 <div class="form-group">
                                                     <label><span class="glyphicon glyphicon-picture"></span>Number of seat:</label>
@@ -186,7 +187,7 @@
                                                 <div class="form-group">
                                                     <label><span class="glyphicon glyphicon-info-sign"></span>Info:</label>
                                                     <div class="editor-container">
-                                                        <textarea class="editor" name="info"></textarea>
+                                                        <textarea pattern="^[\p{L}\d\s]+$" class="editor" name="info"></textarea>
                                                     </div>
                                                 </div>
                                                 <button type="submit" class="btn btn-success btn-block">
@@ -266,7 +267,7 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <label><span class="glyphicon glyphicon-user"></span>Name:</label>
-                                                        <input type="text" class="form-control" name="name" value="<%= sc.getName() %>" required/>
+                                                        <input pattern="^[\p{L}\d\s]+$" type="text" class="form-control" name="name" value="<%= sc.getName() %>" required/>
                                                     </div>
                                                     <div class="form-group">
                                                         <label><span class="glyphicon glyphicon-picture"></span>Number of seat:</label>
@@ -279,7 +280,7 @@
                                                     <div class="form-group">
                                                         <label><span class="glyphicon glyphicon-info-sign"></span>Info:</label>
                                                         <div class="editor-container">
-                                                            <textarea type="text" class="editor" name="info" ><%= sc.getInfo() %></textarea>
+                                                            <textarea pattern="^[\p{L}\d\s]+$" type="text" class="editor" name="info" ><%= sc.getInfo() %></textarea>
                                                         </div>
                                                     </div>
                                                     <button type="submit" class="btn btn-success btn-block">
@@ -326,12 +327,12 @@
                                     </div>
                                     <div class="form-group">
                                         <label><span class="glyphicon glyphicon-picture"></span>Name:</label>
-                                        <input type="text" class="form-control" name="name" value="<%= pc.getName() %>" required/>
+                                        <input pattern="^[\p{L}\d\s]+$" type="text" class="form-control" name="name" value="<%= pc.getName() %>" required/>
                                     </div>
                                     <div class="form-group">
                                         <label><span class="glyphicon glyphicon-info-sign"></span>Info:</label>
                                         <div class="editor-container">
-                                            <textarea type="text" class="editor" name="info"><%= pc.getInfo() %></textarea>
+                                            <textarea pattern="^[\p{L}\d\s]+$" type="text" class="editor" name="info"><%= pc.getInfo() %></textarea>
                                         </div>
 
                                     </div>  
