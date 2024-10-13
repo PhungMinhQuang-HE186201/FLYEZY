@@ -47,6 +47,7 @@
         <table class="entity" style="margin-left: 210px;" >
             <thead>
                 <tr>
+                    <th>Id</th>
                     <th>Date</th>
                     <th>Time</th>
                     <th>Price</th>
@@ -69,7 +70,7 @@
                                 String planeCategoryName = planeCategoryDAO.getNameById(fd.getPlaneCategoryId());
                 %>
                 <tr>
-
+                    <td><%= fd.getId()%></td>
                     <td><%= fd.getDate() %></td>
                     <td><%= fd.getTime() %></td>
                     <td><%= fd.getPrice() %></td>
@@ -87,7 +88,8 @@
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#update-<%=fd.getId()%>">
                             Update
                         </button>
-                            <a class="btn btn-danger" style="text-decoration: none; background-color: green;" href="TicketController?flightDetailID=<%= fd.getId() %>">Detail</a>
+                        <a class="btn btn-danger" style="text-decoration: none; background-color: green;" href="TicketController?flightDetailID=<%= fd.getId() %>">Detail</a>
+                        <a class="btn btn-danger" style="text-decoration: none; background-color: green" href="OrderController?flightDetailID=<%= fd.getId() %>">Order Detail</a>
                     </td>
                 </tr>
 

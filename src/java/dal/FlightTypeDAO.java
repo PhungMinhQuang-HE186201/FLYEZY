@@ -36,7 +36,7 @@ public class FlightTypeDAO extends DBConnect {
     }
 
     public String getNameType(int id) {
-        String sql = "Select name from Flight_type where id= "+id;
+        String sql = "Select name from Flight_type where id= " + id;
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
             ResultSet resultSet = prepare.executeQuery();
@@ -48,5 +48,13 @@ public class FlightTypeDAO extends DBConnect {
             System.out.println(ex.getMessage());
         }
         return null;
+    }
+
+
+    public static void main(String[] args) {
+        FlightTypeDAO dao = new FlightTypeDAO();
+        for (FlightType type : dao.getAllFlightType()) {
+            System.out.println(type);
+        }
     }
 }

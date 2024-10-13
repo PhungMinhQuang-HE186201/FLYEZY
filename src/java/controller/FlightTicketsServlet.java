@@ -6,6 +6,7 @@ package controller;
  */
 import dal.AccountsDAO;
 import dal.FlightDetailDAO;
+import dal.FlightTypeDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -64,25 +65,29 @@ public class FlightTicketsServlet extends HttpServlet {
             throws ServletException, IOException {
         AccountsDAO ad = new AccountsDAO();
         FlightDetailDAO fdd = new FlightDetailDAO();
+        FlightTypeDAO ftd = new FlightTypeDAO();
         HttpSession session = request.getSession();
 
         Integer idd = (Integer) session.getAttribute("id");
         int i = (idd != null) ? idd : -1;
         Accounts acc = ad.getAccountsById(i);
         request.setAttribute("account", acc);
-        
+
         String adult = request.getParameter("adult");
         String child = request.getParameter("child");
         String infant = request.getParameter("infant");
-
+        String flightType = request.getParameter("flightType");
         String depAStr = request.getParameter("departure");
         String desAStr = request.getParameter("destination");
         String depDateStr = request.getParameter("departureDate");
-        
         try {
             int depA = Integer.parseInt(depAStr);
             int desA = Integer.parseInt(desAStr);
             Date depDate = Date.valueOf(depDateStr);
+            if (flightType.equals("roundTrip")) {
+                String reDateStr = request.getParameter("returnDate");
+                Date reDate = Date.valueOf(reDateStr);
+            }
             request.setAttribute("flightTickets", fdd.getFlightDetailsByAirportAndDDate(depA, desA, depDate));
         } catch (Exception e) {
         }
