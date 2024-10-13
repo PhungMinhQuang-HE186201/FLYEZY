@@ -47,7 +47,7 @@ public class TicketDAO extends DBConnect {
     }
     public List<Ticket> getAllTicketsById(int flightDetailID) {
         List<Ticket> ls = new ArrayList<>();
-        String sql = "select * from Ticket where Flight_Detail_id= "+flightDetailID;
+        String sql = "select * from Ticket where Flight_Detail_id= "+flightDetailID +" And Statusid!=9";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
@@ -74,7 +74,7 @@ public class TicketDAO extends DBConnect {
     }
 
     public Ticket getTicketById(int id) {
-        String sql = "SELECT * FROM Ticket WHERE id = ?";
+        String sql = "SELECT * FROM Ticket WHERE id = ? And Statusid!=9";
         try {
             PreparedStatement st = conn.prepareStatement(sql);
             st.setInt(1, id);
@@ -102,7 +102,7 @@ public class TicketDAO extends DBConnect {
 
     public List<Ticket> searchTickets(String flightType, String passengerType, String statusTicket, String name, String phoneNumber,int Flight_Detailid) {
         List<Ticket> ls = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT * FROM Ticket WHERE Flight_Detail_id ="+Flight_Detailid);
+        StringBuilder sql = new StringBuilder("SELECT * FROM Ticket WHERE Flight_Detail_id ="+Flight_Detailid +"And Statusid!=9");
 
         
         if (passengerType != null && !passengerType.isEmpty()) {
