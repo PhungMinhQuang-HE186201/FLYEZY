@@ -17,10 +17,16 @@ public class SeatCategory {
     private float surcharge;
     private int Plane_Categoryid;
     private int statusId;
-
+    private int countSeat;
     public SeatCategory() {
     }
 
+    public SeatCategory(String name, int numberOfSeat,int countSeat) {
+        this.name = name;
+        this.numberOfSeat = numberOfSeat;
+        this.countSeat = countSeat;
+    }
+   
     public SeatCategory(String name, int numberOfSeat, String image, String info, float surcharge, int Plane_Categoryid, int statusId) {
         this.name = name;
         this.numberOfSeat = numberOfSeat;
@@ -40,6 +46,14 @@ public class SeatCategory {
         this.surcharge = surcharge;
         this.Plane_Categoryid = Plane_Categoryid;
         this.statusId = statusId;
+    }
+
+    public int getCountSeat() {
+        return countSeat;
+    }
+
+    public void setCountSeat(int countSeat) {
+        this.countSeat = countSeat;
     }
 
     public int getId() {

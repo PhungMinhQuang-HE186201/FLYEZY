@@ -23,6 +23,7 @@
 <%@page import="model.PlaneCategory"%>
 <%@page import="model.FlightDetails"%>
 <%@page import="model.Location"%>
+<%@page import="model.SeatCategory"%>
 <%@page import="dal.AirlineManageDAO"%>
 <%@page import="dal.TicketDAO"%>
 <%@page import="dal.AirportDAO"%>
@@ -32,7 +33,7 @@
 <%@page import="dal.PassengerTypeDAO"%>
 <%@page import="dal.StatusDAO"%>
 <%@page import="dal.PaymentTypeDAO"%>
-
+<%@page import="dal.SeatCategoryDAO"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -68,13 +69,7 @@
             <div class="filterController col-md-12" style="width: 100%">
                 <form action="TicketController" method="get" style="margin-bottom: 20px;">
                     <input type="hidden" name="action" value="search">
-                    <strong class="filterElm">Flight Type</strong>
-                    <select class="filterElm" name="flightType">
-                        <option value="" ${param.fRole == null ? 'selected' : ''}>All</option>
-                        <c:forEach items="${flightTypeList}" var="flightType1">
-                            <option value="${flightType1.id}" ${param.flightType != null && (param.flightType==flightType1.id) ? 'selected' : ''}>${flightType1.name}</option>
-                        </c:forEach>
-                    </select>
+                    
 
                     <strong class="filterElm">Passenger Type</strong>
                     <select class="filterElm" name="passengerType">
@@ -131,26 +126,29 @@
                 
             </div>
             <!-- Update Modal -->   
-
+            <%
+                List<SeatCategory> seatList = (List<SeatCategory>) request.getAttribute("seatList");
+                    for (SeatCategory list : seatList) {%>
+                        <p><%=list.getName()%> :<%=list.getNumberOfSeat()-list.getCountSeat()%>  /<%=list.getNumberOfSeat()%><p>
+                <%}%>
             <table class="entity" >
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Account name</th>
+                        <th>Code</th>
+                        <th>Seat Category</th>
+                        <th>Passenger type </th>
                         <th>Passenger Name</th>
                         <th>Passenger Sex</th>
                         <th>Phone number</th>
                         <th>Date of birth</th>
-                        <th>Payment type</th>
-                        <th>Payment time</th>
-                        <th>Passenger type </th>
                         <th>Baggage weight</th>
-                        <th>Flight type</th>
+                        <th>Order ID</th>
                         <th>Status</th>
                         <th style="padding: 0 55px; min-width: 156px">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
+                    
                     <%
                     List<Ticket> ticketList = (List<Ticket>) request.getAttribute("ticketList");
                     AirportDAO ad = new AirportDAO();
@@ -159,22 +157,21 @@
                     FlightTypeDAO ftd = new FlightTypeDAO();
                     PassengerTypeDAO ptd = new PassengerTypeDAO();
                     PaymentTypeDAO PTD = new PaymentTypeDAO();
+                    SeatCategoryDAO scd = new SeatCategoryDAO();
                     StatusDAO sd = new StatusDAO();
                     
                     for (Ticket list : ticketList   ) {
                     %>
                     <tr>
-                        <td><%= list.getName() %></td>
-                        <td><%= acd.getAccountNameById(list.getAccountsid()) %></td>
+                        <td><%= list.getCode() %></td>
+                        <td><%= scd.getSeatCategoryNameById(list.getSeat_Categoryid()) %></td>
+                        <td><%= ptd.getPassengerTypeNameById(list.getPassenger_Typesid()) %></td>
                         <td><%= list.getpName() %></td>
-                        <td><%= list.getpSex() %></td>
+                        <td><%= list.getpSex()==1?"Male":"Female" %></td>
                         <td><%= list.getpPhoneNumber() %></td>
                         <td><%= list.getpDob() %></td>
-                        <td><%= PTD.getPaymentTypeNameById(list.getPaymentTypeid()) %></td>
-                        <td><%= list.getPaymentTime() %></td>
-                        <td><%= ptd.getPassengerTypeNameById(list.getPassenger_Typesid()) %></td>
                         <td><%= bmd.getWeight(list.getBaggagesid()) %></td>
-                        <td><%= ftd.getNameType(list.getFlight_Typeid()) %></td>
+                        <td><%= list.getOrder_id() %></td>
                         <td><%= sd.getStatusNameById(list.getStatusid()) %></td>
                         <td>
                             <a class="btn btn-info" style="text-decoration: none" id="myBtn<%= list.getId() %>" onclick="openModal(<%= list.getId() %>)">Change status</a>
