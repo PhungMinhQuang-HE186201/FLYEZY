@@ -484,13 +484,14 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Ticket` (
   `Seat_Categoryid` INT NOT NULL,
   `Passenger_Typesid` INT NOT NULL,
   `code` VARCHAR(255) NOT NULL,
-  `pName` VARCHAR(255) NOT NULL,
-  `pSex` BIT(1) NOT NULL,
-  `pPhoneNumber` VARCHAR(10) NOT NULL,
-  `pDob` DATE NOT NULL,
+  `pName` VARCHAR(255) ,
+  `pSex` BIT(1) ,
+  `pPhoneNumber` VARCHAR(10) ,
+  `pDob` DATE ,
   `Baggagesid` INT NULL DEFAULT NULL,
-  `Order_id` INT NOT NULL,
+  `Order_id` INT ,
   `Statusid` INT NOT NULL,
+  `Flight_Detail_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `FKTicket339557` (`Passenger_Typesid` ASC) VISIBLE,
   INDEX `FKTicket999927` (`Baggagesid` ASC) VISIBLE,
@@ -648,11 +649,11 @@ VALUES
 (2, 'BDNA83JFK',null,null,null, 2, 1350000, 1, 2, '2024-10-02 15:15:00', 1, null, 10),
 (3, 'O3MFKALSS',null,null,null, 3, 1500000, 1, 1, '2024-10-03 09:30:00', 1, null, 10);
 
-INSERT INTO `Ticket` (`id`, `Seat_Categoryid`, `Passenger_Typesid`, `code`, `pName`, `pSex`, `pPhoneNumber`, `pDob`, `Baggagesid`, `Order_id`, `Statusid`)
+INSERT INTO `Ticket` (`id`, `Seat_Categoryid`, `Passenger_Typesid`, `code`, `pName`, `pSex`, `pPhoneNumber`, `pDob`, `Baggagesid`, `Order_id`, `Statusid`,`Flight_Detail_id`)
 VALUES 
-(1, 1, 1, 'John Doe', 'Passenger 1', 1, '0912345678', '1990-01-01', NULL, 1, 10),
-(2, 2, 2, 'Jane Smith', 'Passenger 2', 1, '0987654321', '1992-05-10', null, 1, 10),
-(3, 3, 1, 'Chris Brown', 'Passenger 3', 1, '0978123456', '1988-08-20', NULL, 2, 10);
+(1, 7, 1, 'John Doe', 'Passenger 1', 1, '0912345678', '1990-01-01', NULL, 1, 10,4),
+(2, 8, 2, 'Jane Smith', 'Passenger 2', 1, '0987654321', '1992-05-10', null, 1, 10,4),
+(3, 7, 1, 'Chris Brown', 'Passenger 3', 1, '0978123456', '1988-08-20', NULL, 2, 10,4);
 
 
 

@@ -12,65 +12,46 @@ import java.sql.Date;
  */
 public class Ticket {
     private int id;
-    private int Flight_Detailid;
     private int Seat_Categoryid;
-    private String name;
+    private int Passenger_Typesid;
+    private String code;
     private String pName;
     private int pSex;
     private String pPhoneNumber;
     private Date pDob;
-    private Timestamp paymentTime;
-    private int PaymentTypeid;
-    private int Accountsid;
-    private int Passenger_Typesid;
     private int Baggagesid;
+    private int Order_id;
     private int Statusid;
-    private int Flight_Type_id;
+    private int Flight_Detail_id;
 
-    public Ticket(int id, int Flight_Detailid, int Seat_Categoryid, String name, String pName, int pSex, String pPhoneNumber, Date pDob, Timestamp paymentTime, int PaymentTypeid, int Accountsid, int Passenger_Typesid, int Baggagesid, int Statusid, int Flight_Typeid) {
+    public Ticket(int id, int Seat_Categoryid, int Passenger_Typesid, String code, String pName, int pSex, String pPhoneNumber, Date pDob, int Baggagesid, int Order_id, int Statusid, int Flight_Detail_id) {
         this.id = id;
-        this.Flight_Detailid = Flight_Detailid;
         this.Seat_Categoryid = Seat_Categoryid;
-        this.name = name;
+        this.Passenger_Typesid = Passenger_Typesid;
+        this.code = code;
         this.pName = pName;
         this.pSex = pSex;
         this.pPhoneNumber = pPhoneNumber;
         this.pDob = pDob;
-        this.paymentTime = paymentTime;
-        this.PaymentTypeid = PaymentTypeid;
-        this.Accountsid = Accountsid;
-        this.Passenger_Typesid = Passenger_Typesid;
         this.Baggagesid = Baggagesid;
+        this.Order_id = Order_id;
         this.Statusid = Statusid;
-        this.Flight_Type_id = Flight_Typeid;
+        this.Flight_Detail_id = Flight_Detail_id;
     }
 
-    public Ticket(int Flight_Detailid, int Seat_Categoryid, String name, String pName, int pSex, String pPhoneNumber, Date pDob, Timestamp paymentTime, int PaymentTypeid, int Accountsid, int Passenger_Typesid, int Baggagesid, int Statusid, int Flight_Typeid) {
-        this.Flight_Detailid = Flight_Detailid;
+    public Ticket(int Seat_Categoryid, int Passenger_Typesid, String code, String pName, int pSex, String pPhoneNumber, Date pDob, int Baggagesid, int Order_id, int Statusid, int Flight_Detail_id) {
         this.Seat_Categoryid = Seat_Categoryid;
-        this.name = name;
+        this.Passenger_Typesid = Passenger_Typesid;
+        this.code = code;
         this.pName = pName;
         this.pSex = pSex;
         this.pPhoneNumber = pPhoneNumber;
         this.pDob = pDob;
-        this.paymentTime = paymentTime;
-        this.PaymentTypeid = PaymentTypeid;
-        this.Accountsid = Accountsid;
-        this.Passenger_Typesid = Passenger_Typesid;
         this.Baggagesid = Baggagesid;
+        this.Order_id = Order_id;
         this.Statusid = Statusid;
-        this.Flight_Type_id = Flight_Typeid;
+        this.Flight_Detail_id = Flight_Detail_id;
     }
-
-    public int getPaymentTypeid() {
-        return PaymentTypeid;
-    }
-
-    public void setPaymentTypeid(int PaymentTypeid) {
-        this.PaymentTypeid = PaymentTypeid;
-    }
-
-    
 
     public int getId() {
         return id;
@@ -78,14 +59,6 @@ public class Ticket {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getFlight_Detailid() {
-        return Flight_Detailid;
-    }
-
-    public void setFlight_Detailid(int Flight_Detailid) {
-        this.Flight_Detailid = Flight_Detailid;
     }
 
     public int getSeat_Categoryid() {
@@ -96,12 +69,20 @@ public class Ticket {
         this.Seat_Categoryid = Seat_Categoryid;
     }
 
-    public String getName() {
-        return name;
+    public int getPassenger_Typesid() {
+        return Passenger_Typesid;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPassenger_Typesid(int Passenger_Typesid) {
+        this.Passenger_Typesid = Passenger_Typesid;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getpName() {
@@ -136,36 +117,20 @@ public class Ticket {
         this.pDob = pDob;
     }
 
-    public Timestamp getPaymentTime() {
-        return paymentTime;
-    }
-
-    public void setPaymentTime(Timestamp paymentTime) {
-        this.paymentTime = paymentTime;
-    }
-
-    public int getAccountsid() {
-        return Accountsid;
-    }
-
-    public void setAccountsid(int Accountsid) {
-        this.Accountsid = Accountsid;
-    }
-
-    public int getPassenger_Typesid() {
-        return Passenger_Typesid;
-    }
-
-    public void setPassenger_Typesid(int Passenger_Typesid) {
-        this.Passenger_Typesid = Passenger_Typesid;
-    }
-
     public int getBaggagesid() {
         return Baggagesid;
     }
 
     public void setBaggagesid(int Baggagesid) {
         this.Baggagesid = Baggagesid;
+    }
+
+    public int getOrder_id() {
+        return Order_id;
+    }
+
+    public void setOrder_id(int Order_id) {
+        this.Order_id = Order_id;
     }
 
     public int getStatusid() {
@@ -176,13 +141,15 @@ public class Ticket {
         this.Statusid = Statusid;
     }
 
-    public int getFlight_Typeid() {
-        return Flight_Type_id;
+    public int getFlight_Detailid() {
+        return Flight_Detail_id;
     }
 
-    public void setFlight_Typeid(int Flight_Typeid) {
-        this.Flight_Type_id = Flight_Typeid;
+    public void setFlight_Detailid(int Flight_Detailid) {
+        this.Flight_Detail_id = Flight_Detailid;
     }
+
+    
     
     
         

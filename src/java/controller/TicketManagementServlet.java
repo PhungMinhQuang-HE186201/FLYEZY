@@ -22,6 +22,7 @@ import dal.FlightManageDAO;
 import dal.PlaneCategoryDAO;
 import dal.LocationDAO;
 import dal.CountryDAO;
+import dal.SeatCategoryDAO;
 import jakarta.servlet.http.HttpSession;
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -37,6 +38,7 @@ import model.Status;
 import model.Airport;
 import model.Location;
 import model.Country;
+import model.SeatCategory;
 /**
  *
  * @author Fantasy
@@ -92,10 +94,15 @@ public class TicketManagementServlet extends HttpServlet {
         LocationDAO ld = new LocationDAO();
         StatusDAO sd = new StatusDAO();
         CountryDAO cd = new CountryDAO();
+        SeatCategoryDAO scd = new SeatCategoryDAO();
         PlaneCategoryDAO pcd = new PlaneCategoryDAO();
         
         HttpSession session = request.getSession();
-        
+        String action = request.getParameter("action");
+        if(session.getAttribute("flightDetailID")==null && action==null){
+            int flightDetailID = Integer.parseInt(request.getParameter("flightDetailID"));
+            session.setAttribute("flightDetailID", flightDetailID);
+        }
         int flightDetailID = (int)session.getAttribute("flightDetailID");
         
         Flights flight = fdd.getFlightByFlightDetailId(flightDetailID);
@@ -137,7 +144,10 @@ public class TicketManagementServlet extends HttpServlet {
         List<Status> statusTicketList = sd.getStatusOfTicket();
         request.setAttribute("statusTicketList", statusTicketList);
 
-        String action = request.getParameter("action");
+        int planeCategoryID = fdd.getPlaneCategoryIdFromFlightDetail(flightDetailID);
+        List<SeatCategory> seatList = scd.getNameAndNumberOfSeat(planeCategoryID);
+        request.setAttribute("seatList", seatList);
+        
         if (action == null) {
             request.getRequestDispatcher("view/ticketManagement.jsp").forward(request, response);
         } else if (action.equals("search")) {
@@ -176,6 +186,7 @@ public class TicketManagementServlet extends HttpServlet {
         StatusDAO sd = new StatusDAO();
         CountryDAO cd = new CountryDAO();
         PlaneCategoryDAO pcd = new PlaneCategoryDAO();
+        SeatCategoryDAO scd = new SeatCategoryDAO();
         HttpSession session = request.getSession();
         int flightDetailID = (int)session.getAttribute("flightDetailID");
         
@@ -220,6 +231,10 @@ public class TicketManagementServlet extends HttpServlet {
         List<Status> statusTicketList = sd.getStatusOfTicket();
         request.setAttribute("statusTicketList", statusTicketList);
 
+        int planeCategoryID = fdd.getPlaneCategoryIdFromFlightDetail(flightDetailID);
+        List<SeatCategory> seatList = scd.getNameAndNumberOfSeat(planeCategoryID);
+        request.setAttribute("seatList", seatList);
+        
         String action = request.getParameter("action");
         if (action == null) {
             request.getRequestDispatcher("view/ticketManagement.jsp").forward(request, response);

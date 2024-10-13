@@ -310,7 +310,20 @@ public class FlightDetailDAO extends DBConnect {
 
         return list;
     }
-    
+    public int getPlaneCategoryIdFromFlightDetail(int id) {
+        String sql = "Select Plane_Categoryid from Flight_detail where id ="+id;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                int Plane_Categoryid = rs.getInt("Plane_Categoryid");
+                return Plane_Categoryid;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
     public static void main(String[] args) {
         FlightDetailDAO fdd = new FlightDetailDAO();
         Date date = Date.valueOf("2024-10-01");

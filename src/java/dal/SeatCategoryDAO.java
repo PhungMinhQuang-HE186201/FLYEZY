@@ -180,6 +180,44 @@ public class SeatCategoryDAO extends DBConnect {
         }
     }
 
+    public String getSeatCategoryNameById(int id) {
+        String sql = "SELECT name FROM seat_category WHERE id = ?";
+        String name = null;
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            prepare.setInt(1, id);  // Đặt giá trị id vào câu lệnh SQL
+            ResultSet resultSet = prepare.executeQuery();
+            if (resultSet.next()) {
+                name = resultSet.getString("name");  // Lấy tên từ kết quả truy vấn
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return name;  // Trả về tên, nếu không có giá trị sẽ trả về null
+    }
+
+    public List<SeatCategory> getNameAndNumberOfSeat(int id) {
+        String sql = "Select  s.name,numberOfSeat ,count(Seat_Categoryid) as countSeat \n"
+                + "                From Ticket t join Seat_category s On t.Seat_Categoryid=s.id \n"
+                + "                where t.Flight_Detail_id = ?\n"
+                + "                group by s.name,numberOfSeat";
+        List<SeatCategory> ls = new ArrayList<>();
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            prepare.setInt(1, id);  // Đặt giá trị id vào câu lệnh SQL
+            ResultSet resultSet = prepare.executeQuery();
+            while (resultSet.next()) {
+                String name = resultSet.getString("name");
+                int numberOfSeat = resultSet.getInt("numberOfSeat");
+                int countSeat = resultSet.getInt("countSeat");
+                ls.add(new SeatCategory(name, numberOfSeat, countSeat));
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return ls;
+    }
+
     public static void main(String[] args) {
         SeatCategoryDAO scd = new SeatCategoryDAO();
         System.out.println(scd.getSeatCategoryById(7).getStatusId());
