@@ -102,7 +102,7 @@ public class TicketDAO extends DBConnect {
 
     public List<Ticket> searchTickets(String flightType, String passengerType, String statusTicket, String name, String phoneNumber,int Flight_Detailid) {
         List<Ticket> ls = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT * FROM Ticket WHERE Flight_Detail_id ="+Flight_Detailid +"And Statusid!=9");
+        StringBuilder sql = new StringBuilder("SELECT * FROM Ticket WHERE Flight_Detail_id ="+Flight_Detailid +" And Statusid!=9");
 
         
         if (passengerType != null && !passengerType.isEmpty()) {
