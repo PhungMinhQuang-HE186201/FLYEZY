@@ -50,7 +50,6 @@ public class FlightTypeDAO extends DBConnect {
         return null;
     }
 
-
     public static void main(String[] args) {
         FlightTypeDAO dao = new FlightTypeDAO();
         for (FlightType type : dao.getAllFlightType()) {

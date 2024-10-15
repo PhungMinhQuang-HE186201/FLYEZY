@@ -162,7 +162,7 @@ public class TicketManagementServlet extends HttpServlet {
             String fPhoneNumber = request.getParameter("fPhoneNumber").trim();
 //            List<Accounts> accountList = ad.searchAccounts(fRole, fName, fPhoneNumber);
 //            request.setAttribute("accountList", accountList);
-            List<Ticket> ticketSearchList = td.searchTickets(flightType, passengerType, statusTicket, fName, fPhoneNumber,flightDetailID);
+            List<Ticket> ticketSearchList = td.searchTickets(passengerType, statusTicket, fName, fPhoneNumber,flightDetailID,flightType);
             request.setAttribute("ticketList", ticketSearchList);
             request.getRequestDispatcher("view/ticketManagement.jsp").forward(request, response);
         }

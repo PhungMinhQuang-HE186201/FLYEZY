@@ -22,8 +22,9 @@ public class Ticket {
     private int Baggagesid;
     private int Order_id;
     private int Statusid;
+    private int Flight_Type_id;
 
-    public Ticket(int id, int Seat_Categoryid, int Passenger_Typesid, String code, String pName, int pSex, String pPhoneNumber, Date pDob, int Baggagesid, int Order_id, int Statusid) {
+    public Ticket(int id, int Seat_Categoryid, int Passenger_Typesid, String code, String pName, int pSex, String pPhoneNumber, Date pDob, int Baggagesid, int Order_id, int Statusid,int Flight_Type_id) {
         this.id = id;
         this.Seat_Categoryid = Seat_Categoryid;
         this.Passenger_Typesid = Passenger_Typesid;
@@ -35,9 +36,10 @@ public class Ticket {
         this.Baggagesid = Baggagesid;
         this.Order_id = Order_id;
         this.Statusid = Statusid;
+        this.Flight_Type_id = Flight_Type_id;
     }
 
-    public Ticket(int Seat_Categoryid, int Passenger_Typesid, String code, String pName, int pSex, String pPhoneNumber, Date pDob, int Baggagesid, int Order_id, int Statusid) {
+    public Ticket(int Seat_Categoryid, int Passenger_Typesid, String code, String pName, int pSex, String pPhoneNumber, Date pDob, int Baggagesid, int Order_id, int Statusid,int Flight_Type_id) {
         this.Seat_Categoryid = Seat_Categoryid;
         this.Passenger_Typesid = Passenger_Typesid;
         this.code = code;
@@ -48,6 +50,15 @@ public class Ticket {
         this.Baggagesid = Baggagesid;
         this.Order_id = Order_id;
         this.Statusid = Statusid;
+        this.Flight_Type_id = Flight_Type_id;
+    }
+
+    public int getFlight_Type_id() {
+        return Flight_Type_id;
+    }
+
+    public void setFlight_Type_id(int Flight_Type_id) {
+        this.Flight_Type_id = Flight_Type_id;
     }
 
     public int getId() {

@@ -36,7 +36,8 @@ public class TicketDAO extends DBConnect {
                         rs.getDate("pDob"),
                         rs.getInt("Baggagesid"),
                         rs.getInt("Order_id"),
-                        rs.getInt("Statusid"));
+                        rs.getInt("Statusid"),
+                        rs.getInt("Flight_Type_id"));
                 ls.add(t);
             }
             return ls;
@@ -48,7 +49,7 @@ public class TicketDAO extends DBConnect {
 
     public List<Ticket> getAllTicketsById(int flightDetailID) {
         List<Ticket> ls = new ArrayList<>();
-        String sql = "select t.id,t.Seat_Categoryid,t.Passenger_Typesid,t.code,t.pName,t.pSex,t.pPhoneNumber,t.pDob,t.Baggagesid,t.Order_id,t.Statusid,o.Flight_Detail_id from Ticket t \n"
+        String sql = "select t.id,t.Seat_Categoryid,t.Passenger_Typesid,t.code,t.pName,t.pSex,t.pPhoneNumber,t.pDob,t.Baggagesid,t.Order_id,t.Statusid,o.Flight_Detail_id,t.Flight_Type_id from Ticket t \n"
                 + "join `flyezy`.`Order` o On t.Order_id=o.id\n"
                 + "where Flight_Detail_id= " + flightDetailID + " and Statusid!=9";
         try {
@@ -65,7 +66,8 @@ public class TicketDAO extends DBConnect {
                         rs.getDate("pDob"),
                         rs.getInt("Baggagesid"),
                         rs.getInt("Order_id"),
-                        rs.getInt("Statusid"));
+                        rs.getInt("Statusid"),
+                        rs.getInt("Flight_Type_id"));
                 ls.add(t);
             }
             return ls;
@@ -76,7 +78,7 @@ public class TicketDAO extends DBConnect {
     }
 
     public Ticket getTicketById(int id) {
-        String sql = "Select * from ticket where id ="+id+" and Statusid!=9";
+        String sql = "Select * from ticket where id =" + id + " and Statusid!=9";
         try {
             PreparedStatement st = conn.prepareStatement(sql);
             st.setInt(1, id);
@@ -92,7 +94,8 @@ public class TicketDAO extends DBConnect {
                         rs.getDate("pDob"),
                         rs.getInt("Baggagesid"),
                         rs.getInt("Order_id"),
-                        rs.getInt("Statusid"));
+                        rs.getInt("Statusid"),
+                        rs.getInt("Flight_Type_id"));
                 return t;
             }
         } catch (SQLException e) {
@@ -101,12 +104,14 @@ public class TicketDAO extends DBConnect {
         return null;
     }
 
-    public List<Ticket> searchTickets(String flightType, String passengerType, String statusTicket, String name, String phoneNumber, int Flight_Detailid) {
+    public List<Ticket> searchTickets(String passengerType, String statusTicket, String name, String phoneNumber, int Flight_Detailid, String Flight_Type_id) {
         List<Ticket> ls = new ArrayList<>();
         StringBuilder sql = new StringBuilder("select t.* from Ticket t \n"
                 + "join `flyezy`.`Order` o On t.Order_id=o.id\n"
                 + "where Flight_Detail_id=" + Flight_Detailid + " and Statusid!=9");
-
+        if ((Flight_Type_id + "") != null && !(Flight_Type_id + "").isEmpty()) {
+            sql.append(" AND Flight_Type_id = ?");
+        }
         if (passengerType != null && !passengerType.isEmpty()) {
             sql.append(" AND Passenger_Typesid = ?");
         }
@@ -123,8 +128,9 @@ public class TicketDAO extends DBConnect {
         try {
             PreparedStatement ps = conn.prepareStatement(sql.toString());
             int i = 1;
-            if (flightType != null && !flightType.isEmpty()) {
-                ps.setString(i++, flightType);
+            if ((Flight_Type_id + "") != null && !(Flight_Type_id + "").isEmpty()) {
+                int flightType = Integer.parseInt(Flight_Type_id);
+                ps.setInt(i++, flightType);
             }
             if (passengerType != null && !passengerType.isEmpty()) {
                 ps.setString(i++, passengerType);
@@ -155,7 +161,8 @@ public class TicketDAO extends DBConnect {
                         rs.getDate("pDob"),
                         rs.getInt("Baggagesid"),
                         rs.getInt("Order_id"),
-                        rs.getInt("Statusid"));
+                        rs.getInt("Statusid"),
+                        rs.getInt("Flight_Type_id"));
                 ls.add(t);
             }
         } catch (Exception e) {
@@ -167,7 +174,7 @@ public class TicketDAO extends DBConnect {
     public int createTicketWhenChangeStatus(int id, Ticket ticket) {
         int n = 0;
         String sql = "INSERT INTO `flyezy`.`Ticket` \n"
-                + "(`id`, `Seat_Categoryid`, `code`, `Statusid`) \n"
+                + "(`id`, `Seat_Categoryid`, `code`, `Statusid`,`Flight_Type_id`) \n"
                 + "VALUES(?,?,?,?,?)";
 
         try {
@@ -176,6 +183,7 @@ public class TicketDAO extends DBConnect {
             ps.setInt(2, ticket.getSeat_Categoryid());
             ps.setString(3, ticket.getCode());
             ps.setInt(4, 9);
+            ps.setInt(5, ticket.getFlight_Type_id());
             // Set các giá trị vào PreparedStatement
             n = ps.executeUpdate();
         } catch (Exception ex) {
@@ -183,7 +191,7 @@ public class TicketDAO extends DBConnect {
         }
         return n;
     }
-    
+
     public static void main(String[] args) {
         TicketDAO tcd = new TicketDAO();
         System.out.println(tcd.getAllTicketsById(1));

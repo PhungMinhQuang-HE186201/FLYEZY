@@ -70,6 +70,13 @@
                 <a href="flightDetailManagement?flightId=${requestScope.flight.getId()}&airlineId=${requestScope.airlineId}" class="btn btn-warning" >Back</a>
                 <form action="TicketController" method="get" style="margin-bottom: 20px;">
                     <input type="hidden" name="action" value="search">
+                    <strong class="filterElm">Flight Type</strong>
+                    <select class="filterElm" name="flightType">
+                        <option value="" ${param.flightType == null ? 'selected' : ''}>All</option>
+                        <c:forEach items="${flightTypeList}" var="type">
+                            <option value="${type.id}" ${param.flightType != null && (param.flightType==type.id) ? 'selected' : ''}>${type.name}</option>
+                        </c:forEach>
+                    </select>
                     <strong class="filterElm">Passenger Type</strong>
                     <select class="filterElm" name="passengerType">
                         <option value="" ${param.passengerType == null ? 'selected' : ''}>All</option>
@@ -142,6 +149,7 @@
                         <th>Date of birth</th>
                         <th>Baggage weight</th>
                         <th>Order ID</th>
+                        <th>Flight Type</th>
                         <th>Status</th>
                         <th style="padding: 0 55px; min-width: 156px">Actions</th>
                     </tr>
@@ -171,6 +179,7 @@
                         <td><%= list.getpDob() %></td>
                         <td><%= bmd.getWeight(list.getBaggagesid()) %></td>
                         <td><%= list.getOrder_id() %></td>
+                        <td><%= ftd.getNameType(list.getFlight_Type_id()) %></td>
                         <td><%= sd.getStatusNameById(list.getStatusid()) %></td>
                         <td>
                             <a class="btn btn-info" style="text-decoration: none" id="myBtn<%= list.getId() %>" onclick="openModal(<%= list.getId() %>)">Change status</a>
