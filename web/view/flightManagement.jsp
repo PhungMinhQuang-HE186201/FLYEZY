@@ -239,8 +239,8 @@
                                     </td>
 
                                 <td style="background-color:  <%= (rsFlightManage.getInt(12) == 1) ? "" : "#ccc" %>">  
-                                    <button class="btn btn-info" data-toggle="modal" data-target="#update-flight-<%=rsFlightManage.getInt(1) %>">Update</button>
-                                    <a href="flightDetailManagement?flightId=<%= rsFlightManage.getInt(1) %>&airlineId=${requestScope.account.getAirlineId()}" class="btn btn-warning">
+                                    <button class="btn btn-info" style="width: 80%" data-toggle="modal" data-target="#update-flight-<%=rsFlightManage.getInt(1) %>">Update</button>
+                                    <a style="width: 80%; margin: 0; margin-top: 5px; text-decoration: none; text-align: center" href="flightDetailManagement?flightId=<%= rsFlightManage.getInt(1) %>&airlineId=${requestScope.account.getAirlineId()}" class="btn btn-warning">
                                         Flight Detail
                                     </a>
                                     <!-- MODAL: Update flight-->

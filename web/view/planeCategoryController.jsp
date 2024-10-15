@@ -100,7 +100,7 @@
                 </div>
             </div>
             <!-- DuongNT: Plane category dashboard -->
-            <table class="entity" >
+            <table class="entity" style="width: 96%">
                 <thead>
                     <tr>
                         <th>Name</th>

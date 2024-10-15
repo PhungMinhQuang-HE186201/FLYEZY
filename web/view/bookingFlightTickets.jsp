@@ -118,16 +118,17 @@
                 display: flex;
             }
 
-            .main-container2 form label {
+            .main-container2 .inform label {
                 font-size: 14px;
                 color: #666;
                 margin-bottom: 5px;
             }
 
-            .main-container2 form input[type="text"],
-            .main-container2 form input[type="date"],
-            .main-container2 form input[type="number"],
-            .main-container2 form select {
+            .main-container2 .inform input[type="text"],
+            .main-container2 .inform input[type="date"],
+            .main-container2 .inform input[type="email"],
+            .main-container2 .inform input[type="number"],
+            .main-container2 .inform select {
                 padding: 5px;
                 font-size: 16px;
                 border: 1px solid #ccc;
@@ -136,10 +137,11 @@
                 transition: border-color 0.3s ease;
             }
 
-            .main-container2 form input[type="text"]:focus,
-            .main-container2 form input[type="date"]:focus,
-            .main-container2 form input[type="number"]:focus,
-            .main-container2 form select:focus {
+            .main-container2 .inform input[type="text"]:focus,
+            .main-container2 .inform input[type="date"]:focus,
+            .main-container2 .inform input[type="number"]:focus,
+            .main-container2 .inform input[type="email"]:focus,
+            .main-container2 .inform select:focus {
                 border-color: #9DC567;
                 outline: none;
             }
@@ -262,121 +264,152 @@
             %>
 
             <div style="display: flex; justify-content: space-between">
-                <div class="main-container2 passenger-info" style="width: 68%">
-                    <div style="width: 100%; text-align: center;
-                         font-size: 20px;
-                         color: #333;
-                         margin-bottom: 20px;
-                         color: #3C6E57;
-                         letter-spacing: 1px;"><p>PASSENGER INFORMATION</p></div>
-                    <div style="width: 100%">
-                        <form style="width: 100%" id="passengerForm" action="bookingFlightTickets" method="post">
-                            <input type="hidden" name="flightDetailId" value="<%=flightDetailId%>"/>
-                            <input type="hidden" name="seatCategoryId" value="<%=sc.getId()%>"/>
-                            <input type="hidden" name="adultTicket" value="<%=adultTicket%>"/>
-                            <input type="hidden" name="childTicket" value="<%=childTicket%>"/>
-                            <input type="hidden" name="infantTicket" value="<%=infantTicket%>"/>      
-                            <% for(int i = 0; i<adultTicket; i++){
-                            %>
-                            <div class="passenger-info-input" style="position: relative">
-                                <div style="position: absolute;
-                                     top: -14px;
-                                     font-size: 16px;
-                                     background-color: white;
-                                     color: #3C6E57;
-                                     padding: 0 10px;">PASSENGER ADULT <%=i+1%> </div>
-                                <div style="padding: 15px">
-                                    <div class="passenger-info-input-box">
-                                        <div class="passenger-info-input-title" style="width: 168px">Full Name:</div> 
-                                        <select name="pSex" style="margin-right: 5px">
-                                            <option value="1">Mr</option>
-                                            <option value="0">Mrs</option>
-                                        </select>
-                                        <input type="text" name="pName<%=i%>" required/>
-                                    </div>
-                                    <div class="passenger-info-input-box">
-                                        <div class="passenger-info-input-title">Date of birth:</div>
-                                        <input type="date" name="pDob" required/>
-                                    </div>
-                                    <div class="passenger-info-input-box">
-                                        <div class="passenger-info-input-title">Phone number:</div>
-                                        <input type="number" name="pPhoneNumber" required/>
-                                    </div>
-                                    <div class="passenger-info-input-box"  >
-                                        <div class="passenger-info-input-title" style="width: 121px">Baggage:</div>
-                                        <select name="pBaggages" id="baggage<%=i%>" onchange="updateTotalBaggage()">
-                                            <option value="0">Buy 0kg extra checked baggage - <%=currencyFormatter.format(0)%></option>
-                                            <% for(Baggages b : bmd.getAllBaggagesByAirline(airlineId)){
-                                            %>
-                                            <option value="<%=b.getId()%>">Buy <%=b.getWeight()%>kg extra checked baggage - <%=currencyFormatter.format(b.getPrice())%></option>
-                                            <%
-                                                }
-                                            %>
-                                        </select>
+                <div style="width: 68%; display: block">
+                    <form style="width: 100%" id="passengerForm" action="bookingFlightTickets" method="post">
+                        <input type="hidden" name="flightDetailId" value="<%=flightDetailId%>"/>
+                        <input type="hidden" name="seatCategoryId" value="<%=sc.getId()%>"/>
+                        <input type="hidden" name="adultTicket" value="<%=adultTicket%>"/>
+                        <input type="hidden" name="childTicket" value="<%=childTicket%>"/>
+                        <input type="hidden" name="infantTicket" value="<%=infantTicket%>"/>
+                        <input type="hidden" name="totalPrice" value="<%= fd.getPrice() * (sc.getSurcharge()+1) * (adultTicket + childTicket + infantTicket) %>"/>
+                        <div class="main-container2 passenger-info" >
+                            <div style="width: 100%; text-align: center;
+                                 font-size: 20px;
+                                 color: #333;
+                                 margin-bottom: 20px;
+                                 color: #3C6E57;
+                                 letter-spacing: 1px;"><p>PASSENGER CONTACT</p></div>
+                            <div style="width: 100%" class="inform">
+                                <div class="passenger-info-input" style="position: relative">
+                                    <div style="padding: 15px">
+                                        <div class="passenger-info-input-box">
+                                            <div class="passenger-info-input-title">Full Name:</div> 
+                                            <input type="text" name="pContactName" required/>
+                                        </div>
+                                        <div class="passenger-info-input-box">
+                                            <div class="passenger-info-input-title">Phone number:</div>
+                                            <input type="number" name="pContactPhoneNumber" required/>
+                                        </div>
+                                        <div class="passenger-info-input-box">
+                                            <div class="passenger-info-input-title">Email:</div>
+                                            <input type="email" name="pContactEmail" required/>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <%
-                                }
-                            %>
-                            <% for(int i = 0; i<childTicket; i++){
-                            %>
-                            <div class="passenger-info-input" style="position: relative">
-                                <div style="position: absolute;
-                                     top: -14px;
-                                     font-size: 16px;
-                                     background-color: white;
-                                     color: #3C6E57;
-                                     padding: 0 10px;">PASSENGER CHILDREN <%=i+1%> </div>
-                                <div style="padding: 15px">
-                                    <div class="passenger-info-input-box">
-                                        <div class="passenger-info-input-title" style="width: 168px">Full Name:</div> 
-                                        <select name="pSex" style="margin-right: 5px">
-                                            <option value="1">Boy</option>
-                                            <option value="0">Girl</option>
-                                        </select>
-                                        <input type="text" name="pName<%=i%>" required/>
-                                    </div>
-                                    <div class="passenger-info-input-box">
-                                        <div class="passenger-info-input-title">Date of birth:</div>
-                                        <input type="date" name="pDob" required/>
-                                    </div>
-                                </div>
-                            </div>
-                            <%
-                                }
-                            %>
-                            <% for(int i = 0; i<infantTicket; i++){
-                            %>
-                            <div class="passenger-info-input" style="position: relative">
-                                <div style="position: absolute;
-                                     top: -14px;
-                                     font-size: 16px;
-                                     background-color: white;
-                                     color: #3C6E57;
-                                     padding: 0 10px;">PASSENGER INFANT <%=i+1%> </div>
-                                <div style="padding: 15px">
-                                    <div class="passenger-info-input-box">
-                                        <div class="passenger-info-input-title" style="width: 168px">Full Name:</div> 
-                                        <select name="pSex" style="margin-right: 5px">
-                                            <option value="1">Boy</option>
-                                            <option value="0">Girl</option>
-                                        </select>
-                                        <input type="text" name="pName<%=i%>" required/>
-                                    </div>
-                                    <div class="passenger-info-input-box">
-                                        <div class="passenger-info-input-title">Date of birth:</div>
-                                        <input type="date" name="pDob" required/>
+                        </div>
+                        <div class="main-container2 passenger-info" >
+                            <div style="width: 100%; text-align: center;
+                                 font-size: 20px;
+                                 color: #333;
+                                 margin-bottom: 20px;
+                                 color: #3C6E57;
+                                 letter-spacing: 1px;"><p>PASSENGER INFORMATION</p></div>
+                            <div style="width: 100%" class="inform">
+                                <% for(int i = 0; i<adultTicket; i++){
+                                %>
+                                <div class="passenger-info-input" style="position: relative">
+                                    <div style="position: absolute;
+                                         top: -14px;
+                                         font-size: 16px;
+                                         background-color: white;
+                                         color: #3C6E57;
+                                         padding: 0 10px;">PASSENGER ADULT <%=i+1%> </div>
+                                    <div style="padding: 15px">
+                                        <div class="passenger-info-input-box">
+                                            <div class="passenger-info-input-title" style="width: 168px">Full Name:</div> 
+                                            <select name="pSex" style="margin-right: 5px">
+                                                <option value="1">Mr</option>
+                                                <option value="0">Mrs</option>
+                                            </select>
+                                            <input type="text" name="pName<%=i%>" required/>
+                                        </div>
+                                        <div class="passenger-info-input-box">
+                                            <div class="passenger-info-input-title">Date of birth:</div>
+                                            <input type="date" name="pDob" required/>
+                                        </div>
+                                        <div class="passenger-info-input-box">
+                                            <div class="passenger-info-input-title">Phone number:</div>
+                                            <input type="number" name="pPhoneNumber" required/>
+                                        </div>
+                                        <div class="passenger-info-input-box"  >
+                                            <div class="passenger-info-input-title" style="width: 121px">Baggage:</div>
+                                            <select name="pBaggages" id="baggage<%=i%>" onchange="updateTotalBaggage()">
+                                                <option value="0">Buy 0kg extra checked baggage - <%=currencyFormatter.format(0)%></option>
+                                                <% for(Baggages b : bmd.getAllBaggagesByAirline(airlineId)){
+                                                %>
+                                                <option value="<%=b.getId()%>">Buy <%=b.getWeight()%>kg extra checked baggage - <%=currencyFormatter.format(b.getPrice())%></option>
+                                                <%
+                                                    }
+                                                %>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
+                                <%
+                                    }
+                                %>
+                                <% for(int i = 0; i<childTicket; i++){
+                                %>
+                                <div class="passenger-info-input" style="position: relative">
+                                    <div style="position: absolute;
+                                         top: -14px;
+                                         font-size: 16px;
+                                         background-color: white;
+                                         color: #3C6E57;
+                                         padding: 0 10px;">PASSENGER CHILDREN <%=i+1%> </div>
+                                    <div style="padding: 15px">
+                                        <div class="passenger-info-input-box">
+                                            <div class="passenger-info-input-title" style="width: 168px">Full Name:</div> 
+                                            <select name="pSex" style="margin-right: 5px">
+                                                <option value="1">Boy</option>
+                                                <option value="0">Girl</option>
+                                            </select>
+                                            <input type="text" name="pName<%=i%>" required/>
+                                        </div>
+                                        <div class="passenger-info-input-box">
+                                            <div class="passenger-info-input-title">Date of birth:</div>
+                                            <input type="date" name="pDob" required/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <%
+                                    }
+                                %>
+                                <% for(int i = 0; i<infantTicket; i++){
+                                %>
+                                <div class="passenger-info-input" style="position: relative">
+                                    <div style="position: absolute;
+                                         top: -14px;
+                                         font-size: 16px;
+                                         background-color: white;
+                                         color: #3C6E57;
+                                         padding: 0 10px;">PASSENGER INFANT <%=i+1%> </div>
+                                    <div style="padding: 15px">
+                                        <div class="passenger-info-input-box">
+                                            <div class="passenger-info-input-title" style="width: 168px">Full Name:</div> 
+                                            <select name="pSex" style="margin-right: 5px">
+                                                <option value="1">Boy</option>
+                                                <option value="0">Girl</option>
+                                            </select>
+                                            <input type="text" name="pName<%=i%>" required/>
+                                        </div>
+                                        <div class="passenger-info-input-box">
+                                            <div class="passenger-info-input-title">Date of birth:</div>
+                                            <input type="date" name="pDob" required/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <%
+                                    }
+                                %>
                             </div>
-                            <%
-                                }
-                            %>
+                        </div>
 
-                        </form>
-                    </div>
+                    </form>
+
                 </div>
+
 
                 <div class="main-container2 passenger-info" style="width: 30%; height: fit-content">
                     <div style="width: 100%; text-align: center;

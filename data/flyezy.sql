@@ -81,10 +81,10 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Accounts` (
   `created_at` TIMESTAMP NULL DEFAULT NULL,
   `updated_at` TIMESTAMP NULL DEFAULT NULL,
   `Status_id` INT NOT NULL,
-  PRIMARY KEY (`id`),
   INDEX `FKAccounts201294` (`Rolesid` ASC) VISIBLE,
   INDEX `FKAccounts898886` (`Airlineid` ASC) VISIBLE,
   INDEX `fk_Accounts_Status1_idx` (`Status_id` ASC) VISIBLE,
+  PRIMARY KEY (`id`),
   CONSTRAINT `FKAccounts201294`
     FOREIGN KEY (`Rolesid`)
     REFERENCES `flyezy`.`Roles` (`id`),
@@ -384,6 +384,7 @@ COLLATE = utf8mb4_0900_ai_ci;
 CREATE TABLE IF NOT EXISTS `flyezy`.`Payment_Types` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NULL DEFAULT NULL,
+  `image` VARCHAR(45) NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -423,7 +424,7 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- Table `flyezy`.`Order`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `flyezy`.`Order` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `Flight_Detail_id` INT NOT NULL,
   `code` VARCHAR(45) NOT NULL,
   `contactName` VARCHAR(45) NULL,
@@ -431,7 +432,7 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Order` (
   `contactEmail` VARCHAR(45) NULL,
   `totalPrice` INT NOT NULL,
   `Accounts_id` INT NULL,
-  `Payment_Types_id` INT NOT NULL,
+  `Payment_Types_id` INT NULL,
   `paymentTime` TIMESTAMP NULL,
   `Flight_Type_id` INT NOT NULL,
   `Discount_id` INT NULL,
@@ -484,14 +485,13 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Ticket` (
   `Seat_Categoryid` INT NOT NULL,
   `Passenger_Typesid` INT NOT NULL,
   `code` VARCHAR(255) NOT NULL,
-  `pName` VARCHAR(255) ,
-  `pSex` BIT(1) ,
-  `pPhoneNumber` VARCHAR(10) ,
-  `pDob` DATE ,
+  `pName` VARCHAR(255) NOT NULL,
+  `pSex` BIT(1) NOT NULL,
+  `pPhoneNumber` VARCHAR(10) NOT NULL,
+  `pDob` DATE NOT NULL,
   `Baggagesid` INT NULL DEFAULT NULL,
-  `Order_id` INT ,
+  `Order_id` INT NOT NULL,
   `Statusid` INT NOT NULL,
-  `Flight_Detail_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `FKTicket339557` (`Passenger_Typesid` ASC) VISIBLE,
   INDEX `FKTicket999927` (`Baggagesid` ASC) VISIBLE,
@@ -552,7 +552,7 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 -- ------------------------------------------------
 -- INSERT DATA
 ---------------------------------------------------
-INSERT INTO `Status` VALUES (1,'Activated'),(2,'Deactivated'),(3,'Pre-flight'),(4,'In-flight'),(5,'Landed'),(6,'Cancellation Request'),(7,'Successfully Canceled'),(8,'Refund completed'),(9,'Is Empty'),(10,'Successful Payment'),(11,'Cancellation Rejection');
+INSERT INTO `Status` VALUES (1,'Activated'),(2,'Deactivated'),(3,'Pre-flight'),(4,'In-flight'),(5,'Landed'),(6,'Cancellation Request'),(7,'Successfully Canceled'),(8,'Refund completed'),(9,'Is Empty'),(10,'Successful Payment'),(11,'Cancellation Rejection'), ('12', 'Is Pending');
 
 INSERT INTO `Roles` VALUES 
 (1,'Admin'),
@@ -637,10 +637,10 @@ INSERT INTO `Flight` VALUES (1,120,1,2,1,3),(2,120,2,1,1,3),(3,360,1,3,1,3),(4,3
 INSERT INTO `Flight_Detail` VALUES (1,'2024-10-01','14:30:00',1200000,1,1,3),(2,'2024-10-02','15:45:00',1350000,1,2,3),(3,'2024-10-03','10:00:00',1500000,1,3,3);
 INSERT INTO `Flight_Type` VALUES (1,'Outbound '),(2,'RT-Outbound'),(3,'RT-Inbound');
 
-INSERT INTO `flyezy`.`Payment_Types` (`id`, `name`)
+INSERT INTO `flyezy`.`Payment_Types` (`id`, `name`,`image`)
 VALUES 
-(1, 'QR Code'),
-(2, 'VNPAY');
+(1, 'QR Code', null),
+(2, 'VNPAY',null);
 
 
 INSERT INTO `Order` (`id`,`code`,`contactName`,`contactPhone`,`contactEmail`, `Flight_Detail_id`, `totalPrice`, `Accounts_id`, `Payment_Types_id`, `paymentTime`, `Flight_Type_id`, `Discount_id`, `Status_id`)
@@ -649,11 +649,11 @@ VALUES
 (2, 'BDNA83JFK',null,null,null, 2, 1350000, 1, 2, '2024-10-02 15:15:00', 1, null, 10),
 (3, 'O3MFKALSS',null,null,null, 3, 1500000, 1, 1, '2024-10-03 09:30:00', 1, null, 10);
 
-INSERT INTO `Ticket` (`id`, `Seat_Categoryid`, `Passenger_Typesid`, `code`, `pName`, `pSex`, `pPhoneNumber`, `pDob`, `Baggagesid`, `Order_id`, `Statusid`,`Flight_Detail_id`)
+INSERT INTO `Ticket` (`id`, `Seat_Categoryid`, `Passenger_Typesid`, `code`, `pName`, `pSex`, `pPhoneNumber`, `pDob`, `Baggagesid`, `Order_id`, `Statusid`)
 VALUES 
-(1, 7, 1, 'John Doe', 'Passenger 1', 1, '0912345678', '1990-01-01', NULL, 1, 10,4),
-(2, 8, 2, 'Jane Smith', 'Passenger 2', 1, '0987654321', '1992-05-10', null, 1, 10,4),
-(3, 7, 1, 'Chris Brown', 'Passenger 3', 1, '0978123456', '1988-08-20', NULL, 2, 10,4);
+(1, 7, 1, 'John Doe', 'Passenger 1', 1, '0912345678', '1990-01-01', NULL, 1, 10),
+(2, 8, 2, 'Jane Smith', 'Passenger 2', 1, '0987654321', '1992-05-10', null, 1, 10),
+(3, 7, 1, 'Chris Brown', 'Passenger 3', 1, '0978123456', '1988-08-20', NULL, 2, 10);
 
 
 

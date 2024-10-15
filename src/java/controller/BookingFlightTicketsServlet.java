@@ -5,6 +5,7 @@
 package controller;
 
 import dal.AccountsDAO;
+import dal.OrderDAO;
 import dal.PlaneCategoryDAO;
 import dal.SeatCategoryDAO;
 import java.io.IOException;
@@ -17,6 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.sql.Date;
 import model.Accounts;
+import model.Order;
 
 /**
  *
@@ -86,20 +88,29 @@ public class BookingFlightTicketsServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        OrderDAO od = new OrderDAO();
+        HttpSession session = request.getSession();
+        Integer id = (Integer) session.getAttribute("id");
         try {
+            String pContactName = request.getParameter("pContactName");
+            String pContactPhoneNumber = request.getParameter("pContactPhoneNumber");
+            String pContactEmail = request.getParameter("pContactEmail");
             int flightDetailId = Integer.parseInt(request.getParameter("flightDetailId"));
             int seatCategoryId = Integer.parseInt(request.getParameter("seatCategoryId"));
             int adultTicket = Integer.parseInt(request.getParameter("adultTicket"));
             int childTicket = Integer.parseInt(request.getParameter("childTicket"));
             int infantTicket = Integer.parseInt(request.getParameter("infantTicket"));
-
+            int totalPrice = Integer.parseInt(request.getParameter("totalPrice"));
+            
+            String orderCode = od.createOrder(flightDetailId, pContactName, pContactPhoneNumber, pContactEmail,totalPrice, id, flightDetailId);
+            Order o = od.getOrderByCode(orderCode);
+            response.sendRedirect("home");
             for (int i = 1; i <= adultTicket; i++) {
                 boolean pSex = Boolean.parseBoolean(request.getParameter("pSex"));
                 String pName = request.getParameter("pName");
                 Date pDob = Date.valueOf(request.getParameter("pDob"));
                 String pPhoneNumber = request.getParameter("pPhoneNumber");
                 int pBaggages = Integer.parseInt(request.getParameter("pBaggages"));
-
             }
             for (int i = 1; i <= childTicket; i++) {
                 boolean pSex = Boolean.parseBoolean(request.getParameter("pSex"));

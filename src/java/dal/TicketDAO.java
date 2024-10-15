@@ -183,4 +183,9 @@ public class TicketDAO extends DBConnect {
         }
         return n;
     }
+    
+    public static void main(String[] args) {
+        TicketDAO tcd = new TicketDAO();
+        System.out.println(tcd.getAllTicketsById(1));
+    }
 }

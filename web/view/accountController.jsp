@@ -22,6 +22,7 @@
         <title>Account Management</title>
         <link rel="shortcut icon" type="image/png" href="img/flyezy-logo3.png" />
         <link rel="stylesheet" href="css/styleAdminController.css">
+        <link rel="stylesheet" href="css/styleGeneral.css"/>
         <script src="js/validation.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -160,11 +161,8 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Date of birth</th>
                         <th>Phone</th>
                         <th>Email</th>
-                        <th>Address</th>
-                        <th>Image</th>
                         <th>Role</th>
                         <th>Airline</th>
                         <th>Create at</th>
@@ -185,11 +183,8 @@
                             String bg = (list.getStatus_id() == 1) ? "" : "#ccc";
                         %>
                         <td style="background-color: <%= bg %>"><%= list.getName() %></td>
-                        <td style="background-color: <%= bg %>"><%= list.getDob() %></td>
                         <td style="background-color: <%= bg %>"><%= list.getPhoneNumber() %></td>
                         <td style="background-color: <%= bg %>"><%= list.getEmail() %></td>
-                        <td style="background-color: <%= bg %>"><%= list.getAddress() %></td>
-                        <td style="background-color: <%= bg %>"><img src="<%= list.getImage() %>" alt="<%= list.getName() %>"></td>
                         <td style="background-color: <%= bg %>"><%= rd.getNameById(list.getRoleId()) %></td>
                         <td style="background-color: <%= bg %>"><%= amd.getNameById(list.getAirlineId()) %></td>
                         <td style="background-color: <%= bg %>"><%= list.getCreated_at() != null ? sdf.format(list.getCreated_at()) : "" %></td>
