@@ -434,13 +434,11 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Order` (
   `Accounts_id` INT NULL,
   `Payment_Types_id` INT NULL,
   `paymentTime` TIMESTAMP NULL,
-  `Flight_Type_id` INT NOT NULL,
   `Discount_id` INT NULL,
   `Status_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_Order_Accounts1_idx` (`Accounts_id` ASC) VISIBLE,
   INDEX `fk_Order_Payment_Types1_idx` (`Payment_Types_id` ASC) VISIBLE,
-  INDEX `fk_Order_Flight_Type1_idx` (`Flight_Type_id` ASC) VISIBLE,
   INDEX `fk_Order_Discount1_idx` (`Discount_id` ASC) VISIBLE,
   INDEX `fk_Order_Flight_Detail1_idx` (`Flight_Detail_id` ASC) VISIBLE,
   INDEX `fk_Order_Status1_idx` (`Status_id` ASC) VISIBLE,
@@ -452,11 +450,6 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Order` (
   CONSTRAINT `fk_Order_Payment_Types1`
     FOREIGN KEY (`Payment_Types_id`)
     REFERENCES `flyezy`.`Payment_Types` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Order_Flight_Type1`
-    FOREIGN KEY (`Flight_Type_id`)
-    REFERENCES `flyezy`.`Flight_Type` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Order_Discount1`
@@ -492,12 +485,14 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Ticket` (
   `Baggagesid` INT NULL DEFAULT NULL,
   `Order_id` INT NOT NULL,
   `Statusid` INT NOT NULL,
+  `Flight_Type_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `FKTicket339557` (`Passenger_Typesid` ASC) VISIBLE,
   INDEX `FKTicket999927` (`Baggagesid` ASC) VISIBLE,
   INDEX `FKTicket721068` (`Seat_Categoryid` ASC) VISIBLE,
   INDEX `FKTicket601957` (`Statusid` ASC) VISIBLE,
   INDEX `fk_Ticket_Order1_idx` (`Order_id` ASC) VISIBLE,
+  INDEX `fk_Ticket_Flight_Type1_idx` (`Flight_Type_id` ASC) VISIBLE,
   CONSTRAINT `FKTicket339557`
     FOREIGN KEY (`Passenger_Typesid`)
     REFERENCES `flyezy`.`Passenger_Types` (`id`),
@@ -513,6 +508,11 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Ticket` (
   CONSTRAINT `fk_Ticket_Order1`
     FOREIGN KEY (`Order_id`)
     REFERENCES `flyezy`.`Order` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Ticket_Flight_Type1`
+    FOREIGN KEY (`Flight_Type_id`)
+    REFERENCES `flyezy`.`Flight_Type` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -643,17 +643,17 @@ VALUES
 (2, 'VNPAY',null);
 
 
-INSERT INTO `Order` (`id`,`code`,`contactName`,`contactPhone`,`contactEmail`, `Flight_Detail_id`, `totalPrice`, `Accounts_id`, `Payment_Types_id`, `paymentTime`, `Flight_Type_id`, `Discount_id`, `Status_id`)
+INSERT INTO `Order` (`id`,`code`,`contactName`,`contactPhone`,`contactEmail`, `Flight_Detail_id`, `totalPrice`, `Accounts_id`, `Payment_Types_id`, `paymentTime`, `Discount_id`, `Status_id`)
 VALUES 
-(1, 'FJA84IUTJ',null,null,null, 1, 1200000, 1, 1, '2024-10-01 14:00:00', 1, null, 10),
-(2, 'BDNA83JFK',null,null,null, 2, 1350000, 1, 2, '2024-10-02 15:15:00', 1, null, 10),
-(3, 'O3MFKALSS',null,null,null, 3, 1500000, 1, 1, '2024-10-03 09:30:00', 1, null, 10);
+(1, 'FJA84IUTJ',null,null,null, 1, 1200000, 1, 1, '2024-10-01 14:00:00',null, 10),
+(2, 'BDNA83JFK',null,null,null, 2, 1350000, 1, 2, '2024-10-02 15:15:00',null, 10),
+(3, 'O3MFKALSS',null,null,null, 3, 1500000, 1, 1, '2024-10-03 09:30:00',null, 10);
 
-INSERT INTO `Ticket` (`id`, `Seat_Categoryid`, `Passenger_Typesid`, `code`, `pName`, `pSex`, `pPhoneNumber`, `pDob`, `Baggagesid`, `Order_id`, `Statusid`)
+INSERT INTO `Ticket` (`id`, `Seat_Categoryid`, `Passenger_Typesid`, `code`, `pName`, `pSex`, `pPhoneNumber`, `pDob`, `Flight_Type_id`, `Baggagesid`, `Order_id`, `Statusid`)
 VALUES 
-(1, 7, 1, 'John Doe', 'Passenger 1', 1, '0912345678', '1990-01-01', NULL, 1, 10),
-(2, 8, 2, 'Jane Smith', 'Passenger 2', 1, '0987654321', '1992-05-10', null, 1, 10),
-(3, 7, 1, 'Chris Brown', 'Passenger 3', 1, '0978123456', '1988-08-20', NULL, 2, 10);
+(1, 7, 1, 'John Doe', 'Passenger 1', 1, '0912345678', '1990-01-01', 1, NULL, 1, 10),
+(2, 8, 2, 'Jane Smith', 'Passenger 2', 1, '0987654321', '1992-05-10',1,  null, 1, 10),
+(3, 7, 1, 'Chris Brown', 'Passenger 3', 1, '0978123456', '1988-08-20',1, NULL, 2, 10);
 
 
 
