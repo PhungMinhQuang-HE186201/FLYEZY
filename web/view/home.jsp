@@ -215,7 +215,7 @@
 
                                 <!-- Submit Button -->
                                 <div class="col-md-2" style="margin-top: 2%">
-                                    <button type="submit" style="height:140%;width: 80%;font-size: 150%" class="btn btn-success">Search Flights</button>
+                                    <button type="submit" style="height:140%;width: 80%;font-size: 150%" class="btn btn-success" onclick="validateDates()">Search Flights</button>
                                 </div>
                             </div>
                         </div>
@@ -398,27 +398,65 @@
             }
             // Assuming you have jQuery and Bootstrap Datepicker included
             $(document).ready(function () {
+                // Initialize datepicker for departureDate
                 $('#departureDate').datepicker({
                     format: 'yyyy-mm-dd', // Custom date format
                     autoclose: true, // Automatically close the calendar after picking a date
                     todayHighlight: true, // Highlight today's date
-                    orientation: 'bottom auto' // Ensure the calendar pops up below the input
+                    orientation: 'bottom auto', // Ensure the calendar pops up below the input
+                    startDate: '2024-10-01' // Minimum date is 01/10/2024
+                }).on('changeDate', function (selected) {
+                    // Get the selected departure date
+                    var minReturnDate = new Date(selected.date.valueOf());
+                    minReturnDate.setDate(minReturnDate.getDate() + 1); // Set the return date to be at least one day after the departure
+
+                    // Set the minimum date for returnDate
+                    $('#returnDate').datepicker('setStartDate', minReturnDate);
+                    // If return date is before the new minimum, clear it
+                    if ($('#returnDate').datepicker('getDate') && $('#returnDate').datepicker('getDate') < minReturnDate) {
+                        $('#returnDate').datepicker('clearDates');
+                    }
                 });
-            });
-            $(document).ready(function () {
+
+                // Initialize datepicker for returnDate
                 $('#returnDate').datepicker({
                     format: 'yyyy-mm-dd', // Custom date format
                     autoclose: true, // Automatically close the calendar after picking a date
                     todayHighlight: true, // Highlight today's date
-                    orientation: 'bottom auto' // Ensure the calendar pops up below the input
+                    orientation: 'bottom auto', // Ensure the calendar pops up below the input
+                    startDate: '2024-10-02' // Default minimum date for return (will change based on departure)
                 });
             });
+
             // Call toggleReturnDate on page load to handle default states
             document.addEventListener('DOMContentLoaded', toggleReturnDate);
 
             // Ensure to bind the toggleReturnDate to the radio buttons' change event
             document.getElementById("oneWay").addEventListener('change', toggleReturnDate);
             document.getElementById("roundTrip").addEventListener('change', toggleReturnDate);
+
+            function validateDates() {
+                const departureDate = document.getElementById('departureDate').value;
+                const returnDate = document.getElementById('returnDate').value;
+
+                // Check if both fields are filled
+                if (departureDate && returnDate) {
+                    if (departureDate === returnDate) {
+                        event.preventDefault();
+                        alert("Ngày đi và Ngày về không được trùng nhau.");
+                        return false; // Prevent form submission
+                    }
+                }
+
+                // If validation passes, allow form submission (if using a form element)
+                return true; // Return true to allow submission
+            }
+
+            // Optional: Toggle the return date field based on departure date
+            document.getElementById('departureDate').addEventListener('change', function () {
+                const returnDateField = document.getElementById('returnDateField');
+                returnDateField.style.display = this.value ? 'block' : 'none';
+            });
         </script>
 
 

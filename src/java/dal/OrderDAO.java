@@ -35,7 +35,6 @@ public class OrderDAO extends DBConnect {
                         rs.getInt("Accounts_id"),
                         rs.getInt("Payment_Types_id"),
                         rs.getTimestamp("paymentTime"),
-                        rs.getInt("Flight_Type_id"),
                         rs.getInt("Discount_id"),
                         rs.getInt("Status_id")
                 );
@@ -48,42 +47,50 @@ public class OrderDAO extends DBConnect {
         return null;
     }
 
-    public List<Order> getOrdersByCriteria(Integer statusId, String keyword, Integer flightDetailId) {
+        public List<Order> searchOrder(int statusId, String code, String keyword, int flightDetailId) {
         List<Order> list = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT * FROM flyezy.Order WHERE 1=1 AND Flight_Detail_id = ?");
+        StringBuilder sql = new StringBuilder("SELECT * FROM flyezy.order WHERE 1=1 ");
+        // Use a list to hold parameter values
+        List<Object> parameters = new ArrayList<>();
 
-        // Append conditions based on whether statusId, keyword, or flightDetailId are provided
-        if (statusId != -1) {
-            sql.append(" AND Status_id = ?");
+        // Append condition for flightDetailId (ensure space after 1=1)
+        sql.append("AND Flight_Detail_id = ? ");
+        parameters.add(flightDetailId);
+
+        // Append condition for code if provided
+        if (code != null && !code.trim().isEmpty()) {
+            sql.append("AND code LIKE ? ");
+            parameters.add("%" + code + "%");
         }
+
+        // Append condition for statusId if provided
+        if (statusId != -1) {
+            sql.append("AND Status_id = ? ");
+            parameters.add(statusId);
+        }
+
+        // Append condition for keyword if provided
         if (keyword != null && !keyword.trim().isEmpty()) {
-            sql.append(" AND (code LIKE ? OR contactName LIKE ? OR contactPhone LIKE ? OR contactEmail LIKE ?)");
+            sql.append("AND (contactName LIKE ? OR contactPhone LIKE ? OR contactEmail LIKE ?) ");
+            String keywordPattern = "%" + keyword + "%";
+            parameters.add(keywordPattern);
+            parameters.add(keywordPattern);
+            parameters.add(keywordPattern);
         }
 
         try {
+            // Prepare the SQL statement
             PreparedStatement ps = conn.prepareStatement(sql.toString());
 
-            int paramIndex = 1;
-
-            // Set the statusId if it's provided
-            if (statusId != null) {
-                ps.setInt(paramIndex++, statusId);
+            // Set the parameters in the prepared statement
+            for (int i = 0; i < parameters.size(); i++) {
+                ps.setObject(i + 1, parameters.get(i)); // Use setObject for dynamic types
             }
-
-            // Set the keyword if it's provided
-            if (keyword != null && !keyword.trim().isEmpty()) {
-                String searchPattern = "%" + keyword + "%";
-                ps.setString(paramIndex++, searchPattern); // For `code`
-                ps.setString(paramIndex++, searchPattern); // For `contactName`
-                ps.setString(paramIndex++, searchPattern); // For `contactPhone`
-                ps.setString(paramIndex++, searchPattern); // For `contactEmail`
-            }
-
-            ps.setInt(paramIndex++, flightDetailId);
 
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Order o = new Order(rs.getInt("id"),
+                Order o = new Order(
+                        rs.getInt("id"),
                         rs.getInt("Flight_Detail_id"),
                         rs.getString("code"),
                         rs.getString("contactName"),
@@ -93,7 +100,6 @@ public class OrderDAO extends DBConnect {
                         rs.getInt("Accounts_id"),
                         rs.getInt("Payment_Types_id"),
                         rs.getTimestamp("paymentTime"),
-                        rs.getInt("Flight_Type_id"),
                         rs.getInt("Discount_id"),
                         rs.getInt("Status_id")
                 );
@@ -104,7 +110,8 @@ public class OrderDAO extends DBConnect {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+
+        return !list.isEmpty() ? list : null;
     }
 
     public List<Order> getAllOrdersByFlightDetail(int flightDetailId) {
@@ -125,7 +132,6 @@ public class OrderDAO extends DBConnect {
                         rs.getInt("Accounts_id"),
                         rs.getInt("Payment_Types_id"),
                         rs.getTimestamp("paymentTime"),
-                        rs.getInt("Flight_Type_id"),
                         rs.getInt("Discount_id"),
                         rs.getInt("Status_id")
                 );
@@ -227,7 +233,6 @@ public class OrderDAO extends DBConnect {
                         rs.getInt("Accounts_id"),
                         rs.getInt("Payment_Types_id"),
                         rs.getTimestamp("paymentTime"),
-                        rs.getInt("Flight_Type_id"),
                         rs.getInt("Discount_id"),
                         rs.getInt("Status_id")
                 );

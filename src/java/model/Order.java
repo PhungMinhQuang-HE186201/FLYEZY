@@ -18,7 +18,6 @@ public class Order {
     private Integer accountsId; // Nullable field
     private int paymentTypesId;
     private Timestamp paymentTime; // Nullable field
-    private int flightTypeId;
     private Integer discountId; // Nullable field
     private int Status_id;
 
@@ -26,7 +25,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(int id, int flightDetailId, String code, String contactName, String contactPhone, String contactEmail, int totalPrice, Integer accountsId, int paymentTypesId, Timestamp paymentTime, int flightTypeId, Integer discountId, int Status_id) {
+    public Order(int id, int flightDetailId, String code, String contactName, String contactPhone, String contactEmail, int totalPrice, Integer accountsId, int paymentTypesId, Timestamp paymentTime, Integer discountId, int Status_id) {
         this.id = id;
         this.flightDetailId = flightDetailId;
         this.code = code;
@@ -37,7 +36,6 @@ public class Order {
         this.accountsId = accountsId;
         this.paymentTypesId = paymentTypesId;
         this.paymentTime = paymentTime;
-        this.flightTypeId = flightTypeId;
         this.discountId = discountId;
         this.Status_id = Status_id;
     }
@@ -125,13 +123,7 @@ public class Order {
         this.paymentTime = paymentTime;
     }
 
-    public int getFlightTypeId() {
-        return flightTypeId;
-    }
 
-    public void setFlightTypeId(int flightTypeId) {
-        this.flightTypeId = flightTypeId;
-    }
 
     public Integer getDiscountId() {
         return discountId;
@@ -149,10 +141,7 @@ public class Order {
         this.Status_id = Status_id;
     }
 
-    @Override
-    public String toString() {
-        return "Order{" + "id=" + id + ", flightDetailId=" + flightDetailId + ", code=" + code + ", contactName=" + contactName + ", contactPhone=" + contactPhone + ", contactEmail=" + contactEmail + ", totalPrice=" + totalPrice + ", accountsId=" + accountsId + ", paymentTypesId=" + paymentTypesId + ", paymentTime=" + paymentTime + ", flightTypeId=" + flightTypeId + ", discountId=" + discountId + ", Status_id=" + Status_id + '}';
-    }
+
 
     
 }

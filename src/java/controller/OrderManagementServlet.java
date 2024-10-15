@@ -55,6 +55,7 @@ public class OrderManagementServlet extends HttpServlet {
         } else {
             // Search for airlines based on keyword and status
             String keyword = request.getParameter("keyword") != null ? request.getParameter("keyword").trim() : null;
+            String code = request.getParameter("code") != null ? request.getParameter("code").trim() : null;
             String statusParam = request.getParameter("status");
             int statusId = -1;
 
@@ -69,9 +70,9 @@ public class OrderManagementServlet extends HttpServlet {
             }
 
             // Fetch the airlines based on search criteria
-            listOrder = od.getOrdersByCriteria(statusId, keyword,flightDetailId);
+            listOrder = od.searchOrder(statusId, code, keyword, flightDetailId);
         }
-        List<Status> listStatus = statusDao.getAllStatus();
+        List<Status> listStatus = statusDao.getStatusOfOrder();
         request.setAttribute("airlineId", airlineId);
         request.setAttribute("flight", flight);
         request.setAttribute("listOrder", listOrder);
@@ -85,7 +86,7 @@ public class OrderManagementServlet extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getParameter("action");
 
-        if ("updateStatus".equals(action)) {
+        if ("changeStatus".equals(action)) {
             int orderId = Integer.parseInt(request.getParameter("orderId"));
             int flightDetailId = Integer.parseInt(request.getParameter("flightDetailId"));
             int statusId = Integer.parseInt(request.getParameter("statusId"));

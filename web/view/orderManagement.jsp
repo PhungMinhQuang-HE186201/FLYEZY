@@ -12,6 +12,7 @@
 <%@page import="dal.AccountsDAO"%>
 <%@page import="dal.PaymentTypeDAO"%>
 <%@page import="dal.FlightTypeDAO"%>
+<%@page import="dal.StatusDAO"%>
 <%@page import="java.util.List"%>
 <%@page import="model.Flights"%>
 <%@page import="model.Order"%>
@@ -36,7 +37,7 @@
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-        
+
     </head>
     <body>
         <%@include file="header.jsp" %>
@@ -44,8 +45,35 @@
         <div id="back" style="margin-left: 210px;margin-top: 60px;margin-bottom: -100px " /> 
         <a href="flightDetailManagement?flightId=${requestScope.flight.getId()}&airlineId=${requestScope.airlineId}" class="btn btn-warning" >Back</a>
         <input type="hidden" name="flightDetailID">
+        <div class="filterController col-md-12" style="width: 100%">
+            <form action="OrderController" method="get" style="margin-bottom: 20px;">
 
-        <table class="entity" style="margin-left: 210px;" >
+                <input type="hidden" name="action" value="search">
+                <input type="hidden" name="flightDetailID" value="${param.flightDetailID}">
+
+                <strong class="filterElm">Status:</strong>
+                <select class="filterElm" name="status">
+                    <option value="" ${param.status == null ? 'selected' : ''}>All</option>
+                    <c:set var="counter" value="0" />
+                    <c:forEach items="${requestScope.listStatus}" var="status">
+                        <c:if test="${counter < 3}">
+                            <option value="${status.id}" ${param.status != null && (param.status == status.id) ? 'selected' : ''}>${status.name}</option>
+                            <c:set var="counter" value="${counter + 1}" />
+                        </c:if>
+                    </c:forEach>
+                </select>
+                <strong>Code: </strong>
+                <input class="filterElm" value="${param.keyword}" type="text" pattern="^[\p{L}\s]+$" placeholder="Code ..." name="code" style="margin-left:5px"/>
+                <strong>Contact: </strong>
+                <input class="filterElm" value="${param.keyword}" type="text" pattern="^[\p{L}\s]+$" placeholder="Contact ..." name="keyword" style="margin-left:5px"/>
+                <input type="submit" class="btn btn-info" name="submit" value="Search" style="margin-right: 5px">
+
+                <a class="btn btn-danger" href="OrderController?flightDetailID=${param.flightDetailID}">Cancel</a>
+            </form>
+
+
+        </div>
+        <table class="entity" style="margin-left: 1%;" >
             <thead>
                 <tr>
                     <th>Code</th>
@@ -55,8 +83,8 @@
                     <th>Total Price</th>
                     <th>Account</th>
                     <th>Payment Type</th>
-                    <th>Flight Type</th>
                     <th>Status</th>
+                    <th style="width: 25%">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -66,6 +94,7 @@
                     AccountsDAO ad = new AccountsDAO();
                     PaymentTypeDAO ptd = new PaymentTypeDAO();
                     FlightTypeDAO ftd = new FlightTypeDAO();
+                    StatusDAO sd = new StatusDAO();
                     List<Order> listOrder = (List<Order>)request.getAttribute("listOrder");
                     List<Accounts> listAcc = ad.getAllAccounts();
                         
@@ -89,16 +118,53 @@
                     %>
                     <%String paymentName = ptd.getPaymentTypeNameById(o.getPaymentTypesId());%>
                     <td><%=paymentName%></td>
-                    <%String flightTypeName = ftd.getNameType(o.getFlightTypeId());%>
-                    <td><%=flightTypeName%></td>
-                    <td>
-                        <select name="status" id="status-<%= o.getId() %>" onchange="submitForm(<%= o.getId() %>, <%= o.getFlightDetailId() %>, this.value); changeColor(this)" style="color: black;">
-                            <option value="" disabled selected hidden>Select Status</option> <!-- Add a default option -->
-                            <option value="9" style="background-color: white; color: black;" <%= o.getStatus_id() == 9 ? "selected" : "" %>>Empty</option>
-                            <option value="10" style="background-color: green; color: white;" <%= o.getStatus_id() == 10 ? "selected" : "" %>>Successful Payment</option>
-                            <option value="11" style="background-color: red; color: white;" <%= o.getStatus_id() == 11 ? "selected" : "" %>>Cancellation Rejection</option>
-                        </select>
 
+                    <td>
+                        <%= sd.getStatusNameById(o.getStatus_id()) %>
+                    </td>
+                    <td>
+                        <a class="btn btn-info" style="text-decoration: none" id="myBtn<%= o.getId() %>" onclick="openModal(<%= o.getId() %>)">Change status</a>
+                        <div class="modal fade" id="myModal<%= o.getId() %>" role="dialog">
+                            <div class="modal-dialog">
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header" style="padding:5px 5px;">
+                                        <button type="button" class="close" style="font-size: 30px; margin-right: 12px;" data-dismiss="modal">&times;</button>
+                                        <h4 style="margin-left: 12px">Change status</h4>
+                                    </div>
+                                    <div class="modal-body" style="padding:40px 50px;">
+                                        <form role="form" action="OrderController" method="post">
+                                            <input type="hidden" name="action" value="changeStatus"/>
+                                            <input type="hidden" name="orderId" value="<%=o.getId()%>"/>
+                                            <input type="hidden" name="flightDetailId" value="<%=o.getFlightDetailId()%>"/>
+                                            <input type="hidden" name="createdAt" value=""/>
+                                            <div class="row">
+                                                <div class="form-group col-md-4">
+                                                    <label for="usrname"><span class="glyphicon glyphicon-globe"></span>ID:</label>
+                                                    <input type="text" class="form-control" id="usrname" name="id" value="<%= o.getId() %>" readonly="">
+                                                </div>
+                                                <div class="form-group col-md-8">
+                                                    <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Status:</label></div>
+                                                    <select name="statusId" value="" style="height:  34px">
+                                                        <%List<Status> statusList = sd.getStatusOfOrder();
+                                                            for(Status status : statusList){%>
+                                                        <option value="<%=status.getId()%>" <%=(o.getStatus_id() == status.getId())?"selected":""%>><%=status.getName()%></option>"
+                                                        <%}%>
+                                                    </select>
+                                                </div>                    
+
+                                            </div>
+                                            <button type="submit" class="btn btn-success btn-block">
+                                                Confirm
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>  
+                        <a href="TicketController?orderId=<%= o.getId() %>" class="btn btn-primary" style="margin-left: 10px;">
+                            Ticket Detail
+                        </a>
                     </td>
                 </tr>
                 <!--confirm modal btn3-->
@@ -126,85 +192,9 @@
         </tbody>
     </table>
     <script>
-        let currentId = null;
-        let currentFlightDetailId = null;
-        let currentStatus = null;
-
-        function submitForm(orderId, flightDetailId, status) {
-            currentId = orderId;
-            currentFlightDetailId = flightDetailId;
-            currentStatus = status;
-
-            console.log("Order ID: " + currentId); // Debugging
-            console.log("Flight Detail ID: " + currentFlightDetailId); // Debugging
-            console.log("Status: " + currentStatus); // Debugging
-
-            $('#confirmModal-' + currentId).modal('show'); // Show the modal for confirmation
+        function openModal(id) {
+            $("#myModal" + id).modal('show');
         }
-
-        document.addEventListener('click', function (event) {
-            if (event.target && event.target.classList.contains('confirmChange')) {
-                const form = document.createElement("form");
-                form.method = "post";
-                form.action = "OrderController?action=updateStatus";
-
-                const idInput = document.createElement("input");
-                idInput.type = "hidden";
-                idInput.name = "orderId";
-                idInput.value = currentId;
-
-                const flightDetailIdInput = document.createElement("input");
-                flightDetailIdInput.type = "hidden";
-                flightDetailIdInput.name = "flightDetailId";
-                flightDetailIdInput.value = currentFlightDetailId;
-
-                const statusInput = document.createElement("input");
-                statusInput.type = "hidden";
-                statusInput.name = "statusId";
-                statusInput.value = currentStatus;
-
-                form.appendChild(idInput);
-                form.appendChild(flightDetailIdInput);
-                form.appendChild(statusInput);
-
-                document.body.appendChild(form);
-                form.submit();
-
-                $('#confirmModal-' + currentId).modal('hide');
-            }
-        });
-        function changeColor(selectElement) {
-            // Get the selected value
-            const selectedValue = selectElement.value;
-
-            // Reset the styles when no option is selected
-            if (selectedValue === "") {
-                selectElement.style.backgroundColor = "white";
-                selectElement.style.color = "black";
-            } else {
-                
-
-                // Change the background based on the selected value
-                if (selectedValue == "9") {
-                    selectElement.style.backgroundColor = "white";
-                } else if (selectedValue == "10") {
-                    selectElement.style.backgroundColor = "green";
-                    selectElement.style.color = "white";  // Set text color to white
-                } else if (selectedValue == "11") {
-                    selectElement.style.backgroundColor = "red";
-                    selectElement.style.color = "white";  // Set text color to white
-                }
-            }
-        }
-
-        // Apply the initial color based on the pre-selected value when the page loads
-        document.addEventListener('DOMContentLoaded', function () {
-            const selectElements = document.querySelectorAll('select[name="status"]');
-            selectElements.forEach(function (selectElement) {
-                changeColor(selectElement); // Apply color for pre-selected status
-            });
-        });
-
     </script>
 </body>
 </html>
