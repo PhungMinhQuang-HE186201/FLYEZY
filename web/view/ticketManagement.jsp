@@ -67,10 +67,9 @@
         <%@include file="admin-sideBar.jsp" %>
         <div id="main-content" style="padding:15vh 0vw 15vh 16vw; margin: 0">
             <div class="filterController col-md-12" style="width: 100%">
+                <a href="flightDetailManagement?flightId=${requestScope.flight.getId()}&airlineId=${requestScope.airlineId}" class="btn btn-warning" >Back</a>
                 <form action="TicketController" method="get" style="margin-bottom: 20px;">
                     <input type="hidden" name="action" value="search">
-                    
-
                     <strong class="filterElm">Passenger Type</strong>
                     <select class="filterElm" name="passengerType">
                         <option value="" ${param.passengerType == null ? 'selected' : ''}>All</option>
@@ -129,8 +128,8 @@
             <%
                 List<SeatCategory> seatList = (List<SeatCategory>) request.getAttribute("seatList");
                     for (SeatCategory list : seatList) {%>
-                        <p><%=list.getName()%> :<%=list.getNumberOfSeat()-list.getCountSeat()%>  /<%=list.getNumberOfSeat()%><p>
-                <%}%>
+                        <p><%=list.getName()%> :<%=list.getNumberOfSeat()-list.getCountSeat()%>  /<%=list.getNumberOfSeat()%></p>
+            <%}%>
             <table class="entity" >
                 <thead>
                     <tr>

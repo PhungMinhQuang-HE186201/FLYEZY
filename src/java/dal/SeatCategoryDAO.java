@@ -198,9 +198,10 @@ public class SeatCategoryDAO extends DBConnect {
 
     public List<SeatCategory> getNameAndNumberOfSeat(int id) {
         String sql = "Select  s.name,numberOfSeat ,count(Seat_Categoryid) as countSeat \n"
-                + "                From Ticket t join Seat_category s On t.Seat_Categoryid=s.id \n"
-                + "                where t.Flight_Detail_id = ?\n"
-                + "                group by s.name,numberOfSeat";
+                + "                             From Ticket t join `flyezy`.`Order` o On t.Order_id=o.id\n"
+                + "                             Join Seat_category s On t.Seat_Categoryid=s.id \n"
+                + "                             where o.Flight_Detail_id = ?\n"
+                + "                             group by s.name,numberOfSeat";
         List<SeatCategory> ls = new ArrayList<>();
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);

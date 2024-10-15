@@ -108,6 +108,9 @@ public class TicketManagementServlet extends HttpServlet {
         Flights flight = fdd.getFlightByFlightDetailId(flightDetailID);
         request.setAttribute("flight", flight);
         
+        int airlineId = fdd.getAirlineIdByFlightDetailId(flightDetailID);
+        request.setAttribute("airlineId", airlineId);
+         
         Airport airportDep = aid.getAirportById(flight.getDepartureAirportId());
         request.setAttribute("airportDep", airportDep);
         Location locationDep = ld.getLocationById(airportDep.getId());
@@ -144,6 +147,7 @@ public class TicketManagementServlet extends HttpServlet {
         List<Status> statusTicketList = sd.getStatusOfTicket();
         request.setAttribute("statusTicketList", statusTicketList);
 
+        
         int planeCategoryID = fdd.getPlaneCategoryIdFromFlightDetail(flightDetailID);
         List<SeatCategory> seatList = scd.getNameAndNumberOfSeat(planeCategoryID);
         request.setAttribute("seatList", seatList);
