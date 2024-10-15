@@ -37,6 +37,7 @@ public class FlightManageDAO extends DBConnect {
         }
         return list;
     }
+
     public List<Flights> getAllFlightsByDepartAndDes(int departureAirportId, int destinationAirportId) {
         List<Flights> list = new ArrayList<>();
         String sql = "select * from flyezy.Flight where Flight.departureAirportid = ? and Flight.destinationAirportid = ?";
@@ -84,22 +85,22 @@ public class FlightManageDAO extends DBConnect {
     }
 
     public boolean checkDuplicated(Flights flight, int airlineId) {
-        String departureAirportid = "SELECT * FROM Flight WHERE Airline_id = ? AND departureAirportid = ? && destinationAirportid = ?";
+        String sql = "SELECT * FROM Flight WHERE Airline_id = ? AND departureAirportid = ? AND destinationAirportid = ? AND id != ?";
 
         try {
-            // Kiểm tra email
-            PreparedStatement departureCheck = conn.prepareStatement(departureAirportid);
-            departureCheck.setInt(1, airlineId);
-            departureCheck.setInt(2, flight.getDepartureAirportId());
-            departureCheck.setInt(3, flight.getDestinationAirportId());
-            ResultSet departureResultSet = departureCheck.executeQuery();
-            if (departureResultSet.next()) {
-                return false;  //  đã tồn tại
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, airlineId);
+            ps.setInt(2, flight.getDepartureAirportId());
+            ps.setInt(3, flight.getDestinationAirportId());
+            ps.setInt(4, flight.getId()); // không check chuyến bay hiện tại, th mà kh update des và dep sẽ kh bị lỗi
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return false;  
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return true; //chua ton tai
+        return true; 
     }
 
     public Flights getAllFlight() {

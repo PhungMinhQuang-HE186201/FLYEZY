@@ -22,6 +22,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+        <script src="js/toastrNotification.js"></script>
         <style>
             .modal-body{
                 text-align: left
@@ -411,28 +412,6 @@
                     arrow.classList.add("glyphicon-menu-down");
                 }
             }
-
-            toastr.options = {
-                "closeButton": true,
-                "debug": false,
-                "newestOnTop": false,
-                "progressBar": true,
-                "positionClass": "",
-                "preventDuplicates": false,
-                "onclick": null,
-                "showDuration": "300",
-                "hideDuration": "1000",
-                "timeOut": "3500",
-                "extendedTimeOut": "1000",
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut"
-            };
-
-            function successful(message) {
-                toastr.success(message, 'Successful');
-            };
 
             $(document).ready(function () {
             <% if (request.getAttribute("result") != null) { %>

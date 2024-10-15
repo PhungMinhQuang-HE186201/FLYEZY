@@ -66,6 +66,12 @@ public class AccountControllerServlet extends HttpServlet {
         AirlineManageDAO amd = new AirlineManageDAO();
         HttpSession session = request.getSession();
 
+        String statusMessage = (String) session.getAttribute("result");
+        if (statusMessage != null) {
+            request.setAttribute("result", statusMessage);
+            session.removeAttribute("result");
+        }
+
         Integer idd = (Integer) session.getAttribute("id");
         if (idd == null) {
             response.sendRedirect("login");
@@ -95,6 +101,7 @@ public class AccountControllerServlet extends HttpServlet {
                 } else {
                     ad.changeStatusAccount(id, 1);
                 }
+                session.setAttribute("result", "Change account status successfully!");
                 response.sendRedirect("accountController");
             } else if (action.equals("search")) {
                 String fRole = request.getParameter("fRole");
@@ -119,6 +126,7 @@ public class AccountControllerServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
         AccountsDAO ad = new AccountsDAO();
         String action = request.getParameter("action");
         String idStr = request.getParameter("id");
@@ -149,6 +157,7 @@ public class AccountControllerServlet extends HttpServlet {
                 Accounts newAcc = new Accounts(id, name, email, password, phoneNumber, address, image, dob, roleId, airlineID, ca, new Timestamp(System.currentTimeMillis()));
 
                 ad.updateAccount(newAcc);
+                session.setAttribute("result", "Update account successfully!");
                 response.sendRedirect("accountController");
             } else if (action.equals("create")) {
                 int roleId = Integer.parseInt(roleIdStr);
@@ -159,6 +168,7 @@ public class AccountControllerServlet extends HttpServlet {
                 boolean check = ad.checkAccount(newAcc);
                 if (check == true) {
                     int n = ad.createAccount(newAcc);
+                    session.setAttribute("result", "Create account successfully!");
                     response.sendRedirect("accountController");
                 } else {
                     String message = "The phoneNumber or email has already existed!";
@@ -167,7 +177,7 @@ public class AccountControllerServlet extends HttpServlet {
                     request.setAttribute("message", message);
                     RolesDAO rd = new RolesDAO();
                     AirlineManageDAO amd = new AirlineManageDAO();
-                    HttpSession session = request.getSession();
+                    session = request.getSession();
                     List<Roles> rolesList = rd.getAllRoles();
                     request.setAttribute("rolesList", rolesList);
                     List<Airline> airlineList = amd.getAllAirline();

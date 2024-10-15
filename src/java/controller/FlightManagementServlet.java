@@ -5,11 +5,9 @@
 package controller;
 
 import dal.AccountsDAO;
-import dal.AirportDAO;
 import dal.CountryDAO;
 import dal.FlightManageDAO;
 import dal.LocationDAO;
-import dal.StatusDAO;
 import dal.AirportDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -20,7 +18,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.sql.ResultSet;
 import model.Accounts;
-import model.Airport;
 import model.Flights;
 import dal.FlightDetailDAO;
 
@@ -78,10 +75,15 @@ public class FlightManagementServlet extends HttpServlet {
         CountryDAO cd = new CountryDAO();
         HttpSession session = request.getSession();
 
-        String statusMessage = (String) session.getAttribute("error");
-        if (statusMessage != null) {
-            request.setAttribute("error", statusMessage);
+        String statusMessage1 = (String) session.getAttribute("error");
+        String statusMessage2 = (String) session.getAttribute("result");
+        if (statusMessage1 != null) {
+            request.setAttribute("error", statusMessage1);
             session.removeAttribute("error");
+        }
+        if (statusMessage2 != null) {
+            request.setAttribute("result", statusMessage2);
+            session.removeAttribute("result");
         }
 
         Integer idd = (Integer) session.getAttribute("id");
@@ -189,9 +191,10 @@ public class FlightManagementServlet extends HttpServlet {
                 boolean check = fmd.checkDuplicated(newFlight, airlineId);
                 if (check == true) {
                     int n = fmd.createFlight(newFlight);
+                    session.setAttribute("result", "Create flight successfully!");
                 } else {
                     session.setAttribute("error", "Departure Airport and Destination Airport already exists, please enter again !");
-                } 
+                }
             }
             response.sendRedirect("flightManagement");
 
@@ -207,11 +210,12 @@ public class FlightManagementServlet extends HttpServlet {
                 boolean check = fmd.checkDuplicated(newFlight, airlineid);
                 if (check == true) {
                     fmd.updateFlight(newFlight);
+                    session.setAttribute("result", "Update flight successfully!");
                 } else {
                     session.setAttribute("error", "Departure Airport and Destination Airport already exists, please enter again !");
                 }
             } else {
-                session.setAttribute("error", "Cannot be duplicated, please enter again!");
+                session.setAttribute("error", "Departure Airport and Destination Airport cannot be duplicated, please choose again!");
             }
             response.sendRedirect("flightManagement");
 
@@ -225,6 +229,7 @@ public class FlightManagementServlet extends HttpServlet {
                 newStatus = 1;
             }
             fmd.changeStatus(flightId, newStatus);
+            session.setAttribute("result", "Change flight status successfully!");
             response.sendRedirect("flightManagement");
         }
     }

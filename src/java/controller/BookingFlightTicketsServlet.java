@@ -110,7 +110,7 @@ public class BookingFlightTicketsServlet extends HttpServlet {
                 String pName = request.getParameter("pName");
                 Date pDob = Date.valueOf(request.getParameter("pDob"));
                 String pPhoneNumber = request.getParameter("pPhoneNumber");
-                int pBaggages = Integer.parseInt(request.getParameter("pBaggages"));
+                int pBaggages = Integer.parseInt(request.getParameter("pBaggages"));            
             }
             for (int i = 1; i <= childTicket; i++) {
                 boolean pSex = Boolean.parseBoolean(request.getParameter("pSex"));

@@ -23,10 +23,14 @@
         <link rel="shortcut icon" type="image/png" href="img/flyezy-logo3.png" />
         <link rel="stylesheet" href="css/styleAdminController.css">
         <link rel="stylesheet" href="css/styleGeneral.css"/>
+        <link rel="stylesheet" href="css/styleToastNotification.css">
         <script src="js/validation.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+        <script src="js/toastrNotification.js"></script>
 
         <style>
             .modal-body{
@@ -357,6 +361,13 @@
 
                 reader.readAsDataURL(file);
             }
+
+            $(document).ready(function () {
+            <% if (request.getAttribute("result") != null) { %>
+                successful("<%= request.getAttribute("result").toString()%>");
+            <% } %>
+
+            });
         </script>
 
     </body>

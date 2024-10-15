@@ -36,6 +36,12 @@ public class DashboardAirlineServlet extends HttpServlet {
         AccountsDAO ad = new AccountsDAO();
         HttpSession session = request.getSession();
 
+        String statusMessage = (String) session.getAttribute("result");
+        if (statusMessage != null) {
+            request.setAttribute("result", statusMessage);
+            session.removeAttribute("result");
+        }
+
         Integer idd = (Integer) session.getAttribute("id");
         if (idd == null) {
             response.sendRedirect("login");
