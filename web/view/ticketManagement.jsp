@@ -133,6 +133,7 @@
             </div>
                 <form action="TicketController" method="get" style="margin-bottom: 20px;">
                     <input type="hidden" name="action" value="search">
+                    <input type="hidden" name="flightDetailID" value="${flightDetailID}">
                     <strong class="filterElm">Flight Type</strong>
                     <select class="filterElm" name="flightType">
                         <option value="" ${param.flightType == null ? 'selected' : ''}>All</option>
@@ -159,6 +160,8 @@
                     <input class="filterElm" type="text" name="fName" value="${param.fName}" placeholder="Enter name">
                     <strong>Phone number: </strong>
                     <input class="filterElm" type="number" name="fPhoneNumber" value="${param.fPhoneNumber}" placeholder="Enter phone number">
+                    <strong>Order id: </strong>
+                    <input class="filterElm" type="text" name="orderId" value="${param.orderId}" placeholder="Enter order id">
                     <button class="btn btn-info" type="submit">
                         Search
                     </button>

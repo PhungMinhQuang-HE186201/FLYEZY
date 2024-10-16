@@ -26,7 +26,7 @@
             </h1>
 
 
-            <form action="ForgetPassword" method="post">
+            <form action="forgetPassword" method="post">
                 <div class="form-group">
                     <input type="email" name="email" required />
                     <label for="">Email của bạn</label>
