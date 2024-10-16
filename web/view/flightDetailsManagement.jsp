@@ -48,6 +48,44 @@
             <div>
                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#add-<%=fid%>">Add New Flight Detail</button>
             </div>
+            <form action="flightDetailManagement" method="GET" style="display: flex; align-items: center; margin-left: 210px; margin-top: 20px;" oninput="toggleSearchButton()">
+                <div style="margin-right: 10px;">
+                    <label for="Status">Status:</label>
+                    <select id="status-search" name="statusSearch" class="form-control">
+                        <option value="">---Select---</option>
+                        <%
+                            StatusDAO sd = new StatusDAO();
+                            List<Status> statuses = (List<Status>) sd.getStatusOfFlightDetaisl();
+                            if (statuses != null) {
+                                for (Status status : statuses) {
+                        %>
+                        <option value="<%= status.getId() %>"><%= status.getName() %></option>
+                        <%
+                                }
+                            }
+                        %>
+                    </select>
+                </div>
+                <div style="margin-right: 10px;">
+                    <label for="Date">Date:</label>
+                    <input type="date" id="Date" name="dateSearch" step="1" class="form-control">
+                </div>
+                <div style="margin-right: 10px;">
+                    <label for="time-from">Time From:</label>
+                    <input type="time" id="Time-from" name="fromSearch" step="1" class="form-control">
+                </div>
+                <div style="margin-right: 10px;">
+                    <label for="time-to">Time To:</label>
+                    <input type="time" id="Time-to" name="toSearch" step="1" class="form-control">
+                </div>
+                <div>
+                    <button style="margin-top: 45px; position: relative; left: 4px; top: -10px;" type="submit" class="btn btn-primary" name="action" value="search" id="search-button" disabled>Search</button>
+                    <button style="margin-top: 45px; position: relative; left: 4px; top: -10px;" type="submit" class="btn btn-danger" name="action" value="cancel" id="cancel-button">Cancel</button>
+                </div>
+                <div>
+                    <input type="hidden" name="flightId" value="<%= flight_id %>" >
+                </div>
+            </form>
             <table class="entity">
                 <thead>
                     <tr>
@@ -85,9 +123,14 @@
                         </td>
                         <td>
                             <select name="status" onchange="submitForm(<%= fd.getId() %>, this.value)">
-                                <option value="3" <%= fd.getStatusId() == 3 ? "selected" : "" %>>Pre-Flight</option>
-                                <option value="4" <%= fd.getStatusId() == 4 ? "selected" : "" %>>In-Flight</option>
-                                <option value="5" <%= fd.getStatusId() == 5 ? "selected" : "" %>>On-Land</option>
+                                <%
+                                for (Status status : statuses) {
+                                %>
+                                <option value="<%= status.getId() %>" <%= fd.getStatusId() == status.getId() ? "selected" : "" %>><%= status.getName() %></option>
+    
+                                <%
+                                        }
+                                %>
                             </select>
                         </td>
                         <td style="display: flex; justify-content: space-around">
@@ -135,11 +178,13 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="flightTime" class="form-label">Time: </label>
-                                        <input id="utime" type="time" name="time" value="<%= fd.getTime() %>" step="1" required>
+                                        <input type="date" class="form-control" id="uflightDate-<%=fd.getId()%>" name="date" oninput="validateDate(<%=fd.getId()%>)" value=<%= fd.getDate()%> required>
+                                        <span id="dateError-<%=fd.getId()%>" style="color:red; display:none;">Date cannot be in the past</span>
                                     </div>
                                     <div class="mb-3">
                                         <label for="flightPrice" class="form-label">Price: </label>
-                                        <input type="number" class="form-control" id="uflightPrice" name="price" value="<%= fd.getPrice() %>" required>
+                                        <input type="number" class="form-control" id="uflightPrice-<%=fd.getId()%>" oninput="validatePrice(<%=fd.getId()%>)" name="price" value="<%= fd.getPrice() %>" required>
+                                    <span id="priceError-<%=fd.getId()%>" style="color:red; display:none;">Price must be less than 100,000,000 VND</span>
                                     </div>
                                     <div class="mb-3">
                                         <input type="hidden" class="form-control" id="uFlightId" name="flightId" value="<%= fd.getFlightId() %>" required="">
@@ -159,7 +204,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="submit" class="btn btn-primary">Update Flight</button>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button id="submitbtn-<%=fd.getId()%>" type="submit" class="btn btn-primary">Update Flight</button>
                             </div>
                             </form>
                         </div>
@@ -187,7 +232,8 @@
                             <div class="modal-body">
                                 <div class="form-group">
                                     <label for="date">Date:</label>
-                                    <input type="date" class="form-control" id="date" name="date" required>
+                                    <input type="date" class="form-control" id="uflightDate-<%=fid%>" name="date" oninput="validateDate(<%=fid%>)" required>
+                            <span id="dateError-<%=fid%>" style="color:red; display:none;">Date cannot be in the past</span>
                                 </div>
                                 <div class="form-group">
                                     <label for="time">Time:</label>
@@ -196,7 +242,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="price">Price:</label>
-                                    <input type="number" class="form-control" id="price" name="price" required>
+                                    <input type="number" class="form-control" id="uflightPrice-<%=fid%>" name="price" oninput="validatePrice(<%=fid%>)" required>
+                                    <span id="priceError-<%=fid%>" style="color:red; display:none;">Price must be less than 100,000,000 VND</span>
                                 </div>
                                 <div class="form-group">
                                     <input type="hidden" class="form-control" id="flightId" name="flightId" value="<%=fid%>">
@@ -216,7 +263,7 @@
 
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" name="action" value="add" class="btn btn-primary">Add Flight Detail</button>
+                                <button type="submit" id="submitbtn-<%=fid%>" name="action" value="add" class="btn btn-primary">Add Flight Detail</button>
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>         
                             </div>
                         </form>
@@ -227,7 +274,40 @@
 
 
 
-
+        <script>
+            function validatePrice(id) {
+                var priceInput = document.getElementById("uflightPrice-" + id).value;
+                var priceError = document.getElementById("priceError-" + id);
+                var btnsubmit = document.getElementById("submitbtn-" + id);
+                var maxPrice = 100000000;
+    
+                if (priceInput >= maxPrice) {
+                    priceError.style.display = "inline";
+                    btnsubmit.disabled = true;
+                } else {
+                    priceError.style.display = "none";
+                    btnsubmit.disabled = false;
+                }
+            }
+            function validateDate(id) {
+                var dateInput = document.getElementById("uflightDate-" + id).value;
+                var dateError = document.getElementById("dateError-" + id);
+                var btnsubmit = document.getElementById("submitbtn-" + id);
+    
+    
+                var currentDate = new Date();
+                var inputDate = new Date(dateInput);
+    
+                dateError.style.display = "none";
+    
+                if (inputDate < currentDate.setHours(0, 0, 0, 0)) {
+                    dateError.style.display = "inline";
+                     btnsubmit.disabled = true;
+                }else {
+                btnsubmit.disabled = false; 
+            }
+            }
+        </script>
         <script>
             let currentId = null;
             let currentStatus = null;
@@ -267,7 +347,27 @@
 
                     $('#confirmModal-' + modalId).modal('hide');
                 }
+                if (event.target && event.target.classList.contains('btn-secondary')) {
+                const modalId = event.target.closest('.modal').getAttribute('id').split('-')[1];
+                $('#confirmModal-' + modalId).modal('hide');
+                location.reload();
+            }
             });
+        </script>
+         <script>
+            function toggleSearchButton() {
+                // Lấy tất cả các trường cần kiểm tra
+                const status = document.getElementById('status-search').value;
+                const date = document.getElementById('Date').value;
+                const fromTime = document.getElementById('Time-from').value;
+                const toTime = document.getElementById('Time-to').value;
+    
+                // Kiểm tra xem tất cả các trường đều rỗng
+                const isAnyFieldFilled = status !== "" || date !== "" || fromTime !== "" || toTime !== "";
+    
+                // Bật hoặc tắt nút tìm kiếm dựa trên trạng thái của các trường
+                document.getElementById('search-button').disabled = !isAnyFieldFilled;
+            }
         </script>
     </body>
 </html>

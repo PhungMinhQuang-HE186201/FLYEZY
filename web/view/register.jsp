@@ -12,6 +12,7 @@
         <title>Đăng ký</title>
         <link rel="shortcut icon" type="image/png" href="img/flyezy-logo3.png" />
         <link rel="stylesheet" href="css/styleLoginAndRegister.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
         <link rel="stylesheet" href="icon/themify-icons/themify-icons.css" />
     </head>
     <body>
@@ -29,7 +30,9 @@
                     ><i class="ti-home"></i
                     ></a>
             </h1>
-
+            <a href="home" style="position: relative; left: -30px; top: -98px; transition: none; cursor: move;">
+                <i style="font-size: 25px;color: #3c6e57;" class="bi bi-box-arrow-left"></i>
+            </a>
             <h3 style="color: red">${requestScope.error}</h3>
             <c:set var="cookie" value="${pageContext.request.cookies}" />
             <form action="register" method="post">
