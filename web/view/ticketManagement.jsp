@@ -59,6 +59,39 @@
             #main-content{
 
             }
+            body {
+                background-color: #f7f7f7;
+                color: #333;
+                margin: 0;
+                padding: 0;
+            }
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+            .main-container {
+                border: 1px solid #ddd;
+                margin-bottom: 20px;
+                margin-top: 20px;
+                border-radius: 10px;
+                background-color: #fff;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between; 
+                align-items: flex-start;
+            }
+            .details {
+                width: 45%; /* Đảm bảo hai khối có kích thước vừa đủ */
+            }
+            .details p {
+                font-size: 16px;
+            }
+            .details span {
+                font-weight: bold;
+            }
         </style>
 
     </head>
@@ -68,6 +101,36 @@
         <div id="main-content" style="padding:15vh 0vw 15vh 16vw; margin: 0">
             <div class="filterController col-md-12" style="width: 100%">
                 <a href="flightDetailManagement?flightId=${requestScope.flight.getId()}&airlineId=${requestScope.airlineId}" class="btn btn-warning" >Back</a>
+                <div class="main-container">
+                <%
+                  Flights flight = (Flights)request.getAttribute("flight");
+                  Airport airportDep =(Airport)request.getAttribute("airportDep");
+                  Airport airportDes =(Airport)request.getAttribute("airportDes");
+                  FlightDetails flightDetail = (FlightDetails)request.getAttribute("flightDetail");
+                  Location locationDep = (Location)request.getAttribute("locationDep");
+                  Location locationDes = (Location)request.getAttribute("locationDes");
+                  Country countryDep = (Country)request.getAttribute("countryDep");
+                  Country countryDes = (Country)request.getAttribute("countryDes");
+                  PlaneCategory planeCatrgory = (PlaneCategory)request.getAttribute("planeCatrgory");
+                %>
+                <div class="details">
+                    <p>Departure: <span><%=airportDep.getName()%> (<%=locationDep.getName()%>)</span></p>
+                    <p>From:  <span><%=countryDep.getName()%></span></p>
+                    <p>Date: <span><%=flightDetail.getDate()%>  <%=flightDetail.getTime()%></span></p>
+                    <p>Plane Category: <span><%=planeCatrgory.getName()%></span></p>
+                    
+                </div>
+                <div class="details">
+                    <p>Destination: <span><%=airportDes.getName()%> (<%=locationDes.getName()%>) </span></p>
+                    <p>To: <span><%=countryDes.getName()%></span></p>
+                    <p>Time: <span><%=flight.getMinutes()%> minutes</span></p>
+                    <%
+                List<SeatCategory> seatList = (List<SeatCategory>) request.getAttribute("seatList");
+                    for (SeatCategory list : seatList) {%>
+                        <p><%=list.getName()%> :<span><%=list.getNumberOfSeat()-list.getCountSeat()%>  /<%=list.getNumberOfSeat()%></span></p>
+            <%}%>
+                </div>
+            </div>
                 <form action="TicketController" method="get" style="margin-bottom: 20px;">
                     <input type="hidden" name="action" value="search">
                     <strong class="filterElm">Flight Type</strong>
@@ -105,38 +168,9 @@
 
             </div>
                     
-            <div>
-                <%
-                  Flights flight = (Flights)request.getAttribute("flight");
-                  Airport airportDep =(Airport)request.getAttribute("airportDep");
-                  Airport airportDes =(Airport)request.getAttribute("airportDes");
-                  FlightDetails flightDetail = (FlightDetails)request.getAttribute("flightDetail");
-                  Location locationDep = (Location)request.getAttribute("locationDep");
-                  Location locationDes = (Location)request.getAttribute("locationDes");
-                  Country countryDep = (Country)request.getAttribute("countryDep");
-                  Country countryDes = (Country)request.getAttribute("countryDes");
-                  PlaneCategory planeCatrgory = (PlaneCategory)request.getAttribute("planeCatrgory");
-                %>
 
-                <p><%=airportDep.getName()%></p>
-                <p><%=airportDes.getName()%></p>
-                <p><%=locationDep.getName()%></p>
-                <p><%=locationDes.getName()%></p>
-                <p><%=countryDep.getName()%></p>
-                <p><%=countryDes.getName()%></p>
-                <p><%=planeCatrgory.getName()%></p>
-                <p><%=flightDetail.getDate()%></p>  
-                <p><%=flightDetail.getTime()%></p>
-                <p><%=flightDetail.getPrice()%></p>
-                <p><%=flight.getMinutes()%></p>
-                
-            </div>
             <!-- Update Modal -->   
-            <%
-                List<SeatCategory> seatList = (List<SeatCategory>) request.getAttribute("seatList");
-                    for (SeatCategory list : seatList) {%>
-                        <p><%=list.getName()%> :<%=list.getNumberOfSeat()-list.getCountSeat()%>  /<%=list.getNumberOfSeat()%></p>
-            <%}%>
+            
             <table class="entity" >
                 <thead>
                     <tr>
