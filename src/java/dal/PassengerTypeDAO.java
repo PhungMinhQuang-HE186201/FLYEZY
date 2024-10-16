@@ -15,7 +15,7 @@ import model.PassengerType;
 
 public class PassengerTypeDAO extends DBConnect{
     public String getPassengerTypeNameById(int id) {
-        String sql = "SELECT name FROM Passenger_types WHERE id = "+id;
+        String sql = "SELECT name FROM Passenger_Types WHERE id = "+id;
         try {
             PreparedStatement st = conn.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
@@ -30,7 +30,7 @@ public class PassengerTypeDAO extends DBConnect{
     }
     public List<PassengerType> getAllPassengerType() {
         List<PassengerType> list = new ArrayList<>();
-        String sql = "select * from Passenger_types";
+        String sql = "select * from Passenger_Types";
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
             ResultSet resultSet = prepare.executeQuery();

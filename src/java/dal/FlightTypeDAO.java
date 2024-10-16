@@ -20,7 +20,7 @@ public class FlightTypeDAO extends DBConnect {
 
     public List<FlightType> getAllFlightType() {
         List<FlightType> list = new ArrayList<>();
-        String sql = "select * from Flight_type";
+        String sql = "select * from Flight_Type";
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
             ResultSet resultSet = prepare.executeQuery();
@@ -36,7 +36,7 @@ public class FlightTypeDAO extends DBConnect {
     }
 
     public String getNameType(int id) {
-        String sql = "Select name from Flight_type where id= " + id;
+        String sql = "Select name from Flight_Type where id= " + id;
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
             ResultSet resultSet = prepare.executeQuery();

@@ -49,7 +49,7 @@ public class OrderDAO extends DBConnect {
 
     public List<Order> searchOrder(int statusId, String code, String keyword, int flightDetailId) {
         List<Order> list = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT * FROM flyezy.order WHERE 1=1 ");
+        StringBuilder sql = new StringBuilder("SELECT * FROM flyezy.Order WHERE 1=1 ");
         // Use a list to hold parameter values
         List<Object> parameters = new ArrayList<>();
 

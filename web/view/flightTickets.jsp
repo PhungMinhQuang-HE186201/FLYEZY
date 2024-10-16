@@ -238,7 +238,7 @@
 
     <body>
         <%
-            String[] colors = {"#487F3D","#004472","#D5A00C"};
+            String[] colors = {"#487F3D","#004472","#D5A00C","red"};
             SimpleDateFormat timeFmt = new SimpleDateFormat("HH:mm");
             SimpleDateFormat dateFmt = new SimpleDateFormat("dd/MM/yyyy");
             AirlineManageDAO amd = new AirlineManageDAO();
