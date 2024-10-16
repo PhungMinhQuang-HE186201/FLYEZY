@@ -192,8 +192,65 @@ public class TicketDAO extends DBConnect {
         return n;
     }
 
+    public int createTicket(int seatCategoryId, int passengerTypeId, String pName, int pSex, String pPhoneNumber, Date pDob, int baggageId, int orderId, int flightTypeId) {
+        int n = 0;
+        String sql = "INSERT INTO `flyezy`.`Ticket` \n"
+                + "(`Seat_Categoryid`, `Passenger_Typesid`, `code`,`pName`,`pSex`,`pPhoneNumber`,`pDob`,`Baggagesid`,`Order_id`, `Statusid`,`Flight_Type_id`) \n"
+                + "VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, seatCategoryId);
+            ps.setInt(2, passengerTypeId);
+            ps.setString(3, generateUniqueCode());
+            ps.setString(4, pName);
+            ps.setInt(5, pSex);
+            ps.setString(6, pPhoneNumber);
+            ps.setDate(7, pDob);
+            ps.setInt(8, baggageId);
+            ps.setInt(9, orderId);
+            ps.setInt(10, 12);
+            ps.setInt(11, flightTypeId);
+
+            n = ps.executeUpdate();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return n;
+    }
+
+    public String generateUniqueCode() {
+        String code;
+        List<String> existingCodes = getAllTicketCodes();
+        Random random = new Random();
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+        do {
+            StringBuilder sb = new StringBuilder(9);
+            for (int i = 0; i < 9; i++) {
+                sb.append(characters.charAt(random.nextInt(characters.length())));
+            }
+            code = sb.toString();
+        } while (existingCodes.contains(code));
+        return code;
+    }
+
+    public List<String> getAllTicketCodes() {
+        List<String> codes = new ArrayList<>();
+        String sql = "SELECT code FROM flyezy.Ticket";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                codes.add(rs.getString("code"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return codes;
+    }
+
     public static void main(String[] args) {
         TicketDAO tcd = new TicketDAO();
-        System.out.println(tcd.getAllTicketsById(1));
+        tcd.createTicket(7, 1, "Sasuke", 1, "0123", Date.valueOf("2024-10-16"), 4, 1,1);
     }
 }

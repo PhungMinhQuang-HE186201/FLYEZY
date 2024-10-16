@@ -8,6 +8,7 @@ import dal.AccountsDAO;
 import dal.OrderDAO;
 import dal.PlaneCategoryDAO;
 import dal.SeatCategoryDAO;
+import dal.TicketDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -19,6 +20,7 @@ import jakarta.servlet.http.HttpSession;
 import java.sql.Date;
 import model.Accounts;
 import model.Order;
+import model.Ticket;
 
 /**
  *
@@ -89,6 +91,7 @@ public class BookingFlightTicketsServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         OrderDAO od = new OrderDAO();
+        TicketDAO td = new TicketDAO();
         HttpSession session = request.getSession();
         Integer id = (Integer) session.getAttribute("id");
         try {
@@ -100,30 +103,38 @@ public class BookingFlightTicketsServlet extends HttpServlet {
             int adultTicket = Integer.parseInt(request.getParameter("adultTicket"));
             int childTicket = Integer.parseInt(request.getParameter("childTicket"));
             int infantTicket = Integer.parseInt(request.getParameter("infantTicket"));
-            int totalPrice = Integer.parseInt(request.getParameter("totalPrice"));
-            
-            String orderCode = od.createOrder(flightDetailId, pContactName, pContactPhoneNumber, pContactEmail,totalPrice, id, flightDetailId);
+            float totalPriceDouble = Float.parseFloat(request.getParameter("totalPrice"));
+            int totalPrice = (int) Math.round(totalPriceDouble);
+
+            String orderCode = od.createOrder(flightDetailId, pContactName, pContactPhoneNumber, pContactEmail, totalPrice, id);
             Order o = od.getOrderByCode(orderCode);
-            response.sendRedirect("home");
+
             for (int i = 1; i <= adultTicket; i++) {
-                boolean pSex = Boolean.parseBoolean(request.getParameter("pSex"));
-                String pName = request.getParameter("pName");
-                Date pDob = Date.valueOf(request.getParameter("pDob"));
-                String pPhoneNumber = request.getParameter("pPhoneNumber");
-                int pBaggages = Integer.parseInt(request.getParameter("pBaggages"));            
+                int pSex = Integer.parseInt(request.getParameter("pSex"+i));
+                String pName = request.getParameter("pName"+i);
+                Date pDob = Date.valueOf(request.getParameter("pDob"+i));
+                String pPhoneNumber = request.getParameter("pPhoneNumber"+i);
+                int pBaggages = Integer.parseInt(request.getParameter("pBaggages"+i));  
+                td.createTicket(seatCategoryId, 1, pName, pSex, pPhoneNumber, pDob, pBaggages, o.getId(), 1);
             }
-            for (int i = 1; i <= childTicket; i++) {
-                boolean pSex = Boolean.parseBoolean(request.getParameter("pSex"));
-                String pName = request.getParameter("pName");
-                Date pDob = Date.valueOf(request.getParameter("pDob"));
+            for (int i = adultTicket+1; i <= adultTicket+childTicket; i++) {
+                int pSex = Integer.parseInt(request.getParameter("pSex"+i));
+                String pName = request.getParameter("pName"+i);
+                Date pDob = Date.valueOf(request.getParameter("pDob"+i));
+                Ticket t = new Ticket(seatCategoryId, 2, "NULL", pName, pSex, pDob, o.getId(), 12, 1);
+                td.createTicket(seatCategoryId, 2, pName, pSex, "000", pDob, 4, o.getId(), 1);
             }
-            for (int i = 1; i <= infantTicket; i++) {
-                boolean pSex = Boolean.parseBoolean(request.getParameter("pSex"));
-                String pName = request.getParameter("pName");
-                Date pDob = Date.valueOf(request.getParameter("pDob"));
+            for (int i = adultTicket+childTicket+1; i <= adultTicket+childTicket+infantTicket; i++) {
+                int pSex = Integer.parseInt(request.getParameter("pSex"+i));
+                String pName = request.getParameter("pName"+i);
+                Date pDob = Date.valueOf(request.getParameter("pDob"+i));
+                td.createTicket(seatCategoryId, 3, pName, pSex, "000", pDob, 4, o.getId(), 1);
             }
+            response.sendRedirect("home");
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace(); // in lỗi ra console cho mục đích debug
+            request.setAttribute("errorMessage", "Đã xảy ra lỗi: " + e.getMessage());
+            request.getRequestDispatcher("view/error.jsp").forward(request, response); // chuyển hướng đến trang error.jsp
         }
     }
 

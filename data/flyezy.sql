@@ -194,31 +194,13 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `flyezy`.`Feedbacks`
+-- Table `flyezy`.`Payment_Types`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `flyezy`.`Feedbacks` (
+CREATE TABLE IF NOT EXISTS `flyezy`.`Payment_Types` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `Accountsid` INT NOT NULL,
-  `ratedStar` INT NULL DEFAULT NULL,
-  `comment` VARCHAR(255) NULL DEFAULT NULL,
-  `date` TIMESTAMP NULL DEFAULT NULL,
-  `created_at` TIMESTAMP NULL DEFAULT NULL,
-  `updated_at` TIMESTAMP NULL DEFAULT NULL,
-  `Airlineid` INT NOT NULL,
-  `Statusid` INT NOT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `FKFeedbacks957463` (`Accountsid` ASC) VISIBLE,
-  INDEX `FKFeedbacks177109` (`Airlineid` ASC) VISIBLE,
-  INDEX `FKFeedbacks883062` (`Statusid` ASC) VISIBLE,
-  CONSTRAINT `FKFeedbacks177109`
-    FOREIGN KEY (`Airlineid`)
-    REFERENCES `flyezy`.`Airline` (`id`),
-  CONSTRAINT `FKFeedbacks883062`
-    FOREIGN KEY (`Statusid`)
-    REFERENCES `flyezy`.`Status` (`id`),
-  CONSTRAINT `FKFeedbacks957463`
-    FOREIGN KEY (`Accountsid`)
-    REFERENCES `flyezy`.`Accounts` (`id`))
+  `name` VARCHAR(255) NULL DEFAULT NULL,
+  `image` VARCHAR(45) NULL,
+  PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -319,6 +301,89 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
+-- Table `flyezy`.`Order`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `flyezy`.`Order` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `Flight_Detail_id` INT NOT NULL,
+  `code` VARCHAR(45) NOT NULL,
+  `contactName` VARCHAR(45) NULL,
+  `contactPhone` VARCHAR(45) NULL,
+  `contactEmail` VARCHAR(45) NULL,
+  `totalPrice` INT NOT NULL,
+  `Accounts_id` INT NULL,
+  `Payment_Types_id` INT NULL,
+  `paymentTime` TIMESTAMP NULL,
+  `Discount_id` INT NULL,
+  `Status_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_Order_Accounts1_idx` (`Accounts_id` ASC) VISIBLE,
+  INDEX `fk_Order_Payment_Types1_idx` (`Payment_Types_id` ASC) VISIBLE,
+  INDEX `fk_Order_Discount1_idx` (`Discount_id` ASC) VISIBLE,
+  INDEX `fk_Order_Flight_Detail1_idx` (`Flight_Detail_id` ASC) VISIBLE,
+  INDEX `fk_Order_Status1_idx` (`Status_id` ASC) VISIBLE,
+  CONSTRAINT `fk_Order_Accounts1`
+    FOREIGN KEY (`Accounts_id`)
+    REFERENCES `flyezy`.`Accounts` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Order_Payment_Types1`
+    FOREIGN KEY (`Payment_Types_id`)
+    REFERENCES `flyezy`.`Payment_Types` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Order_Discount1`
+    FOREIGN KEY (`Discount_id`)
+    REFERENCES `flyezy`.`Discount` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Order_Flight_Detail1`
+    FOREIGN KEY (`Flight_Detail_id`)
+    REFERENCES `flyezy`.`Flight_Detail` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Order_Status1`
+    FOREIGN KEY (`Status_id`)
+    REFERENCES `flyezy`.`Status` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `flyezy`.`Feedbacks`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `flyezy`.`Feedbacks` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `Accountsid` INT NOT NULL,
+  `ratedStar` INT NULL DEFAULT NULL,
+  `comment` VARCHAR(255) NULL DEFAULT NULL,
+  `date` TIMESTAMP NULL DEFAULT NULL,
+  `created_at` TIMESTAMP NULL DEFAULT NULL,
+  `updated_at` TIMESTAMP NULL DEFAULT NULL,
+  `Statusid` INT NOT NULL,
+  `Order_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `FKFeedbacks957463` (`Accountsid` ASC) VISIBLE,
+  INDEX `FKFeedbacks883062` (`Statusid` ASC) VISIBLE,
+  INDEX `fk_Feedbacks_Order1_idx` (`Order_id` ASC) VISIBLE,
+  CONSTRAINT `FKFeedbacks883062`
+    FOREIGN KEY (`Statusid`)
+    REFERENCES `flyezy`.`Status` (`id`),
+  CONSTRAINT `FKFeedbacks957463`
+    FOREIGN KEY (`Accountsid`)
+    REFERENCES `flyezy`.`Accounts` (`id`),
+  CONSTRAINT `fk_Feedbacks_Order1`
+    FOREIGN KEY (`Order_id`)
+    REFERENCES `flyezy`.`Order` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
 -- Table `flyezy`.`Flight_Type`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `flyezy`.`Flight_Type` (
@@ -379,19 +444,6 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `flyezy`.`Payment_Types`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `flyezy`.`Payment_Types` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NULL DEFAULT NULL,
-  `image` VARCHAR(45) NULL,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
-
--- -----------------------------------------------------
 -- Table `flyezy`.`Seat_Category`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `flyezy`.`Seat_Category` (
@@ -421,60 +473,10 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `flyezy`.`Order`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `flyezy`.`Order` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `Flight_Detail_id` INT NOT NULL,
-  `code` VARCHAR(45) NOT NULL,
-  `contactName` VARCHAR(45) NULL,
-  `contactPhone` VARCHAR(45) NULL,
-  `contactEmail` VARCHAR(45) NULL,
-  `totalPrice` INT NOT NULL,
-  `Accounts_id` INT NULL,
-  `Payment_Types_id` INT NULL,
-  `paymentTime` TIMESTAMP NULL,
-  `Discount_id` INT NULL,
-  `Status_id` INT NOT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `fk_Order_Accounts1_idx` (`Accounts_id` ASC) VISIBLE,
-  INDEX `fk_Order_Payment_Types1_idx` (`Payment_Types_id` ASC) VISIBLE,
-  INDEX `fk_Order_Discount1_idx` (`Discount_id` ASC) VISIBLE,
-  INDEX `fk_Order_Flight_Detail1_idx` (`Flight_Detail_id` ASC) VISIBLE,
-  INDEX `fk_Order_Status1_idx` (`Status_id` ASC) VISIBLE,
-  CONSTRAINT `fk_Order_Accounts1`
-    FOREIGN KEY (`Accounts_id`)
-    REFERENCES `flyezy`.`Accounts` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Order_Payment_Types1`
-    FOREIGN KEY (`Payment_Types_id`)
-    REFERENCES `flyezy`.`Payment_Types` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Order_Discount1`
-    FOREIGN KEY (`Discount_id`)
-    REFERENCES `flyezy`.`Discount` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Order_Flight_Detail1`
-    FOREIGN KEY (`Flight_Detail_id`)
-    REFERENCES `flyezy`.`Flight_Detail` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Order_Status1`
-    FOREIGN KEY (`Status_id`)
-    REFERENCES `flyezy`.`Status` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `flyezy`.`Ticket`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `flyezy`.`Ticket` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `Seat_Categoryid` INT NOT NULL,
   `Passenger_Typesid` INT NOT NULL,
   `code` VARCHAR(255) NOT NULL,

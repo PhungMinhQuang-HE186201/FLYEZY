@@ -113,6 +113,7 @@
                             if(acc.getId() == o.getAccountsId()){%>
                     <td><%=acc.getName()%></td>
                     <%
+                        break;
                         }
                     }
                     %>

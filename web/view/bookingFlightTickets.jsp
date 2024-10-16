@@ -14,6 +14,7 @@
 <%@page import="model.Flights" %>
 <%@page import="model.Baggages" %>
 <%@page import="model.Airport" %>
+<%@page import="model.Accounts" %>
 <%@page import="model.Airline" %>
 <%@page import="model.Location" %>
 <%@page import="model.Country" %>
@@ -261,6 +262,10 @@
 
             <%
             NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+            Accounts currentAcc = null;
+            if(request.getAttribute("account") != null){
+                currentAcc = (Accounts) request.getAttribute("account");
+            }   
             %>
 
             <div style="display: flex; justify-content: space-between">
@@ -284,15 +289,15 @@
                                     <div style="padding: 15px">
                                         <div class="passenger-info-input-box">
                                             <div class="passenger-info-input-title">Full Name:</div> 
-                                            <input type="text" name="pContactName" required/>
+                                            <input type="text" name="pContactName" value="<%=(currentAcc!=null)?currentAcc.getName():""%>" required/>
                                         </div>
                                         <div class="passenger-info-input-box">
                                             <div class="passenger-info-input-title">Phone number:</div>
-                                            <input type="number" name="pContactPhoneNumber" required/>
+                                            <input type="number" name="pContactPhoneNumber" value="<%=(currentAcc!=null)?currentAcc.getPhoneNumber():""%>" required/>
                                         </div>
                                         <div class="passenger-info-input-box">
                                             <div class="passenger-info-input-title">Email:</div>
-                                            <input type="email" name="pContactEmail" required/>
+                                            <input type="email" name="pContactEmail" value="<%=(currentAcc!=null)?currentAcc.getEmail():""%>" required/>
                                         </div>
                                     </div>
                                 </div>
@@ -306,7 +311,7 @@
                                  color: #3C6E57;
                                  letter-spacing: 1px;"><p>PASSENGER INFORMATION</p></div>
                             <div style="width: 100%" class="inform">
-                                <% for(int i = 0; i<adultTicket; i++){
+                                <% for(int i = 1; i<=adultTicket; i++){
                                 %>
                                 <div class="passenger-info-input" style="position: relative">
                                     <div style="position: absolute;
@@ -314,11 +319,11 @@
                                          font-size: 16px;
                                          background-color: white;
                                          color: #3C6E57;
-                                         padding: 0 10px;">PASSENGER ADULT <%=i+1%> </div>
+                                         padding: 0 10px;">PASSENGER ADULT <%=i%> </div>
                                     <div style="padding: 15px">
                                         <div class="passenger-info-input-box">
                                             <div class="passenger-info-input-title" style="width: 168px">Full Name:</div> 
-                                            <select name="pSex" style="margin-right: 5px">
+                                            <select name="pSex<%=i%>" style="margin-right: 5px">
                                                 <option value="1">Mr</option>
                                                 <option value="0">Mrs</option>
                                             </select>
@@ -326,15 +331,15 @@
                                         </div>
                                         <div class="passenger-info-input-box">
                                             <div class="passenger-info-input-title">Date of birth:</div>
-                                            <input type="date" name="pDob" required/>
+                                            <input type="date" name="pDob<%=i%>" required/>
                                         </div>
                                         <div class="passenger-info-input-box">
                                             <div class="passenger-info-input-title">Phone number:</div>
-                                            <input type="number" name="pPhoneNumber" required/>
+                                            <input type="number" name="pPhoneNumber<%=i%>" required/>
                                         </div>
                                         <div class="passenger-info-input-box"  >
                                             <div class="passenger-info-input-title" style="width: 121px">Baggage:</div>
-                                            <select name="pBaggages" id="baggage<%=i%>" onchange="updateTotalBaggage()">
+                                            <select name="pBaggages<%=i%>" id="baggage<%=i%>" onchange="updateTotalBaggage()">
                                                 <option value="0">Buy 0kg extra checked baggage - <%=currencyFormatter.format(0)%></option>
                                                 <% for(Baggages b : bmd.getAllBaggagesByAirline(airlineId)){
                                                 %>
@@ -349,7 +354,7 @@
                                 <%
                                     }
                                 %>
-                                <% for(int i = 0; i<childTicket; i++){
+                                <% for(int i = adultTicket+1; i<=adultTicket+childTicket; i++){
                                 %>
                                 <div class="passenger-info-input" style="position: relative">
                                     <div style="position: absolute;
@@ -357,11 +362,11 @@
                                          font-size: 16px;
                                          background-color: white;
                                          color: #3C6E57;
-                                         padding: 0 10px;">PASSENGER CHILDREN <%=i+1%> </div>
+                                         padding: 0 10px;">PASSENGER CHILDREN <%=i-adultTicket%> </div>
                                     <div style="padding: 15px">
                                         <div class="passenger-info-input-box">
                                             <div class="passenger-info-input-title" style="width: 168px">Full Name:</div> 
-                                            <select name="pSex" style="margin-right: 5px">
+                                            <select name="pSex<%=i%>" style="margin-right: 5px">
                                                 <option value="1">Boy</option>
                                                 <option value="0">Girl</option>
                                             </select>
@@ -369,14 +374,14 @@
                                         </div>
                                         <div class="passenger-info-input-box">
                                             <div class="passenger-info-input-title">Date of birth:</div>
-                                            <input type="date" name="pDob" required/>
+                                            <input type="date" name="pDob<%=i%>" required/>
                                         </div>
                                     </div>
                                 </div>
                                 <%
                                     }
                                 %>
-                                <% for(int i = 0; i<infantTicket; i++){
+                                <% for(int i = adultTicket+childTicket+1; i<=infantTicket+adultTicket+childTicket; i++){
                                 %>
                                 <div class="passenger-info-input" style="position: relative">
                                     <div style="position: absolute;
@@ -384,11 +389,11 @@
                                          font-size: 16px;
                                          background-color: white;
                                          color: #3C6E57;
-                                         padding: 0 10px;">PASSENGER INFANT <%=i+1%> </div>
+                                         padding: 0 10px;">PASSENGER INFANT <%=i-(adultTicket+childTicket)%> </div>
                                     <div style="padding: 15px">
                                         <div class="passenger-info-input-box">
                                             <div class="passenger-info-input-title" style="width: 168px">Full Name:</div> 
-                                            <select name="pSex" style="margin-right: 5px">
+                                            <select name="pSex<%=i%>" style="margin-right: 5px">
                                                 <option value="1">Boy</option>
                                                 <option value="0">Girl</option>
                                             </select>
@@ -396,7 +401,7 @@
                                         </div>
                                         <div class="passenger-info-input-box">
                                             <div class="passenger-info-input-title">Date of birth:</div>
-                                            <input type="date" name="pDob" required/>
+                                            <input type="date" name="pDob<%=i%>" required/>
                                         </div>
                                     </div>
                                 </div>

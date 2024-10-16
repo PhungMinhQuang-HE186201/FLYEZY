@@ -47,7 +47,7 @@ public class OrderDAO extends DBConnect {
         return null;
     }
 
-        public List<Order> searchOrder(int statusId, String code, String keyword, int flightDetailId) {
+    public List<Order> searchOrder(int statusId, String code, String keyword, int flightDetailId) {
         List<Order> list = new ArrayList<>();
         StringBuilder sql = new StringBuilder("SELECT * FROM flyezy.order WHERE 1=1 ");
         // Use a list to hold parameter values
@@ -159,9 +159,9 @@ public class OrderDAO extends DBConnect {
         return false;
     }
 
-    public String createOrder(int flightDetailId, String contactName, String contactPhone, String contactEmail, int totalPrice, int accountId, int flightTypeId) {
-        String sql = "INSERT INTO `Order` (Flight_Detail_id, code, contactName, contactPhone, contactEmail, totalPrice, Accounts_id, Flight_Type_id, Status_id) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public String createOrder(int flightDetailId, String contactName, String contactPhone, String contactEmail, int totalPrice, Integer accountId) {
+        String sql = "INSERT INTO `Order` (Flight_Detail_id, code, contactName, contactPhone, contactEmail, totalPrice, Accounts_id,Status_id) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         String code = generateUniqueCode();
         try {
@@ -172,9 +172,12 @@ public class OrderDAO extends DBConnect {
             ps.setString(4, contactPhone);
             ps.setString(5, contactEmail);
             ps.setInt(6, totalPrice);
-            ps.setInt(7, accountId);
-            ps.setInt(8, flightTypeId);
-            ps.setInt(9, 12); //is pending
+            if (accountId != null) {
+                ps.setInt(7, accountId);
+            } else {
+                ps.setNull(7, java.sql.Types.INTEGER);
+            }
+            ps.setInt(8, 12); //is pending
             ps.executeUpdate();
             return code;
         } catch (Exception e) {
@@ -246,6 +249,6 @@ public class OrderDAO extends DBConnect {
 
     public static void main(String[] args) {
         OrderDAO dao = new OrderDAO();
-        dao.createOrder(1, "Naruto", "0123", "hello@gmail.com", 10000, 1, 1);
+        dao.createOrder(1, "Naruto", "0123", "hello@gmail.com", 10000, null);
     }
 }
