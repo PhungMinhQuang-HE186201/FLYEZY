@@ -84,10 +84,12 @@
                                 <button type="button" class="close" style="font-size: 30px; margin-right: 12px;" data-dismiss="modal">&times;</button>
                                 <h4 style="margin-left: 12px">Create new account</h4>
                             </div>
-                            <div class="modal-body" style="padding:40px 50px;">
+                            <div class="modal-body" style="padding:40px 50px;" id="addAccount">
+                                <c:if test="${not empty error}">
+                                   <p id="error" class="text-danger"><%= request.getAttribute("error") != null ? request.getAttribute("error") : "" %></p>
+                                </c:if>
                                 <form role="form" action="accountController" method="Post">
                                     <input type="hidden" name="action" value="create"/>
-
                                     <div class="row" style="margin-bottom: 20px">
 
                                         <div class="form-group col-md-6">

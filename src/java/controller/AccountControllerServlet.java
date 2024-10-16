@@ -171,10 +171,10 @@ public class AccountControllerServlet extends HttpServlet {
                     session.setAttribute("result", "Create account successfully!");
                     response.sendRedirect("accountController");
                 } else {
-                    String message = "The phoneNumber or email has already existed!";
+                    String error = "The phoneNumber or email has already existed!";
                     List<Accounts> accountList = ad.getAllAccounts();
                     request.setAttribute("accountList", accountList);
-                    request.setAttribute("message", message);
+                    request.setAttribute("error", error);
                     RolesDAO rd = new RolesDAO();
                     AirlineManageDAO amd = new AirlineManageDAO();
                     session = request.getSession();
