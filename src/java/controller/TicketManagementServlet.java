@@ -152,6 +152,7 @@ public class TicketManagementServlet extends HttpServlet {
         List<SeatCategory> seatList = scd.getNameAndNumberOfSeat(planeCategoryID);
         request.setAttribute("seatList", seatList);
         
+        
         if (action == null) {
             request.getRequestDispatcher("view/ticketManagement.jsp").forward(request, response);
         } else if (action.equals("search")) {
@@ -160,9 +161,10 @@ public class TicketManagementServlet extends HttpServlet {
             String statusTicket = request.getParameter("statusTicket");
             String fName = request.getParameter("fName").trim();
             String fPhoneNumber = request.getParameter("fPhoneNumber").trim();
+            int orderId = Integer.parseInt(request.getParameter("orderId"));
 //            List<Accounts> accountList = ad.searchAccounts(fRole, fName, fPhoneNumber);
 //            request.setAttribute("accountList", accountList);
-            List<Ticket> ticketSearchList = td.searchTickets(passengerType, statusTicket, fName, fPhoneNumber,flightDetailID,flightType);
+            List<Ticket> ticketSearchList = td.searchTickets(passengerType, statusTicket, fName, fPhoneNumber,flightDetailID,flightType,orderId);
             request.setAttribute("ticketList", ticketSearchList);
             request.getRequestDispatcher("view/ticketManagement.jsp").forward(request, response);
         }

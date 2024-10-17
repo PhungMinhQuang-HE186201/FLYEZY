@@ -109,13 +109,22 @@
                     <td><%=o.getContactPhone()%></td>
                     <td><%=o.getContactEmail()%></td>
                     <td><%=o.getTotalPrice()%></td>
-                    <%for(Accounts acc : listAcc){
-                            if(acc.getId() == o.getAccountsId()){%>
-                    <td><%=acc.getName()%></td>
+                    <% 
+                        boolean found = false; 
+                        for (Accounts acc : listAcc) {
+                            if (acc.getId() == o.getAccountsId()) { 
+                                found = true; 
+                    %>
+                    <td><%= (acc.getName() != null) ? acc.getName() : "null" %></td>
                     <%
-                        break;
+                                break;
+                            }
                         }
-                    }
+                        if (!found) {
+                    %>
+                    <td>null</td>
+                    <% 
+                        }
                     %>
                     <%String paymentName = ptd.getPaymentTypeNameById(o.getPaymentTypesId());%>
                     <td><%=paymentName%></td>
@@ -163,7 +172,7 @@
                                 </div>
                             </div>
                         </div>  
-                        <a href="TicketController?orderId=<%= o.getId() %>" class="btn btn-primary" style="margin-left: 10px;">
+                        <a href="TicketController?action=search&flightDetailID=${param.flightDetailID}&flightType=&passengerType=&statusTicket=&fName=&fPhoneNumber=&orderId=<%=o.getId()%>" class="btn btn-primary" style="margin-left: 10px;">
                             Ticket Detail
                         </a>
                     </td>
