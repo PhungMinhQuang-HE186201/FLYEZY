@@ -83,7 +83,7 @@
                     <input type="submit" value="Đăng nhập" /><br /><br />
                 </div>
                 <div>
-                    <a href="https://accounts.google.com/o/oauth2/auth?scope=email profile openid&redirect_uri=http://localhost:8080/flyezy/loginGoogleHandler&response_type=code&client_id=567083027781-r2dqc8ursvogag062snkt50uhbtnh90r.apps.googleusercontent.com&approval_prompt=force">Login By Google</a>
+                    <a style="display: flex;justify-content: center;margin-bottom: 21px" href="https://accounts.google.com/o/oauth2/auth?scope=email profile openid&redirect_uri=http://localhost:8080/flyezy/loginGoogleHandler&response_type=code&client_id=567083027781-r2dqc8ursvogag062snkt50uhbtnh90r.apps.googleusercontent.com&approval_prompt=force">Login By Google</a>
                 </div>
                 Bạn chưa có tài khoản à?
                 <a class="letDoIt" href="register">Đăng ký ngay</a>
