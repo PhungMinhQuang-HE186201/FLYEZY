@@ -77,6 +77,36 @@ public class TicketDAO extends DBConnect {
         return null;
     }
 
+    public List<Ticket> getAllTicketsByOrderId(int orderId) {
+        List<Ticket> ls = new ArrayList<>();
+        String sql = "select t.id,t.Seat_Categoryid,t.Passenger_Typesid,t.code,t.pName,t.pSex,t.pPhoneNumber,t.pDob,t.Baggagesid,t.Order_id,t.Statusid,o.Flight_Detail_id,t.Flight_Type_id from Ticket t \n"
+                + "join `flyezy`.`Order` o On t.Order_id=o.id\n"
+                + "where Order_id= " + orderId + " and Statusid!=9";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Ticket t = new Ticket(rs.getInt("id"),
+                        rs.getInt("Seat_Categoryid"),
+                        rs.getInt("Passenger_Typesid"),
+                        rs.getString("code"),
+                        rs.getString("pName"),
+                        rs.getInt("pSex"),
+                        rs.getString("pPhoneNumber"),
+                        rs.getDate("pDob"),
+                        rs.getInt("Baggagesid"),
+                        rs.getInt("Order_id"),
+                        rs.getInt("Statusid"),
+                        rs.getInt("Flight_Type_id"));
+                ls.add(t);
+            }
+            return ls;
+
+        } catch (Exception e) {
+        }
+        return null;
+    }
+
     public Ticket getTicketById(int id) {
         String sql = "Select * from ticket where id =" + id + " and Statusid!=9";
         try {

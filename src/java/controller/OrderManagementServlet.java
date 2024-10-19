@@ -5,8 +5,12 @@
 package controller;
 
 import dal.AccountsDAO;
+import dal.AirportDAO;
+import dal.CountryDAO;
 import dal.FlightDetailDAO;
+import dal.LocationDAO;
 import dal.OrderDAO;
+import dal.PlaneCategoryDAO;
 import dal.StatusDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -17,8 +21,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Accounts;
+import model.Airport;
+import model.Country;
+import model.FlightDetails;
 import model.Flights;
+import model.Location;
 import model.Order;
+import model.PlaneCategory;
 import model.Status;
 
 /**
@@ -30,6 +39,10 @@ public class OrderManagementServlet extends HttpServlet {
     FlightDetailDAO fdd = new FlightDetailDAO();
     OrderDAO od = new OrderDAO();
     AccountsDAO ad = new AccountsDAO();
+    AirportDAO aid = new AirportDAO();
+    LocationDAO ld = new LocationDAO();
+    CountryDAO cd = new CountryDAO();
+    PlaneCategoryDAO pcd = new PlaneCategoryDAO();
     StatusDAO statusDao = new StatusDAO();
 
     @Override
@@ -48,6 +61,26 @@ public class OrderManagementServlet extends HttpServlet {
         int flightDetailId = Integer.parseInt(flightDetailIdStr);
         int airlineId = fdd.getAirlineIdByFlightDetailId(flightDetailId);
         Flights flight = fdd.getFlightByFlightDetailId(flightDetailId);
+
+        Airport airportDep = aid.getAirportById(flight.getDepartureAirportId());
+        request.setAttribute("airportDep", airportDep);
+        Location locationDep = ld.getLocationById(airportDep.getId());
+        request.setAttribute("locationDep", locationDep);
+        Country countryDep = cd.getCountryById(locationDep.getCountryId());
+        request.setAttribute("countryDep", countryDep);
+
+        Airport airportDes = aid.getAirportById(flight.getDestinationAirportId());
+        request.setAttribute("airportDes", airportDes);
+        Location locationDes = ld.getLocationById(airportDes.getId());
+        request.setAttribute("locationDes", locationDes);
+        Country countryDes = cd.getCountryById(locationDes.getCountryId());
+        request.setAttribute("countryDes", countryDes);
+
+        FlightDetails flightDetail = fdd.getFlightDetailsByID(flightDetailId);
+        request.setAttribute("flightDetail", flightDetail);
+        PlaneCategory planeCatrgory = pcd.getPlaneCategoryById(flightDetail.getPlaneCategoryId());
+        request.setAttribute("planeCatrgory", planeCatrgory);
+
         List<Order> listOrder = od.getAllOrdersByFlightDetail(flightDetailId);
         String submit = request.getParameter("submit");
         if (submit == null) {
