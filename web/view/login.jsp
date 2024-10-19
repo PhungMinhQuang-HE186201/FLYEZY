@@ -11,6 +11,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="css/styleLoginAndRegister.css" />
         <link rel="shortcut icon" type="image/png" href="img/flyezy-logo3.png" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
         <title>Đăng nhập</title>
 
     </head>
@@ -30,8 +31,14 @@
                     ><i class="ti-home"></i
                     ></a>
             </h1>
+            <div>
+                <a href="home" style="transform: translate(0px, 1px); position: relative; left: -34px; top: -90px;">
+                    <i style="font-size: 25px;color: #3c6e57;" class="bi bi-arrow-90deg-left"></i>
+                </a>
+            </div>
             <c:set var="cookie" value="${pageContext.request.cookies}" />
-            <form action="login" method="post">                             
+            <form action="login" method="post">     
+
                 <div class="form-group">
                     <input
                         type="text"
@@ -74,6 +81,9 @@
                 ><br /><br />
                 <div class="button">
                     <input type="submit" value="Đăng nhập" /><br /><br />
+                </div>
+                <div>
+                    <a style="display: flex;justify-content: center;margin-bottom: 21px" href="https://accounts.google.com/o/oauth2/auth?scope=email profile openid&redirect_uri=http://localhost:8080/flyezy/loginGoogleHandler&response_type=code&client_id=567083027781-r2dqc8ursvogag062snkt50uhbtnh90r.apps.googleusercontent.com&approval_prompt=force">Login By Google</a>
                 </div>
                 Bạn chưa có tài khoản à?
                 <a class="letDoIt" href="register">Đăng ký ngay</a>

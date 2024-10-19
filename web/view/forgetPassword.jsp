@@ -7,6 +7,7 @@
         <title>Register</title>
         <link rel="shortcut icon" type="image/jpg" href="image/logo-icon.png" />
         <link rel="stylesheet" href="css/styleLoginAndRegister.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
         <link rel="stylesheet" href="icon/themify-icons/themify-icons.css" />
     </head>
     <body>
@@ -25,12 +26,16 @@
                     ></a>
             </h1>
 
-
+            <div>
+                <a href="home" style="position: relative; left: -30px; top: -99px; transition: none; cursor: move;">
+                    <i style="font-size: 20px;color: #3c6e57;" class="bi bi-arrow-90deg-left"></i>
+                </a>
+            </div>
             <form action="ForgetPassword" method="post">
                 <div class="form-group">
                     <input type="email" name="email" required />
                     <label for="">Email của bạn</label>
-                   
+
                 </div>
                 <p id="capslock-warning" style="display: none; margin-bottom: 30px">⚠️ Caps Lock is on</p>
                 <h5 style="color: red">${requestScope.error}</h5><br>

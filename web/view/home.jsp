@@ -408,7 +408,7 @@
                 }).on('changeDate', function (selected) {
                     // Get the selected departure date
                     var minReturnDate = new Date(selected.date.valueOf());
-                    minReturnDate.setDate(minReturnDate.getDate() + 1); // Set the return date to be at least one day after the departure
+                    minReturnDate.setDate(minReturnDate.getDate()); // Set the return date to be at least one day after the departure
 
                     // Set the minimum date for returnDate
                     $('#returnDate').datepicker('setStartDate', minReturnDate);
@@ -424,7 +424,7 @@
                     autoclose: true, // Automatically close the calendar after picking a date
                     todayHighlight: true, // Highlight today's date
                     orientation: 'bottom auto', // Ensure the calendar pops up below the input
-                    startDate: '2024-10-02' // Default minimum date for return (will change based on departure)
+                    startDate: '2024-10-01' // Default minimum date for return (will change based on departure)
                 });
             });
 
@@ -434,29 +434,34 @@
             // Ensure to bind the toggleReturnDate to the radio buttons' change event
             document.getElementById("oneWay").addEventListener('change', toggleReturnDate);
             document.getElementById("roundTrip").addEventListener('change', toggleReturnDate);
-
             function validateDates() {
                 const departureDate = document.getElementById('departureDate').value;
                 const returnDate = document.getElementById('returnDate').value;
 
-                // Check if both fields are filled
+                // Proceed only if both dates are provided
                 if (departureDate && returnDate) {
-                    if (departureDate === returnDate) {
+                    const depDate = new Date(departureDate);
+                    const retDate = new Date(returnDate);
+
+                    // Check if the departure date is after the return date
+                    if (depDate > retDate) {
                         event.preventDefault();
-                        alert("Ngày đi và Ngày về không được trùng nhau.");
+                        alert("Ngày đi phải trước ngày về.");
                         return false; // Prevent form submission
                     }
                 }
 
-                // If validation passes, allow form submission (if using a form element)
-                return true; // Return true to allow submission
+                // Allow form submission if validation passes
+                return true;
             }
 
-            // Optional: Toggle the return date field based on departure date
+            // Optional: Toggle the return date field based on departure date selection
             document.getElementById('departureDate').addEventListener('change', function () {
                 const returnDateField = document.getElementById('returnDateField');
                 returnDateField.style.display = this.value ? 'block' : 'none';
             });
+
+
         </script>
 
 

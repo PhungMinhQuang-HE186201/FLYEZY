@@ -84,6 +84,44 @@ public class FlightManageDAO extends DBConnect {
         return null;
     }
 
+    public String getDepartureByFlight(int id) {
+        String sql = "select l.name from flyezy.flight f \n"
+                + "join flyezy.airport a on a.id = f.departureAirportid\n"
+                + "join flyezy.location l on l.id = a.locationId\n"
+                + "where f.id = ?";
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            prepare.setInt(1, id);
+            ResultSet resultSet = prepare.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getString("name");
+            }
+        } catch (Exception e) {
+        }
+
+        return null;
+    }
+
+    public String getDestinationByFlight(int id) {
+        String sql = "select l.name from flyezy.flight f \n"
+                + "join flyezy.airport a on a.id = f.destinationAirportid\n"
+                + "join flyezy.location l on l.id = a.locationId\n"
+                + "where f.id = ?";
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            prepare.setInt(1, id);
+            ResultSet resultSet = prepare.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getString("name");
+            }
+        } catch (Exception e) {
+        }
+
+        return null;
+    }
+
     public boolean checkDuplicated(Flights flight, int airlineId) {
         String sql = "SELECT * FROM Flight WHERE Airline_id = ? AND departureAirportid = ? AND destinationAirportid = ? AND id != ?";
 
@@ -95,12 +133,12 @@ public class FlightManageDAO extends DBConnect {
             ps.setInt(4, flight.getId()); // không check chuyến bay hiện tại, th mà kh update des và dep sẽ kh bị lỗi
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                return false;  
+                return false;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return true; 
+        return true;
     }
 
     public Flights getAllFlight() {
@@ -188,7 +226,7 @@ public class FlightManageDAO extends DBConnect {
 
     public static void main(String[] args) {
         FlightManageDAO dao = new FlightManageDAO();
-        System.out.println(dao.getAllFlights());
+        System.out.println(dao.getDepartureByFlight(1));
 
     }
 

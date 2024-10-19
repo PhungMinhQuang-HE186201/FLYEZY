@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 import model.Status;
@@ -128,9 +129,30 @@ public class StatusDAO extends DBConnect {
         }
     }
 
+    public List<Status> getStatusOfFlightDetaisl() {
+        List<Status> ls = new ArrayList<>();
+        try {
+            String sql = "SELECT * FROM flyezy.status WHERE id = 3 OR id = 4 OR id = 5";
+
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                ls.add(new Status(id, name));
+            }
+        } catch (SQLException e) {
+
+        }
+        return ls;
+    }
+
     public static void main(String[] args) {
-        StatusDAO dao = new StatusDAO();
 //        System.out.println(dao.getAllStatus());
-        System.out.println(dao.getStatusNameById(0));
+        StatusDAO sd = new StatusDAO();
+        List<Status> statuses = (List<Status>) sd.getStatusOfFlightDetaisl();
+        for (Status status : statuses) {
+            System.out.println(status.getId());
+        }
     }
 }
