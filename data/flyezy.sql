@@ -307,13 +307,14 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Order` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `Flight_Detail_id` INT NOT NULL,
   `code` VARCHAR(45) NOT NULL,
-  `contactName` VARCHAR(45) NULL,
-  `contactPhone` VARCHAR(45) NULL,
-  `contactEmail` VARCHAR(45) NULL,
+  `contactName` VARCHAR(45) NOT NULL,
+  `contactPhone` VARCHAR(45) NOT NULL,
+  `contactEmail` VARCHAR(45) NOT NULL,
   `totalPrice` INT NOT NULL,
   `Accounts_id` INT NULL,
   `Payment_Types_id` INT NULL,
   `paymentTime` TIMESTAMP NULL,
+  `created_at` TIMESTAMP NOT NULL,
   `Discount_id` INT NULL,
   `Status_id` INT NOT NULL,
   PRIMARY KEY (`id`),
@@ -413,7 +414,8 @@ COLLATE = utf8mb4_0900_ai_ci;
 CREATE TABLE IF NOT EXISTS `flyezy`.`News` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(255) NULL DEFAULT NULL,
-  `content` VARCHAR(255) NULL DEFAULT NULL,
+  `image` VARCHAR(45) NULL,
+  `content` TEXT NULL DEFAULT NULL,
   `News_Categoryid` INT NOT NULL,
   `Accountsid` INT NOT NULL,
   PRIMARY KEY (`id`),
@@ -453,7 +455,8 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Seat_Category` (
   `image` VARCHAR(255) NULL DEFAULT NULL,
   `Plane_Categoryid` INT NOT NULL,
   `info` TEXT NULL DEFAULT NULL,
-  `surcharge` FLOAT NULL DEFAULT NULL,
+  `seatEachRow` INT NOT NULL,
+  `surcharge` FLOAT NOT NULL,
   `Status_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `FKSeat_Categ529738` (`Plane_Categoryid` ASC) VISIBLE,
@@ -485,6 +488,7 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Ticket` (
   `pPhoneNumber` VARCHAR(10) NOT NULL,
   `pDob` DATE NOT NULL,
   `Baggagesid` INT NULL DEFAULT NULL,
+  `totalPrice` INT NOT NULL,
   `Order_id` INT NOT NULL,
   `Statusid` INT NOT NULL,
   `Flight_Type_id` INT NOT NULL,
@@ -529,6 +533,8 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Refund` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `bank` VARCHAR(255) NULL DEFAULT NULL,
   `bankAccount` VARCHAR(255) NULL DEFAULT NULL,
+  `requestDate` TIMESTAMP NULL,
+  `refundDate` TIMESTAMP NULL,
   `Ticketid` INT NOT NULL,
   `Statusid` INT NOT NULL,
   PRIMARY KEY (`id`),
@@ -582,28 +588,26 @@ VALUES
   (6,'AIRBUS A350','img/vnairline-AIRBUS A350.png',2,'<p>Nhà sản xuất: Airbus</p><p>Khoảng cách tối đa (km): 14.350 km</p><p>Vận tốc (km/h): 901 km/h</p><p>Tổng chiều dài: 66.89 m</p><p>Sải cánh: 64.75 m</p><p>Chiều cao: 17.05 m</p>',1),
   (7,'AIRBUS A320 NEO','img/vnairline-AIRBUS A320 NEO.png',2,'<p>Nhà sản xuất: Airbus</p><p>Khoảng cách tối đa (km): 6.300 km</p><p>Vận tốc (km/h): 1.005 km/h</p><p>Tổng chiều dài: 37,57 m</p><p>Sải cánh: 35,8 m</p><p>Chiều cao: 11,76 m</p>',1);
 
-INSERT INTO `Seat_Category` 
+INSERT INTO `flyezy`.`Seat_Category` 
+(`id`, `name`, `numberOfSeat`, `image`, `Plane_Categoryid`, `info`, `seatEachRow`, `surcharge`, `Status_id`)
 VALUES 
-  (1,'Economy',184,'img/bamboo-economy.jpg',1,'<ul><li><span style=\"background-color:rgb(255,255,255);color:rgb(52,64,84);\">Hành lý xách tay: 7kg</span></li><li><span style=\"background-color:rgb(255,255,255);color:rgb(52,64,84);\">Thay đổi trước giờ khởi hành: 600.000 VND (*)</span><br><span style=\"background-color:rgb(255,255,255);color:rgb(52,64,84);\">Không thay đổi sau giờ khởi hành (*)</span></li><li><span style=\"background-color:rgb(255,255,255);color:rgb(52,64,84);\">Hệ số cộng điểm Flyezy Club: 0.25</span></li></ul>',0,1),
-  (2,'Business',8,'img/bamboo-business.jpg',1,'<ul><li><span style=\"background-color:rgb(255,255,255);color:rgb(52,64,84);\">Hành lý xách tay: 2 kiện, 7kg/kiện</span></li><li><span style=\"background-color:rgb(255,255,255);color:rgb(52,64,84);\">01 kiện hành lý ký gửi 40kg</span></li><li><span style=\"background-color:rgb(255,255,255);color:rgb(52,64,84);\">Hoàn/huỷ trước giờ khởi hành: 300.000 VND (*)</span><br><span style=\"background-color:rgb(255,255,255);color:rgb(52,64,84);\">Hoàn/huỷ sau giờ khởi hành: 300.000 VND (*)</span></li><li><span style=\"background-color:rgb(255,255,255);color:rgb(52,64,84);\">Hệ số cộng điểm Flyezy Club: 2</span></li><li><span style=\"background-color:rgb(255,255,255);color:rgb(52,64,84);\">Thay đổi miễn phí</span></li><li><span style=\"background-color:rgb(255,255,255);color:rgb(52,64,84);\">Chọn ghế ngồi miễn phí</span></li><li><span style=\"background-color:rgb(255,255,255);color:rgb(52,64,84);\">Đổi chuyến tại sân bay miễn phí</span></li></ul>',0.5,1),
-  (3,'Economy',168,'img/bamboo-economy.jpg',2,NULL,NULL,1),
-  (4,'Business',8,'img/bamboo-business.jpg',2,NULL,NULL,1),
-  (5,'Economy',162,'img/bamboo-economy.jpg',3,NULL,NULL,1),
-  (6,'Business',8,'img/bamboo-business.jpg',3,NULL,NULL,1),
-  (7,'Hạng Thương Gia',16,'img/vnairline-A321-Business.png',4,'',NULL,1),
-  (8,'Hạng Phổ Thông',162,'img/vnairline-A321-GhePhoThong.png',4,NULL,NULL,1),
-  (9,'Hạng Thương Gia',28,'img/vnairline-B787-GheThuongGia.png',5,NULL,NULL,1),
-  (10,'Hạng Phổ Thông Đặc Biệt',35,'img/vnairline-B787-GhePhoThongDacBiet.png',5,NULL,NULL,1),
-  (11,'Hạng Phổ Thông',211,'img/vnairline-B787-GhePhoThong.png',5,NULL,NULL,1),
-  (12,'Hạng Thương Gia',29,'img/vnairline-A350-GheThuongGia.png',6,NULL,NULL,1),
-  (13,'Hạng Phổ Thông Đặc Biệt',45,'img/vnairline-A350-GhePhoThongDacBiet.png',6,NULL,NULL,1),
-  (14,'Hạng Phổ Thông',231,'img/vnairline-A350-GhePhoThong.png',6,NULL,NULL,1),
-  (15,'Hạng Thương Gia',8,'img/vnairline-A320neo-Thuong gia.png',7,NULL,NULL,1),
-  (16,'Hạng Phổ Thông',180,'img/vnairline-A320neo-PhoThong.png',7,NULL,NULL,1),
-  (20,'Max Business',10,'img/jack.png',1,'',1,1);
-
-
-
+  (1, 'Economy', 184, 'img/bamboo-economy.jpg', 1, '<ul><li><span style="background-color:rgb(255,255,255);color:rgb(52,64,84);">Hành lý xách tay: 7kg</span></li><li><span style="background-color:rgb(255,255,255);color:rgb(52,64,84);">Thay đổi trước giờ khởi hành: 600.000 VND (*)</span><br><span style="background-color:rgb(255,255,255);color:rgb(52,64,84);">Không thay đổi sau giờ khởi hành (*)</span></li><li><span style="background-color:rgb(255,255,255);color:rgb(52,64,84);">Hệ số cộng điểm Flyezy Club: 0.25</span></li></ul>', 6, 0, 1),
+  (2, 'Business', 8, 'img/bamboo-business.jpg', 1, '<ul><li><span style="background-color:rgb(255,255,255);color:rgb(52,64,84);">Hành lý xách tay: 2 kiện, 7kg/kiện</span></li><li><span style="background-color:rgb(255,255,255);color:rgb(52,64,84);">01 kiện hành lý ký gửi 40kg</span></li><li><span style="background-color:rgb(255,255,255);color:rgb(52,64,84);">Hoàn/huỷ trước giờ khởi hành: 300.000 VND (*)</span><br><span style="background-color:rgb(255,255,255);color:rgb(52,64,84);">Hoàn/huỷ sau giờ khởi hành: 300.000 VND (*)</span></li><li><span style="background-color:rgb(255,255,255);color:rgb(52,64,84);">Hệ số cộng điểm Flyezy Club: 2</span></li><li><span style="background-color:rgb(255,255,255);color:rgb(52,64,84);">Thay đổi miễn phí</span></li><li><span style="background-color:rgb(255,255,255);color:rgb(52,64,84);">Chọn ghế ngồi miễn phí</span></li><li><span style="background-color:rgb(255,255,255);color:rgb(52,64,84);">Đổi chuyến tại sân bay miễn phí</span></li></ul>', 6, 0.5, 1),
+  (3, 'Economy', 168, 'img/bamboo-economy.jpg', 2, NULL, 6, 0, 1),
+  (4, 'Business', 8, 'img/bamboo-business.jpg', 2, NULL, 6, 0.5, 1),
+  (5, 'Economy', 162, 'img/bamboo-economy.jpg', 3, NULL, 6, 0, 1),
+  (6, 'Business', 8, 'img/bamboo-business.jpg', 3, NULL, 6, 0.5, 1),
+  (7, 'Hạng Phổ Thông', 162, 'img/vnairline-A321-GhePhoThong.png', 4, NULL, 6, 0, 1),
+  (8, 'Hạng Thương Gia', 16, 'img/vnairline-A321-Business.png', 4, '', 6, 0.5, 1),
+  (9, 'Hạng Phổ Thông', 211, 'img/vnairline-B787-GhePhoThong.png', 5, NULL, 6, 0, 1),
+  (10, 'Hạng Phổ Thông Đặc Biệt', 35, 'img/vnairline-B787-GhePhoThongDacBiet.png', 5, NULL, 6, 0.3, 1),
+  (11, 'Hạng Thương Gia', 28, 'img/vnairline-B787-GheThuongGia.png', 5, NULL, 6, 0.5, 1),
+  (12, 'Hạng Phổ Thông', 231, 'img/vnairline-A350-GhePhoThong.png', 6, NULL, 6, 0, 1),
+  (13, 'Hạng Phổ Thông Đặc Biệt', 45, 'img/vnairline-A350-GhePhoThongDacBiet.png', 6, NULL, 6, 0.3, 1),
+  (14, 'Hạng Thương Gia', 29, 'img/vnairline-A350-GheThuongGia.png', 6, NULL, 6, 0.5, 1),
+  (15, 'Hạng Phổ Thông', 180, 'img/vnairline-A320neo-PhoThong.png', 7, NULL, 6, 0, 1),
+  (16, 'Hạng Thương Gia', 8, 'img/vnairline-A320neo-Thuong gia.png', 7, NULL, 6, 0.5, 1);
+  
 INSERT INTO Country (id,name)
 VALUES
     (1,'Việt Nam'),
@@ -644,18 +648,17 @@ VALUES
 (1, 'QR Code', null),
 (2, 'VNPAY',null);
 
-
-INSERT INTO `Order` (`id`,`code`,`contactName`,`contactPhone`,`contactEmail`, `Flight_Detail_id`, `totalPrice`, `Accounts_id`, `Payment_Types_id`, `paymentTime`, `Discount_id`, `Status_id`)
+INSERT INTO `flyezy`.`Order` (`id`, `code`, `contactName`, `contactPhone`, `contactEmail`, `Flight_Detail_id`, `totalPrice`, `Accounts_id`, `Payment_Types_id`, `paymentTime`, `created_at`, `Discount_id`, `Status_id`)
 VALUES 
-(1, 'FJA84IUTJ',null,null,null, 1, 1200000, 1, 1, '2024-10-01 14:00:00',null, 10),
-(2, 'BDNA83JFK',null,null,null, 2, 1350000, 1, 2, '2024-10-02 15:15:00',null, 10),
-(3, 'O3MFKALSS',null,null,null, 3, 1500000, 1, 1, '2024-10-03 09:30:00',null, 10);
+(1, 'FJA84IUTJ', 'John Doe', '0912345678', 'john.doe@example.com', 1, 1200000, 1, 1, '2024-10-01 14:00:00', NOW(), null, 10),
+(2, 'BDNA83JFK', 'Jane Smith', '0987654321', 'jane.smith@example.com', 2, 1350000, 1, 2, '2024-10-02 15:15:00', NOW(), null, 10),
+(3, 'O3MFKALSS', 'Alice Johnson', '0978123456', 'alice.johnson@example.com', 3, 1500000, 1, 1, '2024-10-03 09:30:00', NOW(), null, 10);
 
-INSERT INTO `Ticket` (`id`, `Seat_Categoryid`, `Passenger_Typesid`, `code`, `pName`, `pSex`, `pPhoneNumber`, `pDob`, `Flight_Type_id`, `Baggagesid`, `Order_id`, `Statusid`)
+INSERT INTO `flyezy`.`Ticket` (`id`, `Seat_Categoryid`, `Passenger_Typesid`, `code`, `pName`, `pSex`, `pPhoneNumber`, `pDob`, `Flight_Type_id`, `Baggagesid`, `totalPrice`, `Order_id`, `Statusid`)
 VALUES 
-(1, 7, 1, 'John Doe', 'Passenger 1', 1, '0912345678', '1990-01-01', 1, NULL, 1, 10),
-(2, 8, 2, 'Jane Smith', 'Passenger 2', 1, '0987654321', '1992-05-10',1,  null, 1, 10),
-(3, 7, 1, 'Chris Brown', 'Passenger 3', 1, '0978123456', '1988-08-20',1, NULL, 2, 10);
+(1, 7, 1, 'A1', 'Passenger 1', 1, '0912345678', '1990-01-01', 1, NULL,0, 1, 10),
+(2, 8, 2, 'C2', 'Passenger 2', 1, '0987654321', '1992-05-10', 1, NULL,0, 1, 10),
+(3, 7, 1, 'B3', 'Passenger 3', 1, '0978123456', '1988-08-20', 1, NULL,0, 2, 10);
 
 
 
