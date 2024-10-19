@@ -10,6 +10,7 @@ import model.Order;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Random;
 
 /**
@@ -25,7 +26,8 @@ public class OrderDAO extends DBConnect {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Order o = new Order(rs.getInt("id"),
+               Order o = new Order(
+                        rs.getInt("id"),
                         rs.getInt("Flight_Detail_id"),
                         rs.getString("code"),
                         rs.getString("contactName"),
@@ -35,6 +37,7 @@ public class OrderDAO extends DBConnect {
                         rs.getInt("Accounts_id"),
                         rs.getInt("Payment_Types_id"),
                         rs.getTimestamp("paymentTime"),
+                        rs.getTimestamp("created_at"),
                         rs.getInt("Discount_id"),
                         rs.getInt("Status_id")
                 );
@@ -100,6 +103,7 @@ public class OrderDAO extends DBConnect {
                         rs.getInt("Accounts_id"),
                         rs.getInt("Payment_Types_id"),
                         rs.getTimestamp("paymentTime"),
+                        rs.getTimestamp("created_at"),
                         rs.getInt("Discount_id"),
                         rs.getInt("Status_id")
                 );
@@ -122,7 +126,8 @@ public class OrderDAO extends DBConnect {
             ps.setInt(1, flightDetailId);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Order o = new Order(rs.getInt("id"),
+                Order o = new Order(
+                        rs.getInt("id"),
                         rs.getInt("Flight_Detail_id"),
                         rs.getString("code"),
                         rs.getString("contactName"),
@@ -132,6 +137,7 @@ public class OrderDAO extends DBConnect {
                         rs.getInt("Accounts_id"),
                         rs.getInt("Payment_Types_id"),
                         rs.getTimestamp("paymentTime"),
+                        rs.getTimestamp("created_at"),
                         rs.getInt("Discount_id"),
                         rs.getInt("Status_id")
                 );
@@ -160,8 +166,8 @@ public class OrderDAO extends DBConnect {
     }
 
     public String createOrder(int flightDetailId, String contactName, String contactPhone, String contactEmail, int totalPrice, Integer accountId) {
-        String sql = "INSERT INTO `Order` (Flight_Detail_id, code, contactName, contactPhone, contactEmail, totalPrice, Accounts_id,Status_id) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO `Order` (Flight_Detail_id, code, contactName, contactPhone, contactEmail, totalPrice, Accounts_id,Status_id, created_at) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         String code = generateUniqueCode();
         try {
@@ -178,6 +184,7 @@ public class OrderDAO extends DBConnect {
                 ps.setNull(7, java.sql.Types.INTEGER);
             }
             ps.setInt(8, 12); //is pending
+            ps.setTimestamp(9, new Timestamp(System.currentTimeMillis()));
             ps.executeUpdate();
             return code;
         } catch (Exception e) {
@@ -236,6 +243,7 @@ public class OrderDAO extends DBConnect {
                         rs.getInt("Accounts_id"),
                         rs.getInt("Payment_Types_id"),
                         rs.getTimestamp("paymentTime"),
+                        rs.getTimestamp("created_at"),
                         rs.getInt("Discount_id"),
                         rs.getInt("Status_id")
                 );
@@ -246,6 +254,18 @@ public class OrderDAO extends DBConnect {
         }
         return null; // Return null if no order is found
     }
+    
+    public void deleteOrderByCode(String code) {
+    String sql = "DELETE FROM flyezy.Order WHERE code = ?";
+    try {
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setString(1, code);
+        ps.executeUpdate();
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+
 
     public static void main(String[] args) {
         OrderDAO dao = new OrderDAO();

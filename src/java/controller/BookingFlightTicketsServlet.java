@@ -6,8 +6,7 @@ package controller;
 
 import dal.AccountsDAO;
 import dal.OrderDAO;
-import dal.PlaneCategoryDAO;
-import dal.SeatCategoryDAO;
+import dal.PassengerTypeDAO;
 import dal.TicketDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -20,7 +19,6 @@ import jakarta.servlet.http.HttpSession;
 import java.sql.Date;
 import model.Accounts;
 import model.Order;
-import model.Ticket;
 
 /**
  *
@@ -92,6 +90,8 @@ public class BookingFlightTicketsServlet extends HttpServlet {
             throws ServletException, IOException {
         OrderDAO od = new OrderDAO();
         TicketDAO td = new TicketDAO();
+        PassengerTypeDAO ptd = new PassengerTypeDAO();
+        AccountsDAO ad = new AccountsDAO();
         HttpSession session = request.getSession();
         Integer id = (Integer) session.getAttribute("id");
         try {
@@ -103,38 +103,61 @@ public class BookingFlightTicketsServlet extends HttpServlet {
             int adultTicket = Integer.parseInt(request.getParameter("adultTicket"));
             int childTicket = Integer.parseInt(request.getParameter("childTicket"));
             int infantTicket = Integer.parseInt(request.getParameter("infantTicket"));
-            float totalPriceDouble = Float.parseFloat(request.getParameter("totalPrice"));
-            int totalPrice = (int) Math.round(totalPriceDouble);
+            float commonPriceFloat = Float.parseFloat(request.getParameter("commonPrice"));
+            int commonPrice = (int) Math.round(commonPriceFloat);
+            float totalPriceFloat = Float.parseFloat(request.getParameter("totalPrice"));
+            int totalPrice = (int) Math.round(totalPriceFloat);
 
             String orderCode = od.createOrder(flightDetailId, pContactName, pContactPhoneNumber, pContactEmail, totalPrice, id);
             Order o = od.getOrderByCode(orderCode);
 
             for (int i = 1; i <= adultTicket; i++) {
-                int pSex = Integer.parseInt(request.getParameter("pSex"+i));
-                String pName = request.getParameter("pName"+i);
-                Date pDob = Date.valueOf(request.getParameter("pDob"+i));
-                String pPhoneNumber = request.getParameter("pPhoneNumber"+i);
-                int pBaggages = Integer.parseInt(request.getParameter("pBaggages"+i));  
-                td.createTicket(seatCategoryId, 1, pName, pSex, pPhoneNumber, pDob, pBaggages, o.getId(), 1);
+                int pSex = Integer.parseInt(request.getParameter("pSex" + i));
+                String pName = request.getParameter("pName" + i);
+                Date pDob = Date.valueOf(request.getParameter("pDob" + i));
+                String pPhoneNumber = request.getParameter("pPhoneNumber" + i);
+                String code = request.getParameter("code" + i);
+                if (td.getTicketByCode(code, flightDetailId, seatCategoryId) != null) {
+                    od.deleteOrderByCode(o.getCode());
+                    request.getRequestDispatcher("view/failedBooking.jsp").forward(request, response);
+                    return;
+                }
+                Integer pBaggages = (request.getParameter("pBaggages" + i).equals("0")) ? null : Integer.parseInt(request.getParameter("pBaggages" + i));
+                td.createTicket(code, seatCategoryId, 1, pName, pSex, pPhoneNumber, pDob, pBaggages,(int)(commonPrice*ptd.getPassengerTypePriceNameById(1) ), o.getId(), 1);
             }
-            for (int i = adultTicket+1; i <= adultTicket+childTicket; i++) {
-                int pSex = Integer.parseInt(request.getParameter("pSex"+i));
-                String pName = request.getParameter("pName"+i);
-                Date pDob = Date.valueOf(request.getParameter("pDob"+i));
-                Ticket t = new Ticket(seatCategoryId, 2, "NULL", pName, pSex, pDob, o.getId(), 12, 1);
-                td.createTicket(seatCategoryId, 2, pName, pSex, "000", pDob, 4, o.getId(), 1);
+            for (int i = adultTicket + 1; i <= adultTicket + childTicket; i++) {
+                int pSex = Integer.parseInt(request.getParameter("pSex" + i));
+                String pName = request.getParameter("pName" + i);
+                Date pDob = Date.valueOf(request.getParameter("pDob" + i));
+                String code = request.getParameter("code" + i);
+                if (td.getTicketByCode(code, flightDetailId, seatCategoryId) != null) {
+                    od.deleteOrderByCode(o.getCode());
+                    request.getRequestDispatcher("view/failedBooking.jsp").forward(request, response);
+                    return;
+                }
+                td.createTicket(code, seatCategoryId, 2, pName, pSex, "000", pDob, null,(int)(commonPrice*ptd.getPassengerTypePriceNameById(2) ), o.getId(), 1);
             }
-            for (int i = adultTicket+childTicket+1; i <= adultTicket+childTicket+infantTicket; i++) {
-                int pSex = Integer.parseInt(request.getParameter("pSex"+i));
-                String pName = request.getParameter("pName"+i);
-                Date pDob = Date.valueOf(request.getParameter("pDob"+i));
-                td.createTicket(seatCategoryId, 3, pName, pSex, "000", pDob, 4, o.getId(), 1);
+            for (int i = adultTicket + childTicket + 1; i <= adultTicket + childTicket + infantTicket; i++) {
+                int pSex = Integer.parseInt(request.getParameter("pSex" + i));
+                String pName = request.getParameter("pName" + i);
+                Date pDob = Date.valueOf(request.getParameter("pDob" + i));
+                String code = request.getParameter("code" + i);
+                if (td.getTicketByCode(code, flightDetailId, seatCategoryId) != null) {
+                    od.deleteOrderByCode(o.getCode());
+                    request.getRequestDispatcher("view/failedBooking.jsp").forward(request, response);
+                    return;
+                }
+                td.createTicket(code, seatCategoryId, 3, pName, pSex, "000", pDob, null,(int)(commonPrice*ptd.getPassengerTypePriceNameById(3) ), o.getId(), 1);
             }
-            response.sendRedirect("home");
+            if (id != null) {
+                Accounts acc = ad.getAccountsById(id);
+                request.setAttribute("account", acc);
+            }
+            request.getRequestDispatcher("view/successfulBooking.jsp").forward(request, response);
         } catch (Exception e) {
-            e.printStackTrace(); // in lỗi ra console cho mục đích debug
+            e.printStackTrace(); 
             request.setAttribute("errorMessage", "Đã xảy ra lỗi: " + e.getMessage());
-            request.getRequestDispatcher("view/error.jsp").forward(request, response); // chuyển hướng đến trang error.jsp
+            request.getRequestDispatcher("view/error.jsp").forward(request, response); 
         }
     }
 

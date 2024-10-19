@@ -119,9 +119,6 @@ public class FlightDetailManagement extends HttpServlet {
             case "changeDetail":
                 changeToTicket(request, response);
                 break;
-            default:
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid action");
-                break;
         }
     }
 

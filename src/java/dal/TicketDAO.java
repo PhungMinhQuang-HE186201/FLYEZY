@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import model.Ticket;
 
 /**
@@ -35,10 +34,10 @@ public class TicketDAO extends DBConnect {
                         rs.getString("pPhoneNumber"),
                         rs.getDate("pDob"),
                         rs.getInt("Baggagesid"),
+                        rs.getInt("totalPrice"),
                         rs.getInt("Order_id"),
                         rs.getInt("Statusid"),
                         rs.getInt("Flight_Type_id"));
-                ls.add(t);
             }
             return ls;
 
@@ -49,14 +48,14 @@ public class TicketDAO extends DBConnect {
 
     public List<Ticket> getAllTicketsById(int flightDetailID) {
         List<Ticket> ls = new ArrayList<>();
-        String sql = "select t.id,t.Seat_Categoryid,t.Passenger_Typesid,t.code,t.pName,t.pSex,t.pPhoneNumber,t.pDob,t.Baggagesid,t.Order_id,t.Statusid,o.Flight_Detail_id,t.Flight_Type_id from Ticket t \n"
+        String sql = "select t.* from Ticket t \n"
                 + "join `flyezy`.`Order` o On t.Order_id=o.id\n"
                 + "where Flight_Detail_id= " + flightDetailID + " and Statusid!=9";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Ticket t = new Ticket(rs.getInt("id"),
+               Ticket t = new Ticket(rs.getInt("id"),
                         rs.getInt("Seat_Categoryid"),
                         rs.getInt("Passenger_Typesid"),
                         rs.getString("code"),
@@ -65,6 +64,7 @@ public class TicketDAO extends DBConnect {
                         rs.getString("pPhoneNumber"),
                         rs.getDate("pDob"),
                         rs.getInt("Baggagesid"),
+                        rs.getInt("totalPrice"),
                         rs.getInt("Order_id"),
                         rs.getInt("Statusid"),
                         rs.getInt("Flight_Type_id"));
@@ -77,8 +77,61 @@ public class TicketDAO extends DBConnect {
         return null;
     }
 
+    public List<String> getAllTicketCodesById(int flightDetailID, int seatCategoryId) {
+        List<String> ls = new ArrayList<>();
+        String sql = "select * from Ticket t \n"
+                + "join `flyezy`.`Order` o On t.Order_id=o.id\n"
+                + "where Flight_Detail_id= " + flightDetailID + " and Statusid!=9 and Seat_Categoryid = " + seatCategoryId;
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ls.add(rs.getString("code"));
+            }
+            return ls;
+
+        } catch (Exception e) {
+        }
+        return null;
+    }
+
+    public Ticket getTicketByCode(String code, int flightDetailID, int seatCategoryId) {
+        String sql = "SELECT t.* FROM Ticket t "
+                + "JOIN `flyezy`.`Order` o ON t.Order_id = o.id "
+                + "WHERE t.code = ? AND o.Flight_Detail_id = ? "
+                + "AND t.Statusid != 9 AND t.Seat_Categoryid = ?";
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, code);
+            ps.setInt(2, flightDetailID);
+            ps.setInt(3, seatCategoryId);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Ticket t = new Ticket(rs.getInt("id"),
+                        rs.getInt("Seat_Categoryid"),
+                        rs.getInt("Passenger_Typesid"),
+                        rs.getString("code"),
+                        rs.getString("pName"),
+                        rs.getInt("pSex"),
+                        rs.getString("pPhoneNumber"),
+                        rs.getDate("pDob"),
+                        rs.getInt("Baggagesid"),
+                        rs.getInt("totalPrice"),
+                        rs.getInt("Order_id"),
+                        rs.getInt("Statusid"),
+                        rs.getInt("Flight_Type_id"));
+                return t;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public Ticket getTicketById(int id) {
-        String sql = "Select * from ticket where id =" + id + " and Statusid!=9";
+        String sql = "Select * from Ticket where id =" + id + " and Statusid!=9";
         try {
             PreparedStatement st = conn.prepareStatement(sql);
             st.setInt(1, id);
@@ -93,6 +146,7 @@ public class TicketDAO extends DBConnect {
                         rs.getString("pPhoneNumber"),
                         rs.getDate("pDob"),
                         rs.getInt("Baggagesid"),
+                        rs.getInt("totalPrice"),
                         rs.getInt("Order_id"),
                         rs.getInt("Statusid"),
                         rs.getInt("Flight_Type_id"));
@@ -160,6 +214,7 @@ public class TicketDAO extends DBConnect {
                         rs.getString("pPhoneNumber"),
                         rs.getDate("pDob"),
                         rs.getInt("Baggagesid"),
+                        rs.getInt("totalPrice"),
                         rs.getInt("Order_id"),
                         rs.getInt("Statusid"),
                         rs.getInt("Flight_Type_id"));
@@ -192,65 +247,39 @@ public class TicketDAO extends DBConnect {
         return n;
     }
 
-    public int createTicket(int seatCategoryId, int passengerTypeId, String pName, int pSex, String pPhoneNumber, Date pDob, int baggageId, int orderId, int flightTypeId) {
+    public int createTicket(String code, int seatCategoryId, int passengerTypeId, String pName, int pSex, String pPhoneNumber, Date pDob, Integer baggageId, int totalPrice, int orderId, int flightTypeId) {
         int n = 0;
         String sql = "INSERT INTO `flyezy`.`Ticket` \n"
-                + "(`Seat_Categoryid`, `Passenger_Typesid`, `code`,`pName`,`pSex`,`pPhoneNumber`,`pDob`,`Baggagesid`,`Order_id`, `Statusid`,`Flight_Type_id`) \n"
-                + "VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+                + "(`Seat_Categoryid`, `Passenger_Typesid`, `code`,`pName`,`pSex`,`pPhoneNumber`,`pDob`,`Baggagesid`,`totalPrice`,`Order_id`, `Statusid`,`Flight_Type_id`) \n"
+                + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, seatCategoryId);
             ps.setInt(2, passengerTypeId);
-            ps.setString(3, generateUniqueCode());
+            ps.setString(3, code);
             ps.setString(4, pName);
             ps.setInt(5, pSex);
             ps.setString(6, pPhoneNumber);
             ps.setDate(7, pDob);
-            ps.setInt(8, baggageId);
-            ps.setInt(9, orderId);
-            ps.setInt(10, 12);
-            ps.setInt(11, flightTypeId);
+            if (baggageId == null) {
+                ps.setNull(8, java.sql.Types.INTEGER);
+            } else {
+                ps.setInt(8, baggageId);
+            }
+            ps.setInt(9, totalPrice);
+            ps.setInt(10, orderId);
+            ps.setInt(11, 12);
+            ps.setInt(12, flightTypeId);
 
             n = ps.executeUpdate();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            System.out.println(ex);
         }
         return n;
     }
 
-    public String generateUniqueCode() {
-        String code;
-        List<String> existingCodes = getAllTicketCodes();
-        Random random = new Random();
-        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
-        do {
-            StringBuilder sb = new StringBuilder(9);
-            for (int i = 0; i < 9; i++) {
-                sb.append(characters.charAt(random.nextInt(characters.length())));
-            }
-            code = sb.toString();
-        } while (existingCodes.contains(code));
-        return code;
-    }
-
-    public List<String> getAllTicketCodes() {
-        List<String> codes = new ArrayList<>();
-        String sql = "SELECT code FROM flyezy.Ticket";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                codes.add(rs.getString("code"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return codes;
-    }
-
     public static void main(String[] args) {
         TicketDAO tcd = new TicketDAO();
-        tcd.createTicket(7, 1, "Sasuke", 1, "0123", Date.valueOf("2024-10-16"), 4, 1,1);
+        System.out.println(tcd.getTicketByCode("A1", 1, 0));
     }
 }

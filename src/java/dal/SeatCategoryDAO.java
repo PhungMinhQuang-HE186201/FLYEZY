@@ -25,11 +25,17 @@ public class SeatCategoryDAO extends DBConnect {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                SeatCategory sc = new SeatCategory(rs.getInt("id"),
-                        rs.getString("name"), rs.getInt("numberOfSeat"),
-                        rs.getString("image"), rs.getString("info"),
-                        rs.getFloat("surcharge"), rs.getInt("Plane_Categoryid"),
-                        rs.getInt("Status_id"));
+                SeatCategory sc = new SeatCategory(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getInt("numberOfSeat"),
+                        rs.getString("image"),
+                        rs.getString("info"),
+                        rs.getInt("seatEachRow"),
+                        rs.getFloat("surcharge"),
+                        rs.getInt("Plane_Categoryid"),
+                        rs.getInt("Status_id")
+                );
                 ls.add(sc);
             }
             return ls;
@@ -40,19 +46,23 @@ public class SeatCategoryDAO extends DBConnect {
     }
 
     public SeatCategory getSeatCategoryById(int id) {
-        List<SeatCategory> ls = new ArrayList<>();
         String sql = "SELECT * FROM Seat_Category WHERE id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                SeatCategory sc = new SeatCategory(rs.getInt("id"),
-                        rs.getString("name"), rs.getInt("numberOfSeat"),
-                        rs.getString("image"), rs.getString("info"),
-                        rs.getFloat("surcharge"), rs.getInt("Plane_Categoryid"),
-                        rs.getInt("Status_id"));
-                return sc;
+                return new SeatCategory(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getInt("numberOfSeat"),
+                        rs.getString("image"),
+                        rs.getString("info"),
+                        rs.getInt("seatEachRow"),
+                        rs.getFloat("surcharge"),
+                        rs.getInt("Plane_Categoryid"),
+                        rs.getInt("Status_id")
+                );
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -61,16 +71,17 @@ public class SeatCategoryDAO extends DBConnect {
     }
 
     public boolean addSeatCategory(SeatCategory sc) {
-        String sql = "INSERT INTO Seat_Category (name, numberOfSeat, image, info, surcharge, Plane_Categoryid, Status_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Seat_Category (name, numberOfSeat, image, info, seatEachRow, surcharge, Plane_Categoryid, Status_id) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, sc.getName());
             ps.setInt(2, sc.getNumberOfSeat());
             ps.setString(3, sc.getImage());
             ps.setString(4, sc.getInfo());
-            ps.setFloat(5, sc.getSurcharge());
-            ps.setInt(6, sc.getPlane_Categoryid());
-            ps.setInt(7, sc.getStatusId());
+            ps.setInt(5, sc.getSeatEachRow());
+            ps.setFloat(6, sc.getSurcharge());
+            ps.setInt(7, sc.getPlane_Categoryid());
+            ps.setInt(8, sc.getStatusId());
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
@@ -80,16 +91,18 @@ public class SeatCategoryDAO extends DBConnect {
     }
 
     public boolean updateSeatCategory(SeatCategory sc) {
-        String sql = "UPDATE Seat_Category SET name = ?, numberOfSeat = ?, image = ?, info = ?, surcharge = ?, Plane_Categoryid = ? WHERE id = ?";
+        String sql = "UPDATE Seat_Category SET name = ?, numberOfSeat = ?, image = ?, info = ?, seatEachRow = ?, surcharge = ?, Plane_Categoryid = ?, Status_id = ? WHERE id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, sc.getName());
             ps.setInt(2, sc.getNumberOfSeat());
             ps.setString(3, sc.getImage());
             ps.setString(4, sc.getInfo());
-            ps.setFloat(5, sc.getSurcharge());
-            ps.setInt(6, sc.getPlane_Categoryid());
-            ps.setInt(7, sc.getId());
+            ps.setInt(5, sc.getSeatEachRow());
+            ps.setFloat(6, sc.getSurcharge());
+            ps.setInt(7, sc.getPlane_Categoryid());
+            ps.setInt(8, sc.getStatusId());
+            ps.setInt(9, sc.getId());
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
@@ -181,7 +194,7 @@ public class SeatCategoryDAO extends DBConnect {
     }
 
     public String getSeatCategoryNameById(int id) {
-        String sql = "SELECT name FROM seat_category WHERE id = ?";
+        String sql = "SELECT name FROM Seat_Category WHERE id = ?";
         String name = null;
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
@@ -199,7 +212,7 @@ public class SeatCategoryDAO extends DBConnect {
     public List<SeatCategory> getNameAndNumberOfSeat(int id) {
         String sql = "Select  s.name,numberOfSeat ,count(Seat_Categoryid) as countSeat \n"
                 + "                             From Ticket t join `flyezy`.`Order` o On t.Order_id=o.id\n"
-                + "                             Join Seat_category s On t.Seat_Categoryid=s.id \n"
+                + "                             Join Seat_Category s On t.Seat_Categoryid=s.id \n"
                 + "                             where o.Flight_Detail_id = ?\n"
                 + "                             group by s.name,numberOfSeat";
         List<SeatCategory> ls = new ArrayList<>();
@@ -221,6 +234,16 @@ public class SeatCategoryDAO extends DBConnect {
 
     public static void main(String[] args) {
         SeatCategoryDAO scd = new SeatCategoryDAO();
-        System.out.println(scd.getSeatCategoryById(7).getStatusId());
+        SeatCategory sc = new SeatCategory();
+        sc.setId(20); 
+        sc.setName("New Seat Category Name");
+        sc.setNumberOfSeat(100);
+        sc.setImage("image.jpg");
+        sc.setInfo("Some info about the seat category");
+        sc.setSeatEachRow(10);
+        sc.setSurcharge(20.5f);
+        sc.setPlane_Categoryid(2);
+        sc.setStatusId(1);
+        scd.updateSeatCategory(sc);
     }
 }

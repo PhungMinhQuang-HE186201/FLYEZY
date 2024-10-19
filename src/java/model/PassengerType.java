@@ -11,11 +11,26 @@ package model;
 public class PassengerType {
     private int id;
     private String name;
+    private float price;
 
-    public PassengerType(int id, String name) {
+    public PassengerType() {
+    }
+
+    public PassengerType(int id, String name, float price) {
         this.id = id;
         this.name = name;
+        this.price = price;
     }
+
+    public float getPrice() {
+        return price;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
+    }
+
+   
 
     public int getId() {
         return id;

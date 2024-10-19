@@ -311,7 +311,7 @@ public class FlightDetailDAO extends DBConnect {
         return list;
     }
     public int getPlaneCategoryIdFromFlightDetail(int id) {
-        String sql = "Select Plane_Categoryid from Flight_detail where id ="+id;
+        String sql = "Select Plane_Categoryid from Flight_Detail where id ="+id;
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();

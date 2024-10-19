@@ -7,10 +7,8 @@ package dal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import model.PassengerType;
 
 public class PassengerTypeDAO extends DBConnect{
@@ -37,11 +35,31 @@ public class PassengerTypeDAO extends DBConnect{
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
-                list.add(new PassengerType(id, name));
+                float price = resultSet.getFloat("price");
+                list.add(new PassengerType(id, name,price));
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
         return list;
+    }
+    public float getPassengerTypePriceNameById(int id) {
+        String sql = "SELECT price FROM Passenger_Types WHERE id = "+id;
+        try {
+            PreparedStatement st = conn.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                float price = rs.getFloat("price");
+                return price;
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return -1;
+    }
+    
+    public static void main(String[] args) {
+        PassengerTypeDAO ptd = new PassengerTypeDAO();
+        System.out.println(ptd.getPassengerTypePriceNameById(2));
     }
 }

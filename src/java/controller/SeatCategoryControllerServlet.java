@@ -132,15 +132,18 @@ public class SeatCategoryControllerServlet extends HttpServlet {
         String name = request.getParameter("name");
         String numberOfSeatStr = request.getParameter("numberOfSeat");
         String info = request.getParameter("info");
+        String seatEachRowStr = request.getParameter("seatEachRow");
         String surchargeStr = request.getParameter("surcharge");
         String statusIdStr = request.getParameter("status");
         int numberOfSeat = 0;
+        int seatEachRow = 0;
         float surcharge = 0;
         int statusId = 0;
 
         try {
             numberOfSeat = Integer.parseInt(numberOfSeatStr);
             statusId = Integer.parseInt(statusIdStr);
+            seatEachRow = Integer.parseInt(seatEachRowStr);
             surcharge = Float.parseFloat(surchargeStr);
             if (idStr != null && !idStr.isEmpty()) {
                 int id = Integer.parseInt(idStr);
@@ -149,9 +152,9 @@ public class SeatCategoryControllerServlet extends HttpServlet {
                     image = scd.getSeatCategoryById(id).getImage();
                 }
 
-                scd.updateSeatCategory(new SeatCategory(id, name, numberOfSeat, image, info, surcharge, planeCategoryId, statusId));
+                scd.updateSeatCategory(new SeatCategory(id, name, numberOfSeat, image, info, seatEachRow, surcharge, planeCategoryId, statusId));
             } else {
-                scd.addSeatCategory(new SeatCategory(name, numberOfSeat, image, info, surcharge, planeCategoryId, 1));
+                scd.addSeatCategory(new SeatCategory(name, numberOfSeat, image, info, seatEachRow, surcharge, planeCategoryId, 1));
             }
             response.sendRedirect("seatCategoryController?planeCategoryId=" + planeCategoryId);
         } catch (Exception e) {

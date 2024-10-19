@@ -14,6 +14,7 @@ public class SeatCategory {
     private int numberOfSeat;
     private String image;
     private String info;
+    private int seatEachRow;
     private float surcharge;
     private int Plane_Categoryid;
     private int statusId;
@@ -27,26 +28,42 @@ public class SeatCategory {
         this.countSeat = countSeat;
     }
    
-    public SeatCategory(String name, int numberOfSeat, String image, String info, float surcharge, int Plane_Categoryid, int statusId) {
+    public SeatCategory(String name, int numberOfSeat, String image, String info, int seatEachRow, float surcharge, int Plane_Categoryid, int statusId) {
         this.name = name;
         this.numberOfSeat = numberOfSeat;
         this.image = image;
         this.info = info;
+        this.seatEachRow = seatEachRow;
         this.surcharge = surcharge;
         this.Plane_Categoryid = Plane_Categoryid;
         this.statusId = statusId;
     }
-
-    public SeatCategory(int id, String name, int numberOfSeat, String image, String info, float surcharge, int Plane_Categoryid, int statusId) {
+    public SeatCategory(int id, String name, int numberOfSeat, String image, String info, int seatEachRow, float surcharge, int Plane_Categoryid, int statusId) {
         this.id = id;
         this.name = name;
         this.numberOfSeat = numberOfSeat;
         this.image = image;
         this.info = info;
+        this.seatEachRow = seatEachRow;
         this.surcharge = surcharge;
         this.Plane_Categoryid = Plane_Categoryid;
         this.statusId = statusId;
     }
+
+    public SeatCategory(int id, String name, int numberOfSeat, String image, String info, int seatEachRow, float surcharge, int Plane_Categoryid, int statusId, int countSeat) {
+        this.id = id;
+        this.name = name;
+        this.numberOfSeat = numberOfSeat;
+        this.image = image;
+        this.info = info;
+        this.seatEachRow = seatEachRow;
+        this.surcharge = surcharge;
+        this.Plane_Categoryid = Plane_Categoryid;
+        this.statusId = statusId;
+        this.countSeat = countSeat;
+    }
+
+    
 
     public int getCountSeat() {
         return countSeat;
@@ -118,6 +135,14 @@ public class SeatCategory {
 
     public void setStatusId(int statusId) {
         this.statusId = statusId;
+    }
+
+    public int getSeatEachRow() {
+        return seatEachRow;
+    }
+
+    public void setSeatEachRow(int seatEachRow) {
+        this.seatEachRow = seatEachRow;
     }
     
     

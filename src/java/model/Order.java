@@ -15,17 +15,17 @@ public class Order {
     private String contactPhone;
     private String contactEmail;
     private int totalPrice;
-    private Integer accountsId; // Nullable field
+    private Integer accountsId; 
     private int paymentTypesId;
-    private Timestamp paymentTime; // Nullable field
-    private Integer discountId; // Nullable field
+    private Timestamp paymentTime; 
+    private Timestamp created_at; 
+    private Integer discountId; 
     private int Status_id;
 
-    // Default constructor
     public Order() {
     }
 
-    public Order(int id, int flightDetailId, String code, String contactName, String contactPhone, String contactEmail, int totalPrice, Integer accountsId, int paymentTypesId, Timestamp paymentTime, Integer discountId, int Status_id) {
+    public Order(int id, int flightDetailId, String code, String contactName, String contactPhone, String contactEmail, int totalPrice, Integer accountsId, int paymentTypesId, Timestamp paymentTime,Timestamp created_at, Integer discountId, int Status_id) {
         this.id = id;
         this.flightDetailId = flightDetailId;
         this.code = code;
@@ -36,13 +36,11 @@ public class Order {
         this.accountsId = accountsId;
         this.paymentTypesId = paymentTypesId;
         this.paymentTime = paymentTime;
+        this.created_at = created_at;
         this.discountId = discountId;
         this.Status_id = Status_id;
     }
 
-
-
-    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -140,6 +138,16 @@ public class Order {
     public void setStatus_id(int Status_id) {
         this.Status_id = Status_id;
     }
+
+    public Timestamp getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(Timestamp created_at) {
+        this.created_at = created_at;
+    }
+    
+    
 
 
 
