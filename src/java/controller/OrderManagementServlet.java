@@ -12,6 +12,7 @@ import dal.LocationDAO;
 import dal.OrderDAO;
 import dal.PlaneCategoryDAO;
 import dal.StatusDAO;
+import dal.TicketDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -44,7 +45,8 @@ public class OrderManagementServlet extends HttpServlet {
     CountryDAO cd = new CountryDAO();
     PlaneCategoryDAO pcd = new PlaneCategoryDAO();
     StatusDAO statusDao = new StatusDAO();
-
+    TicketDAO td = new TicketDAO();
+            
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -126,7 +128,9 @@ public class OrderManagementServlet extends HttpServlet {
 
             // Update status logic
             od.updateOrderStatus(orderId, statusId);
-
+            if(statusId == 10){
+                td.confirmSuccessAllTicketsByOrderId(orderId);
+            }
             // Redirect to the order page after update
             response.sendRedirect("OrderController?flightDetailID=" + flightDetailId);
         }

@@ -400,11 +400,11 @@
             $(document).ready(function () {
                 // Initialize datepicker for departureDate
                 $('#departureDate').datepicker({
-                    format: 'dd-mm-yyyy', // Custom date format
+                    format: 'yyyy-mm-dd', // Custom date format
                     autoclose: true, // Automatically close the calendar after picking a date
                     todayHighlight: true, // Highlight today's date
                     orientation: 'bottom auto', // Ensure the calendar pops up below the input
-                    startDate: '01-10-2024' // Minimum date is 01/10/2024
+                    startDate: '2024-10-01' // Minimum date is 01/10/2024
                 }).on('changeDate', function (selected) {
                     // Get the selected departure date
                     var minReturnDate = new Date(selected.date.valueOf());

@@ -58,14 +58,13 @@ public class Ticket {
     
     
     
-    public Ticket(int Seat_Categoryid, int Passenger_Typesid, String code, String pName, int pSex, Date pDob, int totalPrice, int Order_id, int Statusid,int Flight_Type_id) {
+    public Ticket(int Seat_Categoryid, int Passenger_Typesid, String code, String pName, int pSex, Date pDob, int Order_id, int Statusid,int Flight_Type_id) {
         this.Seat_Categoryid = Seat_Categoryid;
         this.Passenger_Typesid = Passenger_Typesid;
         this.code = code;
         this.pName = pName;
         this.pSex = pSex;
         this.pDob = pDob;
-        this.totalPrice = totalPrice;
         this.Order_id = Order_id;
         this.Statusid = Statusid;
         this.Flight_Type_id = Flight_Type_id;

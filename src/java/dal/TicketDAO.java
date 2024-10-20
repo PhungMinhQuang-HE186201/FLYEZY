@@ -18,6 +18,50 @@ import model.Ticket;
  */
 public class TicketDAO extends DBConnect {
 
+    public List<Ticket> getAllTicketsByOrderId(int orderId) {
+        List<Ticket> ls = new ArrayList<>();
+        String sql = "select * from Ticket where Order_id=?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, orderId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Ticket t = new Ticket(rs.getInt("id"),
+                        rs.getInt("Seat_Categoryid"),
+                        rs.getInt("Passenger_Typesid"),
+                        rs.getString("code"),
+                        rs.getString("pName"),
+                        rs.getInt("pSex"),
+                        rs.getString("pPhoneNumber"),
+                        rs.getDate("pDob"),
+                        rs.getInt("Baggagesid"),
+                        rs.getInt("totalPrice"),
+                        rs.getInt("Order_id"),
+                        rs.getInt("Statusid"),
+                        rs.getInt("Flight_Type_id"));
+                ls.add(t);
+            }
+            return ls;
+
+        } catch (Exception e) {
+        }
+        return null;
+    }
+
+    public void confirmSuccessAllTicketsByOrderId(int orderId) {
+
+        String sql = "UPDATE Ticket SET Statusid = 10 where Order_id=?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, orderId);
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+    }
+
     public List<Ticket> getAllTickets() {
         List<Ticket> ls = new ArrayList<>();
         String sql = "select * from Ticket";
@@ -38,6 +82,7 @@ public class TicketDAO extends DBConnect {
                         rs.getInt("Order_id"),
                         rs.getInt("Statusid"),
                         rs.getInt("Flight_Type_id"));
+                ls.add(t);
             }
             return ls;
 
@@ -55,7 +100,7 @@ public class TicketDAO extends DBConnect {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-               Ticket t = new Ticket(rs.getInt("id"),
+                Ticket t = new Ticket(rs.getInt("id"),
                         rs.getInt("Seat_Categoryid"),
                         rs.getInt("Passenger_Typesid"),
                         rs.getString("code"),
@@ -158,7 +203,7 @@ public class TicketDAO extends DBConnect {
         return null;
     }
 
-    public List<Ticket> searchTickets(String passengerType, String statusTicket, String name, String phoneNumber, int Flight_Detailid, String Flight_Type_id, int order_Id) {
+    public List<Ticket> searchTickets(String passengerType, String statusTicket, String name, String phoneNumber, int Flight_Detailid, String Flight_Type_id, int orderId) {
         List<Ticket> ls = new ArrayList<>();
         StringBuilder sql = new StringBuilder("select t.* from Ticket t \n"
                 + "join `flyezy`.`Order` o On t.Order_id=o.id\n"
@@ -178,8 +223,8 @@ public class TicketDAO extends DBConnect {
         if (phoneNumber != null && !phoneNumber.isEmpty()) {
             sql.append(" AND pPhoneNumber LIKE ?");
         }
-        if (order_Id != -1) {
-            sql.append(" AND Order_Id = ?");
+        if (orderId != -1) {
+            sql.append(" AND Order_id = ?");
         }
 
         try {
@@ -205,8 +250,8 @@ public class TicketDAO extends DBConnect {
                 }
                 ps.setString(i++, "%" + vp + "%");
             }
-            if (order_Id != -1) {
-                ps.setInt(i++, order_Id);
+            if (orderId != -1) {
+                ps.setInt(i++, orderId);
             }
 
             ResultSet rs = ps.executeQuery();
@@ -279,13 +324,13 @@ public class TicketDAO extends DBConnect {
 
             n = ps.executeUpdate();
         } catch (Exception ex) {
-            System.out.println(ex);
+            ex.printStackTrace();
         }
         return n;
     }
 
     public static void main(String[] args) {
         TicketDAO tcd = new TicketDAO();
-        System.out.println(tcd.getTicketByCode("A1", 1, 0));
+        tcd.confirmSuccessAllTicketsByOrderId(1);
     }
 }

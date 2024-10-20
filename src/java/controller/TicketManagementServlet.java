@@ -39,6 +39,7 @@ import model.Airport;
 import model.Location;
 import model.Country;
 import model.SeatCategory;
+
 /**
  *
  * @author Fantasy
@@ -96,35 +97,35 @@ public class TicketManagementServlet extends HttpServlet {
         CountryDAO cd = new CountryDAO();
         SeatCategoryDAO scd = new SeatCategoryDAO();
         PlaneCategoryDAO pcd = new PlaneCategoryDAO();
-        
+
         HttpSession session = request.getSession();
         String action = request.getParameter("action");
-        if(session.getAttribute("flightDetailID")==null && action==null){
+        if (session.getAttribute("flightDetailID") == null && action == null) {
             int flightDetailID = Integer.parseInt(request.getParameter("flightDetailID"));
             session.setAttribute("flightDetailID", flightDetailID);
         }
-        int flightDetailID = (int)session.getAttribute("flightDetailID");
-        
+        int flightDetailID = (int) session.getAttribute("flightDetailID");
+
         Flights flight = fdd.getFlightByFlightDetailId(flightDetailID);
         request.setAttribute("flight", flight);
-        
+
         int airlineId = fdd.getAirlineIdByFlightDetailId(flightDetailID);
         request.setAttribute("airlineId", airlineId);
-         
+
         Airport airportDep = aid.getAirportById(flight.getDepartureAirportId());
         request.setAttribute("airportDep", airportDep);
         Location locationDep = ld.getLocationById(airportDep.getId());
         request.setAttribute("locationDep", locationDep);
         Country countryDep = cd.getCountryById(locationDep.getCountryId());
         request.setAttribute("countryDep", countryDep);
-        
+
         Airport airportDes = aid.getAirportById(flight.getDestinationAirportId());
         request.setAttribute("airportDes", airportDes);
         Location locationDes = ld.getLocationById(airportDes.getId());
         request.setAttribute("locationDes", locationDes);
         Country countryDes = cd.getCountryById(locationDes.getCountryId());
         request.setAttribute("countryDes", countryDes);
-        
+
         FlightDetails flightDetail = fdd.getFlightDetailsByID(flightDetailID);
         request.setAttribute("flightDetail", flightDetail);
         PlaneCategory planeCatrgory = pcd.getPlaneCategoryById(flightDetail.getPlaneCategoryId());
@@ -147,12 +148,10 @@ public class TicketManagementServlet extends HttpServlet {
         List<Status> statusTicketList = sd.getStatusOfTicket();
         request.setAttribute("statusTicketList", statusTicketList);
 
-        
         int planeCategoryID = fdd.getPlaneCategoryIdFromFlightDetail(flightDetailID);
         List<SeatCategory> seatList = scd.getNameAndNumberOfSeat(planeCategoryID);
         request.setAttribute("seatList", seatList);
-        
-        
+
         if (action == null) {
             request.getRequestDispatcher("view/ticketManagement.jsp").forward(request, response);
         } else if (action.equals("search")) {
@@ -161,10 +160,21 @@ public class TicketManagementServlet extends HttpServlet {
             String statusTicket = request.getParameter("statusTicket");
             String fName = request.getParameter("fName").trim();
             String fPhoneNumber = request.getParameter("fPhoneNumber").trim();
-            int orderId = Integer.parseInt(request.getParameter("orderId"));
+            String orderIdStr = request.getParameter("orderId");
+            int orderId = -1;
+
+            if (orderIdStr != null && !orderIdStr.isEmpty()) {
+                try {
+                    orderId = Integer.parseInt(orderIdStr);
+                } catch (NumberFormatException e) {
+                    
+                    System.err.println("Invalid order ID format: " + orderIdStr);
+                    orderId = -1; 
+                }
+            }
 //            List<Accounts> accountList = ad.searchAccounts(fRole, fName, fPhoneNumber);
 //            request.setAttribute("accountList", accountList);
-            List<Ticket> ticketSearchList = td.searchTickets(passengerType, statusTicket, fName, fPhoneNumber,flightDetailID,flightType,orderId);
+            List<Ticket> ticketSearchList = td.searchTickets(passengerType, statusTicket, fName, fPhoneNumber, flightDetailID, flightType, orderId);
             request.setAttribute("ticketList", ticketSearchList);
             request.getRequestDispatcher("view/ticketManagement.jsp").forward(request, response);
         }
@@ -194,8 +204,8 @@ public class TicketManagementServlet extends HttpServlet {
         PlaneCategoryDAO pcd = new PlaneCategoryDAO();
         SeatCategoryDAO scd = new SeatCategoryDAO();
         HttpSession session = request.getSession();
-        int flightDetailID = (int)session.getAttribute("flightDetailID");
-        
+        int flightDetailID = (int) session.getAttribute("flightDetailID");
+
         Flights flight = fdd.getFlightByFlightDetailId(flightDetailID);
         request.setAttribute("flight", flight);
         Airport airportDep = aid.getAirportById(flight.getDepartureAirportId());
@@ -204,19 +214,19 @@ public class TicketManagementServlet extends HttpServlet {
         request.setAttribute("locationDep", locationDep);
         Country countryDep = cd.getCountryById(locationDep.getCountryId());
         request.setAttribute("countryDep", countryDep);
-        
+
         Airport airportDes = aid.getAirportById(flight.getDestinationAirportId());
         request.setAttribute("airportDes", airportDes);
         Location locationDes = ld.getLocationById(airportDes.getId());
         request.setAttribute("locationDes", locationDes);
         Country countryDes = cd.getCountryById(locationDes.getCountryId());
         request.setAttribute("countryDes", countryDes);
-        
+
         FlightDetails flightDetail = fdd.getFlightDetailsByID(flightDetailID);
         request.setAttribute("flightDetail", flightDetail);
         PlaneCategory planeCatrgory = pcd.getPlaneCategoryById(flightDetail.getPlaneCategoryId());
         request.setAttribute("planeCatrgory", planeCatrgory);
-        
+
         Integer idd = (Integer) session.getAttribute("id");
         int i = (idd != null) ? idd : -1;
         Accounts acc = ad.getAccountsById(i);
@@ -224,10 +234,10 @@ public class TicketManagementServlet extends HttpServlet {
 
         List<Ticket> ticketList = td.getAllTicketsById(flightDetailID);
         request.setAttribute("ticketList", ticketList);
-        
+
         List<Ticket> allTicketList = td.getAllTickets();
         request.setAttribute("ticketList", ticketList);
-        
+
         List<FlightType> flightTypeList = ftd.getAllFlightType();
         request.setAttribute("flightTypeList", flightTypeList);
 
@@ -240,7 +250,7 @@ public class TicketManagementServlet extends HttpServlet {
         int planeCategoryID = fdd.getPlaneCategoryIdFromFlightDetail(flightDetailID);
         List<SeatCategory> seatList = scd.getNameAndNumberOfSeat(planeCategoryID);
         request.setAttribute("seatList", seatList);
-        
+
         String action = request.getParameter("action");
         if (action == null) {
             request.getRequestDispatcher("view/ticketManagement.jsp").forward(request, response);
@@ -249,9 +259,9 @@ public class TicketManagementServlet extends HttpServlet {
             int id = Integer.parseInt(request.getParameter("id"));
             sd.changeStatusTicket(id, status);
             if (status == 7) {
-               int n = allTicketList.size()+1;
-               Ticket ticket = td.getTicketById(id);
-               int a = td.createTicketWhenChangeStatus(n, ticket);
+                int n = allTicketList.size() + 1;
+                Ticket ticket = td.getTicketById(id);
+                int a = td.createTicketWhenChangeStatus(n, ticket);
             }
             response.sendRedirect("TicketController");
         }

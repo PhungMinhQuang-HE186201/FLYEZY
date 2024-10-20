@@ -371,7 +371,7 @@ public class OrderDAO extends DBConnect {
     public static void main(String[] args) {
         OrderDAO dao = new OrderDAO();
         //dao.createOrder(1, "Naruto", "0123", "hello@gmail.com", 10000, null);
-        System.out.println(dao.getOrderByCode("f"));
+        System.out.println(dao.getAllOrders());
     }
 
 }
