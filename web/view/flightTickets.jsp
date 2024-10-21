@@ -281,6 +281,7 @@
 
                     <div class="sorting-options">
                         <h5>Airline:</h5>
+                        
                         <div>
                             <input type="radio" id="sortDefaultAirline" name="sortAirlines" value="default" onchange="sortAirlines(this.value)" checked>
                             <label for="sortDefaultAirline" >Default</label>
