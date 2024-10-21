@@ -407,20 +407,7 @@ public class FlightDetailDAO extends DBConnect {
         return 0;
     }
     public static void main(String[] args) {
-        FlightDetailDAO fdd = new FlightDetailDAO();
-        Date date = Date.valueOf("2024-10-01");
-        Time fromTime = Time.valueOf("11:00:00");
-        Time toTime = Time.valueOf("17:00:00");
-        List<FlightDetails> ls = fdd.searchByTimeRange(fromTime, toTime, 1);
-//        for (FlightDetails f : ls) {
-//            System.out.println(f.getPrice());
-//            System.out.println(f.getDate());
-//            System.out.println(f.getPlaneCategoryId());
-//            System.out.println(f.getFlightId());
-//        }
-        for(FlightDetails f : fdd.getFlightDetailsByAirportAndDDate(1, 2, date)){
-            System.out.println(f);
-        }
+        
 
     }
 }
