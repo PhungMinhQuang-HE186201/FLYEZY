@@ -198,6 +198,22 @@ public class BaggageManageDAO extends DBConnect {
         }
         return 0;
     }
+    public int getPriceById(int id) {
+    String sql = "SELECT price FROM Baggages WHERE id = ?";
+    int price = 0;
+    try {
+        PreparedStatement prepare = conn.prepareStatement(sql);
+        prepare.setInt(1, id); 
+        ResultSet resultSet = prepare.executeQuery();
+        if (resultSet.next()) {
+            price = resultSet.getInt("price"); 
+        }
+    } catch (SQLException ex) {
+        System.out.println(ex.getMessage());
+    }
+    return price; 
+}
+
 
     public static void main(String[] args) {
         BaggageManageDAO dao = new BaggageManageDAO();

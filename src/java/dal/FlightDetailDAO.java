@@ -309,7 +309,7 @@ public class FlightDetailDAO extends DBConnect {
 
     public List<FlightDetails> searchByStatus(int statusId, int flightId,int index) {
         List<FlightDetails> flightDetails = new ArrayList<>();
-        String query = "SELECT * FROM flight_detail WHERE status_id = ? AND flightid = ?"
+        String query = "SELECT * FROM Flight_Detail WHERE status_id = ? AND flightid = ?"
                 + " LIMIT 5 OFFSET 0";
 
         try (PreparedStatement ps = conn.prepareStatement(query)) {
@@ -338,7 +338,7 @@ public class FlightDetailDAO extends DBConnect {
 
     public List<FlightDetails> searchByDate(Date date, int flightId,int index) {
         List<FlightDetails> flightDetails = new ArrayList<>();
-        String query = "SELECT * FROM flight_detail WHERE date = ? AND flightid = ?"
+        String query = "SELECT * FROM Flight_Detail WHERE date = ? AND flightid = ?"
                 + " LIMIT 5 OFFSET 0";
 
         try (PreparedStatement ps = conn.prepareStatement(query)) {
@@ -366,7 +366,7 @@ public class FlightDetailDAO extends DBConnect {
 
     public List<FlightDetails> searchByTimeRange(Time fromTime, Time toTime, int flightId,int index) {
         List<FlightDetails> flightDetails = new ArrayList<>();
-        String query = "SELECT * FROM flight_detail WHERE time BETWEEN ? AND ? AND flightid = ?"
+        String query = "SELECT * FROM Flight_Detail WHERE time BETWEEN ? AND ? AND flightid = ?"
                 + " LIMIT 5 OFFSET ?";
 
         try (PreparedStatement ps = conn.prepareStatement(query)) {
