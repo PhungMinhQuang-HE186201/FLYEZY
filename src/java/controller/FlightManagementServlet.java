@@ -93,6 +93,15 @@ public class FlightManagementServlet extends HttpServlet {
         } else {
             Accounts acc = accd.getAccountsById(idd);
             request.setAttribute("account", acc);
+            int numberOfItem = fmd.getNumberOfFlights(idd);
+            int numOfPage = (int) Math.ceil((double) numberOfItem / 5);
+            String idx = request.getParameter("index");
+            int index = 1;
+            if (idx != null) {
+                index = Integer.parseInt(idx);
+            }
+            request.setAttribute("index", index);
+            request.setAttribute("numOfPage", numOfPage);
             String action = request.getParameter("action");
             if (action == null) {
                 String sql = "select f.id,f.minutes,a1.name as departureAirport,l1.name as departureLocation,c1.name as departureCountry,\n"
@@ -105,7 +114,8 @@ public class FlightManagementServlet extends HttpServlet {
                         + "inner join Country as c2 on c2.id = l2.country_id\n"
                         + "inner join Status as s on s.id = f.Status_id\n"
                         + "inner join Accounts as acc on acc.Airlineid = f.Airline_id\n"
-                        + "where acc.id = " + idd;
+                        + "where acc.id = " + idd
+                        + " LIMIT 5 OFFSET " + " " + (index - 1) * 5;
                 rsFlightManage = fmd.getData(sql);
             } else {
                 String departureCountry = request.getParameter("departureCountry");
@@ -155,6 +165,7 @@ public class FlightManagementServlet extends HttpServlet {
                 if (destinationCountry != null && !destinationCountry.isEmpty()) {
                     sql += " AND c2.name LIKE '%" + destinationCountry + "%'";
                 }
+                sql += " LIMIT 5 OFFSET " + " " + (index - 1) * 5;
                 rsFlightManage = fmd.getData(sql);
             }
             request.setAttribute("rsFlightManage", rsFlightManage);

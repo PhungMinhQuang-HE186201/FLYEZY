@@ -21,6 +21,29 @@ public class AccountsDAO extends DBConnect {
 
     private final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
+    public List<Accounts> getAllAccountsWithPaging(int index) {
+        List<Accounts> ls = new ArrayList<>();
+        String sql = "SELECT * FROM Accounts\n"
+                + "ORDER BY id\n"
+                + "LIMIT 5 OFFSET ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, (index-1)*5);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+               Accounts a = new Accounts(rs.getInt("id"), rs.getString("name"), rs.getString("email"),
+                        rs.getString("password"), rs.getString("phoneNumber"),
+                        rs.getString("address"), rs.getString("image"), rs.getDate("dob"), rs.getInt("Rolesid"), rs.getInt("Airlineid"),
+                        rs.getTimestamp("created_at"), rs.getTimestamp("updated_at"), rs.getInt("Status_id"));
+                ls.add(a);
+            }
+            return ls;
+
+        } catch (Exception e) {
+        }
+        return null;
+    }
+    
     public List<Accounts> getAllAccounts() {
         List<Accounts> ls = new ArrayList<>();
         String sql = "Select * from Accounts";
@@ -39,6 +62,20 @@ public class AccountsDAO extends DBConnect {
         } catch (Exception e) {
         }
         return null;
+    }
+
+    public int getNumberOfAccounts() {
+        String sql = "Select Count(*) from Accounts";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+
+        } catch (Exception e) {
+        }
+        return 0;
     }
 
     public int getIdByEmailOrPhoneNumber(String emailOrPhoneNumber) {
@@ -202,7 +239,7 @@ public class AccountsDAO extends DBConnect {
                         rs.getString("password"), rs.getString("phoneNumber"),
                         rs.getString("address"), rs.getString("image"), rs.getDate("dob"), rs.getInt("Rolesid"), rs.getInt("Airlineid"),
                         rs.getTimestamp("created_at"), rs.getTimestamp("updated_at"), rs.getInt("Status_id"));
-                
+
                 ls.add(a);
             }
         } catch (Exception e) {
@@ -369,6 +406,6 @@ public class AccountsDAO extends DBConnect {
 
     public static void main(String[] args) {
         AccountsDAO dao = new AccountsDAO();
-        dao.updateAccount(new Accounts(23, "Ngo Tung Duong222", "abccccc@gmail.com", "1", "0123456789", null, null, new Date(2000, 12, 11), 1, 1, null, null));
+        System.out.println(dao.getNumberOfAccounts());
     }
 }

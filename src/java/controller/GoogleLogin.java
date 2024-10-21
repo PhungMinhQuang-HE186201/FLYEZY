@@ -22,7 +22,7 @@ public class GoogleLogin {
 
     public static final String GOOGLE_CLIENT_SECRET = "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";
 
-    public static final String GOOGLE_REDIRECT_URI = "http://localhost:8080/flyezy/loginGoogleHandler";
+    public static final String GOOGLE_REDIRECT_URI = "http://localhost:9999/flyezy/loginGoogleHandler";
 
     public static final String GOOGLE_GRANT_TYPE = "authorization_code";
 

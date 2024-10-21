@@ -164,7 +164,7 @@ public class TicketManagementServlet extends HttpServlet {
             int orderId = Integer.parseInt(request.getParameter("orderId"));
 //            List<Accounts> accountList = ad.searchAccounts(fRole, fName, fPhoneNumber);
 //            request.setAttribute("accountList", accountList);
-            List<Ticket> ticketSearchList = td.searchTickets(passengerType, statusTicket, fName, fPhoneNumber,flightDetailID,flightType,orderId);
+            List<Ticket> ticketSearchList = td.searchTickets(passengerType, statusTicket, fName, fPhoneNumber,flightDetailID,flightType);
             request.setAttribute("ticketList", ticketSearchList);
             request.getRequestDispatcher("view/ticketManagement.jsp").forward(request, response);
         }
@@ -240,7 +240,6 @@ public class TicketManagementServlet extends HttpServlet {
         int planeCategoryID = fdd.getPlaneCategoryIdFromFlightDetail(flightDetailID);
         List<SeatCategory> seatList = scd.getNameAndNumberOfSeat(planeCategoryID);
         request.setAttribute("seatList", seatList);
-        
         String action = request.getParameter("action");
         if (action == null) {
             request.getRequestDispatcher("view/ticketManagement.jsp").forward(request, response);

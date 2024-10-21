@@ -87,9 +87,19 @@ public class AccountControllerServlet extends HttpServlet {
             List<Airline> airlineList = amd.getAllAirline();
             request.setAttribute("airlineList", airlineList);
 
+            int numberOfItem = ad.getNumberOfAccounts();
+            int numOfPage = (int) Math.ceil((double) numberOfItem / 5);
+            String idx = request.getParameter("index");
+            int index =1;
+            if(idx!=null){
+                index = Integer.parseInt(idx);
+            }
+            request.setAttribute("index", index);
+            request.setAttribute("numOfPage", numOfPage);
+            
             String action = request.getParameter("action");
             if (action == null) {
-                List<Accounts> accountList = ad.getAllAccounts();
+                List<Accounts> accountList = ad.getAllAccountsWithPaging(index);
                 request.setAttribute("accountList", accountList);
                 request.getRequestDispatcher("view/accountController.jsp").forward(request, response);
             } else if (action.equals("changeStatus")) { //ok
@@ -140,6 +150,16 @@ public class AccountControllerServlet extends HttpServlet {
         String address = request.getParameter("address");
         String image = "img/" + request.getParameter("image");
         String create_at = request.getParameter("createdAt");
+        
+        int numberOfItem = ad.getNumberOfAccounts();
+            int numOfPage = (int) Math.ceil((double) numberOfItem / 5);
+            String idx = request.getParameter("index");
+            int index =1;
+            if(idx!=null){
+                index = Integer.parseInt(idx);
+            }
+            request.setAttribute("index", index);
+            request.setAttribute("numOfPage", numOfPage);
         //insert
         try {
             if (action.equals("update")) {
@@ -172,7 +192,7 @@ public class AccountControllerServlet extends HttpServlet {
                     response.sendRedirect("accountController");
                 } else {
                     String error = "The phoneNumber or email has already existed!";
-                    List<Accounts> accountList = ad.getAllAccounts();
+                    List<Accounts> accountList = ad.getAllAccountsWithPaging(index);
                     request.setAttribute("accountList", accountList);
                     request.setAttribute("error", error);
                     RolesDAO rd = new RolesDAO();

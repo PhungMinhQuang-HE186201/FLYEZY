@@ -158,7 +158,7 @@ public class TicketDAO extends DBConnect {
         return null;
     }
 
-    public List<Ticket> searchTickets(String passengerType, String statusTicket, String name, String phoneNumber, int Flight_Detailid, String Flight_Type_id, int order_Id) {
+    public List<Ticket> searchTickets(String passengerType, String statusTicket, String name, String phoneNumber, int Flight_Detailid, String Flight_Type_id) {
         List<Ticket> ls = new ArrayList<>();
         StringBuilder sql = new StringBuilder("select t.* from Ticket t \n"
                 + "join `flyezy`.`Order` o On t.Order_id=o.id\n"
@@ -177,9 +177,6 @@ public class TicketDAO extends DBConnect {
         }
         if (phoneNumber != null && !phoneNumber.isEmpty()) {
             sql.append(" AND pPhoneNumber LIKE ?");
-        }
-        if (order_Id != -1) {
-            sql.append(" AND Order_Id = ?");
         }
 
         try {
@@ -204,9 +201,6 @@ public class TicketDAO extends DBConnect {
                     vp = vp.substring(1);
                 }
                 ps.setString(i++, "%" + vp + "%");
-            }
-            if (order_Id != -1) {
-                ps.setInt(i++, order_Id);
             }
 
             ResultSet rs = ps.executeQuery();
@@ -279,13 +273,13 @@ public class TicketDAO extends DBConnect {
 
             n = ps.executeUpdate();
         } catch (Exception ex) {
-            System.out.println(ex);
+            ex.printStackTrace();
         }
         return n;
     }
 
     public static void main(String[] args) {
         TicketDAO tcd = new TicketDAO();
-        System.out.println(tcd.getTicketByCode("A1", 1, 0));
+        System.out.println(tcd.createTicket("E9", 1, 1, "Doraemon", 1, "0123", Date.valueOf("2020-10-10"), null,10000, 1, 1));
     }
 }
