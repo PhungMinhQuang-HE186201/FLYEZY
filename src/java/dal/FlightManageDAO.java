@@ -125,8 +125,8 @@ public class FlightManageDAO extends DBConnect {
                 int departureAirportId = resultSet.getInt("departureAirportId");
                 int destinationAirportId = resultSet.getInt("destinationAirportId");
                 int statusId = resultSet.getInt("Status_id");
-
-                return new Flights(flightId, minutes, departureAirportId, destinationAirportId, statusId);
+                int airlineId = resultSet.getInt("Airline_id");
+                return new Flights(flightId, minutes, departureAirportId, destinationAirportId, statusId,airlineId);
             }
         } catch (Exception e) {
         }

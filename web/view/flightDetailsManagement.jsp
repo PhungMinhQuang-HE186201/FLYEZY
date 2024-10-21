@@ -7,11 +7,17 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page import="java.util.List"%>
+<%@page import="dal.AirlineManageDAO" %>
 <%@page import="dal.PlaneCategoryDAO" %>
 <%@page import="dal.StatusDAO"%>
 <%@page import="model.FlightDetails"%>
 <%@page import="model.PlaneCategory"%>
 <%@page import="model.Status"%>
+<%@page import="model.Airport"%>
+<%@page import="model.Flights"%>
+<%@page import="model.Location"%>
+<%@page import="model.Country"%>
+<%@page import="model.Airline"%>
 <html>
     <head>
         <link rel="stylesheet" href="../css/styleAdminController.css"/>
@@ -30,7 +36,30 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
         <script src="js/toastrNotification.js"></script>
-
+        <style>
+            .main-container {
+                border: 1px solid #ddd;
+                margin-bottom: 20px;
+                margin-top: 20px;
+                border-radius: 10px;
+                background-color: #fff;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: flex-start;
+            }
+            .details {
+                width: 45%; /* Đảm bảo hai khối có kích thước vừa đủ */
+            }
+            .details p {
+                font-size: 16px;
+            }
+            .details span {
+                font-weight: bold;
+            }
+        </style>
     </head>
     <body>
         <%@include file="header.jsp" %>
@@ -38,12 +67,38 @@
         <%
             String flight_id = (String) session.getAttribute("fid");
             int fid = Integer.parseInt(flight_id);
+            
         %>
         <div id="back" style="margin-left: 210px;margin-top: 60px;margin-bottom: -100px " > 
             <a href="flightManagement" class="btn btn-warning" >Back</a>
         </div>
+        <%
+             Flights list = (Flights) request.getAttribute("listFlight");
+             Airport listAirportDep = (Airport) request.getAttribute("listAirportDep");
+              Location listLocationDep = (Location) request.getAttribute("listLocationDep");
+            Country listCountryDep = (Country) request.getAttribute("listCountryDep");
+            AirlineManageDAO airline = new AirlineManageDAO();
+              Airport listAirportDes = (Airport) request.getAttribute("listAirportDes");
+              Location listLocationDes = (Location) request.getAttribute("listLocationDes");
+            Country listCountryDes = (Country) request.getAttribute("listCountryDes");
+          
+        %>
+        <div class="main-container" style="margin-left: 17%;margin-top: 9%;width: 74%;">
+            <div class="details">
+                <p>Departure: <span> <%= listAirportDep.getName() %> (<%= listLocationDep.getName() %>)</span></p>
+                <p>From:<span> <%= listCountryDep.getName() %>  </span></p>
+                <p>Airline: <span><%= airline.getAirportNamedById(list.getAirlineId()) %></span></p>
+            </div>
 
-        <div style="display: flex; margin-left: 210px;margin-top: 100px">
+
+            <div class="details">
+                <p>Destination: <span> <%= listAirportDes.getName() %> (<%= listLocationDes.getName() %>)</span></p>
+                <p>To: <span><%= listCountryDes.getName() %></span></p>
+                <p>Time: <span><%= list.getMinutes() %> minutes</span></p>
+            </div>
+        </div>
+
+        <div style="display: flex; margin-left: 210px;margin-top: 22px">
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#add-<%=fid%>">Add New Flight Detail</button>
         </div>
         <form action="flightDetailManagement" method="GET" style="display: flex; align-items: center; margin-left: 210px; margin-top: 20px;" oninput="toggleSearchButton()">
