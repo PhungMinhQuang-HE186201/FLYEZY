@@ -61,6 +61,7 @@ public class OrderManagementServlet extends HttpServlet {
         }
         String flightDetailIdStr = request.getParameter("flightDetailID");
         int flightDetailId = Integer.parseInt(flightDetailIdStr);
+        request.setAttribute("flightDetailID", flightDetailId);
         int airlineId = fdd.getAirlineIdByFlightDetailId(flightDetailId);
         Flights flight = fdd.getFlightByFlightDetailId(flightDetailId);
 
@@ -82,11 +83,23 @@ public class OrderManagementServlet extends HttpServlet {
         request.setAttribute("flightDetail", flightDetail);
         PlaneCategory planeCatrgory = pcd.getPlaneCategoryById(flightDetail.getPlaneCategoryId());
         request.setAttribute("planeCatrgory", planeCatrgory);
+        
+        OrderDAO od = new OrderDAO();
 
-        List<Order> listOrder = od.getAllOrdersByFlightDetail(flightDetailId);
+        int numberOfItem = od.getNumberOfOrdersByFlightDetail(flightDetailId);
+            int numOfPage = (int) Math.ceil((double) numberOfItem / 5);
+            String idx = request.getParameter("index");
+            int index =1;
+            if(idx!=null){
+                index = Integer.parseInt(idx);
+            }
+            request.setAttribute("index", index);
+            request.setAttribute("numOfPage", numOfPage);
+            
+        List<Order> listOrder = od.getAllOrdersByFlightDetailWithPaging(flightDetailId,index);
         String submit = request.getParameter("submit");
         if (submit == null) {
-            listOrder = od.getAllOrdersByFlightDetail(flightDetailId);
+            listOrder = od.getAllOrdersByFlightDetailWithPaging(flightDetailId,index);
         } else {
             // Search for airlines based on keyword and status
             String keyword = request.getParameter("keyword") != null ? request.getParameter("keyword").trim() : null;
@@ -105,7 +118,7 @@ public class OrderManagementServlet extends HttpServlet {
             }
 
             // Fetch the airlines based on search criteria
-            listOrder = od.searchOrder(statusId, code, keyword, flightDetailId);
+            listOrder = od.searchOrder(statusId, code, keyword, flightDetailId,index);
         }
         List<Status> listStatus = statusDao.getStatusOfOrder();
         request.setAttribute("airlineId", airlineId);

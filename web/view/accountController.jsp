@@ -86,7 +86,7 @@
                             </div>
                             <div class="modal-body" style="padding:40px 50px;" id="addAccount">
                                 <c:if test="${not empty error}">
-                                   <p id="error" class="text-danger"><%= request.getAttribute("error") != null ? request.getAttribute("error") : "" %></p>
+                                    <p id="error" class="text-danger"><%= request.getAttribute("error") != null ? request.getAttribute("error") : "" %></p>
                                 </c:if>
                                 <form role="form" action="accountController" method="Post">
                                     <input type="hidden" name="action" value="create"/>
@@ -203,6 +203,7 @@
                             <%}else{%>
                             <a class="btn btn-danger" style="text-decoration: none" onclick="doActivateDeactivate('<%= list.getId() %>', '<%= list.getName() %>', 'Activate')">Deactivated</a>
                             <%}%>
+
                             <!-- Modal: Update account -->
                             <div class="modal fade" id="myModal<%= list.getId() %>" role="dialog">
                                 <div class="modal-dialog">
@@ -285,14 +286,44 @@
                                     </div>
                                 </div>
                             </div>
+
                         </td>
+
                     </tr>
                     <%
                     }
                     %>
                 </tbody>
             </table>
+            <div style="">
+                <nav aria-label="...">
+                    <ul class="pagination">
+                        <c:if test="${index != 1}">    
+                            <li class="page-item">
+                                <a class="page-link" href="accountController?index=${index -1}">Previous</a>
+                            </li>
+                        </c:if>    
+                        <c:forEach begin="1" end ="${numOfPage}" var="i">
+                            <c:if test="${index == i}">
+                                <li class="page-item active">
+                                    <a class="page-link" href="accountController?index=${i}">${i}</a>
+                                </li>
+                            </c:if>
 
+                            <c:if test="${index != i}">
+                                <li class="page-item">
+                                    <a class="page-link" href="accountController?index=${i}">${i}</a>
+                                </li>
+                            </c:if>
+                        </c:forEach>
+                        <c:if test="${index != numOfPage}">    
+                            <li class="page-item">
+                                <a class="page-link" href="accountController?index=${index +1}">Next</a>
+                            </li>
+                        </c:if> 
+                    </ul>
+                </nav>
+            </div>
         </div>
 
         <!-- change status Modal -->
@@ -315,6 +346,8 @@
                 </div>
             </div>
         </div>
+
+
         <script>
             function openModal(id) {
                 $("#myModal" + id).modal('show');

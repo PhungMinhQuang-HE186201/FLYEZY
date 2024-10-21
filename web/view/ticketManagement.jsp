@@ -160,12 +160,10 @@
                     <input class="filterElm" type="text" name="fName" value="${param.fName}" placeholder="Enter name">
                     <strong>Phone number: </strong>
                     <input class="filterElm" type="number" name="fPhoneNumber" value="${param.fPhoneNumber}" placeholder="Enter phone number">
-                    <strong>Order id: </strong>
-                    <input class="filterElm" type="text" name="orderId" value="${param.orderId}" placeholder="Enter order id">
                     <button class="btn btn-info" type="submit">
                         Search
                     </button>
-                    <a class="btn btn-danger" href="TicketController">Cancle</a>
+                    <a class="btn btn-danger" href="TicketController">Cancel</a>
                 </form>
 
 
@@ -187,6 +185,7 @@
                         <th>Baggage weight</th>
                         <th>Order ID</th>
                         <th>Flight Type</th>
+                        <th>Total Price</th>
                         <th>Status</th>
                         <th style="padding: 0 55px; min-width: 156px">Actions</th>
                     </tr>
@@ -217,6 +216,7 @@
                         <td><%= bmd.getWeight(list.getBaggagesid()) %></td>
                         <td><%= list.getOrder_id() %></td>
                         <td><%= ftd.getNameType(list.getFlight_Type_id()) %></td>
+                        <td><%= list.getTotalPrice() %></td>
                         <td><%= sd.getStatusNameById(list.getStatusid()) %></td>
                         <td>
                             <a class="btn btn-info" style="text-decoration: none" id="myBtn<%= list.getId() %>" onclick="openModal(<%= list.getId() %>)">Change status</a>

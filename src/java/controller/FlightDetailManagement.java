@@ -72,7 +72,7 @@ public class FlightDetailManagement extends HttpServlet {
 //        doPost(request, response);
         HttpSession session = request.getSession();
         Integer idd = (Integer) session.getAttribute("id");
-
+        FlightDetailDAO fdd = new FlightDetailDAO();
         if (idd == null) {
             response.sendRedirect("login");
             return;
@@ -81,25 +81,33 @@ public class FlightDetailManagement extends HttpServlet {
             request.setAttribute("account", acc);
         }
 
-        
-        
         String airlineId = request.getParameter("airlineId");
         if (airlineId != null) {
             session.setAttribute("aid", airlineId);
         }
 
         String flightid = request.getParameter("flightId");
+
         if (flightid != null) {
             int fid = Integer.parseInt(flightid);
             session.setAttribute("fid", flightid);
-
+            request.setAttribute("flightid", fid);
+            int numberOfItem = fdd.getNumberOfFlightDetail(fid);
+            int numOfPage = (int) Math.ceil((double) numberOfItem / 5);
+            String idx = request.getParameter("index");
+            int index = 1;
+            if (idx != null) {
+                index = Integer.parseInt(idx);
+            }
+            request.setAttribute("index", index);
+            request.setAttribute("numOfPage", numOfPage);
             String action = request.getParameter("action");
 
-            List<FlightDetails> detail_ls = dao.getAllDetailByFlightId(fid);
+            List<FlightDetails> detail_ls = dao.getAllDetailByFlightId(fid,index);
             List<FlightDetails> searchResults = new ArrayList<>();
 
             if (action != null && action.equals("cancel")) {
-                searchResults = dao.getAllDetailByFlightId(fid);
+                searchResults = dao.getAllDetailByFlightId(fid,index);
                 request.setAttribute("listFlightDetails", searchResults);
             } else if (action != null && action.equals("search")) {
 
@@ -109,18 +117,18 @@ public class FlightDetailManagement extends HttpServlet {
                 String toSearch = request.getParameter("toSearch");
                 if (statusSearch != null && !statusSearch.isEmpty()) {
                     int status_search = Integer.parseInt(statusSearch);
-                    searchResults = dao.searchByStatus(status_search, fid);
+                    searchResults = dao.searchByStatus(status_search, fid,index);
                 }
 
                 if (dateSearch != null && !dateSearch.isEmpty()) {
                     Date date = Date.valueOf(dateSearch);
-                    searchResults = dao.searchByDate(date, fid);
+                    searchResults = dao.searchByDate(date, fid,index);
 
                 }
                 if (fromSearch != null && toSearch != null && !fromSearch.isEmpty() && !toSearch.isEmpty()) {
                     Time fromTime = Time.valueOf(fromSearch);
                     Time toTime = Time.valueOf(toSearch);
-                    searchResults = dao.searchByTimeRange(fromTime, toTime, fid);
+                    searchResults = dao.searchByTimeRange(fromTime, toTime, fid,index);
                 }
                 request.setAttribute("listFlightDetails", searchResults);
 
