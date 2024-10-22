@@ -311,6 +311,35 @@
             %>
         </tbody>
     </table>
+    <div style="margin-left:50px">
+        <nav aria-label="...">
+            <ul class="pagination">
+                <c:if test="${index != 1}">    
+                    <li class="page-item">
+                        <a class="page-link" href="OrderController?flightDetailID=${flightDetailId}&&index=${index -1}">Previous</a>
+                    </li>
+                </c:if>    
+                <c:forEach begin="1" end ="${numOfPage}" var="i">
+                    <c:if test="${index == i}">
+                        <li class="page-item active">
+                            <a class="page-link" href="OrderController?flightDetailID=${flightDetailId}&&index=${i}">${i}</a>
+                        </li>
+                    </c:if>
+
+                    <c:if test="${index != i}">
+                        <li class="page-item">
+                            <a class="page-link" href="OrderController?flightDetailID=${flightDetailId}&&index=${i}">${i}</a>
+                        </li>
+                    </c:if>
+                </c:forEach>
+                <c:if test="${index != numOfPage}">    
+                    <li class="page-item">
+                        <a class="page-link" href="OrderController?flightDetailID=${flightDetailId}&&index=${index +1}">Next</a>
+                    </li>
+                </c:if> 
+            </ul>
+        </nav>
+    </div>
     <script>
         function openModal(id) {
             $("#myModal" + id).modal('show');

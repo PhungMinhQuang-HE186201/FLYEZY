@@ -32,7 +32,6 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <%-- Import Bootstrap CSS --%>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <title>JSP Page</title>
@@ -138,7 +137,7 @@
                         <input type="text" class="form-control" name="code" placeholder="Enter code here to search..." aria-label="Search" style="width: 30%; font-size: 1.2em">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" type="submit">
-                                <i class="fa fa-search"></i> <!-- Search icon -->
+                                <i class="fa fa-search"></i> 
                             </button>
                         </div>
                     </form>

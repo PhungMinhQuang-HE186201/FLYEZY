@@ -25,6 +25,7 @@
 <%@page import="dal.AirlineManageDAO" %>
 <%@page import="dal.FlightDetailDAO" %>
 <%@page import="dal.PlaneCategoryDAO" %>
+<%@page import="dal.PassengerTypeDAO" %>
 <%@page import="dal.SeatCategoryDAO" %>
 <%@page import="dal.AirportDAO" %>
 <%@page import="dal.LocationDAO" %>
@@ -198,6 +199,7 @@
             AirlineManageDAO amd = new AirlineManageDAO();
             FlightDetailDAO fdd = new FlightDetailDAO();
             PlaneCategoryDAO pcd = new PlaneCategoryDAO();
+            PassengerTypeDAO ptd = new PassengerTypeDAO();
             SeatCategoryDAO scd = new SeatCategoryDAO();
             AirportDAO ad = new AirportDAO();
             LocationDAO ld = new LocationDAO();
@@ -462,15 +464,15 @@
                     <div class="ticket-pricing">
                         <div class="ticket-item">
                             <span>Adult Ticket x <%= adultTicket %></span>
-                            <span>= <%= currencyFormatter.format(fd.getPrice() * (sc.getSurcharge()+1) * adultTicket) %></span>
+                            <span>= <%= currencyFormatter.format(fd.getPrice() * (sc.getSurcharge()+1) * adultTicket * ptd.getPassengerTypePriceNameById(1)) %></span>
                         </div>
                         <div class="ticket-item">
                             <span>Children Ticket x <%= childTicket %></span>
-                            <span>= <%= currencyFormatter.format(fd.getPrice() * (sc.getSurcharge()+1) * childTicket) %></span>
+                            <span>= <%= currencyFormatter.format(fd.getPrice() * (sc.getSurcharge()+1) * childTicket * ptd.getPassengerTypePriceNameById(2)) %></span>
                         </div>
                         <div class="ticket-item">
                             <span>Infant Ticket x <%= infantTicket %></span>
-                            <span>= <%= currencyFormatter.format(fd.getPrice() * (sc.getSurcharge()+1) * infantTicket) %></span>
+                            <span>= <%= currencyFormatter.format(fd.getPrice() * (sc.getSurcharge()+1) * infantTicket * ptd.getPassengerTypePriceNameById(3)) %></span>
                         </div>
                         <div class="ticket-item">
                             <span>Baggage</span>
@@ -478,7 +480,9 @@
                         </div>
                         <div class="ticket-total">
                             <span>Total Price:</span>
-                            <span id="totalPrice"><%= currencyFormatter.format(fd.getPrice() * (sc.getSurcharge()+1) * (adultTicket + childTicket + infantTicket)) %></span>
+                            <span id="totalPrice">
+                                <%= currencyFormatter.format(fd.getPrice() * (sc.getSurcharge()+1) * (adultTicket * ptd.getPassengerTypePriceNameById(1) + childTicket* ptd.getPassengerTypePriceNameById(2) + infantTicket* ptd.getPassengerTypePriceNameById(3))) %>
+                            </span>
                         </div>
                     </div>
                     <div style="width: 100%">
@@ -719,16 +723,18 @@
 
             function updateTotalBaggage() {
                 var totalBaggage = 0;
-            <% for(int i = 0; i < adultTicket; i++) { %>
-                var baggagePrice = parseFloat(document.getElementById("baggage<%=i%>").value);
-                totalBaggage += isNaN(baggagePrice) ? 0 : baggagePrice;
+            <% for(int i = 1; i <= adultTicket; i++) { %>
+                var baggageElement = document.getElementById("baggage<%=i%>");
+                console.log(baggageElement);
+                var baggagePrice = parseFloat(baggageElement ? baggageElement.value : 0);
+                totalBaggage += isNaN(baggagePrice) ? 0 : bmd.getPriceById(baggagePrice);
             <% } %>
                 document.getElementById("totalBaggage").innerText = "= " + new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(totalBaggage);
                 updateTotalPrice(totalBaggage);
             }
 
             function updateTotalPrice(totalBaggage) {
-                var a = <%= fd.getPrice() * (sc.getSurcharge()+1) * (adultTicket + childTicket + infantTicket) %>;
+                var a = <%= fd.getPrice() * (sc.getSurcharge()+1) * (adultTicket * ptd.getPassengerTypePriceNameById(1) + childTicket* ptd.getPassengerTypePriceNameById(2) + infantTicket* ptd.getPassengerTypePriceNameById(3)) %>;
                 var total = a + totalBaggage;
                 document.getElementById("totalPrice").innerText = new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(total);
                 ;

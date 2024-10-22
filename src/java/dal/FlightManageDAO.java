@@ -38,6 +38,56 @@ public class FlightManageDAO extends DBConnect {
         return list;
     }
 
+    public int getNumberOfFlights(int idd) {
+        List<Flights> list = new ArrayList<>();
+        String sql = "SELECT \n"
+                + "    Count(*)\n"
+                + "FROM flyezy.Flight AS f\n"
+                + "INNER JOIN flyezy.Airport AS a1 ON a1.id = f.departureAirportid\n"
+                + "INNER JOIN flyezy.Airport AS a2 ON a2.id = f.destinationAirportid\n"
+                + "INNER JOIN Location AS l1 ON l1.id = a1.locationid\n"
+                + "INNER JOIN Country AS c1 ON c1.id = l1.country_id\n"
+                + "INNER JOIN Location AS l2 ON l2.id = a2.locationid\n"
+                + "INNER JOIN Country AS c2 ON c2.id = l2.country_id\n"
+                + "INNER JOIN Status AS s ON s.id = f.Status_id\n"
+                + "INNER JOIN Accounts AS acc ON acc.Airlineid = f.Airline_id\n"
+                + "WHERE acc.id = "+idd;
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            ResultSet resultSet = prepare.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return 0;
+    }
+
+    public List<Flights> getAllFlightsWithPaging(int index) {
+        List<Flights> list = new ArrayList<>();
+        String sql = "select * from Flight"
+                + "ORDER BY id\n"
+                + "LIMIT 5 OFFSET ?;";
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            prepare.setInt(1, (index - 1) * 5);
+            ResultSet resultSet = prepare.executeQuery();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                int minutes = resultSet.getInt("minutes");
+                int departureAirportId = resultSet.getInt("departureAirportId");
+                int destinationAirportId = resultSet.getInt("destinationAirportId");
+                int statusId = resultSet.getInt("Status_id");
+
+                list.add(new Flights(id, minutes, departureAirportId, destinationAirportId, statusId));
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return list;
+    }
+
     public List<Flights> getAllFlightsByDepartAndDes(int departureAirportId, int destinationAirportId) {
         List<Flights> list = new ArrayList<>();
         String sql = "select * from flyezy.Flight where Flight.departureAirportid = ? and Flight.destinationAirportid = ?";
@@ -75,8 +125,8 @@ public class FlightManageDAO extends DBConnect {
                 int departureAirportId = resultSet.getInt("departureAirportId");
                 int destinationAirportId = resultSet.getInt("destinationAirportId");
                 int statusId = resultSet.getInt("Status_id");
-
-                return new Flights(flightId, minutes, departureAirportId, destinationAirportId, statusId);
+                int airlineId = resultSet.getInt("Airline_id");
+                return new Flights(flightId, minutes, departureAirportId, destinationAirportId, statusId,airlineId);
             }
         } catch (Exception e) {
         }
@@ -226,8 +276,8 @@ public class FlightManageDAO extends DBConnect {
 
     public static void main(String[] args) {
         FlightManageDAO dao = new FlightManageDAO();
-        System.out.println(dao.getDepartureByFlight(1));
-
+        System.out.println(dao.getNumberOfFlights(2));
+        
     }
 
 }

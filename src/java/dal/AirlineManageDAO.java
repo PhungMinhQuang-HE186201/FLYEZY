@@ -103,6 +103,21 @@ public class AirlineManageDAO extends DBConnect {
         return list.get(0);
     }
 
+     public String getAirportNamedById(int id) {
+        String sql = "SELECT name FROM Airline WHERE id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                return rs.getString("name");
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return null;
+    }
+    
     public List<Airline> searchAirline(String name, int statusId) {
         List<Airline> list = new ArrayList<>();
         StringBuilder sql = new StringBuilder("SELECT * FROM Airline WHERE 1=1"); // Base query
