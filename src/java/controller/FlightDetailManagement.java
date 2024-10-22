@@ -104,7 +104,7 @@ public class FlightDetailManagement extends HttpServlet {
 
         if (flightid != null) {
             int fid = Integer.parseInt(flightid);
-            session.setAttribute("fid", flightid);
+            request.setAttribute("fid", flightid);
             request.setAttribute("flightid", fid);
             int numberOfItem = fdd.getNumberOfFlightDetail(fid);
             int numOfPage = (int) Math.ceil((double) numberOfItem / 5);

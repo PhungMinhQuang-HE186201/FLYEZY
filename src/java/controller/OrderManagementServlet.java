@@ -123,8 +123,7 @@ public class OrderManagementServlet extends HttpServlet {
                 }
             }
 
-            // Fetch the airlines based on search criteria
-            listOrder = od.searchOrder(statusId, code, keyword, flightDetailID);
+
             listOrder = od.searchOrder(statusId, code, keyword, flightDetailId,index);
         }
         List<Status> listStatus = statusDao.getStatusOfOrder();
