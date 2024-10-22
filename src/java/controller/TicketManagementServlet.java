@@ -100,11 +100,13 @@ public class TicketManagementServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
         String action = request.getParameter("action");
-        if (request.getAttribute("flightDetailID") == null && action == null) {
+        String flightDetailIdStr = request.getParameter("flightDetailID");
+        int flightDetailId = Integer.parseInt(flightDetailIdStr);
+        if (request.getAttribute("flightDetailID") == null) {
             int flightDetailID = Integer.parseInt(request.getParameter("flightDetailID"));
             request.setAttribute("flightDetailID", flightDetailID);
         }
-        int flightDetailID = Integer.parseInt(request.getParameter("flightDetailID"));
+        int flightDetailID = (int) request.getAttribute("flightDetailID");
 
         Flights flight = fdd.getFlightByFlightDetailId(flightDetailID);
         request.setAttribute("flight", flight);
@@ -155,6 +157,7 @@ public class TicketManagementServlet extends HttpServlet {
         if (action == null) {
             request.getRequestDispatcher("view/ticketManagement.jsp").forward(request, response);
         } else if (action.equals("search")) {
+            
             String flightType = request.getParameter("flightType");
             String passengerType = request.getParameter("passengerType");
             String statusTicket = request.getParameter("statusTicket");
@@ -174,7 +177,7 @@ public class TicketManagementServlet extends HttpServlet {
             }
 //            List<Accounts> accountList = ad.searchAccounts(fRole, fName, fPhoneNumber);
 //            request.setAttribute("accountList", accountList);
-            List<Ticket> ticketSearchList = td.searchTickets(passengerType, statusTicket, fName, fPhoneNumber, flightDetailID, flightType, orderId);
+            List<Ticket> ticketSearchList = td.searchTickets(passengerType, statusTicket, fName, fPhoneNumber, flightDetailId, flightType, orderId);
             request.setAttribute("ticketList", ticketSearchList);
             request.getRequestDispatcher("view/ticketManagement.jsp").forward(request, response);
         }
