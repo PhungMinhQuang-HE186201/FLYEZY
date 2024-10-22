@@ -100,11 +100,11 @@ public class TicketManagementServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
         String action = request.getParameter("action");
-        if (session.getAttribute("flightDetailID") == null && action == null) {
+        if (request.getAttribute("flightDetailID") == null && action == null) {
             int flightDetailID = Integer.parseInt(request.getParameter("flightDetailID"));
-            session.setAttribute("flightDetailID", flightDetailID);
+            request.setAttribute("flightDetailID", flightDetailID);
         }
-        int flightDetailID = (int) session.getAttribute("flightDetailID");
+        int flightDetailID = Integer.parseInt(request.getParameter("flightDetailID"));
 
         Flights flight = fdd.getFlightByFlightDetailId(flightDetailID);
         request.setAttribute("flight", flight);
@@ -204,7 +204,7 @@ public class TicketManagementServlet extends HttpServlet {
         PlaneCategoryDAO pcd = new PlaneCategoryDAO();
         SeatCategoryDAO scd = new SeatCategoryDAO();
         HttpSession session = request.getSession();
-        int flightDetailID = (int) session.getAttribute("flightDetailID");
+        int flightDetailID = Integer.parseInt(request.getParameter("flightDetailID"));
 
         Flights flight = fdd.getFlightByFlightDetailId(flightDetailID);
         request.setAttribute("flight", flight);
@@ -263,7 +263,7 @@ public class TicketManagementServlet extends HttpServlet {
                 Ticket ticket = td.getTicketById(id);
                 int a = td.createTicketWhenChangeStatus(n, ticket);
             }
-            response.sendRedirect("TicketController");
+            response.sendRedirect("TicketController?flightDetailID=" + flightDetailID);
         }
     }
 

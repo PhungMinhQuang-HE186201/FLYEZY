@@ -46,7 +46,7 @@ public class OrderManagementServlet extends HttpServlet {
     PlaneCategoryDAO pcd = new PlaneCategoryDAO();
     StatusDAO statusDao = new StatusDAO();
     TicketDAO td = new TicketDAO();
-            
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -61,6 +61,12 @@ public class OrderManagementServlet extends HttpServlet {
         }
         String flightDetailIdStr = request.getParameter("flightDetailID");
         int flightDetailId = Integer.parseInt(flightDetailIdStr);
+        if (request.getAttribute("flightDetailID") == null) {
+            int flightDetailID = Integer.parseInt(request.getParameter("flightDetailID"));
+            request.setAttribute("flightDetailID", flightDetailID);
+        }
+        int flightDetailID = (int) request.getAttribute("flightDetailID");
+
         int airlineId = fdd.getAirlineIdByFlightDetailId(flightDetailId);
         Flights flight = fdd.getFlightByFlightDetailId(flightDetailId);
 
@@ -86,7 +92,7 @@ public class OrderManagementServlet extends HttpServlet {
         List<Order> listOrder = od.getAllOrdersByFlightDetail(flightDetailId);
         String submit = request.getParameter("submit");
         if (submit == null) {
-            listOrder = od.getAllOrdersByFlightDetail(flightDetailId);
+            listOrder = od.getAllOrdersByFlightDetail(flightDetailID);
         } else {
             // Search for airlines based on keyword and status
             String keyword = request.getParameter("keyword") != null ? request.getParameter("keyword").trim() : null;
@@ -105,7 +111,7 @@ public class OrderManagementServlet extends HttpServlet {
             }
 
             // Fetch the airlines based on search criteria
-            listOrder = od.searchOrder(statusId, code, keyword, flightDetailId);
+            listOrder = od.searchOrder(statusId, code, keyword, flightDetailID);
         }
         List<Status> listStatus = statusDao.getStatusOfOrder();
         request.setAttribute("airlineId", airlineId);
@@ -128,7 +134,7 @@ public class OrderManagementServlet extends HttpServlet {
 
             // Update status logic
             od.updateOrderStatus(orderId, statusId);
-            if(statusId == 10){
+            if (statusId == 10) {
                 td.confirmSuccessAllTicketsByOrderId(orderId);
             }
             // Redirect to the order page after update

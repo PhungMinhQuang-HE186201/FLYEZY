@@ -20,6 +20,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
         <!-- Bootstrap Datepicker CSS -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
         <!-- Bootstrap JS (optional for Bootstrap features) -->
@@ -99,6 +100,8 @@
                 cursor: pointer;
             }
 
+
+
         </style>
     </head>
     <body>
@@ -110,31 +113,33 @@
         <%@include file="header.jsp" %> 
         <section>
             <div class="container flight-form">
-                <div class="banner" style="position: relative; overflow: hidden; background-image: url('img/Messi.jpg'); background-size: cover; padding: 10%; color: white;width: 142.2%;transform: translate(-15.1%, -2.7%);height: 800px">
-                    <form id="input-form" action="flightTickets" method="GET" class="row g-1" onsubmit="return validateLocations(event)">
+                <div class="banner" style="position: relative; overflow: hidden; background-image: url('img/Messi.jpg'); background-size: cover; padding: 10%; color: white;width: 151.2%;transform: translate(-17%, -2.7%);height: 800px">
+                    <form id="input-form" action="flightTickets" method="GET" class="row g-1" onsubmit="return validateLocations(event)" style="width: 85%;transform: translateX(14%)">
                         <!-- Title -->
-                        <div class="title-section" style="transform: translateY(10%)">
-                            <h2>Ticket Booking</h2>
+                        <div class="title-section" style="transform: translateY(4.4%);width: 20%;border-top-left-radius: 20px;">
+                            <h1>Ticket Booking</h1>
                         </div>
 
-                        <div class="form-container" style="border: 2px solid #ccc; padding: 2%;  background-color: #f9f9f9; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); height: 170px">
+                        <div class="form-container" style="border: 2px solid #ccc; padding: 2%;  background-color: #f9f9f9; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); width: 90%;height: 200px;border-bottom-right-radius: 20px; ">
 
                             <div class="row form-input">
                                 <h1 id="errorMessage" style="color: red;"></h1> <!-- Display the error message here -->
                                 <div class="row" style="transform: translateX(0.5%)">
-                                    <label class="col-md-1">
+                                    <label class="col-md-2">
                                         <input type="radio" id="oneWay" name="flightType" value="oneWay" style="transform: scale(1.5);" checked onclick="toggleReturnDate()">
                                         <span>One-way</span>
                                     </label>
-                                    <label class="col-md-1">
+                                    <label class="col-md-2">
                                         <input type="radio" id="roundTrip" name="flightType" value="roundTrip" style="transform: scale(1.5);" onclick="toggleReturnDate()">
                                         <span>Round-trip</span>
                                     </label>
                                 </div>
                                 <!-- From Field -->
                                 <div class="col-md-2">
-                                    <label for="from" class="col-form-label text-uppercase" style="color: activecaption">From</label>
-                                    <input type="text" style="height: 80%;font-size: 150%" class="form-control" id="fromDisplay" onclick="showLocationList('from')" oninput="filterLocations('from')" required>
+                                    <label for="from" class="col-form-label text-uppercase" style="color: activecaption;">From</label>
+                                    <input type="text" style="height: 86%;font-size: 150%;border-radius: 8px;" class="form-control" id="fromDisplay" onclick="showLocationList('from')" oninput="filterLocations('from')" required>
+                                    
+
                                     <input type="hidden" id="from" name="departure">
                                     <div id="from-locations" class="location-list">
                                         <%                
@@ -157,7 +162,7 @@
                                 <!-- To Field -->
                                 <div class="col-md-2">
                                     <label for="to" class="col-form-label text-uppercase" style="color: activecaption">To</label>
-                                    <input type="text" style="height: 80%;font-size: 150%" class="form-control" id="toDisplay" onclick="showLocationList('to')" oninput="filterLocations('to')" required>
+                                    <input type="text" style="height: 86%;font-size: 150%;border-radius: 8px;" class="form-control" id="toDisplay" onclick="showLocationList('to')" oninput="filterLocations('to')" required>
                                     <input type="hidden" id="to" name="destination">
                                     <div id="to-locations" class="location-list">
                                         <%                
@@ -180,17 +185,17 @@
                                 <!-- Departure Date Field -->
                                 <div class="col-md-2">
                                     <label for="departureDate" class="col-form-label text-uppercase" style="color: activecaption">Depart</label>
-                                    <input type="text" class="form-control" id="departureDate" name="departureDate" style="height: 80%;font-size: 150%;" placeholder="Ngày đi" required>
+                                    <input type="text" class="form-control" id="departureDate" name="departureDate" style="height: 86%;font-size: 150%;border-radius: 8px;" placeholder="Ngày đi" required>
                                 </div>
                                 <div class="col-md-2" id="returnDateField" style="display:none;">
                                     <label for="returnDate" class="col-form-label text-uppercase" style="color: activecaption">Return</label>
-                                    <input type="text" id="returnDate" class="form-control" name="returnDate" style="height: 80%;font-size: 150%;" placeholder="Ngày về">
+                                    <input type="text" id="returnDate" class="form-control" name="returnDate" style="height: 86%;font-size: 150%;border-radius: 8px;" placeholder="Ngày về">
                                 </div>
 
                                 <!-- Passengers Field -->
                                 <div class="col-md-4" id="passengerField" style="position: relative;">
                                     <label for="passengers" class="col-form-label text-uppercase" style="color: activecaption">Passenger</label>
-                                    <input type="number" style="height: 80%;width: 100%; font-size: 150%;" class="form-control" id="passengers" value="1" min="1" max="10" required onclick="togglePassengerOptions()" readonly>
+                                    <input type="number" style="height: 86%;font-size: 150%;border-radius: 8px;" class="form-control" id="passengers" value="1" min="1" max="10" required onclick="togglePassengerOptions()" readonly>
                                     <div id="passenger-options" class="passenger-options" style="display: none; width: 600px;height: auto;position: absolute; top: 100%; left: 0; border: 2px solid #ccc; padding: 10px; border-radius: 5px; margin-top: 30px;background-color: white; z-index: 1000;transform: translateX(-10%)">
                                         <div class="row" style="display: flex; justify-content: space-evenly; margin-top: 1%;padding: 3%;">
                                             <div class="col-md-4">
@@ -215,7 +220,7 @@
 
                                 <!-- Submit Button -->
                                 <div class="col-md-2" style="margin-top: 2%">
-                                    <button type="submit" style="height:140%;width: 80%;font-size: 150%" class="btn btn-success" onclick="validateDates()">Search Flights</button>
+                                    <button type="submit" style="height:140%;width: 80%;font-size: 150%;background-color: #327C23;border-radius: 0.8rem !important" class="btn btn-success" onclick="validateDates()">Search Flights</button>
                                 </div>
                             </div>
                         </div>

@@ -38,6 +38,25 @@ public class BaggageManageDAO extends DBConnect {
         return list;
     }
 
+    public int getPriceBaggagesById(int id) {
+        List<Baggages> list = new ArrayList<>();
+        String sql = "select price from baggages b\n"
+                + "join ticket t on t.Baggagesid = b.id\n"
+                + "where t.id = ?";
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            prepare.setInt(1, id);
+            ResultSet resultSet = prepare.executeQuery();
+            while (resultSet.next()) {
+                int price = resultSet.getInt("price");
+                return price;
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return 0;
+    }
+
     public List<Baggages> getAllBaggagesByAirline(int airlineId) {
         List<Baggages> list = new ArrayList<>();
         String sql = "select * from Baggages\n"

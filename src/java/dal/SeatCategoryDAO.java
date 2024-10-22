@@ -234,16 +234,17 @@ public class SeatCategoryDAO extends DBConnect {
 
     public static void main(String[] args) {
         SeatCategoryDAO scd = new SeatCategoryDAO();
-        SeatCategory sc = new SeatCategory();
-        sc.setId(20); 
-        sc.setName("New Seat Category Name");
-        sc.setNumberOfSeat(100);
-        sc.setImage("image.jpg");
-        sc.setInfo("Some info about the seat category");
-        sc.setSeatEachRow(10);
-        sc.setSurcharge(20.5f);
-        sc.setPlane_Categoryid(2);
-        sc.setStatusId(1);
-        scd.updateSeatCategory(sc);
+//        SeatCategory sc = new SeatCategory();
+//        sc.setId(20); 
+//        sc.setName("New Seat Category Name");
+//        sc.setNumberOfSeat(100);
+//        sc.setImage("image.jpg");
+//        sc.setInfo("Some info about the seat category");
+//        sc.setSeatEachRow(10);
+//        sc.setSurcharge(20.5f);
+//        sc.setPlane_Categoryid(2);
+//        sc.setStatusId(1);
+//        scd.updateSeatCategory(sc);
+        System.out.println(scd.getSeatCategoryById(1));
     }
 }

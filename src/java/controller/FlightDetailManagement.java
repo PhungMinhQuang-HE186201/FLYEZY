@@ -85,13 +85,13 @@ public class FlightDetailManagement extends HttpServlet {
         
         String airlineId = request.getParameter("airlineId");
         if (airlineId != null) {
-            session.setAttribute("aid", airlineId);
+            request.setAttribute("aid", airlineId);
         }
 
         String flightid = request.getParameter("flightId");
         if (flightid != null) {
             int fid = Integer.parseInt(flightid);
-            session.setAttribute("fid", flightid);
+            request.setAttribute("fid", flightid);
 
             String action = request.getParameter("action");
 
@@ -165,14 +165,14 @@ public class FlightDetailManagement extends HttpServlet {
             throws IOException {
         HttpSession session = request.getSession();
         int flightDetailID = Integer.parseInt(request.getParameter("flightDetailID"));
-        session.setAttribute("flightDetailID", flightDetailID);
+        request.setAttribute("flightDetailID", flightDetailID);
         response.sendRedirect("TicketController?flightDetailID=" + flightDetailID);
     }
 
     private void handleAddFlightDetail(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         HttpSession session = request.getSession();
-        int flightId = Integer.parseInt((String) session.getAttribute("fid"));
+        int flightId = Integer.parseInt((String) request.getAttribute("fid"));
         FlightDetails newFlightDetail = createFlightDetailFromRequest(request);
         dao.addnew(newFlightDetail);
         response.sendRedirect("flightDetailManagement?flightId=" + flightId);
@@ -181,7 +181,7 @@ public class FlightDetailManagement extends HttpServlet {
     private void handleUpdateFlightDetail(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         HttpSession session = request.getSession();
-        int flightId = Integer.parseInt((String) session.getAttribute("fid"));
+        int flightId = Integer.parseInt((String) request.getAttribute("fid"));
         int id = Integer.parseInt(request.getParameter("id"));
         FlightDetails updatedFlightDetail = createFlightDetailFromRequest(request);
         dao.updateFlightDetail(updatedFlightDetail, id);
@@ -191,7 +191,7 @@ public class FlightDetailManagement extends HttpServlet {
     private void handleUpdateFlightStatus(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         HttpSession session = request.getSession();
-        int flightId = Integer.parseInt((String) session.getAttribute("fid"));
+        int flightId = Integer.parseInt((String) request.getAttribute("fid"));
         int id = Integer.parseInt(request.getParameter("id"));
         int status_id = Integer.parseInt(request.getParameter("status"));
         dao.updateFlightStatus(id, status_id);

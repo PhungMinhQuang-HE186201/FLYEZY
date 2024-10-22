@@ -36,7 +36,7 @@
         <%@include file="header.jsp" %>
         <%@include file="admin-sideBar.jsp" %>
         <%
-            String flight_id = (String) session.getAttribute("fid");
+            String flight_id = (String) request.getAttribute("fid");
             int fid = Integer.parseInt(flight_id);
         %>
         <div id="back" style="margin-left: 210px;margin-top: 60px;margin-bottom: -100px " > 
@@ -97,7 +97,7 @@
             </thead>
             <tbody>
                 <%
-                String airlineId = (String)session.getAttribute("aid");
+                String airlineId = (String)request.getAttribute("aid");
                 int aid = Integer.parseInt(airlineId);
                 PlaneCategoryDAO planeCategoryDAO =  new PlaneCategoryDAO();
                 List<PlaneCategory> categories = (List<PlaneCategory>) planeCategoryDAO.getAllPlaneCategoryByAirlineId(aid);

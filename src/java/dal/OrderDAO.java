@@ -26,7 +26,39 @@ public class OrderDAO extends DBConnect {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-               Order o = new Order(
+                Order o = new Order(
+                        rs.getInt("id"),
+                        rs.getInt("Flight_Detail_id"),
+                        rs.getString("code"),
+                        rs.getString("contactName"),
+                        rs.getString("contactPhone"),
+                        rs.getString("contactEmail"),
+                        rs.getInt("totalPrice"),
+                        rs.getInt("Accounts_id"),
+                        rs.getInt("Payment_Types_id"),
+                        rs.getTimestamp("paymentTime"),
+                        rs.getTimestamp("created_at"),
+                        rs.getInt("Discount_id"),
+                        rs.getInt("Status_id")
+                );
+                list.add(o);
+            }
+            return list;
+
+        } catch (Exception e) {
+        }
+        return null;
+    }
+
+    public List<Order> getAllOrdersByAccountId(int accountId) {
+        List<Order> list = new ArrayList<>();
+        String sql = "select * from flyezy.Order where Accounts_id=?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, accountId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Order o = new Order(
                         rs.getInt("id"),
                         rs.getInt("Flight_Detail_id"),
                         rs.getString("code"),
@@ -291,25 +323,25 @@ public class OrderDAO extends DBConnect {
         }
         return null; // Return null if no order is found
     }
-    
+
     public void deleteOrderByCode(String code) {
-    String sql = "DELETE FROM flyezy.Order WHERE code = ?";
-    try {
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, code);
-        ps.executeUpdate();
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-}
-
-
-    public List<Order> getListOrderByCode(String code) {
-        List<Order> list = new ArrayList<>();
-        String sql = "SELECT * FROM flyezy.Order WHERE code= ?";
+        String sql = "DELETE FROM flyezy.Order WHERE code = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, code);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<Order> getListOrderByCodeAndAccountId(String code, int accountId) {
+        List<Order> list = new ArrayList<>();
+        String sql = "SELECT * FROM flyezy.Order WHERE code= ? and Accounts_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, code);
+            ps.setInt(2, accountId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 Order order = new Order(
@@ -336,13 +368,14 @@ public class OrderDAO extends DBConnect {
         return null; // Return null if no order is found
     }
 
-    public List<Order> getOrdersByStatus(int statusId) {
+    public List<Order> getOrdersByStatusAndAccountId(int statusId, int accountId) {
         List<Order> list = new ArrayList<>();
         String sql = "select * from flyezy.order\n"
-                + "where flyezy.order.Status_id=?";
+                + "where flyezy.order.Status_id=? and Accounts_id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, statusId);
+            ps.setInt(2, accountId);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Order o = new Order(rs.getInt("id"),
