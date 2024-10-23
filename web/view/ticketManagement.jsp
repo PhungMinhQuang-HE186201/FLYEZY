@@ -163,7 +163,7 @@
                     <button class="btn btn-info" type="submit">
                         Search
                     </button>
-                    <a class="btn btn-danger" href="TicketController">Cancel</a>
+                    <a class="btn btn-danger" href="TicketController?flightDetailID=${flightDetailID}">Cancle</a>
                 </form>
 
 
@@ -231,6 +231,7 @@
                                         <div class="modal-body" style="padding:40px 50px;">
                                             <form role="form" action="TicketController" method="post">
                                                 <input type="hidden" name="action" value="changeStatus"/>
+                                                <input type="hidden" name="flightDetailID" value="${flightDetailID}">
                                                 <input type="hidden" name="createdAt" value=""/>
                                                 <div class="row">
                                                     <div class="form-group col-md-4">

@@ -46,7 +46,7 @@ public class OrderManagementServlet extends HttpServlet {
     PlaneCategoryDAO pcd = new PlaneCategoryDAO();
     StatusDAO statusDao = new StatusDAO();
     TicketDAO td = new TicketDAO();
-            
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -61,7 +61,12 @@ public class OrderManagementServlet extends HttpServlet {
         }
         String flightDetailIdStr = request.getParameter("flightDetailID");
         int flightDetailId = Integer.parseInt(flightDetailIdStr);
-        request.setAttribute("flightDetailID", flightDetailId);
+        if (request.getAttribute("flightDetailID") == null) {
+            int flightDetailID = Integer.parseInt(request.getParameter("flightDetailID"));
+            request.setAttribute("flightDetailID", flightDetailID);
+        }
+        int flightDetailID = (int) request.getAttribute("flightDetailID");
+
         int airlineId = fdd.getAirlineIdByFlightDetailId(flightDetailId);
         Flights flight = fdd.getFlightByFlightDetailId(flightDetailId);
 
@@ -99,6 +104,7 @@ public class OrderManagementServlet extends HttpServlet {
         List<Order> listOrder = od.getAllOrdersByFlightDetailWithPaging(flightDetailId,index);
         String submit = request.getParameter("submit");
         if (submit == null) {
+            listOrder = od.getAllOrdersByFlightDetail(flightDetailID);
             listOrder = od.getAllOrdersByFlightDetailWithPaging(flightDetailId,index);
         } else {
             // Search for airlines based on keyword and status
@@ -117,7 +123,7 @@ public class OrderManagementServlet extends HttpServlet {
                 }
             }
 
-            // Fetch the airlines based on search criteria
+
             listOrder = od.searchOrder(statusId, code, keyword, flightDetailId,index);
         }
         List<Status> listStatus = statusDao.getStatusOfOrder();
@@ -141,7 +147,7 @@ public class OrderManagementServlet extends HttpServlet {
 
             // Update status logic
             od.updateOrderStatus(orderId, statusId);
-            if(statusId == 10){
+            if (statusId == 10) {
                 td.confirmSuccessAllTicketsByOrderId(orderId);
             }
             // Redirect to the order page after update

@@ -59,7 +59,7 @@ public class TicketDAO extends DBConnect {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
     }
 
     public List<Ticket> getAllTickets() {
@@ -203,6 +203,25 @@ public class TicketDAO extends DBConnect {
         return null;
     }
 
+    public int getTicketPriceByOrderAndPassenger(int orderId, int passengerTypeId) {
+        String sql = "select sum(t.totalPrice) totalPriceType from ticket t\n"
+                + "join flyezy.order o on o.id = t.Order_id\n"
+                + "where o.id = ? and t.Passenger_Typesid = ?";
+        try {
+            PreparedStatement st = conn.prepareStatement(sql);
+            st.setInt(1, orderId);
+            st.setInt(2, passengerTypeId);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                int price = rs.getInt("totalPriceType");
+                return price;
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return -1;
+    }
+
     public List<Ticket> searchTickets(String passengerType, String statusTicket, String name, String phoneNumber, int Flight_Detailid, String Flight_Type_id, int orderId) {
         List<Ticket> ls = new ArrayList<>();
         StringBuilder sql = new StringBuilder("select t.* from Ticket t \n"
@@ -331,6 +350,7 @@ public class TicketDAO extends DBConnect {
 
     public static void main(String[] args) {
         TicketDAO tcd = new TicketDAO();
-        tcd.confirmSuccessAllTicketsByOrderId(1);
+        //tcd.confirmSuccessAllTicketsByOrderId(1);
+        System.out.println(tcd.getTicketPriceByOrderAndPassenger(1,1));
     }
 }
