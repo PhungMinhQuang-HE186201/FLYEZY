@@ -21,10 +21,11 @@
         .transparent-header {
             background-color: transparent !important;
             box-shadow: none;
+            transition: background-color 0.3s ease;
         }
     </style>
     <body>
-        <div id="header">
+        <div id="header" style="transition: background-color 0.3s ease;">
             <div id="header-logo">
                 <a href="home">
                     <img src="img/flyezy-logo5.png" alt=""/>
@@ -65,18 +66,15 @@
 
         <script>
             window.onload = function () {
-                // Kiểm tra nếu đang ở trang home khi tải
                 checkScroll();
             };
 
             function checkScroll() {
                 if (window.location.pathname.endsWith("/home")) {
-                    if (window.scrollY === 0) { 
+                    if (window.scrollY === 0) {
                         document.getElementById("header").classList.add("transparent-header");
-                        document.getElementById("login-button").style.backgroundColor = "transparent";
                     } else {
                         document.getElementById("header").classList.remove("transparent-header");
-                        document.getElementById("login-button").style.backgroundColor = "";
                     }
                 }
             }

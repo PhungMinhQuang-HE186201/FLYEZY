@@ -35,6 +35,7 @@
         <link rel="stylesheet" href="css/styleAdminController.css">
         <link rel="stylesheet" href="css/styleFlightManagement.css">
         <link rel="stylesheet" href="css/styleToastNotification.css">
+        <link rel="stylesheet" href="css/styleGeneral.css"/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.css">
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
