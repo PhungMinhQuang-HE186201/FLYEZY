@@ -17,15 +17,21 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
     </head>
+    <style>
+        .transparent-header {
+            background-color: transparent !important;
+            box-shadow: none;
+        }
+    </style>
     <body>
         <div id="header">
             <div id="header-logo">
                 <a href="home">
-                    <img src="img/flyezy-logo2.png" alt=""/>
+                    <img src="img/flyezy-logo5.png" alt=""/>
                 </a>
             </div>
             <ul id="header-nav1" style="font-weight: 520">
-                <li "><a href="home" >HOME</a></li>
+                <li "><a href="#banner" >HOME</a></li>
                 <li "><a href="routeTicket" >TICKETS</a></li>
                 <li "><a href="news">NEWS</a></li>
                 <li "><a href="#footer" >CONTACT</a></li>
@@ -58,6 +64,26 @@
         </div>
 
         <script>
+            window.onload = function () {
+                // Kiểm tra nếu đang ở trang home khi tải
+                checkScroll();
+            };
+
+            function checkScroll() {
+                if (window.location.pathname.endsWith("/home")) {
+                    if (window.scrollY === 0) { 
+                        document.getElementById("header").classList.add("transparent-header");
+                        document.getElementById("login-button").style.backgroundColor = "transparent";
+                    } else {
+                        document.getElementById("header").classList.remove("transparent-header");
+                        document.getElementById("login-button").style.backgroundColor = "";
+                    }
+                }
+            }
+
+            window.onscroll = function () {
+                checkScroll();
+            };
             var subNav = document.getElementById('header-subnav');
             var avatar = document.getElementById('header-avatar');
 
@@ -71,4 +97,3 @@
         </script>
     </body>
 </html>
-                }

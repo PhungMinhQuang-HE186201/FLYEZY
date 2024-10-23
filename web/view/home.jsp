@@ -27,195 +27,264 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <style>
-
             .flight-form {
-                max-width: 1000px;
-                margin: 50px auto;
-                padding: 20px;
+                position: relative;
+                z-index: 10;
             }
-            #input-form span{
-                color: activecaption;
-                font-size: 130%;
-                margin-left: 5%;
-            }
-            .flight-type {
-                display: flex;
-                align-items: center;
-            }
-            .form-control.read-only {
-                background-color: #e9ecef;
-                cursor: not-allowed;
-            }
-            .btn-search {
-                background-color: #28a745;
+
+            .banner {
+                position: relative;
+                overflow: hidden;
                 color: white;
-                padding: 10px 20px;
-                font-size: 18px;
+                width: 100%;
+                height: 800px;
             }
-            .discount-code-container {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
+
+            .banner video {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                object-fit: cover;
+                z-index: 1;
             }
-            .discount-code-container input {
-                width: 30%;
+
+            #input-form {
+                position: relative;
+                z-index: 10;
+                top: 45%
             }
-            .icon {
-                font-size: 24px;
-                color: green;
+
+
+            .form-container {
+                border: 2px solid #ccc;
+                padding: 2%;
+                background-color: #f9f9f9;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                height: 210px;
+                width: 70%;
+                border-radius: 6px
             }
-            .btn-search {
-                width: 200px;
-                font-size: 18px;
-            }
+
             .location-list {
-                display:none;
-                position:absolute;
-                background-color:white;
-                border:1px solid #ccc;
-                z-index:1000;
+                display: none;
+                position: absolute;
+                background-color: white;
+                border: 1px solid #ccc;
+                z-index: 1000;
                 width: 250px;
+                height: 153px;
                 overflow-y: auto;
                 top: 80px;
+                left: 14px;
+                border-radius: 8px;
+            }
+
+            .location-item {
+                cursor: pointer;
+                padding: 10px 15px;
+                transition: background-color 0.3s ease;
             }
 
             .location-item:hover {
                 background-color: #f0f0f0;
             }
-            .title-section {
-                text-align: left;
-                padding: 15px 25px;
-                font-weight: bold;
-                font-size: 24px;
-                color: #333;
-                border: 2px solid #ccc;
-                width: 15%;
-                background-color: #f1f1f1;
 
+            .location-item span {
+                transition: color 0.3s ease, filter 0.3s ease;
             }
 
-            .location-item{
-                padding: 10px 7px;
-                cursor: pointer;
+            .passenger-label {
+                color: #3C6E57;
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+            .passenger-selector {
+                background-color: white;
+                border-radius: 5px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+                max-width: 600px;
+            }
+            .passenger-type {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 33%;
+            }
+            .passenger-input {
+                color: activecaption;
+                height: 50%;
+                width: 40%;
+                font-size: 18px;
+            }
+            .passenger-controls{
+                display: flex;
+            }
+            .options-container {
+                margin-top: 30px;
+                width: 400px;
+                height: auto;
+                border-radius: 5px;
+            }
+            .passenger-count {
+                color: #3C6E57;
+                font-size: 20px;
+                font-weight: bold;
+                width: 55px;
+                border: 2px solid;
+                border-radius: 5px;
+                text-align: center;
+                margin: 0 10px;
+            }
+
+            .search-button {
+                height: 100%;
+                margin-top: 18px;
+                width: 165px;
+                font-size: 18px;
+                color: #3C6E57;
+                background-color: white;
+                border: 2px solid #3C6E57;
+                border-radius: 4px;
+                transition: background-color 0.3s ease;
+            }
+
+            .search-button:hover {
+                color: white;
+                background-color: #3C6E57;
             }
 
         </style>
     </head>
     <body>
         <%
-    LocationDAO locationDao = new LocationDAO();
-    AirportDAO airportDao = new AirportDAO();
-
+            LocationDAO locationDao = new LocationDAO();
+            AirportDAO airportDao = new AirportDAO();
         %>
         <%@include file="header.jsp" %> 
         <section>
-            <div class="container flight-form">
-                <div class="banner" style="position: relative; overflow: hidden; background-image: url('img/Messi.jpg'); background-size: cover; padding: 10%; color: white;width: 142.2%;transform: translate(-15.1%, -2.7%);height: 800px">
+            <div class="flight-form">
+                <div class="banner" id="banner">
+                    <video src="vid/bg-vid.mp4" muted loop autoplay></video>
+
                     <form id="input-form" action="flightTickets" method="GET" class="row g-1" onsubmit="return validateLocations(event)">
-                        <!-- Title -->
-                        <div class="title-section" style="transform: translateY(10%)">
-                            <h2>Ticket Booking</h2>
-                        </div>
-
-                        <div class="form-container" style="border: 2px solid #ccc; padding: 2%;  background-color: #f9f9f9; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); height: 170px">
-
+                        <div style="background-image: url('../img/modal-footer.png')"></div>
+                        <div class="form-container" style="margin: 0 auto">
                             <div class="row form-input">
-                                <h1 id="errorMessage" style="color: red;"></h1> <!-- Display the error message here -->
-                                <div class="row" style="transform: translateX(0.5%)">
-                                    <label class="col-md-1">
+                                <div style="display: flex; margin-bottom: 20px">
+                                    <div style="display: flex; align-items: center; font-size: 16px; margin-right: 20px">
                                         <input type="radio" id="oneWay" name="flightType" value="oneWay" style="transform: scale(1.5);" checked onclick="toggleReturnDate()">
-                                        <span>One-way</span>
-                                    </label>
-                                    <label class="col-md-1">
+                                        <label for="oneWay" style="color: black;margin: 0; margin-left: 10px">One-way</label>
+                                    </div>
+                                    <div style="display: flex; align-items: center; font-size: 16px">
                                         <input type="radio" id="roundTrip" name="flightType" value="roundTrip" style="transform: scale(1.5);" onclick="toggleReturnDate()">
-                                        <span>Round-trip</span>
-                                    </label>
-                                </div>
-                                <!-- From Field -->
-                                <div class="col-md-2">
-                                    <label for="from" class="col-form-label text-uppercase" style="color: activecaption">From</label>
-                                    <input type="text" style="height: 80%;font-size: 150%" class="form-control" id="fromDisplay" onclick="showLocationList('from')" oninput="filterLocations('from')" required>
-                                    <input type="hidden" id="from" name="departure">
-                                    <div id="from-locations" class="location-list">
-                                        <%                
-                                            for(Location l : locationDao.getAllLocation()) {
-                                                for(Airport a : airportDao.getAllAirport()){
-                                                    if(a.getLocationId() == l.getId()){
-                                        %>
-                                        <div class="location-item" onclick="selectLocation('<%= a.getId() %>', '<%= l.getName() %>', 'from')">
-                                            <span style="font-weight: bold; font-size: 16px; color: black;">
-                                                <%= l.getName() %>
-                                            </span></br>
-                                            <span style="font-size: 14px; color: grey; filter: blur(1%);">
-                                                <%= a.getName() %>
-                                            </span>
-                                        </div>
-                                        <% } } } %>
+                                        <label for="roundTrip" style="color: black;margin: 0; margin-left: 10px">Round-trip</label>
                                     </div>
                                 </div>
-
-                                <!-- To Field -->
-                                <div class="col-md-2">
-                                    <label for="to" class="col-form-label text-uppercase" style="color: activecaption">To</label>
-                                    <input type="text" style="height: 80%;font-size: 150%" class="form-control" id="toDisplay" onclick="showLocationList('to')" oninput="filterLocations('to')" required>
-                                    <input type="hidden" id="to" name="destination">
-                                    <div id="to-locations" class="location-list">
-                                        <%                
-                                            for(Location l : locationDao.getAllLocation()) {
-                                                for(Airport a : airportDao.getAllAirport()){
-                                                    if(a.getLocationId() == l.getId()){
-                                        %>
-                                        <div class="location-item" onclick="selectLocation('<%= a.getId() %>', '<%= l.getName() %>', 'to')">
-                                            <span style="font-weight: bold; font-size: 16px; color: black;">
-                                                <%= l.getName() %>
-                                            </span></br>
-                                            <span style="font-size: 14px; color: grey; filter: blur(1%);">
-                                                <%= a.getName() %>
-                                            </span>
-                                        </div>
-                                        <% } } } %>
-                                    </div>
-                                </div>
-
-                                <!-- Departure Date Field -->
-                                <div class="col-md-2">
-                                    <label for="departureDate" class="col-form-label text-uppercase" style="color: activecaption">Depart</label>
-                                    <input type="text" class="form-control" id="departureDate" name="departureDate" style="height: 80%;font-size: 150%;" placeholder="Ngày đi" required>
-                                </div>
-                                <div class="col-md-2" id="returnDateField" style="display:none;">
-                                    <label for="returnDate" class="col-form-label text-uppercase" style="color: activecaption">Return</label>
-                                    <input type="text" id="returnDate" class="form-control" name="returnDate" style="height: 80%;font-size: 150%;" placeholder="Ngày về">
-                                </div>
-
-                                <!-- Passengers Field -->
-                                <div class="col-md-4" id="passengerField" style="position: relative;">
-                                    <label for="passengers" class="col-form-label text-uppercase" style="color: activecaption">Passenger</label>
-                                    <input type="number" style="height: 80%;width: 100%; font-size: 150%;" class="form-control" id="passengers" value="1" min="1" max="10" required onclick="togglePassengerOptions()" readonly>
-                                    <div id="passenger-options" class="passenger-options" style="display: none; width: 600px;height: auto;position: absolute; top: 100%; left: 0; border: 2px solid #ccc; padding: 10px; border-radius: 5px; margin-top: 30px;background-color: white; z-index: 1000;transform: translateX(-10%)">
-                                        <div class="row" style="display: flex; justify-content: space-evenly; margin-top: 1%;padding: 3%;">
-                                            <div class="col-md-4">
-                                                <label for="adult-count" style="color: activecaption;height: 80%; font-size: 150%;">Adult:</label>
-                                                <input type="number" id="adult-count" name="adult" value="1" min="1" max="10" style="color: activecaption;height: 50%;width: 40%; font-size: 150%;">
+                                <h3 id="errorMessage" style="color: red;margin-bottom: 10px"></h3> 
+                                <div class="row" style="height: 55px">
+                                    <!-- From Field -->
+                                    <div class="col-md-2" style="padding-right: 0px">
+                                        <p style="color: black; margin: 0; font-size: 12px">FROM</p>
+                                        <input type="text" style="height: 100%;font-size: 18px" class="form-control" id="fromDisplay" onclick="showLocationList('from')" oninput="filterLocations('from')" placeholder="FROM" required>
+                                        <input type="hidden" id="from" name="departure">
+                                        <div id="from-locations" class="location-list">
+                                            <%                
+                                                for(Location l : locationDao.getAllLocation()) {
+                                                    for(Airport a : airportDao.getAllAirport()){
+                                                        if(a.getLocationId() == l.getId()){
+                                            %>
+                                            <div class="location-item" onclick="selectLocation('<%= a.getId() %>', '<%= l.getName() %>', 'from')">
+                                                <span style="font-weight: bold; font-size: 16px; color: black;">
+                                                    <%= l.getName() %>
+                                                </span></br>
+                                                <span style="font-size: 14px; color: grey; filter: blur(1%);">
+                                                    <%= a.getName() %>
+                                                </span>
                                             </div>
-                                            <div class="col-md-4">
-                                                <label for="child-count" style="color: activecaption; height: 80%; font-size: 150%;">Children:</label>
-                                                <input type="number" id="child-count" name="child" value="0" min="0" max="9" style="color: activecaption;height: 50%;width: 40%; font-size: 150%;">
-                                                <br>
-                                                <p style="transform: translateY(-150%);color: activecaption;">(2-11 years)</p>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label for="infant-count" style="color: activecaption;height: 80%; font-size: 150%;">Infant:</label>
-                                                <input type="number" id="infant-count" name="infant" value="0" min="0" max="5" style="color: activecaption;height: 50%;width: 40%; font-size: 150%;">
-                                                <br>
-                                                <p style="transform: translateY(-150%);color: activecaption;">(0-2 years)</p>
-                                            </div>
+                                            <% } } } %>
                                         </div>
                                     </div>
-                                </div>
 
-                                <!-- Submit Button -->
-                                <div class="col-md-2" style="margin-top: 2%">
-                                    <button type="submit" style="height:140%;width: 80%;font-size: 150%" class="btn btn-success" onclick="validateDates()">Search Flights</button>
+                                    <!-- To Field -->
+                                    <div class="col-md-2" style="padding-right: 0px">
+                                        <p style="color: black; margin: 0; font-size: 12px">TO</p>
+                                        <input type="text" style="height: 100%;font-size: 18px" class="form-control" id="toDisplay" onclick="showLocationList('to')" oninput="filterLocations('to')" placeholder="TO" required>
+                                        <input type="hidden" id="to" name="destination">
+                                        <div id="to-locations" class="location-list">
+                                            <%                
+                                                for(Location l : locationDao.getAllLocation()) {
+                                                    for(Airport a : airportDao.getAllAirport()){
+                                                        if(a.getLocationId() == l.getId()){
+                                            %>
+                                            <div class="location-item" onclick="selectLocation('<%= a.getId() %>', '<%= l.getName() %>', 'to')">
+                                                <span style="font-weight: bold; font-size: 16px; color: black;">
+                                                    <%= l.getName() %>
+                                                </span></br>
+                                                <span style="font-size: 14px; color: grey; filter: blur(1%);">
+                                                    <%= a.getName() %>
+                                                </span>
+                                            </div>
+                                            <% } } } %>
+                                        </div>
+                                    </div>
+
+                                    <!-- Departure Date Field -->
+                                    <div class="col-md-2" style="padding-right: 0px">
+                                        <p style="color: black; margin: 0; font-size: 12px">DEPART</p>
+                                        <input type="text" class="form-control" id="departureDate" name="departureDate" style="height: 100%;font-size: 18px;" placeholder="yyyy-mm-dd" required>
+                                    </div>
+                                    <div class="col-md-2" id="returnDateField" style="display:none;padding-right: 0px">
+                                        <p style="color: black; margin: 0; font-size: 12px">RETURN</p>
+                                        <input type="text" id="returnDate" class="form-control" name="returnDate" style="height: 100%;font-size: 18px;" placeholder="yyyy-mm-dd">
+                                    </div>
+
+                                    <!-- Passengers Field -->
+                                    <div class="col-md-4" id="passengerField" style="position: relative; padding-right: 0;">
+                                        <p style="color: black; margin: 0; font-size: 12px">PASSENGER</p>
+                                        <input type="number" class="form-control" id="passengers" value="1" min="1" max="10" required readonly 
+                                               onclick="togglePassengerOptions()"
+                                               style="height: 100%; width: 100%; font-size: 18px;">
+
+                                        <div id="passenger-options" class="passenger-options" 
+                                             style="display: none; position: absolute; top: 50px; left: 15px; z-index: 1000;">
+                                            <div class="options-container" style="border: 2px solid #ccc">
+                                                <div class="passenger-selector">
+                                                    <div class="passenger-type">
+                                                        <div class="passenger-label">Adult</div>
+                                                        <div class="passenger-controls">
+                                                            <input type="number" id="adult-count" class="passenger-count" name="adult" value="1" min="1" max="10" class="passenger-input">
+                                                        </div>
+                                                    </div>
+                                                    <div class="passenger-type">
+                                                        <div class="passenger-label">Children</div>
+                                                        <div class="passenger-controls">
+                                                            <input type="number"id="child-count" class="passenger-count" name="child" value="0" min="0" max="9" class="passenger-input">
+                                                        </div>
+                                                        <div class="age-range">2-11 Year Olds</div>
+                                                    </div>
+                                                    <div class="passenger-type">
+                                                        <div class="passenger-label">Infant</div>
+                                                        <div class="passenger-controls">
+                                                            <input type="number" id="infant-count" class="passenger-count" name="infant" value="0" min="0" max="5" class="passenger-input">
+                                                        </div>
+                                                        <div class="age-range">0-2 Year Olds</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Submit Button -->
+                                    <div class="col-md-2">
+                                        <button type="submit" class="search-button" onclick="validateDates()">Search Flights</button>
+                                    </div> 
                                 </div>
                             </div>
                         </div>
@@ -269,7 +338,6 @@
 
             }
 
-            // Event listeners for the input fields
             adultCountInput.addEventListener('input', updateTotalPassengers);
             childCountInput.addEventListener('input', updateTotalPassengers);
             infantCountInput.addEventListener('input', updateTotalPassengers);
@@ -369,8 +437,8 @@
                     event.preventDefault(); // Prevent form submission
 
                     // Display error message
-                    errorMessageElement.textContent = "Điểm đi và điểm đến không được giống nhau.";
-                    errorMessageElement.style.color = "red"; // Optional: Add styling to the error message
+                    errorMessageElement.textContent = "Duplicate departure and destination";
+                    errorMessageElement.style.color = "red";
 
                     return false; // Prevent the form from submitting
                 }

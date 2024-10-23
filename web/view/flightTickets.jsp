@@ -253,7 +253,7 @@
         <div style="margin: 100px 0" class="row">
             <div class="col-md-1"></div>
             <div class="col-md-2">
-                <div class="flight-detail" style="display: block; height: fit-content; background-color: #BBE06C">
+                <div class="flight-detail" style="display: block; height: fit-content; background-color: #f9f9f9">
                     <div class="sorting-options">
                         <h5>Sort by:</h5>
                         <div>

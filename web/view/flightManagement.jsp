@@ -242,6 +242,7 @@
                                     <button class="btn btn-info" style="width: 80%" data-toggle="modal" data-target="#update-flight-<%=rsFlightManage.getInt(1) %>">Update</button>
                                     <a style="width: 80%; margin: 0; margin-top: 5px; text-decoration: none; text-align: center" href="flightDetailManagement?flightId=<%= rsFlightManage.getInt(1) %>&airlineId=${requestScope.account.getAirlineId()}" class="btn btn-warning">
                                         Flight Detail
+                                        <span style="margin-right: 5px" class="glyphicon glyphicon-menu-right"></span>
                                     </a>
                                     <!-- MODAL: Update flight-->
                                     <div class="modal fade" id="update-flight-<%=rsFlightManage.getInt(1) %>" tabindex="-1" role="dialog" aria-hidden="true">
