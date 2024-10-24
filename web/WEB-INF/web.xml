@@ -44,6 +44,14 @@
         <servlet-name>LoginGoogleHandler</servlet-name>
         <servlet-class>controller.LoginGoogleHandlerServlet</servlet-class>
     </servlet>
+     <servlet>
+        <servlet-name>NewsManagementServlet</servlet-name>
+        <servlet-class>controller.NewsManagementServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>News</servlet-name>
+        <servlet-class>controller.News</servlet-class>
+    </servlet>
     <servlet>
         <servlet-name>CancelOrderRequestServlet</servlet-name>
         <servlet-class>controller.CancelOrderRequestServlet</servlet-class>
