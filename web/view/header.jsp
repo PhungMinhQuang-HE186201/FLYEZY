@@ -15,7 +15,7 @@
         <link rel="stylesheet" href="css/styleHeader.css" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
+      
     </head>
     <style>
         .transparent-header {
@@ -32,9 +32,9 @@
                 </a>
             </div>
             <ul id="header-nav1" style="font-weight: 520">
-                <li "><a href="#banner" >HOME</a></li>
+                <li "><a href="home" >HOME</a></li>
                 <li "><a href="routeTicket" >TICKETS</a></li>
-                <li "><a href="news">NEWS</a></li>
+                <li "><a href="News">NEWS</a></li>
                 <li "><a href="#footer" >CONTACT</a></li>
             </ul>
 
@@ -55,6 +55,9 @@
                         <li><a href="info">Account Information</a></li>
                             <c:if test="${requestScope.account.getRoleId()==1}">
                             <li><a href="accountController">Manage</a></li>
+                            </c:if>
+                            <c:if test="${requestScope.account.getRoleId()==4}">
+                            <li><a href="newsManagement">News Manage</a></li>
                             </c:if>
                         <li><a href="buyingHistory">Ticket Buying History</a></li>
                         <li><a href="changePassword">Change Password</a></li>

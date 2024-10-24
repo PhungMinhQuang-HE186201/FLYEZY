@@ -62,6 +62,44 @@ public class TicketDAO extends DBConnect {
 
     }
 
+    public int countNumberTicketNotCancel(int orderId) {
+        String sql = "SELECT COUNT(*) AS ticket_count FROM Ticket WHERE Order_id = ? AND (Statusid = 10 or Statusid=12)";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, orderId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("ticket_count");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public void cancelAllTicketsByOrderId(int orderId) {
+        String sql = "UPDATE Ticket SET Statusid = 6 WHERE Order_id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, orderId);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void cancelTicketById(int id) {
+
+        String sql = "UPDATE Ticket SET Statusid = 6 where id=?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public List<Ticket> getAllTickets() {
         List<Ticket> ls = new ArrayList<>();
         String sql = "select * from Ticket";
@@ -351,6 +389,6 @@ public class TicketDAO extends DBConnect {
     public static void main(String[] args) {
         TicketDAO tcd = new TicketDAO();
         //tcd.confirmSuccessAllTicketsByOrderId(1);
-        System.out.println(tcd.getTicketPriceByOrderAndPassenger(1,1));
+        System.out.println(tcd.countNumberTicketNotCancel(1));
     }
 }
