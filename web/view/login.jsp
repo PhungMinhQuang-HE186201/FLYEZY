@@ -11,27 +11,30 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="css/styleLoginAndRegister.css" />
         <link rel="shortcut icon" type="image/png" href="img/flyezy-logo3.png" />
-        <title>Đăng nhập</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+        <title>Login</title>
 
     </head>
     <body>
         <div class="container">
-            <h1 style="margin-bottom: 30px">
-                Đăng nhập
-                <a
-                    style="
-                    float: right;
-                    font-size: 25px;
-                    margin-top: 8px;
-                    text-decoration: none;
-                    color: rgb(60, 110, 87);
-                    "
-                    href="home"
-                    ><i class="ti-home"></i
-                    ></a>
-            </h1>
+            <div style="display: flex">
+                <h1 style="margin-bottom: 30px">
+                    Login                  
+                </h1>
+                <div>
+                    <a href="home" style="    transform: translate(0px, 1px);
+                       position: relative;
+                       left: 188px;
+                       top: 1px;">
+                        <i style="font-size: 25px;color: #3c6e57;" class="bi bi-house"></i>
+                    </a>
+                </div>
+
+            </div>
+
             <c:set var="cookie" value="${pageContext.request.cookies}" />
-            <form action="login" method="post">                             
+            <form action="login" method="post">     
+
                 <div class="form-group">
                     <input
                         type="text"
@@ -39,7 +42,7 @@
                         value="${cookie.cuser.value}"
                         required
                         />
-                    <label for="">Email hoặc số điện thoại</label>
+                    <label for="">Email or Phone Number</label>
                 </div>
                 <div class="form-group">
                     <input
@@ -49,7 +52,7 @@
                         value="${cookie.cpass.value}"
                         required
                         />
-                    <label for="">Mật khẩu</label>
+                    <label for="">Password</label>
                     <svg id="eye"
                          style="position: absolute;
                          z-index: 9999;
@@ -70,13 +73,42 @@
                 </p>
                 <input type="checkbox" ${cookie.crem != null ? 'checked' : ''}
                        name="rem" value="ON"/> Remember me
-                <a id="forgetPassword" href="forgetPassword">Quên mật khẩu?</a
+                <a id="forgetPassword" href="forgetPassword">Forget Password</a
                 ><br /><br />
-                <div class="button">
-                    <input type="submit" value="Đăng nhập" /><br /><br />
+                <div class="button" style="height: 60px">
+                    <input type="submit" value="Login" /><br /><br />
                 </div>
-                Bạn chưa có tài khoản à?
-                <a class="letDoIt" href="register">Đăng ký ngay</a>
+                <div style="display: flex; justify-content: center;">
+                    <a href="https://accounts.google.com/o/oauth2/auth?scope=email profile openid&redirect_uri=http://localhost:9999/flyezy/loginGoogleHandler&response_type=code&client_id=567083027781-r2dqc8ursvogag062snkt50uhbtnh90r.apps.googleusercontent.com&approval_prompt=force" 
+                       style="display: inline-flex;
+                       align-items: center;
+                       justify-content: center;
+                       width: 100%;
+                       background-color: white;
+                       color: #4285F4;
+                       padding: 10px 20px;
+                       border: 2px solid;
+                       border-radius: 4px;
+                       text-decoration: none;
+                       font-family: Arial, sans-serif;
+                       font-size: 15px;
+                       font-weight: 550;
+                       transition: background-color 0.3s, color 0.3s;
+                       margin-bottom: 10px;"
+                       onmouseover="this.style.backgroundColor = '#f1f1f1'; this.style.color = '#0d47a1';"
+                       onmouseout="this.style.backgroundColor = 'white'; this.style.color = '#4285F4';">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24px" height="24px" style="margin-right: 10px;">
+                        <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+                        <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+                        <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+                        <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+                        </svg>
+                        Login with Google
+                    </a>
+                </div>
+
+                Don't have an account?
+                <a class="letDoIt" href="register">Register Now</a>
             </form>
         </div>
         <script>

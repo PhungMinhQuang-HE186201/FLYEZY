@@ -9,44 +9,16 @@
 
     </head>
     <body>
-        <h1>${requestScope.result}</h1>
-        <form action="flightTickets">
-            <input type="number" name="departureAirport"/>
-            <input type="number" name="destinationAirport"/>
-            <input type="date" name="departureDate"/>
-            <input type="submit" value="OK"/>
-        </form>
+        <section>
+            <div class="container flight-form">
+                <div class="banner" style="position: relative; overflow: hidden; padding: 10%; color: white;width: 142.2%;transform: translate(-15.1%, -2.7%);height: 800px">
+                    <video src="../vid/bg-vid.mp4" muted loop autoplay></video>
+
+                </div>
+            </div>
+        </section>
     </body>
 
-    <script>
-        toastr.options = {
-            "closeButton": true,
-            "debug": false,
-            "newestOnTop": false,
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "preventDuplicates": false,
-            "onclick": null,
-            "showDuration": "300",
-            "hideDuration": "1000",
-            "timeOut": "3500",
-            "extendedTimeOut": "1000",
-            "showEasing": "swing",
-            "hideEasing": "linear",
-            "showMethod": "fadeIn",
-            "hideMethod": "fadeOut"
-        };
-
-        function successful(message) {
-            toastr["success"](message, "Successful");
-        };
-        
-        $(document).ready(function() {
-            <% if (request.getAttribute("result") != null) { %>
-                successful("Add successful");
-            <% } %>
-        });
-    </script>
 
 
 </html>

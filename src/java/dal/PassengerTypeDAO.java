@@ -7,15 +7,14 @@ package dal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import model.PassengerType;
 
-public class PassengerTypeDAO extends DBConnect{
+public class PassengerTypeDAO extends DBConnect {
+
     public String getPassengerTypeNameById(int id) {
-        String sql = "SELECT name FROM Passenger_types WHERE id = "+id;
+        String sql = "SELECT name FROM Passenger_Types WHERE id = " + id;
         try {
             PreparedStatement st = conn.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
@@ -28,20 +27,80 @@ public class PassengerTypeDAO extends DBConnect{
         }
         return null;
     }
+
     public List<PassengerType> getAllPassengerType() {
         List<PassengerType> list = new ArrayList<>();
-        String sql = "select * from Passenger_types";
+        String sql = "select * from Passenger_Types";
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
             ResultSet resultSet = prepare.executeQuery();
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
-                list.add(new PassengerType(id, name));
+                float price = resultSet.getFloat("price");
+                list.add(new PassengerType(id, name, price));
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
         return list;
+    }
+
+    public float getPassengerTypePriceNameById(int id) {
+        String sql = "SELECT price FROM Passenger_Types WHERE id = " + id;
+        try {
+            PreparedStatement st = conn.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                float price = rs.getFloat("price");
+                return price;
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return -1;
+    }
+
+    public List<PassengerType> getAllPassengerTypeByOrder(int orderId) {
+        List<PassengerType> list = new ArrayList<>();
+        String sql = "select pt.id,pt.name,pt.price,count(pt.id) numberOfType from flyezy.order o\n"
+                + "join ticket t on t.Order_id = o.id\n"
+                + "join passenger_types pt on pt.id = t.Passenger_Typesid\n"
+                + "where o.id = ?\n"
+                + "group by pt.id,pt.name,pt.price";
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            prepare.setInt(1, orderId);
+            ResultSet resultSet = prepare.executeQuery();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                float price = resultSet.getFloat("price");
+                int numberOfType = resultSet.getInt("numberOfType");
+                list.add(new PassengerType(id, name, price,numberOfType));
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return list;
+    }
+//        public float getPassengerTypePriceNameById(int id) {
+//        String sql = "SELECT price FROM Passenger_Types WHERE id = " + id;
+//        try {
+//            PreparedStatement st = conn.prepareStatement(sql);
+//            ResultSet rs = st.executeQuery();
+//            if (rs.next()) {
+//                float price = rs.getFloat("price");
+//                return price;
+//            }
+//        } catch (SQLException e) {
+//            System.out.println(e);
+//        }
+//        return -1;
+//    }
+
+    public static void main(String[] args) {
+        PassengerTypeDAO ptd = new PassengerTypeDAO();
+        System.out.println(ptd.getPassengerTypePriceNameById(2));
     }
 }

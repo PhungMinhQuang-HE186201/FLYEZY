@@ -13,6 +13,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import model.Airline;
 import model.Baggages;
 
@@ -53,18 +54,22 @@ public class AirlineManagementServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
         //action
         String action = request.getParameter("action") == null
                 ? action = "" : request.getParameter("action");
         switch (action) {
             case "add":
                 addAirline(request);
+                session.setAttribute("result", "Add airline successfully!");
                 break;
             case "changeStatus":
                 ChangeStatusAirline(request);
+                session.setAttribute("result", "Change airline status successfully!");
                 break;
             case "update":
                 updateAirline(request);
+                session.setAttribute("result", "Update airline successfully!");
                 break;
             default:
 

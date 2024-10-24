@@ -17,15 +17,22 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
       
     </head>
+    <style>
+        .transparent-header {
+            background-color: transparent !important;
+            box-shadow: none;
+            transition: background-color 0.3s ease;
+        }
+    </style>
     <body>
-        <div id="header">
+        <div id="header" style="transition: background-color 0.3s ease;">
             <div id="header-logo">
                 <a href="home">
-                    <img src="img/flyezy-logo2.png" alt=""/>
+                    <img src="img/flyezy-logo5.png" alt=""/>
                 </a>
             </div>
             <ul id="header-nav1" style="font-weight: 520">
-                <li "><a href="home" >HOME</a></li>
+                <li "><a href="#banner" >HOME</a></li>
                 <li "><a href="routeTicket" >TICKETS</a></li>
                 <li "><a href="News">NEWS</a></li>
                 <li "><a href="#footer" >CONTACT</a></li>
@@ -61,6 +68,23 @@
         </div>
 
         <script>
+            window.onload = function () {
+                checkScroll();
+            };
+
+            function checkScroll() {
+                if (window.location.pathname.endsWith("/home")) {
+                    if (window.scrollY === 0) {
+                        document.getElementById("header").classList.add("transparent-header");
+                    } else {
+                        document.getElementById("header").classList.remove("transparent-header");
+                    }
+                }
+            }
+
+            window.onscroll = function () {
+                checkScroll();
+            };
             var subNav = document.getElementById('header-subnav');
             var avatar = document.getElementById('header-avatar');
 
@@ -73,4 +97,4 @@
             });
         </script>
     </body>
-</html>           
+</html>

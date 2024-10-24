@@ -37,6 +37,14 @@
         <servlet-class>controller.FlightManagementServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>OrderManagementServlet</servlet-name>
+        <servlet-class>controller.OrderManagementServlet</servlet-class>
+    </servlet>
+      <servlet>
+        <servlet-name>LoginGoogleHandler</servlet-name>
+        <servlet-class>controller.LoginGoogleHandlerServlet</servlet-class>
+    </servlet>
+     <servlet>
         <servlet-name>NewsManagementServlet</servlet-name>
         <servlet-class>controller.NewsManagementServlet</servlet-class>
     </servlet>
@@ -81,12 +89,12 @@
         <url-pattern>/flightManagement</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>NewsManagementServlet</servlet-name>
-        <url-pattern>/newsManagement</url-pattern>
+        <servlet-name>OrderManagementServlet</servlet-name>
+        <url-pattern>/OrderController</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>News</servlet-name>
-        <url-pattern>/News</url-pattern>
+      <servlet-mapping>
+        <servlet-name>LoginGoogleHandler</servlet-name>
+        <url-pattern>/loginGoogleHandler</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>home</welcome-file>

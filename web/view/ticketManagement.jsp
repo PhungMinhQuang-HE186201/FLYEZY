@@ -23,6 +23,7 @@
 <%@page import="model.PlaneCategory"%>
 <%@page import="model.FlightDetails"%>
 <%@page import="model.Location"%>
+<%@page import="model.SeatCategory"%>
 <%@page import="dal.AirlineManageDAO"%>
 <%@page import="dal.TicketDAO"%>
 <%@page import="dal.AirportDAO"%>
@@ -32,7 +33,7 @@
 <%@page import="dal.PassengerTypeDAO"%>
 <%@page import="dal.StatusDAO"%>
 <%@page import="dal.PaymentTypeDAO"%>
-
+<%@page import="dal.SeatCategoryDAO"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -40,6 +41,7 @@
         <title>Quản lý tài khoản</title>
         <link rel="shortcut icon" type="image/png" href="img/flyezy-logo3.png" />
         <link rel="stylesheet" href="css/styleAdminController.css">
+        <link rel="stylesheet" href="css/styleGeneral.css"/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
@@ -58,6 +60,39 @@
             #main-content{
 
             }
+            body {
+                background-color: #f7f7f7;
+                color: #333;
+                margin: 0;
+                padding: 0;
+            }
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+            .main-container {
+                border: 1px solid #ddd;
+                margin-bottom: 20px;
+                margin-top: 20px;
+                border-radius: 10px;
+                background-color: #fff;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between; 
+                align-items: flex-start;
+            }
+            .details {
+                width: 45%; /* Đảm bảo hai khối có kích thước vừa đủ */
+            }
+            .details p {
+                font-size: 16px;
+            }
+            .details span {
+                font-weight: bold;
+            }
         </style>
 
     </head>
@@ -66,16 +101,47 @@
         <%@include file="admin-sideBar.jsp" %>
         <div id="main-content" style="padding:15vh 0vw 15vh 16vw; margin: 0">
             <div class="filterController col-md-12" style="width: 100%">
+                <a href="flightDetailManagement?flightId=${requestScope.flight.getId()}&airlineId=${requestScope.airlineId}" class="btn btn-warning" >Back</a>
+                <div class="main-container">
+                <%
+                  Flights flight = (Flights)request.getAttribute("flight");
+                  Airport airportDep =(Airport)request.getAttribute("airportDep");
+                  Airport airportDes =(Airport)request.getAttribute("airportDes");
+                  FlightDetails flightDetail = (FlightDetails)request.getAttribute("flightDetail");
+                  Location locationDep = (Location)request.getAttribute("locationDep");
+                  Location locationDes = (Location)request.getAttribute("locationDes");
+                  Country countryDep = (Country)request.getAttribute("countryDep");
+                  Country countryDes = (Country)request.getAttribute("countryDes");
+                  PlaneCategory planeCatrgory = (PlaneCategory)request.getAttribute("planeCatrgory");
+                %>
+                <div class="details">
+                    <p>Departure: <span><%=airportDep.getName()%> (<%=locationDep.getName()%>)</span></p>
+                    <p>From:  <span><%=countryDep.getName()%></span></p>
+                    <p>Date: <span><%=flightDetail.getDate()%>  <%=flightDetail.getTime()%></span></p>
+                    <p>Plane Category: <span><%=planeCatrgory.getName()%></span></p>
+                    
+                </div>
+                <div class="details">
+                    <p>Destination: <span><%=airportDes.getName()%> (<%=locationDes.getName()%>) </span></p>
+                    <p>To: <span><%=countryDes.getName()%></span></p>
+                    <p>Time: <span><%=flight.getMinutes()%> minutes</span></p>
+                    <%
+                List<SeatCategory> seatList = (List<SeatCategory>) request.getAttribute("seatList");
+                    for (SeatCategory list : seatList) {%>
+                        <p><%=list.getName()%> :<span><%=list.getNumberOfSeat()-list.getCountSeat()%>  /<%=list.getNumberOfSeat()%></span></p>
+            <%}%>
+                </div>
+            </div>
                 <form action="TicketController" method="get" style="margin-bottom: 20px;">
                     <input type="hidden" name="action" value="search">
+                    <input type="hidden" name="flightDetailID" value="${flightDetailID}">
                     <strong class="filterElm">Flight Type</strong>
                     <select class="filterElm" name="flightType">
-                        <option value="" ${param.fRole == null ? 'selected' : ''}>All</option>
-                        <c:forEach items="${flightTypeList}" var="flightType1">
-                            <option value="${flightType1.id}" ${param.flightType != null && (param.flightType==flightType1.id) ? 'selected' : ''}>${flightType1.name}</option>
+                        <option value="" ${param.flightType == null ? 'selected' : ''}>All</option>
+                        <c:forEach items="${flightTypeList}" var="type">
+                            <option value="${type.id}" ${param.flightType != null && (param.flightType==type.id) ? 'selected' : ''}>${type.name}</option>
                         </c:forEach>
                     </select>
-
                     <strong class="filterElm">Passenger Type</strong>
                     <select class="filterElm" name="passengerType">
                         <option value="" ${param.passengerType == null ? 'selected' : ''}>All</option>
@@ -98,59 +164,35 @@
                     <button class="btn btn-info" type="submit">
                         Search
                     </button>
-                    <a class="btn btn-danger" href="TicketController">Cancle</a>
+                    <a class="btn btn-danger" href="TicketController?flightDetailID=${flightDetailID}">Cancle</a>
                 </form>
 
 
             </div>
                     
-            <div>
-                <%
-                  Flights flight = (Flights)request.getAttribute("flight");
-                  Airport airportDep =(Airport)request.getAttribute("airportDep");
-                  Airport airportDes =(Airport)request.getAttribute("airportDes");
-                  FlightDetails flightDetail = (FlightDetails)request.getAttribute("flightDetail");
-                  Location locationDep = (Location)request.getAttribute("locationDep");
-                  Location locationDes = (Location)request.getAttribute("locationDes");
-                  Country countryDep = (Country)request.getAttribute("countryDep");
-                  Country countryDes = (Country)request.getAttribute("countryDes");
-                  PlaneCategory planeCatrgory = (PlaneCategory)request.getAttribute("planeCatrgory");
-                %>
 
-                <p><%=airportDep.getName()%></p>
-                <p><%=airportDes.getName()%></p>
-                <p><%=locationDep.getName()%></p>
-                <p><%=locationDes.getName()%></p>
-                <p><%=countryDep.getName()%></p>
-                <p><%=countryDes.getName()%></p>
-                <p><%=planeCatrgory.getName()%></p>
-                <p><%=flightDetail.getDate()%></p>  
-                <p><%=flightDetail.getTime()%></p>
-                <p><%=flightDetail.getPrice()%></p>
-                <p><%=flight.getMinutes()%></p>
-                
-            </div>
             <!-- Update Modal -->   
-
+            
             <table class="entity" >
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Account name</th>
+                        <th>Code</th>
+                        <th>Seat Category</th>
+                        <th>Passenger type </th>
                         <th>Passenger Name</th>
                         <th>Passenger Sex</th>
                         <th>Phone number</th>
                         <th>Date of birth</th>
-                        <th>Payment type</th>
-                        <th>Payment time</th>
-                        <th>Passenger type </th>
                         <th>Baggage weight</th>
-                        <th>Flight type</th>
+                        <th>Order ID</th>
+                        <th>Flight Type</th>
+                        <th>Total Price</th>
                         <th>Status</th>
                         <th style="padding: 0 55px; min-width: 156px">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
+                    
                     <%
                     List<Ticket> ticketList = (List<Ticket>) request.getAttribute("ticketList");
                     AirportDAO ad = new AirportDAO();
@@ -159,22 +201,23 @@
                     FlightTypeDAO ftd = new FlightTypeDAO();
                     PassengerTypeDAO ptd = new PassengerTypeDAO();
                     PaymentTypeDAO PTD = new PaymentTypeDAO();
+                    SeatCategoryDAO scd = new SeatCategoryDAO();
                     StatusDAO sd = new StatusDAO();
                     
                     for (Ticket list : ticketList   ) {
                     %>
                     <tr>
-                        <td><%= list.getName() %></td>
-                        <td><%= acd.getAccountNameById(list.getAccountsid()) %></td>
+                        <td><%= list.getCode() %></td>
+                        <td><%= scd.getSeatCategoryNameById(list.getSeat_Categoryid()) %></td>
+                        <td><%= ptd.getPassengerTypeNameById(list.getPassenger_Typesid()) %></td>
                         <td><%= list.getpName() %></td>
-                        <td><%= list.getpSex() %></td>
+                        <td><%= list.getpSex()==1?"Male":"Female" %></td>
                         <td><%= list.getpPhoneNumber() %></td>
                         <td><%= list.getpDob() %></td>
-                        <td><%= PTD.getPaymentTypeNameById(list.getPaymentTypeid()) %></td>
-                        <td><%= list.getPaymentTime() %></td>
-                        <td><%= ptd.getPassengerTypeNameById(list.getPassenger_Typesid()) %></td>
                         <td><%= bmd.getWeight(list.getBaggagesid()) %></td>
-                        <td><%= ftd.getNameType(list.getFlight_Typeid()) %></td>
+                        <td><%= list.getOrder_id() %></td>
+                        <td><%= ftd.getNameType(list.getFlight_Type_id()) %></td>
+                        <td><%= list.getTotalPrice() %></td>
                         <td><%= sd.getStatusNameById(list.getStatusid()) %></td>
                         <td>
                             <a class="btn btn-info" style="text-decoration: none" id="myBtn<%= list.getId() %>" onclick="openModal(<%= list.getId() %>)">Change status</a>
@@ -189,6 +232,7 @@
                                         <div class="modal-body" style="padding:40px 50px;">
                                             <form role="form" action="TicketController" method="post">
                                                 <input type="hidden" name="action" value="changeStatus"/>
+                                                <input type="hidden" name="flightDetailID" value="${flightDetailID}">
                                                 <input type="hidden" name="createdAt" value=""/>
                                                 <div class="row">
                                                     <div class="form-group col-md-4">

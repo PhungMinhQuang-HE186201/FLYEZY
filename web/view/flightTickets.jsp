@@ -11,6 +11,7 @@
 <%@page import="model.FlightDetails" %>
 <%@page import="model.Flights" %>
 <%@page import="model.Airport" %>
+<%@page import="model.Airline" %>
 <%@page import="model.Location" %>
 <%@page import="model.Country" %>
 <%@page import="model.PlaneCategory" %>
@@ -186,29 +187,119 @@
             font-weight: normal;
             color: #3C6E57;
         }
+
+        .sorting-options {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: white;
+        }
+
+        .sorting-options h5 {
+            margin:0;
+            color: #333;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .sorting-options label {
+            margin:0;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .sorting-options label img {
+            width: 35px;
+            height: 35px;
+            border-radius: 20px
+        }
+
+        .sorting-options div {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .sorting-options input[type="radio"] {
+            margin-right: 5px;
+            cursor: pointer;
+            width: 17px;
+            height: 17px;
+            margin: 0;
+            margin-right: 5px
+        }
+
+        .sorting-options input[type="radio"]:checked {
+            accent-color:#3C6E57;
+        }
     </style>
 
     <body>
+        <%
+            String[] colors = {"#487F3D","#004472","#D5A00C","red"};
+            SimpleDateFormat timeFmt = new SimpleDateFormat("HH:mm");
+            SimpleDateFormat dateFmt = new SimpleDateFormat("dd/MM/yyyy");
+            AirlineManageDAO amd = new AirlineManageDAO();
+            FlightDetailDAO fdd = new FlightDetailDAO();
+            PlaneCategoryDAO pcd = new PlaneCategoryDAO();
+            SeatCategoryDAO scd = new SeatCategoryDAO();
+            AirportDAO ad = new AirportDAO();
+            LocationDAO ld = new LocationDAO();
+            CountryDAO cd = new CountryDAO();
+        %>
         <%@include file="header.jsp" %>
         <div style="margin: 100px 0" class="row">
             <div class="col-md-1"></div>
             <div class="col-md-2">
-                <!-- For Filtering   -->
-                <div class="flight-detail" style="display: block; height: 100vh"></div>
-            </div>
-            <div class="col-md-8">
-                <%
-                String[] colors = {"#487F3D","#004472","#D5A00C"};
-                SimpleDateFormat timeFmt = new SimpleDateFormat("HH:mm");
-                SimpleDateFormat dateFmt = new SimpleDateFormat("dd/MM/yyyy");
-                AirlineManageDAO amd = new AirlineManageDAO();
-                FlightDetailDAO fdd = new FlightDetailDAO();
-                PlaneCategoryDAO pcd = new PlaneCategoryDAO();
-                SeatCategoryDAO scd = new SeatCategoryDAO();
-                AirportDAO ad = new AirportDAO();
-                LocationDAO ld = new LocationDAO();
-                CountryDAO cd = new CountryDAO();
+                <div class="flight-detail" style="display: block; height: fit-content; background-color: #f9f9f9">
+                    <div class="sorting-options">
+                        <h5>Sort by:</h5>
+                        <div>
+                            <input type="radio" id="sortDefault" name="sortFlights" value="default" onchange="sortFlights(this.value)" checked>
+                            <label for="sortDefault">Default</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="sortPriceAsc" name="sortFlights" value="priceAsc" onchange="sortFlights(this.value)">
+                            <label for="sortPriceAsc">Price: Low to High</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="sortPriceDesc" name="sortFlights" value="priceDesc" onchange="sortFlights(this.value)">
+                            <label for="sortPriceDesc">Price: High to Low</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="sortTimeAsc" name="sortFlights" value="timeAsc" onchange="sortFlights(this.value)">
+                            <label for="sortTimeAsc">Earliest First</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="sortTimeDesc" name="sortFlights" value="timeDesc" onchange="sortFlights(this.value)">
+                            <label for="sortTimeDesc">Latest First</label>
+                        </div>
+                    </div>
 
+
+                    <div class="sorting-options">
+                        <h5>Airline:</h5>
+                        
+                        <div>
+                            <input type="radio" id="sortDefaultAirline" name="sortAirlines" value="default" onchange="sortAirlines(this.value)" checked>
+                            <label for="sortDefaultAirline" >Default</label>
+                        </div>
+                        <%for(Airline a : (List<Airline>)amd.getAllAirline()){
+                            if(a.getName().equals("Empty"))continue;
+                        %>
+                        <div>
+                            <input type="radio" id="<%=a.getName()%>" name="sortAirlines" value="<%=a.getName()%>" onchange="sortAirlines(this.value)">
+                            <label for="<%=a.getName()%>"><img src="<%=a.getImage()%>" alt="alt"/> <%=a.getName()%></label>
+                        </div>
+                        <%}%>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-8 flights-container">
+                <%
                 List<FlightDetails> flightTickets = (List<FlightDetails>) request.getAttribute("flightTickets");
 
                 for (FlightDetails fd : flightTickets) {
@@ -241,18 +332,19 @@
                                 <a style="cursor: pointer" onclick="openModal(<%=fd.getId()%>)">Detail Information</a>
                             </div>
 
-                            <div style="display: flex; width: 50%">
+                            <div style="display: flex; width: 42%; padding-top: 1%">
                                 <div>
-                                    <p class="time"><%= timeFmt.format(fd.getTime()) %></p>
+                                    <p class="time depTime"><%= timeFmt.format(fd.getTime()) %></p>
                                     <p class="location"><%=depLocation.getName()%></p>
                                 </div>
-                                <svg width="200" height="30" xmlns="http://www.w3.org/2000/svg">
-                                <line x1="12" y1="15" x2="85" y2="15" stroke="#B1B9CB" stroke-width="2" stroke-dasharray="5,5" />
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" x="90" y="5"  viewBox="0 0 576 512">
+                                <svg width="150" height="30" xmlns="http://www.w3.org/2000/svg">
+                                <line x1="12" y1="15" x2="65" y2="15" stroke="#B1B9CB" stroke-width="2" stroke-dasharray="5,5" />
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" x="70" y="5" viewBox="0 0 576 512">
                                 <path fill="#B1B9CB" d="M482.3 192c34.2 0 93.7 29 93.7 64c0 36-59.5 64-93.7 64l-116.6 0L265.2 495.9c-5.7 10-16.3 16.1-27.8 16.1l-56.2 0c-10.6 0-18.3-10.2-15.4-20.4l49-171.6L112 320 68.8 377.6c-3 4-7.8 6.4-12.8 6.4l-42 0c-7.8 0-14-6.3-14-14c0-1.3 .2-2.6 .5-3.9L32 256 .5 145.9c-.4-1.3-.5-2.6-.5-3.9c0-7.8 6.3-14 14-14l42 0c5 0 9.8 2.4 12.8 6.4L112 192l102.9 0-49-171.6C162.9 10.2 170.6 0 181.2 0l56.2 0c11.5 0 22.1 6.2 27.8 16.1L365.7 192l116.6 0z"/>
                                 </svg>
-                                <line x1="115" y1="15" x2="200" y2="15" stroke="#B1B9CB" stroke-width="2" stroke-dasharray="5,5" />
+                                <line x1="90" y1="15" x2="150" y2="15" stroke="#B1B9CB" stroke-width="2" stroke-dasharray="5,5" />
                                 </svg>
+
                                 <%
                                     Calendar cal = Calendar.getInstance();
                                     cal.setTime(fd.getTime()); 
@@ -263,10 +355,10 @@
                                     <p class="location"><%=desLocation.getName()%></p>
                                 </div>
                             </div>
-                            <div style="display: flex; align-items: center; width: 30%; justify-content: end">
+                            <div style="display: flex; align-items: center; width: 38%; justify-content: end">
                                 <div class="price">
                                     <span class="old-price"><%= NumberFormat.getInstance().format(fd.getPrice()) %> ₫</span>
-                                    <span>only from <%= NumberFormat.getInstance().format(fd.getPrice())%> ₫</span>
+                                    <span><span style="font-size: 17px">only from</span> <%= NumberFormat.getInstance().format(fd.getPrice())%> ₫</span>
                                 </div>
                                 <div style="display: flex; margin-left: 20px" onclick="showTicketCategory(<%=fd.getId()%>)">
                                     <svg class="arrow" id="arrow<%=fd.getId()%>" xmlns="http://www.w3.org/2000/svg" height="25" width="25" viewBox="0 0 512 512" style="transition: transform 0.3s ease;">
@@ -412,6 +504,53 @@
                 container.style.opacity = "0";
                 arrow.style.transform = "rotate(0deg)";
             }
+        }
+
+        function sortFlights(sortBy) {
+            const flightsContainer = document.querySelector('.flights-container');
+            let flights = Array.from(flightsContainer.children);
+
+            flights.sort((a, b) => {
+                const priceA = parseInt(a.querySelector('.price span:last-child').innerText.replace(/[^0-9]/g, ''));
+                const priceB = parseInt(b.querySelector('.price span:last-child').innerText.replace(/[^0-9]/g, ''));
+                const timeA = parseTime(a.querySelector('.depTime').innerText);
+                const timeB = parseTime(b.querySelector('.depTime').innerText);
+
+                switch (sortBy) {
+                    case 'priceAsc':
+                        return priceA - priceB;
+                    case 'priceDesc':
+                        return priceB - priceA;
+                    case 'timeAsc':
+                        return timeA - timeB;
+                    case 'timeDesc':
+                        return timeB - timeA;
+                    default:
+                        return 0;
+                }
+            });
+            flightsContainer.innerHTML = '';
+            flights.forEach(flight => flightsContainer.appendChild(flight));
+        }
+
+        function parseTime(timeString) {
+            const [h, m] = timeString.split(':').map(Number);
+            return new Date(2004, 16, 11, h, m);
+        }
+
+        function sortAirlines(selectedAirline) {
+            const flightsContainer = document.querySelector('.flights-container');
+            let flights = Array.from(flightsContainer.children);
+
+            flights.forEach(flight => {
+                const airlineName = flight.querySelector('.airline-name').innerText;
+
+                if (selectedAirline === 'default' || airlineName === selectedAirline) {
+                    flight.style.display = 'block';
+                } else {
+                    flight.style.display = 'none';
+                }
+            });
         }
 
     </script>

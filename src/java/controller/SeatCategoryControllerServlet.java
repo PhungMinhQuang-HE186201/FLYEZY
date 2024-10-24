@@ -4,6 +4,7 @@
  */
 package controller;
 
+import dal.AccountsDAO;
 import dal.SeatCategoryDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,6 +13,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import model.Accounts;
 import model.SeatCategory;
 
 /**
@@ -59,14 +62,26 @@ public class SeatCategoryControllerServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String action = request.getParameter("action");
-        SeatCategoryDAO scd = new SeatCategoryDAO();
-        if (action.equals("changeStatus")) { //ok
-            int id = Integer.parseInt(request.getParameter("id"));
-            if(scd.getSeatCategoryById(id).getStatusId()==1){
-                scd.deactivateSeatCategoryById(id);
-            } else scd.activateSeatCategoryById(id);
-            response.sendRedirect("planeCategoryController");
+        AccountsDAO ad = new AccountsDAO();
+        HttpSession session = request.getSession();
+
+        String statusMessage = (String) session.getAttribute("result");
+        if (statusMessage != null) {
+            request.setAttribute("result", statusMessage);
+            session.removeAttribute("result");
+        }
+
+        Integer idd = (Integer) session.getAttribute("id");
+        if (idd == null) {
+            response.sendRedirect("login");
+            return;
+        } else {
+            Accounts acc = ad.getAccountsById(idd);
+            request.setAttribute("account", acc);
+
+            String planeCategoryId = request.getParameter("planeCategoryId");
+            request.setAttribute("planeCategoryId", planeCategoryId);
+            request.getRequestDispatcher("view/seatCategoryController.jsp").forward(request, response);
         }
     }
 
@@ -82,42 +97,69 @@ public class SeatCategoryControllerServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         SeatCategoryDAO scd = new SeatCategoryDAO();
+        String planeCategoryIdStr = request.getParameter("planeCategoryId");
+        String action = request.getParameter("action");
+        int planeCategoryId = 0;
 
+        try {
+            if (planeCategoryIdStr != null) {
+                planeCategoryId = Integer.parseInt(planeCategoryIdStr);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+        
+        if (action != null && action.equals("changeStatus")) {
+            try {
+                int id = Integer.parseInt(request.getParameter("seatCategoryid"));             
+                if (scd.getSeatCategoryById(id).getStatusId() == 1) {
+                    scd.deactivateSeatCategoryById(id);
+                } else {
+                    scd.activateSeatCategoryById(id);
+                }
+                response.sendRedirect("seatCategoryController?planeCategoryId=" + planeCategoryId);
+                return;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
+            }
+        }
+        
+        // Process adding/updating seat categories
         String idStr = request.getParameter("id");
         String image = "img/" + request.getParameter("image");
         String name = request.getParameter("name");
         String numberOfSeatStr = request.getParameter("numberOfSeat");
         String info = request.getParameter("info");
+        String seatEachRowStr = request.getParameter("seatEachRow");
         String surchargeStr = request.getParameter("surcharge");
-        String planeCategoryIdStr = request.getParameter("planeCategoryId");
         String statusIdStr = request.getParameter("status");
         int numberOfSeat = 0;
-        int planeCategoryId = 0;
+        int seatEachRow = 0;
         float surcharge = 0;
         int statusId = 0;
+
         try {
             numberOfSeat = Integer.parseInt(numberOfSeatStr);
-            planeCategoryId = Integer.parseInt(planeCategoryIdStr);
             statusId = Integer.parseInt(statusIdStr);
+            seatEachRow = Integer.parseInt(seatEachRowStr);
             surcharge = Float.parseFloat(surchargeStr);
-        } catch (Exception e) {
-        }
-        if (idStr != null && !idStr.isEmpty()) {
-            try {
+            if (idStr != null && !idStr.isEmpty()) {
                 int id = Integer.parseInt(idStr);
-                
+
                 if (image.equals("img/")) {
                     image = scd.getSeatCategoryById(id).getImage();
                 }
-                scd.updateSeatCategory(new SeatCategory(id, name, numberOfSeat, image, info, surcharge, planeCategoryId, statusId));
-                response.sendRedirect("planeCategoryController");
-            } catch (Exception e) {
-            }
-        } else {
-            scd.addSeatCategory(new SeatCategory(name, numberOfSeat, image, info, surcharge, planeCategoryId,1));
-            response.sendRedirect("planeCategoryController");
-        }
 
+                scd.updateSeatCategory(new SeatCategory(id, name, numberOfSeat, image, info, seatEachRow, surcharge, planeCategoryId, statusId));
+            } else {
+                scd.addSeatCategory(new SeatCategory(name, numberOfSeat, image, info, seatEachRow, surcharge, planeCategoryId, 1));
+            }
+            response.sendRedirect("seatCategoryController?planeCategoryId=" + planeCategoryId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**

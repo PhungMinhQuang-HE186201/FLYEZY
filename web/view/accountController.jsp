@@ -22,10 +22,15 @@
         <title>Account Management</title>
         <link rel="shortcut icon" type="image/png" href="img/flyezy-logo3.png" />
         <link rel="stylesheet" href="css/styleAdminController.css">
+        <link rel="stylesheet" href="css/styleGeneral.css"/>
+        <link rel="stylesheet" href="css/styleToastNotification.css">
         <script src="js/validation.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+        <script src="js/toastrNotification.js"></script>
 
         <style>
             .modal-body{
@@ -79,10 +84,12 @@
                                 <button type="button" class="close" style="font-size: 30px; margin-right: 12px;" data-dismiss="modal">&times;</button>
                                 <h4 style="margin-left: 12px">Create new account</h4>
                             </div>
-                            <div class="modal-body" style="padding:40px 50px;">
+                            <div class="modal-body" style="padding:40px 50px;" id="addAccount">
+                                <c:if test="${not empty error}">
+                                    <p id="error" class="text-danger"><%= request.getAttribute("error") != null ? request.getAttribute("error") : "" %></p>
+                                </c:if>
                                 <form role="form" action="accountController" method="Post">
                                     <input type="hidden" name="action" value="create"/>
-
                                     <div class="row" style="margin-bottom: 20px">
 
                                         <div class="form-group col-md-6">
@@ -97,7 +104,7 @@
                                     <div class="row">
                                         <div class="form-group col-md-6">
                                             <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Role:</label></div>
-                                            <select name="roleId" value="" style="height:  34px;width: 100%;">
+                                            <select id="role1" name="roleId" value="" style="height:  34px;width: 100%;" onchange="changeRole()">
                                                 <%List<Roles> rolesList = (List<Roles>)request.getAttribute("rolesList");
                                                   for(Roles role : rolesList){%>
                                                 <option value="<%=role.getId()%>"><%=role.getName()%></option>"
@@ -108,7 +115,7 @@
 
                                         <div class="form-group col-md-6">
                                             <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Airline:</label></div>
-                                            <select name="airlineID" value="" style="height:  34px; width: 100%;">
+                                            <select id="airline1" name="airlineID" value="" style=" display: none;height:  34px; width: 100%;">
                                                 <%List<Airline> airlineList = (List<Airline>)request.getAttribute("airlineList");
                                                   for(Airline airline : airlineList){%>
                                                 <option value="<%=airline.getId()%>"><%=airline.getName()%></option>"
@@ -160,11 +167,8 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Date of birth</th>
                         <th>Phone</th>
                         <th>Email</th>
-                        <th>Address</th>
-                        <th>Image</th>
                         <th>Role</th>
                         <th>Airline</th>
                         <th>Create at</th>
@@ -185,11 +189,8 @@
                             String bg = (list.getStatus_id() == 1) ? "" : "#ccc";
                         %>
                         <td style="background-color: <%= bg %>"><%= list.getName() %></td>
-                        <td style="background-color: <%= bg %>"><%= list.getDob() %></td>
                         <td style="background-color: <%= bg %>"><%= list.getPhoneNumber() %></td>
                         <td style="background-color: <%= bg %>"><%= list.getEmail() %></td>
-                        <td style="background-color: <%= bg %>"><%= list.getAddress() %></td>
-                        <td style="background-color: <%= bg %>"><img src="<%= list.getImage() %>" alt="<%= list.getName() %>"></td>
                         <td style="background-color: <%= bg %>"><%= rd.getNameById(list.getRoleId()) %></td>
                         <td style="background-color: <%= bg %>"><%= amd.getNameById(list.getAirlineId()) %></td>
                         <td style="background-color: <%= bg %>"><%= list.getCreated_at() != null ? sdf.format(list.getCreated_at()) : "" %></td>
@@ -202,6 +203,7 @@
                             <%}else{%>
                             <a class="btn btn-danger" style="text-decoration: none" onclick="doActivateDeactivate('<%= list.getId() %>', '<%= list.getName() %>', 'Activate')">Deactivated</a>
                             <%}%>
+
                             <!-- Modal: Update account -->
                             <div class="modal fade" id="myModal<%= list.getId() %>" role="dialog">
                                 <div class="modal-dialog">
@@ -284,14 +286,44 @@
                                     </div>
                                 </div>
                             </div>
+
                         </td>
+
                     </tr>
                     <%
                     }
                     %>
                 </tbody>
             </table>
+            <div style="">
+                <nav aria-label="...">
+                    <ul class="pagination">
+                        <c:if test="${index != 1}">    
+                            <li class="page-item">
+                                <a class="page-link" href="accountController?index=${index -1}">Previous</a>
+                            </li>
+                        </c:if>    
+                        <c:forEach begin="1" end ="${numOfPage}" var="i">
+                            <c:if test="${index == i}">
+                                <li class="page-item active">
+                                    <a class="page-link" href="accountController?index=${i}">${i}</a>
+                                </li>
+                            </c:if>
 
+                            <c:if test="${index != i}">
+                                <li class="page-item">
+                                    <a class="page-link" href="accountController?index=${i}">${i}</a>
+                                </li>
+                            </c:if>
+                        </c:forEach>
+                        <c:if test="${index != numOfPage}">    
+                            <li class="page-item">
+                                <a class="page-link" href="accountController?index=${index +1}">Next</a>
+                            </li>
+                        </c:if> 
+                    </ul>
+                </nav>
+            </div>
         </div>
 
         <!-- change status Modal -->
@@ -314,6 +346,8 @@
                 </div>
             </div>
         </div>
+
+
         <script>
             function openModal(id) {
                 $("#myModal" + id).modal('show');
@@ -361,6 +395,25 @@
                 };
 
                 reader.readAsDataURL(file);
+            }
+
+            $(document).ready(function () {
+            <% if (request.getAttribute("result") != null) { %>
+                successful("<%= request.getAttribute("result").toString()%>");
+            <% } %>
+
+            });
+
+            function changeRole() {
+                var roleNow = document.getElementById("role1").value;
+                console.log(roleNow);
+                var airlineBox = document.getElementById("airline1");
+                if (roleNow === "2") {
+                    airlineBox.style.display = "block";
+                } else {
+                    airlineBox.style.display = "none";
+                    airlineBox.value = 1;
+                }
             }
         </script>
 
