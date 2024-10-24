@@ -52,7 +52,7 @@ public class AirlineManageDAO extends DBConnect {
         }
         return null;
     }
-
+    
     public String getImageById(int id) {
         String sql = "select * from Airline where id = ?";
         try {

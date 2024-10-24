@@ -202,7 +202,7 @@ public class AccountsDAO extends DBConnect {
                         rs.getString("password"), rs.getString("phoneNumber"),
                         rs.getString("address"), rs.getString("image"), rs.getDate("dob"), rs.getInt("Rolesid"), rs.getInt("Airlineid"),
                         rs.getTimestamp("created_at"), rs.getTimestamp("updated_at"), rs.getInt("Status_id"));
-                
+
                 ls.add(a);
             }
         } catch (Exception e) {
@@ -369,6 +369,6 @@ public class AccountsDAO extends DBConnect {
 
     public static void main(String[] args) {
         AccountsDAO dao = new AccountsDAO();
-        dao.updateAccount(new Accounts(23, "Ngo Tung Duong222", "abccccc@gmail.com", "1", "0123456789", null, null, new Date(2000, 12, 11), 1, 1, null, null));
+        
     }
 }

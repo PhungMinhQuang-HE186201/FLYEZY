@@ -563,7 +563,7 @@
         </script>
         <script type="module">
             import {
-            ClassicEditor,
+                ClassicEditor,
                     Essentials,
                     Paragraph,
                     Bold,
