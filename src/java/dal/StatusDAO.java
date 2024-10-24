@@ -132,7 +132,7 @@ public class StatusDAO extends DBConnect {
     public List<Status> getStatusOfFlightDetaisl() {
         List<Status> ls = new ArrayList<>();
         try {
-            String sql = "SELECT * FROM flyezy.status WHERE id = 3 OR id = 4 OR id = 5";
+            String sql = "SELECT * FROM flyezy.Status WHERE id = 1 OR id = 2";
 
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();

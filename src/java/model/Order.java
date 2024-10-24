@@ -9,7 +9,6 @@ import java.sql.Timestamp;
 public class Order {
 
     private int id;
-    private int flightDetailId;
     private String code;
     private String contactName;
     private String contactPhone;
@@ -25,9 +24,8 @@ public class Order {
     public Order() {
     }
 
-    public Order(int id, int flightDetailId, String code, String contactName, String contactPhone, String contactEmail, int totalPrice, Integer accountsId, int paymentTypesId, Timestamp paymentTime,Timestamp created_at, Integer discountId, int Status_id) {
+    public Order(int id, String code, String contactName, String contactPhone, String contactEmail, int totalPrice, Integer accountsId, int paymentTypesId, Timestamp paymentTime,Timestamp created_at, Integer discountId, int Status_id) {
         this.id = id;
-        this.flightDetailId = flightDetailId;
         this.code = code;
         this.contactName = contactName;
         this.contactPhone = contactPhone;
@@ -47,14 +45,6 @@ public class Order {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getFlightDetailId() {
-        return flightDetailId;
-    }
-
-    public void setFlightDetailId(int flightDetailId) {
-        this.flightDetailId = flightDetailId;
     }
 
     public String getCode() {

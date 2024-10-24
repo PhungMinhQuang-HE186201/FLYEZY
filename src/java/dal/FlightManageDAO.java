@@ -135,9 +135,9 @@ public class FlightManageDAO extends DBConnect {
     }
 
     public String getDepartureByFlight(int id) {
-        String sql = "select l.name from flyezy.flight f \n"
-                + "join flyezy.airport a on a.id = f.departureAirportid\n"
-                + "join flyezy.location l on l.id = a.locationId\n"
+        String sql = "select l.name from flyezy.Flight f \n"
+                + "join flyezy.Airport a on a.id = f.departureAirportid\n"
+                + "join flyezy.Location l on l.id = a.locationId\n"
                 + "where f.id = ?";
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
@@ -154,9 +154,9 @@ public class FlightManageDAO extends DBConnect {
     }
 
     public String getDestinationByFlight(int id) {
-        String sql = "select l.name from flyezy.flight f \n"
-                + "join flyezy.airport a on a.id = f.destinationAirportid\n"
-                + "join flyezy.location l on l.id = a.locationId\n"
+        String sql = "select l.name from flyezy.Flight f \n"
+                + "join flyezy.Airport a on a.id = f.destinationAirportid\n"
+                + "join flyezy.Location l on l.id = a.locationId\n"
                 + "where f.id = ?";
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
@@ -276,7 +276,7 @@ public class FlightManageDAO extends DBConnect {
 
     public static void main(String[] args) {
         FlightManageDAO dao = new FlightManageDAO();
-        System.out.println(dao.getNumberOfFlights(2));
+        System.out.println(dao.getDepartureByFlight(2));
         
     }
 

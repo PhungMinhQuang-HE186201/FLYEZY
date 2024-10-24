@@ -51,7 +51,7 @@
                 align-items: flex-start;
             }
             .details {
-                width: 45%; /* Đảm bảo hai khối có kích thước vừa đủ */
+                width: 45%; 
             }
             .details p {
                 font-size: 16px;

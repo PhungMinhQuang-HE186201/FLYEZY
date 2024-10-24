@@ -101,8 +101,8 @@ public class OrderDAO extends DBConnect {
     }
 
     public int getFlightIdByOrder(int id) {
-        String sql = "select o.id,fd.flightid from flyezy.order o\n"
-                + "join flyezy.flight_detail fd on fd.id = o.flight_detail_id\n"
+        String sql = "select o.id,fd.flightid from flyezy.Order o\n"
+                + "join flyezy.Flight_Detail fd on fd.id = o.Flight_Detail_id\n"
                 + "where o.id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -416,7 +416,7 @@ public class OrderDAO extends DBConnect {
 
     public List<Order> getOrdersByStatusAndAccountId(int statusId, int accountId) {
         List<Order> list = new ArrayList<>();
-        String sql = "select * from flyezy.order\n"
+        String sql = "select * from flyezy.Order\n"
                 + "where flyezy.order.Status_id=? and Accounts_id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -450,7 +450,7 @@ public class OrderDAO extends DBConnect {
     public static void main(String[] args) {
         OrderDAO dao = new OrderDAO();
         //dao.createOrder(1, "Naruto", "0123", "hello@gmail.com", 10000, null);
-        System.out.println(dao.getAllOrders());
+        System.out.println(dao.getFlightIdByOrder(2));
     }
 
 }

@@ -204,7 +204,7 @@ public class TicketDAO extends DBConnect {
     }
 
     public int getTicketPriceByOrderAndPassenger(int orderId, int passengerTypeId) {
-        String sql = "select sum(t.totalPrice) totalPriceType from ticket t\n"
+        String sql = "select sum(t.totalPrice) totalPriceType from Ticket t\n"
                 + "join flyezy.order o on o.id = t.Order_id\n"
                 + "where o.id = ? and t.Passenger_Typesid = ?";
         try {

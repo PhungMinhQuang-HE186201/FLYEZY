@@ -281,7 +281,7 @@
 
                     <div class="sorting-options">
                         <h5>Airline:</h5>
-                        
+
                         <div>
                             <input type="radio" id="sortDefaultAirline" name="sortAirlines" value="default" onchange="sortAirlines(this.value)" checked>
                             <label for="sortDefaultAirline" >Default</label>
@@ -303,7 +303,7 @@
                 List<FlightDetails> flightTickets = (List<FlightDetails>) request.getAttribute("flightTickets");
 
                 for (FlightDetails fd : flightTickets) {
-                    if(fd.getStatusId()==3){
+                    if(fd.getStatusId()==1){
                         int airlineId = fdd.getAirlineIdByFlightDetailId(fd.getId());
                         String airlineImage = amd.getImageById(airlineId);
                         String airlineName = amd.getNameById(airlineId);
@@ -396,6 +396,7 @@
                                     <div class="ticket-category-info" style="font-size: 13px; margin-top: 12px">
                                         <%=ticketCatList.get(i).getInfo()%>
                                     </div>
+                                    <% if ("oneWay".equals(request.getParameter("flightType"))) { %>
                                     <form class="ticket-category-form" action="bookingFlightTickets" style="display: flex; justify-content: center; ">
                                         <input type="hidden" name="seatCategory" value="<%=ticketCatList.get(i).getId()%>"/>
                                         <input type="hidden" name="flightDetailId" value="<%=fd.getId()%>"/>
@@ -404,6 +405,32 @@
                                         <input type="hidden" name="infant" value="${param.infant}"/>
                                         <button style="background-color: <%= colors[i] %>;" type="submit">Buy Ticket</button>
                                     </form>
+                                    <% } else if("roundTrip".equals(request.getParameter("flightType")) && request.getParameter("flightDetailId")==null){
+                                    %>
+                                    <form class="ticket-category-form" action="flightTickets" style="display: flex; justify-content: center; ">
+                                         <input type="hidden" name="flightType" value="${param.flightType}"/>
+                                        <input type="hidden" name="seatCategory" value="<%=ticketCatList.get(i).getId()%>"/>
+                                        <input type="hidden" name="flightDetailId" value="<%=fd.getId()%>"/>
+                                        <input type="hidden" name="departure" value="${param.departure}"/>
+                                        <input type="hidden" name="destination" value="${param.destination}"/>
+                                        <input type="hidden" name="returnDate" value="${param.returnDate}"/>
+                                        <input type="hidden" name="adult" value="${param.adult}"/>
+                                        <input type="hidden" name="child" value="${param.child}"/>
+                                        <input type="hidden" name="infant" value="${param.infant}"/>
+                                        <button style="background-color: <%= colors[i] %>;" type="submit">Select Departure Ticket</button>
+                                    </form>
+                                    <% } else if("roundTrip".equals(request.getParameter("flightType")) && request.getParameter("flightDetailId")!=null){ %>
+                                    <form class="ticket-category-form" action="bookingFlightTickets" style="display: flex; justify-content: center; ">
+                                        <input type="hidden" name="seatCategory" value="${param.seatCategory}"/>
+                                        <input type="hidden" name="flightDetailId" value="${param.flightDetailId}"/>
+                                        <input type="hidden" name="seatCategory2" value="<%=ticketCatList.get(i).getId()%>"/>
+                                        <input type="hidden" name="flightDetailId2" value="<%=fd.getId()%>"/>
+                                        <input type="hidden" name="adult" value="${param.adult}"/>
+                                        <input type="hidden" name="child" value="${param.child}"/>
+                                        <input type="hidden" name="infant" value="${param.infant}"/>
+                                        <button style="background-color: <%= colors[i] %>;" type="submit">Select Return Ticket</button>
+                                    </form>
+                                    <%}%>
                                 </div>
                             </div>
                             <%
