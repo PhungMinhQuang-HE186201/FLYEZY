@@ -32,7 +32,7 @@
                 </a>
             </div>
             <ul id="header-nav1" style="font-weight: 520">
-                <li "><a href="#banner" >HOME</a></li>
+                <li "><a href="home" >HOME</a></li>
                 <li "><a href="routeTicket" >TICKETS</a></li>
                 <li "><a href="news">NEWS</a></li>
                 <li "><a href="#footer" >CONTACT</a></li>
