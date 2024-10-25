@@ -39,6 +39,17 @@ public class Order {
         this.Status_id = Status_id;
     }
 
+    public Order(String code, String contactName, String contactPhone, String contactEmail, Integer accountsId, int paymentTypesId, Timestamp paymentTime, int Status_id) {
+        this.code = code;
+        this.contactName = contactName;
+        this.contactPhone = contactPhone;
+        this.contactEmail = contactEmail;
+        this.accountsId = accountsId;
+        this.paymentTypesId = paymentTypesId;
+        this.paymentTime = paymentTime;
+        this.Status_id = Status_id;
+    }
+
     public int getId() {
         return id;
     }

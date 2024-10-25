@@ -187,4 +187,9 @@ public class Ticket {
         this.totalPrice = totalPrice;
     }
 
+    @Override
+    public String toString() {
+        return "Ticket{" + "id=" + id + ", flightDetailId=" + flightDetailId + ", Seat_Categoryid=" + Seat_Categoryid + ", Passenger_Typesid=" + Passenger_Typesid + ", code=" + code + ", pName=" + pName + ", pSex=" + pSex + ", pPhoneNumber=" + pPhoneNumber + ", pDob=" + pDob + ", Baggagesid=" + Baggagesid + ", totalPrice=" + totalPrice + ", Order_id=" + Order_id + ", Statusid=" + Statusid + ", Flight_Type_id=" + Flight_Type_id + '}';
+    }
+
 }

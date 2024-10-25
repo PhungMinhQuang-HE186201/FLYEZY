@@ -131,14 +131,14 @@ public class TicketDAO extends DBConnect {
 
     public List<Ticket> getAllTicketsById(int flightDetailID) {
         List<Ticket> ls = new ArrayList<>();
-        String sql = "select t.* from Ticket t \n"
-                + "join `flyezy`.`Order` o On t.Order_id=o.id\n"
+        String sql = "select * from Ticket t \n"
                 + "where Flight_Detail_id= " + flightDetailID + " and Statusid!=9";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Ticket t = new Ticket(rs.getInt("id"),
+                        rs.getInt("Flight_Detail_id"),
                         rs.getInt("Seat_Categoryid"),
                         rs.getInt("Passenger_Typesid"),
                         rs.getString("code"),
@@ -151,6 +151,7 @@ public class TicketDAO extends DBConnect {
                         rs.getInt("Order_id"),
                         rs.getInt("Statusid"),
                         rs.getInt("Flight_Type_id"));
+                        
                 ls.add(t);
             }
             return ls;
@@ -389,6 +390,6 @@ public class TicketDAO extends DBConnect {
     public static void main(String[] args) {
         TicketDAO tcd = new TicketDAO();
         //tcd.confirmSuccessAllTicketsByOrderId(1);
-        System.out.println(tcd.countNumberTicketNotCancel(1));
+        System.out.println(tcd.getAllTicketsById(1));
     }
 }

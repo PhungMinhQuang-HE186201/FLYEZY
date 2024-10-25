@@ -157,26 +157,19 @@
 
                 <div class="order-card">
                     <div class="order-header">
-                        <%for(FlightDetails detail : fdd.getAll()){
-                if(detail.getId() == o.getFlightDetailId()){ %>
+
                         <div class="order-id">
                             <%=o.getCode()%><br>
-                            From: <%= fd.getDepartureByFlight(od.getFlightIdByOrder(o.getId())) %> to <%= fd.getDestinationByFlight(od.getFlightIdByOrder(o.getId())) %>
-                            in <%=detail.getDate()%> at <%=detail.getTime()%><br>
-                            <%=pcd.getPlaneCategoryById(detail.getPlaneCategoryId()).getName()%> - <%=fd.getFlightById(detail.getFlightId()).getMinutes()%> minutes<br>
+
                             Contact name: <%=o.getContactName()%><br>
-                            Contact phone: <%=o.getContactPhone()%>
+                            Contact phone: <%=o.getContactPhone()%><br>
+                            Contact email: <%=o.getContactEmail()%>
                         </div>
-                        <%}}%>
+
 
                         <div class="order-details">
                             Created at: <%=o.getCreated_at()%>
-                            <% for(Airline a : ad.getAllAirline()) {
-                        if(a.getId() == od.getAirlineIdByOrder(o.getId())) { %>
-                            <div class="airline-image">
-                                <img src="<%=a.getImage()%>" alt="Airline Logo" class="img-fluid">
-                            </div>
-                            <% } } %>
+
                         </div>
                     </div>
 
@@ -186,13 +179,31 @@
                     <% id = t.getId();%>
                     <div class="ticket-details">
                         <div class="flight-info">
-                            Ticket <%= count %><br>
-                            Passenger: <%= t.getpSex() == 1 ? "Mr." : "Mrs." %><%= t.getpName() %><br>
-                            <%= scd.getSeatCategoryById(t.getSeat_Categoryid()).getName() %> - <%= t.getCode() %><br>
-                            <% for(Baggages b : bmd.getAllBaggages()) {
+                            <div style="display: flex">
+                                <% for(Airline a : ad.getAllAirline()) {
+                        if(a.getId() == od.getAirlineIdByOrder(o.getId())) { %>
+                                <div class="airline-image">
+                                    <img src="<%=a.getImage()%>" alt="Airline Logo" class="img-fluid">
+                                </div>
+                                <% } } %>
+                                Ticket <%= count %><br>
+                                Passenger: <%= t.getpSex() == 1 ? "Mr." : "Mrs." %><%= t.getpName() %><br>
+                                <%= scd.getSeatCategoryById(t.getSeat_Categoryid()).getName() %> - <%= t.getCode() %><br>
+                                <%for(FlightDetails detail : fdd.getAll()){
+                if(detail.getId() == t.getFlightDetailId()){ %>
+                               
+                                    
+                                    From: <%= fd.getDepartureByFlight(od.getFlightIdByOrder(o.getId())) %> to <%= fd.getDestinationByFlight(od.getFlightIdByOrder(o.getId())) %>
+                                    in <%=detail.getDate()%> at <%=detail.getTime()%><br>
+                                    <%=pcd.getPlaneCategoryById(detail.getPlaneCategoryId()).getName()%> - <%=fd.getFlightById(detail.getFlightId()).getMinutes()%> minutes<br>
+
+                                
+                                <%}}%>    <br>
+                                <% for(Baggages b : bmd.getAllBaggages()) {
                         if(b.getId() == t.getBaggagesid()) { %>
-                            Extra checked baggages bought: <%=b.getWeight()%>
-                            <% } } %>
+                                Extra checked baggages bought: <%=b.getWeight()%>
+                                <% } } %>
+                            </div>
                         </div>
 
                         <div class="ticket-actions">

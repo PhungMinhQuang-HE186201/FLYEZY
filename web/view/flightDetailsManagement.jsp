@@ -191,10 +191,6 @@
                             Ticket Detail
                             <span style="margin-left: 8px" class="glyphicon glyphicon-menu-right"></span>
                         </a>
-                        <a style="margin-right: 5px;text-decoration: none" class="btn btn-warning"  href="OrderController?flightDetailID=<%= fd.getId() %>">
-                            Order Detail
-                            <span style="margin-left: 8px" class="glyphicon glyphicon-menu-right"></span>
-                        </a>
 
                     </td>
                 </tr>
