@@ -65,7 +65,7 @@
 }
 
 #login-button {
-  background: var(--flyezyMainColor);
+  background: transparent;
   color: #fff;
   border: none;
 }

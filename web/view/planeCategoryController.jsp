@@ -136,7 +136,7 @@
                             <a class="btn btn-info" style="text-decoration: none" onclick="openModal(<%= pc.getId() %>)">Update</a>
 
                             <a class="btn btn-warning" style="text-decoration: none" href="seatCategoryController?planeCategoryId=<%= pc.getId() %>" >Seat Category Setting
-                                <span id="arrow<%= pc.getId() %>" style="margin-left: 8px" class="glyphicon glyphicon-menu-down"></span>
+                                <span id="arrow<%= pc.getId() %>" style="margin-left: 8px" class="glyphicon glyphicon-menu-right"></span>
                             </a>
                         </td>
                     </tr>

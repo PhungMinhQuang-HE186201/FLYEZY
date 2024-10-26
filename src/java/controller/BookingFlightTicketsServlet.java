@@ -98,13 +98,23 @@ public class BookingFlightTicketsServlet extends HttpServlet {
             String pContactName = request.getParameter("pContactName");
             String pContactPhoneNumber = request.getParameter("pContactPhoneNumber");
             String pContactEmail = request.getParameter("pContactEmail");
+
             int flightDetailId = Integer.parseInt(request.getParameter("flightDetailId"));
-            int seatCategoryId = Integer.parseInt(request.getParameter("seatCategoryId"));
+            int seatCategoryId = Integer.parseInt(request.getParameter("seatCategoryId2"));
+            String flightDetailId2Str = request.getParameter("flightDetailId2");
+            int flightDetailId2 = 0;
+            int seatCategoryId2 = 0;
+            if (flightDetailId2Str != null) {
+                flightDetailId2 = Integer.parseInt(flightDetailId2Str);
+                seatCategoryId2 = Integer.parseInt(request.getParameter("seatCategoryId"));
+            }
             int adultTicket = Integer.parseInt(request.getParameter("adultTicket"));
             int childTicket = Integer.parseInt(request.getParameter("childTicket"));
             int infantTicket = Integer.parseInt(request.getParameter("infantTicket"));
+            int totalPassengers = adultTicket + childTicket + infantTicket;
             float commonPriceFloat = Float.parseFloat(request.getParameter("commonPrice"));
             int commonPrice = (int) Math.round(commonPriceFloat);
+
             float totalPriceFloat = Float.parseFloat(request.getParameter("totalPrice"));
             int totalPrice = (int) Math.round(totalPriceFloat);
 
@@ -117,14 +127,35 @@ public class BookingFlightTicketsServlet extends HttpServlet {
                 Date pDob = Date.valueOf(request.getParameter("pDob" + i));
                 String pPhoneNumber = request.getParameter("pPhoneNumber" + i);
                 String code = request.getParameter("code" + i);
+
                 if (td.getTicketByCode(code, flightDetailId, seatCategoryId) != null) {
                     od.deleteOrderByCode(o.getCode());
                     request.getRequestDispatcher("view/failedBooking.jsp").forward(request, response);
                     return;
                 }
-                Integer pBaggages = (request.getParameter("pBaggages" + i).equals("0")) ? null : Integer.parseInt(request.getParameter("pBaggages" + i));
-                td.createTicket(code, seatCategoryId, 1, pName, pSex, pPhoneNumber, pDob, pBaggages,(int)(commonPrice*ptd.getPassengerTypePriceNameById(1) ), o.getId(), 1);
+
+                Integer pBaggages = request.getParameter("pBaggages" + i).equals("0") ? null : Integer.parseInt(request.getParameter("pBaggages" + i));
+
+                if (flightDetailId2Str != null) {
+                    float commonPriceFloat2 = Float.parseFloat(request.getParameter("commonPrice2"));
+                    int commonPrice2 = (int) Math.round(commonPriceFloat2);
+                    String code2 = request.getParameter("code" + (totalPassengers + i));
+
+                    if (td.getTicketByCode(code2, flightDetailId2, seatCategoryId2) != null) {
+                        od.deleteOrderByCode(o.getCode());
+                        request.getRequestDispatcher("view/failedBooking.jsp").forward(request, response);
+                        return;
+                    }
+
+                    Integer pBaggages2 = request.getParameter("pBaggages" + (totalPassengers + i)).equals("0") ? null : Integer.parseInt(request.getParameter("pBaggages" + (totalPassengers + i)));
+
+                    td.createTicket(code, seatCategoryId, 1, pName, pSex, pPhoneNumber, pDob, pBaggages, (int) (commonPrice * ptd.getPassengerTypePriceNameById(1)), o.getId(), 2);
+                    td.createTicket(code2, seatCategoryId2, 1, pName, pSex, pPhoneNumber, pDob, pBaggages2, (int) (commonPrice2 * ptd.getPassengerTypePriceNameById(1)), o.getId(), 3);
+                } else {
+                    td.createTicket(code, seatCategoryId, 1, pName, pSex, pPhoneNumber, pDob, pBaggages, (int) (commonPrice * ptd.getPassengerTypePriceNameById(1)), o.getId(), 1);
+                }
             }
+
             for (int i = adultTicket + 1; i <= adultTicket + childTicket; i++) {
                 int pSex = Integer.parseInt(request.getParameter("pSex" + i));
                 String pName = request.getParameter("pName" + i);
@@ -135,9 +166,9 @@ public class BookingFlightTicketsServlet extends HttpServlet {
                     request.getRequestDispatcher("view/failedBooking.jsp").forward(request, response);
                     return;
                 }
-                td.createTicket(code, seatCategoryId, 2, pName, pSex, "000", pDob, null,(int)(commonPrice*ptd.getPassengerTypePriceNameById(2) ), o.getId(), 1);
+                td.createTicket(code, seatCategoryId, 2, pName, pSex, "000", pDob, null, (int) (commonPrice * ptd.getPassengerTypePriceNameById(2)), o.getId(), 1);
             }
-            for (int i = adultTicket + childTicket + 1; i <= adultTicket + childTicket + infantTicket; i++) {
+            for (int i = adultTicket + childTicket + 1; i <= totalPassengers; i++) {
                 int pSex = Integer.parseInt(request.getParameter("pSex" + i));
                 String pName = request.getParameter("pName" + i);
                 Date pDob = Date.valueOf(request.getParameter("pDob" + i));
@@ -147,7 +178,7 @@ public class BookingFlightTicketsServlet extends HttpServlet {
                     request.getRequestDispatcher("view/failedBooking.jsp").forward(request, response);
                     return;
                 }
-                td.createTicket(code, seatCategoryId, 3, pName, pSex, "000", pDob, null,(int)(commonPrice*ptd.getPassengerTypePriceNameById(3) ), o.getId(), 1);
+                td.createTicket(code, seatCategoryId, 3, pName, pSex, "000", pDob, null, (int) (commonPrice * ptd.getPassengerTypePriceNameById(3)), o.getId(), 1);
             }
             if (id != null) {
                 Accounts acc = ad.getAccountsById(id);
@@ -155,9 +186,9 @@ public class BookingFlightTicketsServlet extends HttpServlet {
             }
             request.getRequestDispatcher("view/successfulBooking.jsp").forward(request, response);
         } catch (Exception e) {
-            e.printStackTrace(); 
+            e.printStackTrace();
             request.setAttribute("errorMessage", "Đã xảy ra lỗi: " + e.getMessage());
-            request.getRequestDispatcher("view/error.jsp").forward(request, response); 
+            request.getRequestDispatcher("view/error.jsp").forward(request, response);
         }
     }
 

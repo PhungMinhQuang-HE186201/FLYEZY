@@ -51,7 +51,7 @@
                 align-items: flex-start;
             }
             .details {
-                width: 45%; /* Đảm bảo hai khối có kích thước vừa đủ */
+                width: 45%; 
             }
             .details p {
                 font-size: 16px;
@@ -185,11 +185,13 @@
                         </select>
                     </td>
                     <td>
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#update-<%=fd.getId()%>">
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#update-<%=fd.getId()%>">
                             Update
                         </button>
-                        <a style="margin-right: 5px;text-decoration: none" class="btn btn-warning"  href="TicketController?flightDetailID=<%= fd.getId() %>">Ticket Detail</a>
-                        <a style="margin-right: 5px;text-decoration: none" class="btn btn-warning"  href="OrderController?flightDetailID=<%= fd.getId() %>">Order Detail</a>
+                        <a style="margin-right: 5px;text-decoration: none" class="btn btn-warning"  href="TicketController?flightDetailID=<%= fd.getId() %>">
+                            Ticket Detail
+                            <span style="margin-left: 8px" class="glyphicon glyphicon-menu-right"></span>
+                        </a>
 
                     </td>
                 </tr>

@@ -9,17 +9,16 @@
 
     </head>
     <body>
-        <div class="modal-body">
+        <section>
+            <div class="container flight-form">
+                <div class="banner" style="position: relative; overflow: hidden; padding: 10%; color: white;width: 142.2%;transform: translate(-15.1%, -2.7%);height: 800px">
+                    <video src="../vid/bg-vid.mp4" muted loop autoplay></video>
 
-
-                                        
-                                    </div>
-                                </div>
-
-                        </div>
-                        
+                </div>
+            </div>
+        </section>
     </body>
 
-   
+
 
 </html>

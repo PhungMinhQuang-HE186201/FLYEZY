@@ -80,17 +80,32 @@ public class FlightTicketsServlet extends HttpServlet {
         String depAStr = request.getParameter("departure");
         String desAStr = request.getParameter("destination");
         String depDateStr = request.getParameter("departureDate");
-        try {
-            int depA = Integer.parseInt(depAStr);
-            int desA = Integer.parseInt(desAStr);
-            Date depDate = Date.valueOf(depDateStr);
-            if (flightType.equals("roundTrip")) {
-                String reDateStr = request.getParameter("returnDate");
-                Date reDate = Date.valueOf(reDateStr);
+
+        String flightDetailId = request.getParameter("flightDetailId");
+
+        if (flightDetailId == null) {
+            try {
+                int depA = Integer.parseInt(depAStr);
+                int desA = Integer.parseInt(desAStr);
+                Date depDate = Date.valueOf(depDateStr);
+
+                request.setAttribute("flightTickets", fdd.getFlightDetailsByAirportAndDDate(depA, desA, depDate));
+            } catch (Exception e) {
             }
-            request.setAttribute("flightTickets", fdd.getFlightDetailsByAirportAndDDate(depA, desA, depDate));
-        } catch (Exception e) {
+        } else {
+            String reDateStr = request.getParameter("returnDate");
+            request.setAttribute("reDate", reDateStr);
+            String seatCategory = request.getParameter("seatCategory");
+            try {
+                int depA = Integer.parseInt(depAStr);
+                int desA = Integer.parseInt(desAStr);
+                Date reDate = Date.valueOf(reDateStr);
+
+                request.setAttribute("flightTickets", fdd.getFlightDetailsByAirportAndDDate(desA, depA, reDate));
+            } catch (Exception e) {
+            }
         }
+
         request.getRequestDispatcher("view/flightTickets.jsp").forward(request, response);
     }
 

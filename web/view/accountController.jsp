@@ -104,7 +104,7 @@
                                     <div class="row">
                                         <div class="form-group col-md-6">
                                             <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Role:</label></div>
-                                            <select name="roleId" value="" style="height:  34px;width: 100%;">
+                                            <select id="role1" name="roleId" value="" style="height:  34px;width: 100%;" onchange="changeRole()">
                                                 <%List<Roles> rolesList = (List<Roles>)request.getAttribute("rolesList");
                                                   for(Roles role : rolesList){%>
                                                 <option value="<%=role.getId()%>"><%=role.getName()%></option>"
@@ -115,7 +115,7 @@
 
                                         <div class="form-group col-md-6">
                                             <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Airline:</label></div>
-                                            <select name="airlineID" value="" style="height:  34px; width: 100%;">
+                                            <select id="airline1" name="airlineID" value="" style=" display: none;height:  34px; width: 100%;">
                                                 <%List<Airline> airlineList = (List<Airline>)request.getAttribute("airlineList");
                                                   for(Airline airline : airlineList){%>
                                                 <option value="<%=airline.getId()%>"><%=airline.getName()%></option>"
@@ -403,6 +403,18 @@
             <% } %>
 
             });
+
+            function changeRole() {
+                var roleNow = document.getElementById("role1").value;
+                console.log(roleNow);
+                var airlineBox = document.getElementById("airline1");
+                if (roleNow === "2") {
+                    airlineBox.style.display = "block";
+                } else {
+                    airlineBox.style.display = "none";
+                    airlineBox.value = 1;
+                }
+            }
         </script>
 
     </body>
