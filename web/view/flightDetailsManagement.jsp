@@ -67,9 +67,10 @@
         <%
             String flight_id = (String) request.getAttribute("fid");
             int fid = Integer.parseInt(flight_id);
-            
+            String airlineId = (String)request.getAttribute("aid");
+                int aid = Integer.parseInt(airlineId);
         %>
-        <div id="back" style="margin-left: 210px;margin-top: 60px;margin-bottom: -100px " > 
+        <div id="back" style="margin-left: 315px;margin-top: 110px;margin-bottom: -130px  " > 
             <a href="flightManagement" class="btn btn-warning" >Back</a>
         </div>
         <%
@@ -98,10 +99,10 @@
             </div>
         </div>
 
-        <div style="display: flex; margin-left: 210px;margin-top: 22px">
+        <div style="display: flex; margin-left: 315px;margin-top: 22px">
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#add-<%=fid%>">Add New Flight Detail</button>
         </div>
-        <form action="flightDetailManagement" method="GET" style="display: flex; align-items: center; margin-left: 210px; margin-top: 20px;" oninput="toggleSearchButton()">
+        <form action="flightDetailManagement" method="GET" style="display: flex; align-items: center; margin-left: 210px; margin-top: 20px; position: relative; left: 104px; top: -7px;"" oninput="toggleSearchButton()">
             <div style="margin-right: 10px;">
                 <label for="Status">Status:</label>
                 <select id="status-search" name="statusSearch" class="form-control">
@@ -136,10 +137,11 @@
                 <button style="margin-top: 45px; position: relative; left: 4px; top: -10px;" type="submit" class="btn btn-danger" name="action" value="cancel" id="cancel-button">Cancel</button>
             </div>
             <div>
-                <input type="hidden" name="flightId" value="<%= flight_id %>" >
+                <input type="hidden" name="flightId" value="<%= fid %>" >
+                <input type="hidden" name="airlineId" value="<%= aid %>" >
             </div>
         </form>
-        <table class="entity" style="margin-left: 210px;" >
+        <table class="entity" style="margin-left: 210px; position: relative; left: 104px; top: -2px; width: 1339.5px; transition: none;" >
             <thead>
                 <tr>
                     <th>Date</th>
@@ -152,8 +154,7 @@
             </thead>
             <tbody>
                 <%
-                String airlineId = (String)request.getAttribute("aid");
-                int aid = Integer.parseInt(airlineId);
+               
                 PlaneCategoryDAO planeCategoryDAO =  new PlaneCategoryDAO();
                 List<PlaneCategory> categories = (List<PlaneCategory>) planeCategoryDAO.getAllPlaneCategoryByAirlineId(aid);
                 %>
@@ -223,6 +224,8 @@
                         <div class="modal-body">
                             <form id="updateFlightForm" method="post" action="flightDetailManagement?action=update">
                                 <input type="hidden" id="uid" name="id" value="<%=fd.getId()%>">
+                                <input type="hidden" name="flightId" value="<%=fid%>">
+                                <input type="hidden" name="airlineId" value="<%=aid%>">
                                 <div class="mb-3">
                                     <label for="flightDate" class="form-label">Date: </label>
                                     <input type="date" class="form-control" id="uflightDate-<%=fd.getId()%>" name="date" oninput="validateDate(<%=fd.getId()%>)" value=<%= fd.getDate()%> required>
@@ -310,6 +313,10 @@
                             %>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <input type="hidden" name="flightId" value="<%=fid%>">
+                        <input type="hidden" name="airlineId" value="<%=aid%>">
+                    </div>
 
                 </div>
                 <div class="modal-footer">
@@ -320,7 +327,7 @@
         </div>
     </div>
 </div>
-<div style="margin-left: 230px">
+<div style="margin-left: 315px">
     <nav aria-label="...">
         <ul class="pagination">
             <c:if test="${index != 1}">    
@@ -391,6 +398,7 @@
         $('#confirmModal-' + currentId).modal('show');
     }
 
+
     document.addEventListener('click', function (event) {
         // Check if the clicked element is the confirm button
         if (event.target && event.target.classList.contains('confirmChange')) {
@@ -399,7 +407,7 @@
             // Create the form dynamically
             const form = document.createElement("form");
             form.method = "post";
-            form.action = "flightDetailManagement?action=updstatus";
+            form.action = "flightDetailManagement?action=updstatus&flightId=<%=fid %>&airlineId=<%=aid %>";
             const idInput = document.createElement("input");
             idInput.type = "hidden";
             idInput.name = "id";

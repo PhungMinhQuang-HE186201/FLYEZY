@@ -45,6 +45,7 @@ public class FlightDetailManagement extends HttpServlet {
     LocationDAO loc = new LocationDAO();
     CountryDAO cou = new CountryDAO();
     AirlineManageDAO airline = new AirlineManageDAO();
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -117,39 +118,35 @@ public class FlightDetailManagement extends HttpServlet {
             request.setAttribute("numOfPage", numOfPage);
             String action = request.getParameter("action");
 
-                Flights listFlight = fmd.getFlightById(fid);
+            Flights listFlight = fmd.getFlightById(fid);
             request.setAttribute("listFlight", listFlight);
-            
+
             Airline a = airline.getAirlineById(listFlight.getAirlineId());
             request.setAttribute("a", a);
-            
+
             Airport listAirportDep = air.getAirportById(listFlight.getDepartureAirportId());
             request.setAttribute("listAirportDep", listAirportDep);
-            
+
             Location listLocationDep = loc.getLocationById(listAirportDep.getLocationId());
             request.setAttribute("listLocationDep", listLocationDep);
-            
+
             Country listCountryDep = cou.getCountryById(listLocationDep.getCountryId());
             request.setAttribute("listCountryDep", listCountryDep);
-            
-            
-            
-             Airport listAirportDes = air.getAirportById(listFlight.getDestinationAirportId());
+
+            Airport listAirportDes = air.getAirportById(listFlight.getDestinationAirportId());
             request.setAttribute("listAirportDes", listAirportDes);
-            
-             Location listLocationDes = loc.getLocationById(listAirportDes.getLocationId());
+
+            Location listLocationDes = loc.getLocationById(listAirportDes.getLocationId());
             request.setAttribute("listLocationDes", listLocationDes);
-            
+
             Country listCountryDes = cou.getCountryById(listLocationDes.getCountryId());
             request.setAttribute("listCountryDes", listCountryDes);
-            
-       
-            
-            List<FlightDetails> detail_ls = dao.getAllDetailByFlightId(fid,index);
+
+            List<FlightDetails> detail_ls = dao.getAllDetailByFlightId(fid, index);
             List<FlightDetails> searchResults = new ArrayList<>();
 
             if (action != null && action.equals("cancel")) {
-                searchResults = dao.getAllDetailByFlightId(fid,index);
+                searchResults = dao.getAllDetailByFlightId(fid, index);
                 request.setAttribute("listFlightDetails", searchResults);
             } else if (action != null && action.equals("search")) {
 
@@ -159,18 +156,18 @@ public class FlightDetailManagement extends HttpServlet {
                 String toSearch = request.getParameter("toSearch");
                 if (statusSearch != null && !statusSearch.isEmpty()) {
                     int status_search = Integer.parseInt(statusSearch);
-                    searchResults = dao.searchByStatus(status_search, fid,index);
+                    searchResults = dao.searchByStatus(status_search, fid, index);
                 }
 
                 if (dateSearch != null && !dateSearch.isEmpty()) {
                     Date date = Date.valueOf(dateSearch);
-                    searchResults = dao.searchByDate(date, fid,index);
+                    searchResults = dao.searchByDate(date, fid, index);
 
                 }
                 if (fromSearch != null && toSearch != null && !fromSearch.isEmpty() && !toSearch.isEmpty()) {
                     Time fromTime = Time.valueOf(fromSearch);
                     Time toTime = Time.valueOf(toSearch);
-                    searchResults = dao.searchByTimeRange(fromTime, toTime, fid,index);
+                    searchResults = dao.searchByTimeRange(fromTime, toTime, fid, index);
                 }
                 request.setAttribute("listFlightDetails", searchResults);
 
@@ -221,31 +218,31 @@ public class FlightDetailManagement extends HttpServlet {
 
     private void handleAddFlightDetail(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        HttpSession session = request.getSession();
-        int flightId = Integer.parseInt((String) request.getAttribute("fid"));
+        int flightId = Integer.parseInt((String) request.getParameter("flightId"));
+        int airlineId = Integer.parseInt((String) request.getParameter("airlineId"));
         FlightDetails newFlightDetail = createFlightDetailFromRequest(request);
         dao.addnew(newFlightDetail);
-        response.sendRedirect("flightDetailManagement?flightId=" + flightId);
+        response.sendRedirect("flightDetailManagement?flightId=" + flightId + "&airlineId=" + airlineId);
     }
 
     private void handleUpdateFlightDetail(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        HttpSession session = request.getSession();
-        int flightId = Integer.parseInt((String) request.getAttribute("fid"));
+        int flightId = Integer.parseInt((String) request.getParameter("flightId"));
+        int airlineId = Integer.parseInt((String) request.getParameter("airlineId"));
         int id = Integer.parseInt(request.getParameter("id"));
         FlightDetails updatedFlightDetail = createFlightDetailFromRequest(request);
         dao.updateFlightDetail(updatedFlightDetail, id);
-        response.sendRedirect("flightDetailManagement?flightId=" + flightId);
+        response.sendRedirect("flightDetailManagement?flightId=" + flightId + "&airlineId=" + airlineId);
     }
 
     private void handleUpdateFlightStatus(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        HttpSession session = request.getSession();
-        int flightId = Integer.parseInt((String) request.getAttribute("fid"));
+        int flightId = Integer.parseInt((String) request.getParameter("flightId"));
+        int airlineId = Integer.parseInt((String) request.getParameter("airlineId"));
         int id = Integer.parseInt(request.getParameter("id"));
         int status_id = Integer.parseInt(request.getParameter("status"));
         dao.updateFlightStatus(id, status_id);
-        response.sendRedirect("flightDetailManagement?flightId=" + flightId);
+        response.sendRedirect("flightDetailManagement?flightId=" + flightId + "&airlineId=" + airlineId);
     }
 
     private FlightDetails createFlightDetailFromRequest(HttpServletRequest request) {
