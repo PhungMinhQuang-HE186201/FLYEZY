@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -21,6 +22,7 @@
                 <h1 style="margin-bottom: 30px">
                     Login                  
                 </h1>
+
                 <div>
                     <a href="home" style="    transform: translate(0px, 1px);
                        position: relative;
@@ -31,7 +33,9 @@
                 </div>
 
             </div>
-
+            <c:if test="${not empty requestScope.notice}">
+                <h4 style="color: #3c6e57;margin-bottom: 20px;">${requestScope.notice}</h4>
+            </c:if>
             <c:set var="cookie" value="${pageContext.request.cookies}" />
             <form action="login" method="post">     
 
@@ -79,7 +83,7 @@
                     <input type="submit" value="Login" /><br /><br />
                 </div>
                 <div style="display: flex; justify-content: center;">
-                    <a href="https://accounts.google.com/o/oauth2/auth?scope=email profile openid&redirect_uri=http://localhost:9999/flyezy/loginGoogleHandler&response_type=code&client_id=567083027781-r2dqc8ursvogag062snkt50uhbtnh90r.apps.googleusercontent.com&approval_prompt=force" 
+                    <a href="https://accounts.google.com/o/oauth2/auth?scope=email profile openid&redirect_uri=http://localhost:8080/flyezy/loginGoogleHandler&response_type=code&client_id=567083027781-r2dqc8ursvogag062snkt50uhbtnh90r.apps.googleusercontent.com&approval_prompt=force" 
                        style="display: inline-flex;
                        align-items: center;
                        justify-content: center;
