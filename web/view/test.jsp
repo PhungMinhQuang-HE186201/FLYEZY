@@ -9,14 +9,7 @@
 
     </head>
     <body>
-        <section>
-            <div class="container flight-form">
-                <div class="banner" style="position: relative; overflow: hidden; padding: 10%; color: white;width: 142.2%;transform: translate(-15.1%, -2.7%);height: 800px">
-                    <video src="../vid/bg-vid.mp4" muted loop autoplay></video>
-
-                </div>
-            </div>
-        </section>
+        <h1>Hello</h1>
     </body>
 
 

@@ -46,7 +46,7 @@ public class PassengerTypeDAO extends DBConnect {
         return list;
     }
 
-    public float getPassengerTypePriceNameById(int id) {
+    public float getPassengerTypePriceById(int id) {
         String sql = "SELECT price FROM Passenger_Types WHERE id = " + id;
         try {
             PreparedStatement st = conn.prepareStatement(sql);
@@ -101,6 +101,6 @@ public class PassengerTypeDAO extends DBConnect {
 
     public static void main(String[] args) {
         PassengerTypeDAO ptd = new PassengerTypeDAO();
-        System.out.println(ptd.getPassengerTypePriceNameById(2));
+        System.out.println(ptd.getPassengerTypePriceById(2));
     }
 }

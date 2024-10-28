@@ -337,18 +337,17 @@
                     <form style="width: 100%" id="passengerForm" action="bookingFlightTickets" method="post">
                         <input type="hidden" name="flightDetailId" value="<%=flightDetailId%>"/>
                         <input type="hidden" name="seatCategoryId" value="<%=sc.getId()%>"/>
-                        <input type="hidden" name="flightDetailId2" value="<%=flightDetailId2%>"/>
-                        <input type="hidden" name="seatCategoryId2" value="<%=sc2.getId()%>"/>
-                        <input type="hidden" name="adultTicket" value="<%=m*adultTicket%>"/>
-                        <input type="hidden" name="childTicket" value="<%=m*childTicket%>"/>
-                        <input type="hidden" name="infantTicket" value="<%=m*infantTicket%>"/>
+                        <input type="hidden" name="adultTicket" value="<%=adultTicket%>"/>
+                        <input type="hidden" name="childTicket" value="<%=childTicket%>"/>
+                        <input type="hidden" name="infantTicket" value="<%=infantTicket%>"/>
                         <input type="hidden" name="commonPrice" value="<%= fd.getPrice() * (sc.getSurcharge()+1) %>"/>
                         <%if(m==2){
                         %>
+                        <input type="hidden" name="flightDetailId2" value="<%=flightDetailId2%>"/>
+                        <input type="hidden" name="seatCategoryId2" value="<%=sc2.getId()%>"/>
                         <input type="hidden" name="commonPrice2" value="<%= fd2.getPrice() * (sc2.getSurcharge()+1) %>"/>
                         <%
                             }%>
-                        <input type="hidden" name="totalPrice" value="<%= fd.getPrice() * (sc.getSurcharge()+1) * totalPassengers %>"/>
                         <div class="main-container2 passenger-info" >
                             <div style="width: 100%; text-align: center;
                                  font-size: 20px;
@@ -429,11 +428,11 @@
                                             <a class="btn btn-info" style="text-decoration: none" onclick="openSeatModal(<%=i%>)">Choose</a>
                                             <input type="hidden" name="code<%=i%>" id="seatCode<%=i%>"/>
                                         </div>
-                                        <% if(request.getParameter("flightDetailId2")!=null){
+                                        <% if(m==2){
                                         %>
                                         <div class="passenger-info-input-box"  >
                                             <div class="passenger-info-input-title" style="width: 121px">Baggage:</div>
-                                            <select name="pBaggages<%=i+totalPassengers%>" id="baggage<%=i+totalPassengers%>" onchange="updateTotalBaggage()">
+                                            <select name="pBaggages<%=i+totalPassengers/2%>" id="baggage<%=i+totalPassengers/2%>" onchange="updateTotalBaggage()">
                                                 <option value="0">Buy 0kg extra checked baggage - <%=currencyFormatter.format(0)%></option>
                                                 <% for(Baggages b : bmd.getAllBaggagesByAirline(airlineId2)){
                                                 %>
@@ -446,10 +445,10 @@
                                         <div class="passenger-info-input-box">
                                             <div class="passenger-info-input-title" style="width: 200px">Select seat for returning:</div>
                                             <div style="display: flex; align-items: center; margin-right: 20px; font-weight: 600; font-size: 16px; color: #3C6E57">
-                                                <span style=""><%=sc2.getName()%> - <span id="seatCodeForDisplaying<%=i+totalPassengers%>">Not Selected</span></span>
+                                                <span style=""><%=sc2.getName()%> - <span id="seatCodeForDisplaying<%=i+totalPassengers/2%>">Not Selected</span></span>
                                             </div>
-                                            <a class="btn btn-info" style="text-decoration: none" onclick="openSeatModal(<%=i+totalPassengers%>)">Choose</a>
-                                            <input type="hidden" name="code<%=i+totalPassengers%>" id="seatCode<%=i+totalPassengers%>"/>
+                                            <a class="btn btn-info" style="text-decoration: none" onclick="openSeatModal(<%=i+totalPassengers/2%>)">Choose</a>
+                                            <input type="hidden" name="code<%=i+totalPassengers/2%>" id="seatCode<%=i+totalPassengers/2%>"/>
                                         </div>
 
                                         <%
@@ -490,6 +489,19 @@
 
                                             <input type="hidden" name="code<%=i%>" id="seatCode<%=i%>"/>
                                         </div>
+                                        <% if(m==2){
+                                        %>
+                                        <div class="passenger-info-input-box">
+                                            <div class="passenger-info-input-title" style="width: 200px">Select seat for returning:</div>
+                                            <div style="display: flex; align-items: center; margin-right: 20px; font-weight: 600; font-size: 16px; color: #3C6E57">
+                                                <span style=""><%=sc2.getName()%> - <span id="seatCodeForDisplaying<%=i+totalPassengers/2%>">Not Selected</span></span>
+                                            </div>
+                                            <a class="btn btn-info" style="text-decoration: none" onclick="openSeatModal(<%=i+totalPassengers/2%>)">Choose</a>
+                                            <input type="hidden" name="code<%=i+totalPassengers/2%>" id="seatCode<%=i+totalPassengers/2%>"/>
+                                        </div>
+
+                                        <%
+                                                }%>
                                     </div>
                                 </div>
                                 <%
@@ -516,16 +528,7 @@
                                         <div class="passenger-info-input-box">
                                             <div class="passenger-info-input-title">Date of birth:</div>
                                             <input type="date" name="pDob<%=i%>" required/>
-                                        </div>
-                                        <div class="passenger-info-input-box">
-                                            <div class="passenger-info-input-title">Select seat:</div>
-                                            <div style="display: flex; align-items: center; margin-right: 20px; font-weight: 600; font-size: 16px; color: #3C6E57">
-                                                <span style=""><%=sc.getName()%> - <span id="seatCodeForDisplaying<%=i%>">Not Selected</span></span>
-                                            </div>
-                                            <a class="btn btn-info" style="text-decoration: none" onclick="openSeatModal(<%=i%>)">Choose</a>
-
-                                            <input type="hidden" name="code<%=i%>" id="seatCode<%=i%>"/>
-                                        </div>
+                                        </div>   
                                     </div>
                                 </div>
                                 <%
@@ -547,18 +550,18 @@
                          color: #3C6E57;
                          letter-spacing: 1px;"><p>INVOICE</p></div>
                     <div class="ticket-pricing">
-                        
+
                         <div class="ticket-item">
                             <span>Adult Ticket x <%= adultTicket*m %></span>
-                            <span>= <%= currencyFormatter.format(m* fd.getPrice() * (sc.getSurcharge()+1) * adultTicket * ptd.getPassengerTypePriceNameById(1)) %></span>
+                            <span>= <%= currencyFormatter.format((fd.getPrice() * (sc.getSurcharge()+1)+ ((m==2)?fd2.getPrice() * (sc2.getSurcharge()+1):0)) * adultTicket * ptd.getPassengerTypePriceById(1)) %></span>
                         </div>
                         <div class="ticket-item">
                             <span>Children Ticket x <%= childTicket*m %></span>
-                            <span>= <%= currencyFormatter.format(m* fd.getPrice() * (sc.getSurcharge()+1) * childTicket * ptd.getPassengerTypePriceNameById(2)) %></span>
+                            <span>= <%= currencyFormatter.format((fd.getPrice() * (sc.getSurcharge()+1)+ ((m==2)?fd2.getPrice() * (sc2.getSurcharge()+1):0)) * childTicket * ptd.getPassengerTypePriceById(2)) %></span>
                         </div>
                         <div class="ticket-item">
                             <span>Infant Ticket x <%= infantTicket*m %></span>
-                            <span>= <%= currencyFormatter.format(m* fd.getPrice() * (sc.getSurcharge()+1) * infantTicket * ptd.getPassengerTypePriceNameById(3)) %></span>
+                            <span>= <%= currencyFormatter.format((fd.getPrice() * (sc.getSurcharge()+1)+ ((m==2)?fd2.getPrice() * (sc2.getSurcharge()+1):0)) * infantTicket * ptd.getPassengerTypePriceById(3)) %></span>
                         </div>
                         <div class="ticket-item">
                             <span>Baggage</span>
@@ -567,7 +570,9 @@
                         <div class="ticket-total">
                             <span>Total Price:</span>
                             <span id="totalPrice">
-                                <%= currencyFormatter.format(fd.getPrice() * (sc.getSurcharge()+1) * (adultTicket * ptd.getPassengerTypePriceNameById(1) + childTicket* ptd.getPassengerTypePriceNameById(2) + infantTicket* ptd.getPassengerTypePriceNameById(3))) %>
+                                <%= currencyFormatter.format(
+                                        (fd.getPrice() * (sc.getSurcharge()+1)+ ((m==2)?fd2.getPrice() * (sc2.getSurcharge()+1):0)) * (adultTicket * ptd.getPassengerTypePriceById(1) + childTicket* ptd.getPassengerTypePriceById(2) + infantTicket* ptd.getPassengerTypePriceById(3))
+                                ) %>
                             </span>
                         </div>
                     </div>
@@ -580,9 +585,9 @@
                 </div>
             </div>
 
-             
+
             <%//Modal chọn ghế
-            for(int j = 1; j<=totalPassengers*m;j++){ %>
+            for(int j = 1; j<=totalPassengers;j++){ %>
             <div class="modal fade " id="seatModal<%=j%>"  tabindex="-1" aria-labelledby="seatModalLabel" aria-hidden="true">
                 <div class="modal-dialog" style="min-width: 45%">
                     <div class="modal-content">
@@ -602,7 +607,7 @@
                                         int numberOfSeat = sc.getNumberOfSeat();
                                         String seatCat = sc.getName();
                                         List<String> bookedSeats = td.getAllTicketCodesById(flightDetailId, sc.getId());
-                                        if(j>totalPassengers){
+                                        if(j>adultTicket+childTicket+infantTicket){
                                             seatEachRow = sc2.getSeatEachRow();
                                             numberOfSeat = sc2.getNumberOfSeat();
                                             seatCat = sc2.getName();
@@ -629,7 +634,7 @@
                                             String seatColor = bookedSeats.contains(seatCode) ? "rgb(255, 177, 177)" : "#FFF"; 
                                             String strokeColor = bookedSeats.contains(seatCode) ? "red" : "#B8B8B8"; 
                                             Ticket thisTicket = td.getTicketByCode(seatCode, flightDetailId, sc.getId());
-                                            if(j>totalPassengers){
+                                            if(j>adultTicket+childTicket+infantTicket){
                                                 thisTicket = td.getTicketByCode(seatCode, flightDetailId2, sc2.getId());
                                             }
                                             if (thisTicket != null && thisTicket.getStatusid() == 12) {
@@ -637,6 +642,7 @@
                                                 strokeColor = "#FFBF00";
                                             }
                                             %>
+
                                             <td class="seat<%=j%>" data-seat-code="<%= seatCode %>">
                                                 <div onclick="handleSeatClick(this, '<%= seatColor %>', <%= j %>)" 
                                                      data-disabled="false" style="padding-right: 10px" data-color="#B8B8B8">
@@ -728,7 +734,7 @@
                 const confirmedSeatForDisplaying = document.getElementById("seatCodeForDisplaying" + i);
 
                 const seatCode = seat.querySelector('.seatName').value;
-                if (i <= <%=totalPassengers%>) {
+                if (i <= <%=adultTicket+childTicket+infantTicket%>) {
                     if (selectedSeats.includes(seatCode) && currentChoosingSeat[i] !== seat) {
                         alert('This seat is already selected by another passenger.');
                         return;
@@ -755,7 +761,7 @@
                         path.setAttribute("d", "");
                     });
                     //xoá ghế chọn trước đó khỏi selectedSeat
-                    if (i <= <%=totalPassengers%>) {
+                    if (i <= <%=adultTicket+childTicket+infantTicket%>) {
                         const index = selectedSeats.indexOf(currentChoosingSeat[i].querySelector('.seatName').value);
                         if (index > -1) {
                             selectedSeats.splice(index, 1);
@@ -783,7 +789,7 @@
 
                     currentChoosingSeat[i] = seat;
 
-                    if (i <= <%=totalPassengers%>) {
+                    if (i <= <%=adultTicket+childTicket+infantTicket%>) {
                         selectedSeats.push(seatCode);//thêm ghế vừa chọn vào danh sách ghế được chọn của chuyến đi
                     } else {
                         selectedSeats2.push(seatCode);//thêm ghế vừa chọn vào danh sách ghế được chọn của chuyến về
@@ -805,7 +811,7 @@
                         path.setAttribute("d", " ");
                     });
 
-                    if (i <= <%=totalPassengers%>) {
+                    if (i <= <%=adultTicket+childTicket+infantTicket%>) {
                         const index = selectedSeats.indexOf(currentChoosingSeat[i].querySelector('.seatName').value);
                         if (index > -1) {
                             selectedSeats.splice(index, 1);
@@ -859,7 +865,7 @@
                     baggageId = parseInt(baggageElement ? baggageElement.value : 0);
                     totalBaggage += isNaN(baggageId) ? 0 : baggageId;
                 }
-                for (var i = <%=totalPassengers+1%>; i <= <%=totalPassengers*2%>; i++) {
+                for (var i = <%=adultTicket+childTicket+infantTicket+1%>; i <= <%=totalPassengers%>; i++) {
                     var baggageElement = document.getElementById("baggage" + i);
                     console.log(baggageElement);
                     baggageId = parseInt(baggageElement ? baggageElement.value : 0);
@@ -870,10 +876,9 @@
             }
 
             function updateTotalPrice(totalBaggage) {
-                var a = <%= fd.getPrice() * (sc.getSurcharge()+1) * (adultTicket * ptd.getPassengerTypePriceNameById(1) + childTicket* ptd.getPassengerTypePriceNameById(2) + infantTicket* ptd.getPassengerTypePriceNameById(3)) %>;
+                var a = <%= (fd.getPrice() * (sc.getSurcharge()+1)+ ((m==2)?fd2.getPrice() * (sc2.getSurcharge()+1):0)) * (adultTicket * ptd.getPassengerTypePriceById(1) + childTicket* ptd.getPassengerTypePriceById(2) + infantTicket* ptd.getPassengerTypePriceById(3)) %>;
                 var total = a + totalBaggage;
                 document.getElementById("totalPrice").innerText = new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(total);
-                ;
             }
 
         </script>

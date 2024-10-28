@@ -475,10 +475,10 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Ticket` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `Seat_Categoryid` INT NOT NULL,
   `Passenger_Typesid` INT NOT NULL,
-  `code` VARCHAR(255) NOT NULL,
+  `code` VARCHAR(255) NULL,
   `pName` VARCHAR(255) NOT NULL,
   `pSex` BIT(1) NOT NULL,
-  `pPhoneNumber` VARCHAR(10) NOT NULL,
+  `pPhoneNumber` VARCHAR(10) NULL,
   `pDob` DATE NOT NULL,
   `Baggagesid` INT NULL DEFAULT NULL,
   `totalPrice` INT NOT NULL,
@@ -554,8 +554,6 @@ COLLATE = utf8mb4_0900_ai_ci;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
-
-
 
 -- ------------------------------------------------
 -- INSERT DATA
