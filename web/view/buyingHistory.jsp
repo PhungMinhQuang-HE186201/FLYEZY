@@ -288,79 +288,78 @@
                     </div>
 
 
-                    <div class="order-total-section" style="display: flex; justify-content: space-between; align-items: center; font-size: 1.2em;">
-                        <div class="order-info" style="text-align: left;">
+                    <div class="order-total-section" style="display: flex; justify-content: space-between; font-size: 1.2em;">
+                        <div style="text-align: left;">
                             <div class="order-discount">Discount: 0%</div>
-                            <div style="margin-right:20px" class="order-total"><strong>Total: <%= total + ticketOfBaggage %></strong></div>
+                            <div class="order-total">Total: <span class="text-danger"><%= total + ticketOfBaggage %></span></div>
                         </div>
-                        <div class="order-actions" style="text-align: right;">
+                        <div class="order-actions" style="align-items: end;">
                             <% if (td.countNumberTicketNotCancel(o.getId()) == 0) { %>
                             <a class="btn btn-danger" style="text-decoration: none; display: none;" onclick="openModalOrder(<%= o.getId() %>)">Cancel Order</a>
                             <% } else { %>
                             <a class="btn btn-danger" style="text-decoration: none;" onclick="openModalOrder(<%= o.getId() %>)">Cancel Order</a>
                             <% } %>
-                            <a class="btn btn-outline-secondary" style="color: black; background-color: white; border-color: black;">Feedback</a>
-                    <div class="order-total-section" style="text-align: right; font-size: 1.2em;">
-                        <div class="order-discount">Discount: 0%</div>
-                        <div class="order-total">Total: <span class="text-danger"><%= total + ticketOfBaggage %></span></div>
-                        <div class="order-actions">
-                            <button class="btn btn-danger">Cancel Order</button>
-                            <%FeedbackDao fd1 = new FeedbackDao();
-                             Integer id = (Integer) session.getAttribute("id");
-                              Feedbacks f = fd1.getFeedbakByOrderId(o.getId(),id);
-                              if(f==null){%>
-                                <a href="evaluateController?orderId=<%=o.getId()%>"><button class="btn btn-outline-secondary">Feedback</button></a>
-                            <%}else{%>
-                                <a href="evaluateController?action=viewUpdate&orderId=<%=o.getId()%>"><button class="btn btn-outline-secondary">Update Feedback</button></a>
-                            <%}%>
+                            <% FeedbackDao fd1 = new FeedbackDao(); 
+                               Integer idd = (Integer) session.getAttribute("id"); 
+                               Feedbacks f = fd1.getFeedbakByOrderId(o.getId(), idd); 
+                               if (f == null) { %>
+                            <a href="evaluateController?orderId=<%= o.getId() %>">
+                                <button class="btn btn-outline-secondary">Feedback</button>
+                            </a>
+                            <% } else { %>
+                            <a href="evaluateController?action=viewUpdate&orderId=<%= o.getId() %>">
+                                <button class="btn btn-outline-secondary">Update Feedback</button>
+                            </a>
+                            <% } %>
                         </div>
                     </div>
 
                 </div>
-                <% } %>
-                <%}%>
             </div>
+            <% } %>
+            <%}%>
+
             <br>
-        </div>
 
-        <!--        Cancel ticket modal-->
-        <div id="cancelTicketModal" class="modal" role="dialog" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);">
-            <div class="modal-dialog" style="margin: 15% auto; width: 30%; position: relative;">
-                <div class="modal-content" style="background-color: #fff; padding: 20px; border: 1px solid #888;">
-                    <form action="cancelTicket" method="post">
-                        <input type="hidden" id="modalTicketId" name="ticketId" value="">
-                        <input type="hidden" id="modalOrderId" name="orderId" value="">
-                        <h2>Cancel Ticket</h2>
-                        <p>Are you sure you want to cancel this ticket?</p>
-                        <!-- Container for buttons with flex display -->
-                        <div style="display: flex; justify-content: space-between;">
-                            <button type="submit" id="confirmCancel" class="btn btn-danger" style="flex: 1; margin-right: 10px;">Yes</button>
-                            <button type="button" id="closeModal" class="btn btn-secondary" style="flex: 1;" onclick="closeModal()">No</button>
-                        </div>
-                    </form>
+
+            <!--        Cancel ticket modal-->
+            <div id="cancelTicketModal" class="modal" role="dialog" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);">
+                <div class="modal-dialog" style="margin: 15% auto; width: 30%; position: relative;">
+                    <div class="modal-content" style="background-color: #fff; padding: 20px; border: 1px solid #888;">
+                        <form action="cancelTicket" method="post">
+                            <input type="hidden" id="modalTicketId" name="ticketId" value="">
+                            <input type="hidden" id="modalOrderId" name="orderId" value="">
+                            <h2>Cancel Ticket</h2>
+                            <p>Are you sure you want to cancel this ticket?</p>
+                            <!-- Container for buttons with flex display -->
+                            <div style="display: flex; justify-content: space-between;">
+                                <button type="submit" id="confirmCancel" class="btn btn-danger" style="flex: 1; margin-right: 10px;">Yes</button>
+                                <button type="button" id="closeModal" class="btn btn-secondary" style="flex: 1;" onclick="closeModal()">No</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div id="cancelOrderModal" class="modal" role="dialog" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);">
-            <div class="modal-dialog" style="margin: 15% auto; width: 30%; position: relative;">
-                <div class="modal-content" style="background-color: #fff; padding: 20px; border: 1px solid #888;">
-                    <form action="cancelOrder" method="post">
-                        <input type="hidden" id="modalOrderId2" name="orderId" value="">
-                        <h2>Cancel Order</h2>
-                        <p>Are you sure you want to cancel this order?</p>
-                        <!-- Container for buttons with flex display -->
-                        <div style="display: flex; justify-content: space-between;">
-                            <button type="submit" id="confirmCancelOrder" class="btn btn-danger" style="flex: 1; margin-right: 10px;">Yes</button>
-                            <button type="button" id="closeOrderModal" class="btn btn-secondary" style="flex: 1;" onclick="closeOrderModal()">No</button>
-                        </div>
-                    </form>
+            <div id="cancelOrderModal" class="modal" role="dialog" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);">
+                <div class="modal-dialog" style="margin: 15% auto; width: 30%; position: relative;">
+                    <div class="modal-content" style="background-color: #fff; padding: 20px; border: 1px solid #888;">
+                        <form action="cancelOrder" method="post">
+                            <input type="hidden" id="modalOrderId2" name="orderId" value="">
+                            <h2>Cancel Order</h2>
+                            <p>Are you sure you want to cancel this order?</p>
+                            <!-- Container for buttons with flex display -->
+                            <div style="display: flex; justify-content: space-between;">
+                                <button type="submit" id="confirmCancelOrder" class="btn btn-danger" style="flex: 1; margin-right: 10px;">Yes</button>
+                                <button type="button" id="closeOrderModal" class="btn btn-secondary" style="flex: 1;" onclick="closeOrderModal()">No</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
+
+
         </div>
-
-
-
 
 
         <script>
