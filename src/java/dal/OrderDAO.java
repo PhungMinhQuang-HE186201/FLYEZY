@@ -82,9 +82,9 @@ public class OrderDAO extends DBConnect {
 
     public int getAirlineIdByOrder(int id) {
         String sql = "select o.id,f.Airline_id from flyezy.Order o\n"
-                + "join Ticket t on t.order_id = o.id\n"
+                + "join Ticket t on t.Order_id = o.id\n"
                 + "join Flight_Detail fd on t.Flight_Detail_id = fd.id\n"
-                + "join Flight f on f.id = fd.flightid\n"
+                + "join Flight f on f.id = fd.Flightid\n"
                 + "where o.id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -101,7 +101,7 @@ public class OrderDAO extends DBConnect {
 
     public int getFlightIdByOrder(int id) {
         String sql = "select o.id,fd.Flightid from flyezy.Order o\n"
-                + "join Ticket t on t.order_id = o.id\n"
+                + "join Ticket t on t.Order_id = o.id\n"
                 + "join Flight_Detail fd on t.Flight_Detail_id = fd.id\n"
                 + "where o.id = ?";
         try {
@@ -109,7 +109,7 @@ public class OrderDAO extends DBConnect {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                return rs.getInt("flightid");
+                return rs.getInt("Flightid");
             }
         } catch (Exception e) {
             System.out.println(e);
@@ -453,7 +453,7 @@ public class OrderDAO extends DBConnect {
     public List<Order> getOrdersByStatusAndAccountId(int statusId, int accountId) {
         List<Order> list = new ArrayList<>();
         String sql = "select * from flyezy.Order\n"
-                + "where flyezy.order.Status_id=? and Accounts_id = ?";
+                + "where flyezy.Order.Status_id=? and Accounts_id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, statusId);

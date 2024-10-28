@@ -64,9 +64,9 @@ public class TicketDAO extends DBConnect {
     }
 
     public int getAirlineByTicket(int id) {
-        String sql = "select f.airline_id from Ticket t \n"
-                + "join Flight_detail fd on fd.id = t.Flight_detail_id\n"
-                + "join Flight f on f.id = fd.flightid\n"
+        String sql = "select f.Airline_id from Ticket t \n"
+                + "join Flight_Detail fd on fd.id = t.Flight_Detail_id\n"
+                + "join Flight f on f.id = fd.Flightid\n"
                 + "where t.id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -263,7 +263,7 @@ public class TicketDAO extends DBConnect {
 
     public int getTicketPriceByOrderAndPassenger(int orderId, int passengerTypeId) {
         String sql = "select sum(t.totalPrice) totalPriceType from Ticket t\n"
-                + "join flyezy.order o on o.id = t.Order_id\n"
+                + "join flyezy.Order o on o.id = t.Order_id\n"
                 + "where o.id = ? and t.Passenger_Typesid = ?";
         try {
             PreparedStatement st = conn.prepareStatement(sql);
@@ -411,7 +411,7 @@ public class TicketDAO extends DBConnect {
         TicketDAO td = new TicketDAO();
         AirlineManageDAO ad = new AirlineManageDAO();
         //tcd.confirmSuccessAllTicketsByOrderId(1);
-        System.out.println(tcd.createTicket("C9", 1, 7, 2, "HIHI", 0, null, Date.valueOf("2000-10-10"), null, 0, 1, 1));
+        //System.out.println(tcd.createTicket("C9", 1, 7, 2, "HIHI", 0, null, Date.valueOf("2000-10-10"), null, 0, 1, 1));
         //System.out.println(tcd.getAllTicketCodesById(1, 7));
 //        System.out.println(tcd.getTicketByCode("B1", 4, 8));
     }

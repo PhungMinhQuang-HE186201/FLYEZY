@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="java.text.SimpleDateFormat"%>
 <%@page import="dal.StatusDAO"%>
 <%@page import="dal.AirlineManageDAO"%>
 <%@page import="dal.FlightDetailDAO"%>
@@ -38,9 +39,7 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 
-
-
-        <title>JSP Page</title>
+        <title>Ticket Buying History</title>
         <style>
             .buying-history {
                 display: flex;
@@ -53,7 +52,7 @@
                 padding: 15px;
                 border-radius: 8px;
                 background-color: #f9f9f9;
-
+                margin-bottom: 25px;
             }
 
             .order-header {
@@ -67,8 +66,11 @@
             .ticket-details {
                 display: flex;
                 align-items: center;
-                padding: 10px 0;
+                padding: 15px 20px;
                 border-bottom: 1px solid #ddd;
+                background-color: white;
+                margin-bottom: 10px;
+                border-radius: 10px;
             }
             .list-price{
                 border-bottom: 1px solid #ddd;
@@ -91,7 +93,6 @@
             .order-total{
                 text-align: right;
             }
-            /* General icon styling */
             .ticket-details i {
                 color: #666;
                 margin-right: 5px;
@@ -99,7 +100,6 @@
                 vertical-align: middle;
             }
 
-            /* Aligning icons and text in flight info */
             .flight-info div {
                 line-height: 1.5;
                 color: #333;
@@ -108,22 +108,25 @@
             .status-label {
                 display: inline-block;
                 padding: 5px 10px;
-                font-size: 12px;
+                font-size: 15px;
                 font-weight: bold;
                 color: white;
                 border-radius: 12px;
+                text-align: center;
+                width: 165px;
+                margin: 10px
             }
 
             .status-label.completed {
-                background-color: black; /* Adjust to match the color of "Completed" in the image */
+                background-color: black;
             }
 
             .status-label.pending {
-                background-color: #ffc107; /* Example color for pending status */
+                background-color: #ffc107;
             }
 
             .status-label.successful {
-                background-color: #28a745; /* Example color for confirmed status */
+                background-color: #28a745;
             }
 
 
@@ -132,6 +135,7 @@
     <body>
         <%@include file="header.jsp" %>
         <%
+            SimpleDateFormat sdf = new java.text.SimpleDateFormat("HH:mm dd-MM-yyyy");
             StatusDAO sd = new StatusDAO();
             List<Status> listStatusOrder = sd.getStatusOfOrder();
             AirlineManageDAO ad = new AirlineManageDAO();
@@ -153,15 +157,15 @@
 
         <div class="container mt-5 order-container" style="transform: translateY(45px)">
             <!-- Status Tabs Section -->
-            <div class="row">
+            <div class="row" style="margin-top: 20px">
                 <div class="col-md-12">
                     <ul class="nav nav-tabs">
                         <li class="nav-item">
-                            <a class="nav-link <%= request.getParameter("statusId") == null ? "active" : "" %>" href="buyingHistory">All</a>
+                            <a style="color: green" class="nav-link <%= request.getParameter("statusId") == null ? "active" : "" %>" href="buyingHistory">All</a>
                         </li>
                         <% for (Status st : listStatusOrder) { %>
                         <li class="nav-item">
-                            <a class="nav-link <%= request.getParameter("statusId") != null && request.getParameter("statusId").equals(String.valueOf(st.getId())) ? "active" : "" %>" href="buyingHistory?statusId=<%=st.getId()%>">
+                            <a style="color: green" class="nav-link <%= request.getParameter("statusId") != null && request.getParameter("statusId").equals(String.valueOf(st.getId())) ? "active" : "" %>" href="buyingHistory?statusId=<%=st.getId()%>">
                                 <%=st.getName()%>
                             </a>
                         </li>
@@ -175,7 +179,7 @@
             <div class="row mt-3 mb-3">
                 <div class="col-md-12">
                     <form action="buyingHistory" method="get" class="form-inline justify-content-center">
-                        <input type="text" class="form-control" name="code" placeholder="Enter code here to search..." aria-label="Search" style="width: 30%; font-size: 1.2em">
+                        <input type="text" class="form-control" name="code" placeholder="Enter code here to search ..." aria-label="Search" style="width: 30%; font-size: 1.2em">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" type="submit">
                                 <i class="fa fa-search"></i> 
@@ -196,11 +200,11 @@
                 <div class="order-card">
                     <div class="order-header">
 
-                        <div class="order-id">
-                            <strong><%=o.getCode()%></strong><br>
-
-
-                            <div class="contact-info">
+                        <div class="order-id" >
+                            <strong style="font-size: 28px;"><%=o.getCode()%></strong>
+                            <span style="margin-left: 4px; font-size: 12px; color: #aaa;"><%=sdf.format(o.getCreated_at())%></span><br>
+                            <div class="contact-info" style="color: #9a9999;
+                                 margin-top: 5px;">
                                 Contact: <i class="fas fa-user"></i> <%= o.getContactName() %> | 
                                 <i class="fas fa-phone"></i> <%= o.getContactPhone() %> | 
                                 <i class="fas fa-envelope"></i> <%= o.getContactEmail() %>
@@ -210,7 +214,6 @@
 
 
                         <div class="order-details">
-                            Created at: <%=o.getCreated_at()%><br>
                             <span class="status-label <%= sd.getStatusNameById(o.getStatus_id()).toLowerCase() %>">
                                 <%= sd.getStatusNameById(o.getStatus_id()) %>
                             </span>
@@ -223,7 +226,7 @@
                     <% id = t.getId(); %>
                     <div class="ticket-details">
                         <div class="flight-info" style="display: flex; flex-direction: column; gap: 5px;">
-                            <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="display: flex; align-items: center; gap: 10px;margin-bottom: 20px">
                                 <div class="airline-image">
                                     <img src="<%=ad.getImageById(td.getAirlineByTicket(t.getId()))%>" alt="Airline Logo" class="img-fluid">
                                 </div>
@@ -245,13 +248,13 @@
                                 <%= detail.getDate() %>
                                 <span class="time-separator" style="margin-left: 10px;">
                                     <i class="far fa-clock"></i>
-                                    <%= detail.getTime() %>
+                                    <%= detail.getTime()%> - <%=fd.getFlightById(detail.getFlightId()).getMinutes() %> minutes
                                 </span>
                             </div>
 
 
                             <!-- Plane category and flight duration with icons -->
-                            <div><i class="fas fa-plane-departure"></i> <%= pcd.getPlaneCategoryById(detail.getPlaneCategoryId()).getName() %> - <%= fd.getFlightById(detail.getFlightId()).getMinutes() %> minutes</div>
+                            <div><i class="fas fa-plane-departure"></i> <%= pcd.getPlaneCategoryById(detail.getPlaneCategoryId()).getName() %> </div>
 
                             <% }} %>
 
@@ -288,7 +291,7 @@
                     </div>
 
 
-                    <div class="order-total-section" style="display: flex; justify-content: space-between; font-size: 1.2em;">
+                    <div class="order-total-section" style="display: flex; justify-content: space-between; font-size: 1.2em;margin-top: 30px;">
                         <div style="text-align: left;">
                             <div class="order-discount">Discount: 0%</div>
                             <div class="order-total">Total: <span class="text-danger"><%= total + ticketOfBaggage %></span></div>
