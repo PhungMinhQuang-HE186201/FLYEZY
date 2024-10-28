@@ -6,12 +6,15 @@ package model;
 
 import java.sql.Timestamp;
 import java.sql.Date;
+
 /**
  *
  * @author Fantasy
  */
 public class Ticket {
+
     private int id;
+    private int flightDetailId;
     private int Seat_Categoryid;
     private int Passenger_Typesid;
     private String code;
@@ -25,8 +28,9 @@ public class Ticket {
     private int Statusid;
     private int Flight_Type_id;
 
-    public Ticket(int id, int Seat_Categoryid, int Passenger_Typesid, String code, String pName, int pSex, String pPhoneNumber, Date pDob, int Baggagesid,int totalPrice, int Order_id, int Statusid,int Flight_Type_id) {
+    public Ticket(int id, int flightDetailId, int Seat_Categoryid, int Passenger_Typesid, String code, String pName, int pSex, String pPhoneNumber, Date pDob, int Baggagesid, int totalPrice, int Order_id, int Statusid, int Flight_Type_id) {
         this.id = id;
+        this.flightDetailId = flightDetailId;
         this.Seat_Categoryid = Seat_Categoryid;
         this.Passenger_Typesid = Passenger_Typesid;
         this.code = code;
@@ -41,7 +45,8 @@ public class Ticket {
         this.Flight_Type_id = Flight_Type_id;
     }
 
-    public Ticket(int Seat_Categoryid, int Passenger_Typesid, String code, String pName, int pSex, String pPhoneNumber, Date pDob, int Baggagesid,int totalPrice, int Order_id, int Statusid,int Flight_Type_id) {
+    public Ticket(int flightDetailId, int Seat_Categoryid, int Passenger_Typesid, String code, String pName, int pSex, String pPhoneNumber, Date pDob, int Baggagesid, int totalPrice, int Order_id, int Statusid, int Flight_Type_id) {
+        this.flightDetailId = flightDetailId;
         this.Seat_Categoryid = Seat_Categoryid;
         this.Passenger_Typesid = Passenger_Typesid;
         this.code = code;
@@ -55,10 +60,9 @@ public class Ticket {
         this.Statusid = Statusid;
         this.Flight_Type_id = Flight_Type_id;
     }
-    
-    
-    
-    public Ticket(int Seat_Categoryid, int Passenger_Typesid, String code, String pName, int pSex, Date pDob, int Order_id, int Statusid,int Flight_Type_id) {
+
+    public Ticket(int flightDetailId, int Seat_Categoryid, int Passenger_Typesid, String code, String pName, int pSex, Date pDob, int Order_id, int Statusid, int Flight_Type_id) {
+        this.flightDetailId = flightDetailId;
         this.Seat_Categoryid = Seat_Categoryid;
         this.Passenger_Typesid = Passenger_Typesid;
         this.code = code;
@@ -69,6 +73,15 @@ public class Ticket {
         this.Statusid = Statusid;
         this.Flight_Type_id = Flight_Type_id;
     }
+
+    public int getFlightDetailId() {
+        return flightDetailId;
+    }
+
+    public void setFlightDetailId(int flightDetailId) {
+        this.flightDetailId = flightDetailId;
+    }
+    
 
     public int getFlight_Type_id() {
         return Flight_Type_id;
@@ -173,6 +186,10 @@ public class Ticket {
     public void setTotalPrice(int totalPrice) {
         this.totalPrice = totalPrice;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return "Ticket{" + "id=" + id + ", flightDetailId=" + flightDetailId + ", Seat_Categoryid=" + Seat_Categoryid + ", Passenger_Typesid=" + Passenger_Typesid + ", code=" + code + ", pName=" + pName + ", pSex=" + pSex + ", pPhoneNumber=" + pPhoneNumber + ", pDob=" + pDob + ", Baggagesid=" + Baggagesid + ", totalPrice=" + totalPrice + ", Order_id=" + Order_id + ", Statusid=" + Statusid + ", Flight_Type_id=" + Flight_Type_id + '}';
+    }
+
 }

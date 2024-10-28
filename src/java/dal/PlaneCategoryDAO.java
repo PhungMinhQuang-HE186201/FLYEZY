@@ -179,7 +179,7 @@ public class PlaneCategoryDAO extends DBConnect {
     //QuanHT:
     public String getNameById(int planeCategoryId) {
         String categoryName = null;
-        String query = "SELECT name FROM plane_category WHERE id = ?";
+        String query = "SELECT name FROM Plane_Category WHERE id = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(query)) {
 

@@ -23,6 +23,7 @@
 <%@page import="model.PlaneCategory"%>
 <%@page import="model.FlightDetails"%>
 <%@page import="model.Location"%>
+<%@page import="model.Order"%>
 <%@page import="model.SeatCategory"%>
 <%@page import="dal.AirlineManageDAO"%>
 <%@page import="dal.TicketDAO"%>
@@ -34,6 +35,8 @@
 <%@page import="dal.StatusDAO"%>
 <%@page import="dal.PaymentTypeDAO"%>
 <%@page import="dal.SeatCategoryDAO"%>
+<%@page import="dal.OrderDAO"%>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -41,9 +44,12 @@
         <title>Quản lý tài khoản</title>
         <link rel="shortcut icon" type="image/png" href="img/flyezy-logo3.png" />
         <link rel="stylesheet" href="css/styleAdminController.css">
+        <link rel="stylesheet" href="css/styleGeneral.css"/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 
         <style>
             .modal-body{
@@ -80,7 +86,7 @@
                 padding: 20px;
                 display: flex;
                 flex-direction: row;
-                justify-content: space-between; 
+                justify-content: space-between;
                 align-items: flex-start;
             }
             .details {
@@ -92,6 +98,33 @@
             .details span {
                 font-weight: bold;
             }
+            .order-details {
+                font-family: Arial, sans-serif;
+                max-width: 500px;
+                padding: 20px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                background-color: #f9f9f9;
+                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .order-details p {
+                display: flex;
+                align-items: center;
+                margin: 8px 0;
+                color: #333;
+                font-size: 14px;
+            }
+
+            .order-details i {
+                margin-right: 8px;
+                color: #555;
+            }
+
+            .order-details strong {
+                margin-left: 5px;
+                color: #555;
+            }
         </style>
 
     </head>
@@ -102,35 +135,35 @@
             <div class="filterController col-md-12" style="width: 100%">
                 <a href="flightDetailManagement?flightId=${requestScope.flight.getId()}&airlineId=${requestScope.airlineId}" class="btn btn-warning" >Back</a>
                 <div class="main-container">
-                <%
-                  Flights flight = (Flights)request.getAttribute("flight");
-                  Airport airportDep =(Airport)request.getAttribute("airportDep");
-                  Airport airportDes =(Airport)request.getAttribute("airportDes");
-                  FlightDetails flightDetail = (FlightDetails)request.getAttribute("flightDetail");
-                  Location locationDep = (Location)request.getAttribute("locationDep");
-                  Location locationDes = (Location)request.getAttribute("locationDes");
-                  Country countryDep = (Country)request.getAttribute("countryDep");
-                  Country countryDes = (Country)request.getAttribute("countryDes");
-                  PlaneCategory planeCatrgory = (PlaneCategory)request.getAttribute("planeCatrgory");
-                %>
-                <div class="details">
-                    <p>Departure: <span><%=airportDep.getName()%> (<%=locationDep.getName()%>)</span></p>
-                    <p>From:  <span><%=countryDep.getName()%></span></p>
-                    <p>Date: <span><%=flightDetail.getDate()%>  <%=flightDetail.getTime()%></span></p>
-                    <p>Plane Category: <span><%=planeCatrgory.getName()%></span></p>
-                    
-                </div>
-                <div class="details">
-                    <p>Destination: <span><%=airportDes.getName()%> (<%=locationDes.getName()%>) </span></p>
-                    <p>To: <span><%=countryDes.getName()%></span></p>
-                    <p>Time: <span><%=flight.getMinutes()%> minutes</span></p>
                     <%
-                List<SeatCategory> seatList = (List<SeatCategory>) request.getAttribute("seatList");
-                    for (SeatCategory list : seatList) {%>
+                      Flights flight = (Flights)request.getAttribute("flight");
+                      Airport airportDep =(Airport)request.getAttribute("airportDep");
+                      Airport airportDes =(Airport)request.getAttribute("airportDes");
+                      FlightDetails flightDetail = (FlightDetails)request.getAttribute("flightDetail");
+                      Location locationDep = (Location)request.getAttribute("locationDep");
+                      Location locationDes = (Location)request.getAttribute("locationDes");
+                      Country countryDep = (Country)request.getAttribute("countryDep");
+                      Country countryDes = (Country)request.getAttribute("countryDes");
+                      PlaneCategory planeCatrgory = (PlaneCategory)request.getAttribute("planeCatrgory");
+                    %>
+                    <div class="details">
+                        <p>Departure: <span><%=airportDep.getName()%> (<%=locationDep.getName()%>)</span></p>
+                        <p>From:  <span><%=countryDep.getName()%></span></p>
+                        <p>Date: <span><%=flightDetail.getDate()%>  <%=flightDetail.getTime()%></span></p>
+                        <p>Plane Category: <span><%=planeCatrgory.getName()%></span></p>
+
+                    </div>
+                    <div class="details">
+                        <p>Destination: <span><%=airportDes.getName()%> (<%=locationDes.getName()%>) </span></p>
+                        <p>To: <span><%=countryDes.getName()%></span></p>
+                        <p>Time: <span><%=flight.getMinutes()%> minutes</span></p>
+                        <%
+                    List<SeatCategory> seatList = (List<SeatCategory>) request.getAttribute("seatList");
+                        for (SeatCategory list : seatList) {%>
                         <p><%=list.getName()%> :<span><%=list.getNumberOfSeat()-list.getCountSeat()%>  /<%=list.getNumberOfSeat()%></span></p>
-            <%}%>
+                        <%}%>
+                    </div>
                 </div>
-            </div>
                 <form action="TicketController" method="get" style="margin-bottom: 20px;">
                     <input type="hidden" name="action" value="search">
                     <input type="hidden" name="flightDetailID" value="${flightDetailID}">
@@ -168,10 +201,10 @@
 
 
             </div>
-                    
+
 
             <!-- Update Modal -->   
-            
+
             <table class="entity" >
                 <thead>
                     <tr>
@@ -183,7 +216,7 @@
                         <th>Phone number</th>
                         <th>Date of birth</th>
                         <th>Baggage weight</th>
-                        <th>Order ID</th>
+                        <th>Order Code</th>
                         <th>Flight Type</th>
                         <th>Total Price</th>
                         <th>Status</th>
@@ -191,7 +224,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    
+
                     <%
                     List<Ticket> ticketList = (List<Ticket>) request.getAttribute("ticketList");
                     AirportDAO ad = new AirportDAO();
@@ -202,6 +235,7 @@
                     PaymentTypeDAO PTD = new PaymentTypeDAO();
                     SeatCategoryDAO scd = new SeatCategoryDAO();
                     StatusDAO sd = new StatusDAO();
+                    OrderDAO od = new OrderDAO();
                     
                     for (Ticket list : ticketList   ) {
                     %>
@@ -214,11 +248,12 @@
                         <td><%= list.getpPhoneNumber() %></td>
                         <td><%= list.getpDob() %></td>
                         <td><%= bmd.getWeight(list.getBaggagesid()) %></td>
-                        <td><%= list.getOrder_id() %></td>
+                        <td><%= od.getCodeByOrderId(list.getOrder_id()) %></td>
                         <td><%= ftd.getNameType(list.getFlight_Type_id()) %></td>
                         <td><%= list.getTotalPrice() %></td>
                         <td><%= sd.getStatusNameById(list.getStatusid()) %></td>
                         <td>
+                            <!--change status modal-->
                             <a class="btn btn-info" style="text-decoration: none" id="myBtn<%= list.getId() %>" onclick="openModal(<%= list.getId() %>)">Change status</a>
                             <div class="modal fade" id="myModal<%= list.getId() %>" role="dialog">
                                 <div class="modal-dialog">
@@ -243,7 +278,7 @@
                                                         <select name="statusID" value="" style="height:  34px">
                                                             <%List<Status> statusList = (List<Status>)request.getAttribute("statusTicketList");
                                                             for(Status status : statusList){%>
-                                                               <option value="<%=status.getId()%>" <%=(list.getStatusid() == status.getId())?"selected":""%>><%=status.getName()%></option>"
+                                                            <option value="<%=status.getId()%>" <%=(list.getStatusid() == status.getId())?"selected":""%>><%=status.getName()%></option>"
                                                             <%}%>
                                                         </select>
                                                     </div>                    
@@ -253,6 +288,33 @@
                                                     Confirm
                                                 </button>
                                             </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--order in4 modal-->
+                            <a class="btn btn-warning" style="text-decoration: none" id="myBtn2<%= list.getId() %>" onclick="openModal2(<%= list.getId() %>)">Order Information</a>
+                            <div class="modal fade" id="myModal2<%= list.getId() %>" role="dialog">
+                                <div class="modal-dialog modal-lg">
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header" style="padding:5px 5px;">
+                                            <button type="button" class="close" style="font-size: 30px; margin-right: 12px;" data-dismiss="modal">&times;</button>
+                                            <h4 style="margin-left: 12px">Order Information</h4>
+                                        </div>
+                                        <div class="modal-body" style="padding:40px 50px;">
+                                            <input type="hidden" name="ticketId" value="<%= list.getId() %>">
+                                            
+                                            
+                                                <p><i class="fas fa-receipt"></i> <strong>Order Code:</strong> <%= od.getOrderInfoByTicket(list.getId()).getCode() %></p>
+                                                <p><i class="fas fa-user"></i> <strong>Contact Name:</strong> <%= od.getOrderInfoByTicket(list.getId()).getContactName() %></p>
+                                                <p><i class="fas fa-phone"></i> <strong>Contact Phone:</strong> <%= od.getOrderInfoByTicket(list.getId()).getContactPhone() %></p>
+                                                <p><i class="fas fa-envelope"></i> <strong>Contact Mail:</strong> <%= od.getOrderInfoByTicket(list.getId()).getContactEmail() %></p>
+                                                <p><i class="fas fa-user-circle"></i> <strong>Account:</strong> <%= acd.getAccountNameById(od.getOrderInfoByTicket(list.getId()).getAccountsId()) %></p>
+                                                <p><i class="fas fa-credit-card"></i> <strong>Payment Type:</strong> <%= PTD.getPaymentTypeNameById(od.getOrderInfoByTicket(list.getId()).getPaymentTypesId()) %></p>
+                                                <p><i class="fas fa-clock"></i> <strong>Payment Time:</strong> <%= od.getOrderInfoByTicket(list.getId()).getPaymentTime() %></p>
+                                                <p><i class="fas fa-info-circle"></i> <strong>Status:</strong> <%= sd.getStatusNameById(od.getOrderInfoByTicket(list.getId()).getStatus_id()) %></p>
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -290,6 +352,9 @@
         <script>
             function openModal(id) {
                 $("#myModal" + id).modal('show');
+            }
+            function openModal2(id) {
+                $("#myModal2" + id).modal('show');
             }
         </script>
 

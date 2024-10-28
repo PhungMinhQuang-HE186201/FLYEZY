@@ -6,6 +6,7 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="java.text.NumberFormat" %>
 <%@page import="model.FlightDetails"%>
 <%@page import="dal.AirlineManageDAO"%>
 <%@page import="dal.OrderDAO"%>
@@ -34,6 +35,7 @@
         <link rel="stylesheet" href="css/styleAdminController.css">
         <link rel="stylesheet" href="css/styleFlightManagement.css">
         <link rel="stylesheet" href="css/styleToastNotification.css">
+        <link rel="stylesheet" href="css/styleGeneral.css"/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.css">
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
@@ -45,89 +47,71 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <style>
-            /* Flex container for flight details */
-            .flight-details {
-                display: flex; /* Use flexbox to arrange items in a row */
-                justify-content: space-between; /* Distribute space between items */
-                align-items: flex-start; /* Align items to the start */
-                gap: 20px; /* Space between departure and destination */
+            .flight-card {
+                background: white;
+                border-radius: 10px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+                width: 90%;
+                margin: 25px auto;
             }
 
-            /* General styling for the details container */
-            .details {
-                background: linear-gradient(135deg, #ffffff, #f0f0f5);
-                border-radius: 15px; /* Smaller border radius */
-                padding: 15px; /* Adjusted padding */
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-                flex: 1; /* Allow each detail section to grow equally */
+            .flight-info {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
             }
 
-            /* Hover effect for the details box */
-            .details:hover {
-                transform: translateY(-5px); /* Slightly less movement */
-                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            .flight-section {
+                flex: 1;
+                text-align: center;
+                padding: 20px;
             }
 
-            /* Paragraph styling with icons */
+            .flight-section.middle {
+                border-left: 1px solid #e0e0e0;
+                border-right: 1px solid #e0e0e0;
+            }
+
+            .flight-section i {
+                font-size: 24px;
+                color: #3C6E57;
+                margin-bottom: 10px;
+            }
+
             .details p {
-                font-family: 'Merriweather', serif;
-                color: #333;
-                font-size: 18px; /* Font size */
-                margin: 10px 0; /* Margin between paragraphs */
-                display: flex; /* Use flex for icon alignment */
-                align-items: center; /* Center icon and text vertically */
+                margin: 5px 0;
+                font-size: 14px;
             }
 
-            /* Icon styling for a more compact look */
-            .details p i {
-                font-size: 20px; /* Icon size */
-                color: #e74c3c;
-                margin-right: 8px; /* Space between icon and text */
-                background: rgba(231, 76, 60, 0.1); /* Icon background */
-                padding: 6px; /* Icon padding */
-                border-radius: 50%; /* Round icon background */
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            .details p strong {
+                font-size: 16px;
             }
 
-            /* Highlighted text styling */
-            .details p span {
-                font-family: 'Montserrat', sans-serif;
-                font-weight: 600; /* Bold text */
-                color: #e74c3c; /* Text color */
-                background: rgba(231, 76, 60, 0.1); /* Span background */
-                padding: 3px 6px; /* Span padding */
-                border-radius: 8px; /* Rounded corners */
-                margin-left: 3px; /* Margin to the left of the span */
-            }
-
-            /* Responsive design adjustments for smaller screens */
-            @media screen and (max-width: 768px) {
-                .flight-details {
-                    flex-direction: column; /* Stack items vertically on smaller screens */
+            @media (max-width: 768px) {
+                .flight-info {
+                    flex-direction: column;
                 }
 
-                .details {
-                    margin: 10px 0; /* Margin for vertical spacing */
+                .flight-section {
+                    padding: 10px 0;
                 }
 
-                .details p {
-                    font-size: 16px; /* Smaller font size */
-                }
-
-                .details p i {
-                    font-size: 18px; /* Smaller icon size */
-                    padding: 4px; /* Reduced icon padding */
+                .flight-section.middle {
+                    border-left: none;
+                    border-right: none;
+                    border-top: 1px solid #e0e0e0;
+                    border-bottom: 1px solid #e0e0e0;
+                    margin: 10px 0;
                 }
             }
-
         </style>
     </head>
     <body>
         <%@include file="header.jsp" %>
         <%@include file="admin-sideBar.jsp" %>
-        <div id="back" style="margin-left: 210px;margin-top: 60px;margin-bottom: -100px " /> 
-        <a href="flightDetailManagement?flightId=${requestScope.flight.getId()}&airlineId=${requestScope.airlineId}" class="btn btn-warning" >Back</a>
+        <div style="margin-left: 210px;margin-top: 60px;margin-bottom: -100px " /> 
+
         <%
             Flights flight = (Flights)request.getAttribute("flight");
             Airport airportDep =(Airport)request.getAttribute("airportDep");
@@ -139,22 +123,41 @@
             Country countryDes = (Country)request.getAttribute("countryDes");
             PlaneCategory planeCatrgory = (PlaneCategory)request.getAttribute("planeCatrgory");
         %>
-        <div class="flight-details">
-            <div class="details departure">
-                <p><i class="fas fa-plane-departure"></i> Departure: <span><%=airportDep.getName()%> (<%=locationDep.getName()%>)</span></p>
-                <p><i class="fas fa-map-marker-alt"></i> From: <span><%=countryDep.getName()%></span></p>
-                <p><i class="fas fa-calendar-alt"></i> Date: <span><%=flightDetail.getDate()%> <%=flightDetail.getTime()%></span></p>
-                <p><i class="fas fa-plane"></i> Plane Category: <span><%=planeCatrgory.getName()%></span></p>
+        <div>
+            <div style="margin-left: 5%">
+                <a href="flightDetailManagement?flightId=${requestScope.flight.getId()}&airlineId=${requestScope.airlineId}" class="btn btn-warning" >Back</a>  
+                <h2>Order Management</h2>
             </div>
-
-            <div class="details destination">
-                <p><i class="fas fa-plane-arrival"></i> Destination: <span><%=airportDes.getName()%> (<%=locationDes.getName()%>)</span></p>
-                <p><i class="fas fa-map-marker-alt"></i> To: <span><%=countryDes.getName()%></span></p>
-                <p><i class="fas fa-clock"></i> Time: <span><%=flight.getMinutes()%> minutes</span></p>
+            <div class="flight-card">
+                <div class="flight-info">
+                    <div class="flight-section">
+                        <i class="fas fa-plane-departure"></i>
+                        <div class="details">
+                            <p><strong><%=airportDep.getName()%></strong> </p>
+                            <p>(<%=locationDep.getName()%>, <%=countryDep.getName()%>)</p>
+                        </div>
+                    </div>
+                    <div class="flight-section middle">
+                        <i class="fas fa-plane"></i>
+                        <p><%=planeCatrgory.getName()%></p>
+                        <p>
+                            <i class="fas fa-calendar-alt"></i> <%=flightDetail.getDate()%> <%=flightDetail.getTime()%>
+                            <i class="fas fa-clock" style="margin-left: 20px"></i> <%=flight.getMinutes()%> min
+                        </p>
+                    </div>
+                    <div class="flight-section">
+                        <i class="fas fa-plane-arrival"></i>
+                        <div class="details">
+                            <p><strong><%=airportDes.getName()%></strong></p>
+                            <p>(<%=locationDes.getName()%>, <%=countryDes.getName()%>)</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+
         <input type="hidden" name="flightDetailID">
-        <div class="filterController col-md-12" style="width: 100%">
+        <div class="filterController col-md-12" style="width: 100%; margin-left: 5%">
             <form action="OrderController" method="get" style="margin-bottom: 20px;">
 
                 <input type="hidden" name="action" value="search">
@@ -182,7 +185,7 @@
 
 
         </div>
-        <table class="entity" style="margin-left: 1%;" >
+        <table class="entity" style="margin:0 auto; width: 90%" >
             <thead>
                 <tr>
                     <th>Order Code</th>
@@ -218,7 +221,7 @@
                     <td><%=o.getContactName()%></td>
                     <td><%=o.getContactPhone()%></td>
                     <td><%=o.getContactEmail()%></td>
-                    <td><%=o.getTotalPrice()%></td>
+                    <td><%=NumberFormat.getInstance().format(o.getTotalPrice())%></td>
                     <% 
                         boolean found = false; 
                         for (Accounts acc : listAcc) {
@@ -239,9 +242,12 @@
                     <%String paymentName = ptd.getPaymentTypeNameById(o.getPaymentTypesId());%>
                     <td><%=paymentName%></td>
                     <td><%=o.getCreated_at()%></td>
-                    <td>
+                    <td style="font-weight: bold; <%= (o.getStatus_id() == 12) ? "color: #FFA500;" : (o.getStatus_id() == 10) ? "color: #228B22;" : "" %>">
                         <%= sd.getStatusNameById(o.getStatus_id()) %>
                     </td>
+
+
+
                     <td>
                         <a class="btn btn-info" style="text-decoration: none" id="myBtn<%= o.getId() %>" onclick="openModal(<%= o.getId() %>)">Change status</a>
                         <div class="modal fade" id="myModal<%= o.getId() %>" role="dialog">
@@ -283,7 +289,8 @@
                             </div>
                         </div>  
                         <a href="TicketController?action=search&flightDetailID=${param.flightDetailID}&flightType=&passengerType=&statusTicket=&fName=&fPhoneNumber=&orderId=<%=o.getId()%>" class="btn btn-primary" style="margin-left: 10px;">
-                            Ticket Detail
+                            Order Tickets
+                            <span style="margin-left: 8px" class="glyphicon glyphicon-menu-right"></span>
                         </a>
                         <a href="evaluateController?action=view&orderId=<%=o.getId()%>" class="btn btn-primary" style="margin-left: 10px; background-color:green">
                             Feedback
@@ -314,7 +321,7 @@
             %>
         </tbody>
     </table>
-    <div style="margin-left:50px">
+    <div style="display: flex; justify-content: center">
         <nav aria-label="...">
             <ul class="pagination">
                 <c:if test="${index != 1}">    
@@ -347,6 +354,19 @@
         function openModal(id) {
             $("#myModal" + id).modal('show');
         }
+        document.addEventListener('DOMContentLoaded', function () {
+            const sections = document.querySelectorAll('.flight-section');
+
+            sections.forEach(section => {
+                section.addEventListener('mouseenter', function () {
+                    this.style.backgroundColor = '#f8f9fa';
+                });
+
+                section.addEventListener('mouseleave', function () {
+                    this.style.backgroundColor = 'transparent';
+                });
+            });
+        });
     </script>
 </body>
 </html>

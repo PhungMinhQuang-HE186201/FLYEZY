@@ -48,8 +48,8 @@ public class ChangePasswordServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-             
-       
+
+        
         HttpSession session = request.getSession();
         AccountsDAO ad = new AccountsDAO();
         int id = (int) session.getAttribute("id");
@@ -61,13 +61,13 @@ public class ChangePasswordServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       AccountsDAO ad = new AccountsDAO();
+        AccountsDAO ad = new AccountsDAO();
+            
+        String newPass = request.getParameter("newPass");
+        String idAccount = request.getParameter("idAccount");
+            ad.changePassword(idAccount, newPass);
+            response.sendRedirect("home");
         
-       String newPass = request.getParameter("newPass");
-       String idAccount = request.getParameter("idAccount");
-       ad.changePassword(idAccount, newPass);
-       response.sendRedirect("home");
-
     }
 
     
@@ -75,7 +75,7 @@ public class ChangePasswordServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-      
+    
     
     
 }

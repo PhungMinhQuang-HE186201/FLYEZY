@@ -206,12 +206,12 @@
             CountryDAO cd = new CountryDAO();
             BaggageManageDAO bmd = new BaggageManageDAO();
             
-            SeatCategory sc = scd.getSeatCategoryById(Integer.parseInt(request.getParameter("seatCategory")));
-            
             int adultTicket = Integer.parseInt(request.getParameter("adult"));
             int childTicket = Integer.parseInt(request.getParameter("child")==null?"0":request.getParameter("child"));
             int infantTicket = Integer.parseInt(request.getParameter("infant"));
+            int totalPassengers = adultTicket + childTicket +infantTicket;
             
+            SeatCategory sc = scd.getSeatCategoryById(Integer.parseInt(request.getParameter("seatCategory")));
             int flightDetailId = Integer.parseInt(request.getParameter("flightDetailId"));
             FlightDetails fd = (FlightDetails)fdd.getFlightDetailById(flightDetailId);
             PlaneCategory planeCategory = pcd.getPlaneCategoryById(fd.getPlaneCategoryId());
@@ -226,6 +226,7 @@
             Airport dsa = ad.getAirportById(destinationAirportId);
             Location dsl = ld.getLocationById(dsa.getLocationId());
             Country dsc = cd.getCountryById(dsl.getCountryId());
+            
         %>
 
         <div class="container" style="margin-top: 50px;">
@@ -242,7 +243,7 @@
                     <p>- Ticket Type: <span><%=sc.getName()%></span></p>
                 </div>
                 <div class="details">
-                    <h3>Flight Information: </h3>
+                    <h3>Depart Flight Information: </h3>
                     <% 
                         Calendar departureCal = Calendar.getInstance();
                         departureCal.setTime(fd.getDate()); 
@@ -256,21 +257,74 @@
                         SimpleDateFormat dateTimeFmt = new SimpleDateFormat("HH:mm dd/MM/yyyy");
                     %>
 
-                    <p>- Departure Time: <span><%=dateTimeFmt.format(departureCal.getTime())%></span></p>
-                    <p>- Departure: <span><%=dpa.getName()%>, <%=dpl.getName()%>, <%=dpc.getName()%></span></p>
+                    <p>- Departure: <span><%=dateTimeFmt.format(departureCal.getTime())%></span></p>
+                    <p><span><%=dpa.getName()%>, <%=dpl.getName()%>, <%=dpc.getName()%></span></p>
 
                     <% 
                         Calendar destinationCal = (Calendar) departureCal.clone();
                         destinationCal.add(Calendar.MINUTE, f.getMinutes()); 
                     %>
 
-                    <p>- Destination Time: <span><%=dateTimeFmt.format(destinationCal.getTime())%></span></p>
-                    <p>- Destination: <span><%=dsa.getName()%>, <%=dsl.getName()%>, <%=dsc.getName()%></span></p>
+                    <p>- Destination: <span><%=dateTimeFmt.format(destinationCal.getTime())%></span></p>
+                    <p><span><%=dsa.getName()%>, <%=dsl.getName()%>, <%=dsc.getName()%></span></p>
 
                 </div>
+                <%
+                int flightDetailId2 = -1;
+                SeatCategory sc2 = null;
+                int airlineId2 = -1;
+                FlightDetails fd2 = null;
+                if(request.getParameter("flightDetailId2")!=null){
+                    totalPassengers*=2;
+                    flightDetailId2= Integer.parseInt(request.getParameter("flightDetailId2"));
+                    sc2 = scd.getSeatCategoryById(Integer.parseInt(request.getParameter("seatCategory2")));
+                    fd2 = (FlightDetails)fdd.getFlightDetailById(flightDetailId2);
+                    PlaneCategory planeCategory2 = pcd.getPlaneCategoryById(fd2.getPlaneCategoryId());
+                    Flights f2 = fdd.getFlightByFlightDetailId(fd2.getId());
+                    airlineId2 = f2.getAirlineId();
+                    Airline a2 = amd.getAirlineById(airlineId2);
+                    int departureAirportId2 = f2.getDepartureAirportId();
+                    Airport dpa2 = ad.getAirportById(departureAirportId2);
+                    Location dpl2 = ld.getLocationById(dpa2.getLocationId());
+                    Country dpc2 = cd.getCountryById(dpl2.getCountryId());
+                    int destinationAirportId2 = f2.getDestinationAirportId();
+                    Airport dsa2 = ad.getAirportById(destinationAirportId2);
+                    Location dsl2 = ld.getLocationById(dsa2.getLocationId());
+                    Country dsc2 = cd.getCountryById(dsl2.getCountryId());
+                %>
+                <div class="details">
+                    <h3>Return Flight Information: </h3>
+                    <% 
+                        Calendar departureCal2 = Calendar.getInstance();
+                        departureCal2.setTime(fd2.getDate()); 
+
+                        Calendar timeCal2 = Calendar.getInstance();
+                        timeCal2.setTime(fd2.getTime());
+                        
+                        departureCal2.set(Calendar.HOUR_OF_DAY, timeCal2.get(Calendar.HOUR_OF_DAY));
+                        departureCal2.set(Calendar.MINUTE, timeCal2.get(Calendar.MINUTE));
+
+                    %>
+
+                    <p>- Departure: <span><%=dateTimeFmt.format(departureCal2.getTime())%></span></p>
+                    <p><span><%=dpa2.getName()%>, <%=dpl2.getName()%>, <%=dpc2.getName()%></span></p>
+
+                    <% 
+                        Calendar destinationCal2 = (Calendar) departureCal2.clone();
+                        destinationCal2.add(Calendar.MINUTE, f2.getMinutes()); 
+                    %>
+
+                    <p>- Destination: <span><%=dateTimeFmt.format(destinationCal2.getTime())%></span></p>
+                    <p><span><%=dsa2.getName()%>, <%=dsl2.getName()%>, <%=dsc2.getName()%></span></p>
+
+                </div>
+                <%
+                    }
+                %>
             </div>
 
             <%
+            int m = (request.getParameter("flightDetailId2")!=null)?2:1;//m =1 thì là 1 chiều, =2 là khứ hồi
             NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
             Accounts currentAcc = null;
             if(request.getAttribute("account") != null){
@@ -283,11 +337,18 @@
                     <form style="width: 100%" id="passengerForm" action="bookingFlightTickets" method="post">
                         <input type="hidden" name="flightDetailId" value="<%=flightDetailId%>"/>
                         <input type="hidden" name="seatCategoryId" value="<%=sc.getId()%>"/>
-                        <input type="hidden" name="adultTicket" value="<%=adultTicket%>"/>
-                        <input type="hidden" name="childTicket" value="<%=childTicket%>"/>
-                        <input type="hidden" name="infantTicket" value="<%=infantTicket%>"/>
+                        <input type="hidden" name="flightDetailId2" value="<%=flightDetailId2%>"/>
+                        <input type="hidden" name="seatCategoryId2" value="<%=sc2.getId()%>"/>
+                        <input type="hidden" name="adultTicket" value="<%=m*adultTicket%>"/>
+                        <input type="hidden" name="childTicket" value="<%=m*childTicket%>"/>
+                        <input type="hidden" name="infantTicket" value="<%=m*infantTicket%>"/>
                         <input type="hidden" name="commonPrice" value="<%= fd.getPrice() * (sc.getSurcharge()+1) %>"/>
-                        <input type="hidden" name="totalPrice" value="<%= fd.getPrice() * (sc.getSurcharge()+1) * (adultTicket + childTicket + infantTicket) %>"/>
+                        <%if(m==2){
+                        %>
+                        <input type="hidden" name="commonPrice2" value="<%= fd2.getPrice() * (sc2.getSurcharge()+1) %>"/>
+                        <%
+                            }%>
+                        <input type="hidden" name="totalPrice" value="<%= fd.getPrice() * (sc.getSurcharge()+1) * totalPassengers %>"/>
                         <div class="main-container2 passenger-info" >
                             <div style="width: 100%; text-align: center;
                                  font-size: 20px;
@@ -361,14 +422,38 @@
                                             </select>
                                         </div>
                                         <div class="passenger-info-input-box">
-                                            <div class="passenger-info-input-title">Select seat:</div>
+                                            <div class="passenger-info-input-title" style="width: 200px">Select seat for departuring:</div>
                                             <div style="display: flex; align-items: center; margin-right: 20px; font-weight: 600; font-size: 16px; color: #3C6E57">
                                                 <span style=""><%=sc.getName()%> - <span id="seatCodeForDisplaying<%=i%>">Not Selected</span></span>
                                             </div>
                                             <a class="btn btn-info" style="text-decoration: none" onclick="openSeatModal(<%=i%>)">Choose</a>
-
                                             <input type="hidden" name="code<%=i%>" id="seatCode<%=i%>"/>
                                         </div>
+                                        <% if(request.getParameter("flightDetailId2")!=null){
+                                        %>
+                                        <div class="passenger-info-input-box"  >
+                                            <div class="passenger-info-input-title" style="width: 121px">Baggage:</div>
+                                            <select name="pBaggages<%=i+totalPassengers%>" id="baggage<%=i+totalPassengers%>" onchange="updateTotalBaggage()">
+                                                <option value="0">Buy 0kg extra checked baggage - <%=currencyFormatter.format(0)%></option>
+                                                <% for(Baggages b : bmd.getAllBaggagesByAirline(airlineId2)){
+                                                %>
+                                                <option value="<%=b.getId()%>">Buy <%=b.getWeight()%>kg extra checked baggage - <%=currencyFormatter.format(b.getPrice())%></option>
+                                                <%
+                                                    }
+                                                %>
+                                            </select>
+                                        </div>
+                                        <div class="passenger-info-input-box">
+                                            <div class="passenger-info-input-title" style="width: 200px">Select seat for returning:</div>
+                                            <div style="display: flex; align-items: center; margin-right: 20px; font-weight: 600; font-size: 16px; color: #3C6E57">
+                                                <span style=""><%=sc2.getName()%> - <span id="seatCodeForDisplaying<%=i+totalPassengers%>">Not Selected</span></span>
+                                            </div>
+                                            <a class="btn btn-info" style="text-decoration: none" onclick="openSeatModal(<%=i+totalPassengers%>)">Choose</a>
+                                            <input type="hidden" name="code<%=i+totalPassengers%>" id="seatCode<%=i+totalPassengers%>"/>
+                                        </div>
+
+                                        <%
+                                                }%>
                                     </div>
                                 </div>
                                 <%
@@ -410,7 +495,7 @@
                                 <%
                                     }
                                 %>
-                                <% for(int i = adultTicket+childTicket+1; i<=infantTicket+adultTicket+childTicket; i++){
+                                <% for(int i = adultTicket+childTicket+1; i<=adultTicket+childTicket+infantTicket; i++){
                                 %>
                                 <div class="passenger-info-input" style="position: relative">
                                     <div style="position: absolute;
@@ -453,7 +538,7 @@
 
                 </div>
 
-
+                <!-- hoá đơn -->
                 <div class="main-container2 passenger-info" style="width: 30%; height: fit-content">
                     <div style="width: 100%; text-align: center;
                          font-size: 20px;
@@ -462,17 +547,18 @@
                          color: #3C6E57;
                          letter-spacing: 1px;"><p>INVOICE</p></div>
                     <div class="ticket-pricing">
+                        
                         <div class="ticket-item">
-                            <span>Adult Ticket x <%= adultTicket %></span>
-                            <span>= <%= currencyFormatter.format(fd.getPrice() * (sc.getSurcharge()+1) * adultTicket * ptd.getPassengerTypePriceNameById(1)) %></span>
+                            <span>Adult Ticket x <%= adultTicket*m %></span>
+                            <span>= <%= currencyFormatter.format(m* fd.getPrice() * (sc.getSurcharge()+1) * adultTicket * ptd.getPassengerTypePriceNameById(1)) %></span>
                         </div>
                         <div class="ticket-item">
-                            <span>Children Ticket x <%= childTicket %></span>
-                            <span>= <%= currencyFormatter.format(fd.getPrice() * (sc.getSurcharge()+1) * childTicket * ptd.getPassengerTypePriceNameById(2)) %></span>
+                            <span>Children Ticket x <%= childTicket*m %></span>
+                            <span>= <%= currencyFormatter.format(m* fd.getPrice() * (sc.getSurcharge()+1) * childTicket * ptd.getPassengerTypePriceNameById(2)) %></span>
                         </div>
                         <div class="ticket-item">
-                            <span>Infant Ticket x <%= infantTicket %></span>
-                            <span>= <%= currencyFormatter.format(fd.getPrice() * (sc.getSurcharge()+1) * infantTicket * ptd.getPassengerTypePriceNameById(3)) %></span>
+                            <span>Infant Ticket x <%= infantTicket*m %></span>
+                            <span>= <%= currencyFormatter.format(m* fd.getPrice() * (sc.getSurcharge()+1) * infantTicket * ptd.getPassengerTypePriceNameById(3)) %></span>
                         </div>
                         <div class="ticket-item">
                             <span>Baggage</span>
@@ -494,7 +580,9 @@
                 </div>
             </div>
 
-            <% for(int j = 1; j<=infantTicket+adultTicket+childTicket;j++){ %>
+             
+            <%//Modal chọn ghế
+            for(int j = 1; j<=totalPassengers*m;j++){ %>
             <div class="modal fade " id="seatModal<%=j%>"  tabindex="-1" aria-labelledby="seatModalLabel" aria-hidden="true">
                 <div class="modal-dialog" style="min-width: 45%">
                     <div class="modal-content">
@@ -506,13 +594,20 @@
                             <div>
                                 <table>
                                     <%
-                                        int seatEachRow = sc.getSeatEachRow();
+                                        TicketDAO td = new TicketDAO();
                                         int rowNumber = 1;
                                         String[] seatLetters = {"A", "B", "C", "D", "E", "F"}; 
                                         int seatIndex = 0;
-
-                                        TicketDAO td = new TicketDAO();
+                                        int seatEachRow = sc.getSeatEachRow();
+                                        int numberOfSeat = sc.getNumberOfSeat();
+                                        String seatCat = sc.getName();
                                         List<String> bookedSeats = td.getAllTicketCodesById(flightDetailId, sc.getId());
+                                        if(j>totalPassengers){
+                                            seatEachRow = sc2.getSeatEachRow();
+                                            numberOfSeat = sc2.getNumberOfSeat();
+                                            seatCat = sc2.getName();
+                                            bookedSeats = td.getAllTicketCodesById(flightDetailId2, sc2.getId());
+                                        }
                                     %>
                                     <thead>
                                         <tr>
@@ -526,7 +621,7 @@
                                     </thead>
                                     <tbody>
                                         <%
-                                            for (int i = 0; i < sc.getNumberOfSeat(); i++) {
+                                            for (int i = 0; i < numberOfSeat; i++) {
                                                 if (i % seatEachRow == 0) { %>
                                         <tr>
                                             <% } 
@@ -534,6 +629,9 @@
                                             String seatColor = bookedSeats.contains(seatCode) ? "rgb(255, 177, 177)" : "#FFF"; 
                                             String strokeColor = bookedSeats.contains(seatCode) ? "red" : "#B8B8B8"; 
                                             Ticket thisTicket = td.getTicketByCode(seatCode, flightDetailId, sc.getId());
+                                            if(j>totalPassengers){
+                                                thisTicket = td.getTicketByCode(seatCode, flightDetailId2, sc2.getId());
+                                            }
                                             if (thisTicket != null && thisTicket.getStatusid() == 12) {
                                                 seatColor = "#FFE878";
                                                 strokeColor = "#FFBF00";
@@ -594,7 +692,7 @@
                                         Booked Seat
                                     </div>
                                     <div style="margin-right: auto; font-size: 15px; font-weight: bold; color: green;">
-                                        Choosing Seat:</br> <%=sc.getName()%> - <span id="selectedSeatCode<%=j%>">None</span>
+                                        Choosing Seat:</br> <%=seatCat%> - <span id="selectedSeatCode<%=j%>">None</span>
                                     </div>
                                 </div>
                             </div>
@@ -621,6 +719,7 @@
             }
             let currentChoosingSeat = [];
             let selectedSeats = [];
+            let selectedSeats2 = [];
 
             function selectSeat(seat, i) {
                 const seatContainer = seat.querySelector(`.seat-container`);
@@ -629,13 +728,22 @@
                 const confirmedSeatForDisplaying = document.getElementById("seatCodeForDisplaying" + i);
 
                 const seatCode = seat.querySelector('.seatName').value;
-                if (selectedSeats.includes(seatCode) && currentChoosingSeat[i] !== seat) {
-                    alert('This seat is already selected by another passenger.');
-                    return;
+                if (i <= <%=totalPassengers%>) {
+                    if (selectedSeats.includes(seatCode) && currentChoosingSeat[i] !== seat) {
+                        alert('This seat is already selected by another passenger.');
+                        return;
+                    }
+                } else {
+                    if (selectedSeats2.includes(seatCode) && currentChoosingSeat[i] !== seat) {
+                        alert('This seat is already selected by another passenger.');
+                        return;
+                    }
                 }
-                console.log(selectedSeats);
 
-                if (currentChoosingSeat[i] && currentChoosingSeat[i] !== seat) {//chuyển ghế chọn trước thành empty
+                console.log(currentChoosingSeat[i]);
+                console.log(selectedSeats);
+                //khi đang có ghế được chọn, chuyển ghế đó thành empty
+                if (currentChoosingSeat[i] !== undefined && currentChoosingSeat[i] !== null) {
                     const preSeat = currentChoosingSeat[i].querySelector('.seat-container');
                     const preRects = preSeat.querySelectorAll('svg rect');
                     preRects.forEach(rect => {
@@ -647,11 +755,20 @@
                         path.setAttribute("d", "");
                     });
                     //xoá ghế chọn trước đó khỏi selectedSeat
-                    const index = selectedSeats.indexOf(currentChoosingSeat[i].querySelector('.seatName').value);
-                    if (index > -1) {
-                        selectedSeats.splice(index, 1);
+                    if (i <= <%=totalPassengers%>) {
+                        const index = selectedSeats.indexOf(currentChoosingSeat[i].querySelector('.seatName').value);
+                        if (index > -1) {
+                            selectedSeats.splice(index, 1);
+                        }
+                    } else {
+                        const index = selectedSeats2.indexOf(currentChoosingSeat[i].querySelector('.seatName').value);
+                        if (index > -1) {
+                            selectedSeats2.splice(index, 1);
+                        }
                     }
+
                 }
+
                 if (currentChoosingSeat[i] !== seat) {// nhấn sang ghế khác
                     const seatRects = seatContainer.querySelectorAll('svg rect');
                     seatRects.forEach(rect => {
@@ -665,8 +782,12 @@
                     });
 
                     currentChoosingSeat[i] = seat;
-                    selectedSeats.push(seatCode);//thêm ghế vừa chọn vào danh sách ghế được chọn
 
+                    if (i <= <%=totalPassengers%>) {
+                        selectedSeats.push(seatCode);//thêm ghế vừa chọn vào danh sách ghế được chọn của chuyến đi
+                    } else {
+                        selectedSeats2.push(seatCode);//thêm ghế vừa chọn vào danh sách ghế được chọn của chuyến về
+                    }
                     let tmp = currentChoosingSeat[i].querySelector('.seatName').value;
                     //phần hiển thị ở modal
                     selectedSeatCodeElement.textContent = tmp;
@@ -684,15 +805,23 @@
                         path.setAttribute("d", " ");
                     });
 
-                    const index = selectedSeats.indexOf(seatCode);
-                    if (index > -1) {
-                        selectedSeats.splice(index, 1);
+                    if (i <= <%=totalPassengers%>) {
+                        const index = selectedSeats.indexOf(currentChoosingSeat[i].querySelector('.seatName').value);
+                        if (index > -1) {
+                            selectedSeats.splice(index, 1);
+                        }
+                    } else {
+                        const index = selectedSeats2.indexOf(currentChoosingSeat[i].querySelector('.seatName').value);
+                        if (index > -1) {
+                            selectedSeats2.splice(index, 1);
+                        }
                     }
                     currentChoosingSeat[i] = null;
                     selectedSeatCodeElement.textContent = 'None';
                     confirmedSeatForDisplaying.textContent = 'Not Selected';
                     confirmedSeat.value = null;
                 }
+
             }
             function openSeatModal(i) {
 
@@ -723,12 +852,19 @@
 
             function updateTotalBaggage() {
                 var totalBaggage = 0;
-            <% for(int i = 1; i <= adultTicket; i++) { %>
-                var baggageElement = document.getElementById("baggage<%=i%>");
-                console.log(baggageElement);
-                var baggagePrice = parseFloat(baggageElement ? baggageElement.value : 0);
-                totalBaggage += isNaN(baggagePrice) ? 0 : bmd.getPriceById(baggagePrice);
-            <% } %>
+                var baggageId = 0;
+                for (var i = 1; i <= <%=adultTicket%>; i++) {
+                    var baggageElement = document.getElementById("baggage" + i);
+                    console.log(baggageElement);
+                    baggageId = parseInt(baggageElement ? baggageElement.value : 0);
+                    totalBaggage += isNaN(baggageId) ? 0 : baggageId;
+                }
+                for (var i = <%=totalPassengers+1%>; i <= <%=totalPassengers*2%>; i++) {
+                    var baggageElement = document.getElementById("baggage" + i);
+                    console.log(baggageElement);
+                    baggageId = parseInt(baggageElement ? baggageElement.value : 0);
+                    totalBaggage += isNaN(baggageId) ? 0 : baggageId;
+                }
                 document.getElementById("totalBaggage").innerText = "= " + new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(totalBaggage);
                 updateTotalPrice(totalBaggage);
             }

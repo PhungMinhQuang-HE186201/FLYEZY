@@ -40,7 +40,7 @@ public class BaggageManageDAO extends DBConnect {
 
     public int getPriceBaggagesById(int id) {
         List<Baggages> list = new ArrayList<>();
-        String sql = "select price from baggages b\n"
+        String sql = "select price from Baggages b\n"
                 + "join ticket t on t.Baggagesid = b.id\n"
                 + "where t.id = ?";
         try {

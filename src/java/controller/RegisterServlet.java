@@ -88,13 +88,24 @@ public class RegisterServlet extends HttpServlet {
             request.setAttribute("existedUsername", "Gmail đã được đăng ký!");
             request.getRequestDispatcher("view/register.jsp").forward(request, response);
         } else {
-            Accounts a = new Accounts(name, email, pass, phoneNumber, 3, 1, new Timestamp(System.currentTimeMillis()), 1);
-            d.addNewAccount(a);
-            HttpSession session = request.getSession();
-            AccountsDAO ad = new AccountsDAO();
-            int id = ad.getIdByEmailOrPhoneNumber(a.getEmail()); 
-            session.setAttribute("id", id);
-            response.sendRedirect("home");
+            EmailServlet em = new EmailServlet();
+            String otp = em.generateOTP(6);
+            em.sendOTPEmail(email, otp);
+            request.setAttribute("otp", otp);
+            request.setAttribute("name", name);
+            request.setAttribute("email", email);
+            request.setAttribute("phoneNumber", phoneNumber);
+            request.setAttribute("pass", pass);
+            request.getRequestDispatcher("view/verifyOTP.jsp").forward(request, response);
+
+            //code duoi backup vui long khong xoa quanht
+//            Accounts a = new Accounts(name, email, pass, phoneNumber, 3, 1, new Timestamp(System.currentTimeMillis()), 1);
+//            d.addNewAccount(a);
+//            HttpSession session = request.getSession();
+//            AccountsDAO ad = new AccountsDAO();
+//            int id = ad.getIdByEmailOrPhoneNumber(a.getEmail());
+//            session.setAttribute("id", id);
+//            response.sendRedirect("home");
         }
     }
 

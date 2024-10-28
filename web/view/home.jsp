@@ -16,6 +16,9 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="shortcut icon" type="image/png" href="img/flyezy-logo3.png" />
+        <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+        <link rel="stylesheet" href="../flyezy/css/styleHome.css"/>
+
         <title>Flight Booking Form</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
@@ -28,76 +31,137 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <style>
-
             .flight-form {
-                max-width: 1000px;
-                margin: 50px auto;
-                padding: 20px;
+                position: relative;
+                z-index: 10;
             }
-            #input-form span{
-                color: activecaption;
-                font-size: 130%;
-                margin-left: 5%;
-            }
-            .flight-type {
-                display: flex;
-                align-items: center;
-            }
-            .form-control.read-only {
-                background-color: #e9ecef;
-                cursor: not-allowed;
-            }
-            .btn-search {
-                background-color: #28a745;
+
+            .banner {
+                position: relative;
+                overflow: hidden;
                 color: white;
-                padding: 10px 20px;
-                font-size: 18px;
+                width: 100%;
+                height: 800px;
             }
-            .discount-code-container {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
+
+            .banner video {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                object-fit: cover;
+                z-index: 1;
             }
-            .discount-code-container input {
-                width: 30%;
+
+            #input-form {
+                position: relative;
+                z-index: 10;
+                top: 45%
             }
-            .icon {
-                font-size: 24px;
-                color: green;
+
+
+            .form-container {
+                border: 2px solid #ccc;
+                padding: 2%;
+                background-color: #f9f9f9;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                height: 210px;
+                width: 70%;
+                border-radius: 6px
             }
-            .btn-search {
-                width: 200px;
-                font-size: 18px;
-            }
+
             .location-list {
-                display:none;
-                position:absolute;
-                background-color:white;
-                border:1px solid #ccc;
-                z-index:1000;
+                display: none;
+                position: absolute;
+                background-color: white;
+                border: 1px solid #ccc;
+                z-index: 1000;
                 width: 250px;
+                height: 153px;
                 overflow-y: auto;
                 top: 80px;
+                left: 14px;
+                border-radius: 8px;
+            }
+
+            .location-item {
+                cursor: pointer;
+                padding: 10px 15px;
+                transition: background-color 0.3s ease;
             }
 
             .location-item:hover {
                 background-color: #f0f0f0;
             }
-            .title-section {
-                text-align: left;
-                padding: 15px 25px;
-                font-weight: bold;
-                font-size: 24px;
-                color: #333;
-                border: 2px solid #ccc;
-                width: 15%;
-                background-color: #f1f1f1;
 
+            .location-item span {
+                transition: color 0.3s ease, filter 0.3s ease;
             }
 
-            .location-item{
-                padding: 10px 7px;
-                cursor: pointer;
+            .passenger-label {
+                color: #3C6E57;
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+            .passenger-selector {
+                background-color: white;
+                border-radius: 5px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+                max-width: 600px;
+            }
+            .passenger-type {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 33%;
+            }
+            .passenger-input {
+                color: activecaption;
+                height: 50%;
+                width: 40%;
+                font-size: 18px;
+            }
+            .passenger-controls{
+                display: flex;
+            }
+            .options-container {
+                margin-top: 30px;
+                width: 400px;
+                height: auto;
+                border-radius: 5px;
+            }
+            .passenger-count {
+                color: #3C6E57;
+                font-size: 20px;
+                font-weight: bold;
+                width: 55px;
+                border: 2px solid;
+                border-radius: 5px;
+                text-align: center;
+                margin: 0 10px;
+            }
+
+            .search-button {
+                height: 100%;
+                margin-top: 18px;
+                width: 165px;
+                font-size: 18px;
+                color: #3C6E57;
+                background-color: white;
+                border: 2px solid #3C6E57;
+                border-radius: 4px;
+                transition: background-color 0.3s ease;
+            }
+
+            .search-button:hover {
+                color: white;
+                background-color: #3C6E57;
             }
 
 
@@ -106,121 +170,127 @@
     </head>
     <body>
         <%
-    LocationDAO locationDao = new LocationDAO();
-    AirportDAO airportDao = new AirportDAO();
-
+            LocationDAO locationDao = new LocationDAO();
+            AirportDAO airportDao = new AirportDAO();
         %>
         <%@include file="header.jsp" %> 
         <section>
-            <div class="container flight-form">
-                <div class="banner" style="position: relative; overflow: hidden; background-image: url('img/Messi.jpg'); background-size: cover; padding: 10%; color: white;width: 151.2%;transform: translate(-17%, -2.7%);height: 800px">
-                    <form id="input-form" action="flightTickets" method="GET" class="row g-1" onsubmit="return validateLocations(event)" style="width: 85%;transform: translateX(14%)">
-                        <!-- Title -->
-                        <div class="title-section" style="transform: translateY(4.4%);width: 20%;border-top-left-radius: 20px;">
-                            <h1>Ticket Booking</h1>
-                        </div>
+            <div class="flight-form">
+                <div class="banner" id="banner">
+                    <video src="vid/bg-vid.mp4" muted loop autoplay></video>
 
-                        <div class="form-container" style="border: 2px solid #ccc; padding: 2%;  background-color: #f9f9f9; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); width: 90%;height: 200px;border-bottom-right-radius: 20px; ">
-
+                    <form id="input-form" action="flightTickets" method="GET" class="row g-1" onsubmit="return validateLocations(event)">
+                        <div style="background-image: url('../img/modal-footer.png')"></div>
+                        <div class="form-container" style="margin: 0 auto">
                             <div class="row form-input">
-                                <h1 id="errorMessage" style="color: red;"></h1> <!-- Display the error message here -->
-                                <div class="row" style="transform: translateX(0.5%)">
-                                    <label class="col-md-2">
+                                <div style="display: flex; margin-bottom: 20px">
+                                    <div style="display: flex; align-items: center; font-size: 16px; margin-right: 20px">
                                         <input type="radio" id="oneWay" name="flightType" value="oneWay" style="transform: scale(1.5);" checked onclick="toggleReturnDate()">
-                                        <span>One-way</span>
-                                    </label>
-                                    <label class="col-md-2">
+                                        <label for="oneWay" style="color: black;margin: 0; margin-left: 10px">One-way</label>
+                                    </div>
+                                    <div style="display: flex; align-items: center; font-size: 16px">
                                         <input type="radio" id="roundTrip" name="flightType" value="roundTrip" style="transform: scale(1.5);" onclick="toggleReturnDate()">
-                                        <span>Round-trip</span>
-                                    </label>
-                                </div>
-                                <!-- From Field -->
-                                <div class="col-md-2">
-                                    <label for="from" class="col-form-label text-uppercase" style="color: activecaption;">From</label>
-                                    <input type="text" style="height: 86%;font-size: 150%;border-radius: 8px;" class="form-control" id="fromDisplay" onclick="showLocationList('from')" oninput="filterLocations('from')" required>
-                                    
-
-                                    <input type="hidden" id="from" name="departure">
-                                    <div id="from-locations" class="location-list">
-                                        <%                
-                                            for(Location l : locationDao.getAllLocation()) {
-                                                for(Airport a : airportDao.getAllAirport()){
-                                                    if(a.getLocationId() == l.getId()){
-                                        %>
-                                        <div class="location-item" onclick="selectLocation('<%= a.getId() %>', '<%= l.getName() %>', 'from')">
-                                            <span style="font-weight: bold; font-size: 16px; color: black;">
-                                                <%= l.getName() %>
-                                            </span></br>
-                                            <span style="font-size: 14px; color: grey; filter: blur(1%);">
-                                                <%= a.getName() %>
-                                            </span>
-                                        </div>
-                                        <% } } } %>
+                                        <label for="roundTrip" style="color: black;margin: 0; margin-left: 10px">Round-trip</label>
                                     </div>
                                 </div>
-
-                                <!-- To Field -->
-                                <div class="col-md-2">
-                                    <label for="to" class="col-form-label text-uppercase" style="color: activecaption">To</label>
-                                    <input type="text" style="height: 86%;font-size: 150%;border-radius: 8px;" class="form-control" id="toDisplay" onclick="showLocationList('to')" oninput="filterLocations('to')" required>
-                                    <input type="hidden" id="to" name="destination">
-                                    <div id="to-locations" class="location-list">
-                                        <%                
-                                            for(Location l : locationDao.getAllLocation()) {
-                                                for(Airport a : airportDao.getAllAirport()){
-                                                    if(a.getLocationId() == l.getId()){
-                                        %>
-                                        <div class="location-item" onclick="selectLocation('<%= a.getId() %>', '<%= l.getName() %>', 'to')">
-                                            <span style="font-weight: bold; font-size: 16px; color: black;">
-                                                <%= l.getName() %>
-                                            </span></br>
-                                            <span style="font-size: 14px; color: grey; filter: blur(1%);">
-                                                <%= a.getName() %>
-                                            </span>
-                                        </div>
-                                        <% } } } %>
-                                    </div>
-                                </div>
-
-                                <!-- Departure Date Field -->
-                                <div class="col-md-2">
-                                    <label for="departureDate" class="col-form-label text-uppercase" style="color: activecaption">Depart</label>
-                                    <input type="text" class="form-control" id="departureDate" name="departureDate" style="height: 86%;font-size: 150%;border-radius: 8px;" placeholder="Ngày đi" required>
-                                </div>
-                                <div class="col-md-2" id="returnDateField" style="display:none;">
-                                    <label for="returnDate" class="col-form-label text-uppercase" style="color: activecaption">Return</label>
-                                    <input type="text" id="returnDate" class="form-control" name="returnDate" style="height: 86%;font-size: 150%;border-radius: 8px;" placeholder="Ngày về">
-                                </div>
-
-                                <!-- Passengers Field -->
-                                <div class="col-md-4" id="passengerField" style="position: relative;">
-                                    <label for="passengers" class="col-form-label text-uppercase" style="color: activecaption">Passenger</label>
-                                    <input type="number" style="height: 86%;font-size: 150%;border-radius: 8px;" class="form-control" id="passengers" value="1" min="1" max="10" required onclick="togglePassengerOptions()" readonly>
-                                    <div id="passenger-options" class="passenger-options" style="display: none; width: 600px;height: auto;position: absolute; top: 100%; left: 0; border: 2px solid #ccc; padding: 10px; border-radius: 5px; margin-top: 30px;background-color: white; z-index: 1000;transform: translateX(-10%)">
-                                        <div class="row" style="display: flex; justify-content: space-evenly; margin-top: 1%;padding: 3%;">
-                                            <div class="col-md-4">
-                                                <label for="adult-count" style="color: activecaption;height: 80%; font-size: 150%;">Adult:</label>
-                                                <input type="number" id="adult-count" name="adult" value="1" min="1" max="10" style="color: activecaption;height: 50%;width: 40%; font-size: 150%;">
+                                <h3 id="errorMessage" style="color: red;margin-bottom: 10px"></h3> 
+                                <div class="row" style="height: 55px">
+                                    <!-- From Field -->
+                                    <div class="col-md-2" style="padding-right: 0px">
+                                        <p style="color: black; margin: 0; font-size: 12px">FROM</p>
+                                        <input type="text" style="height: 100%;font-size: 18px" class="form-control" id="fromDisplay" onclick="showLocationList('from')" oninput="filterLocations('from')" placeholder="FROM" required>
+                                        <input type="hidden" id="from" name="departure">
+                                        <div id="from-locations" class="location-list">
+                                            <%                
+                                                for(Location l : locationDao.getAllLocation()) {
+                                                    for(Airport a : airportDao.getAllAirport()){
+                                                        if(a.getLocationId() == l.getId()){
+                                            %>
+                                            <div class="location-item" onclick="selectLocation('<%= a.getId() %>', '<%= l.getName() %>', 'from')">
+                                                <span style="font-weight: bold; font-size: 16px; color: black;">
+                                                    <%= l.getName() %>
+                                                </span></br>
+                                                <span style="font-size: 14px; color: grey; filter: blur(1%);">
+                                                    <%= a.getName() %>
+                                                </span>
                                             </div>
-                                            <div class="col-md-4">
-                                                <label for="child-count" style="color: activecaption; height: 80%; font-size: 150%;">Children:</label>
-                                                <input type="number" id="child-count" name="child" value="0" min="0" max="9" style="color: activecaption;height: 50%;width: 40%; font-size: 150%;">
-                                                <br>
-                                                <p style="transform: translateY(-150%);color: activecaption;">(2-11 years)</p>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label for="infant-count" style="color: activecaption;height: 80%; font-size: 150%;">Infant:</label>
-                                                <input type="number" id="infant-count" name="infant" value="0" min="0" max="5" style="color: activecaption;height: 50%;width: 40%; font-size: 150%;">
-                                                <br>
-                                                <p style="transform: translateY(-150%);color: activecaption;">(0-2 years)</p>
-                                            </div>
+                                            <% } } } %>
                                         </div>
                                     </div>
-                                </div>
 
-                                <!-- Submit Button -->
-                                <div class="col-md-2" style="margin-top: 2%">
-                                    <button type="submit" style="height:140%;width: 80%;font-size: 150%;background-color: #327C23;border-radius: 0.8rem !important" class="btn btn-success" onclick="validateDates()">Search Flights</button>
+                                    <!-- To Field -->
+                                    <div class="col-md-2" style="padding-right: 0px">
+                                        <p style="color: black; margin: 0; font-size: 12px">TO</p>
+                                        <input type="text" style="height: 100%;font-size: 18px" class="form-control" id="toDisplay" onclick="showLocationList('to')" oninput="filterLocations('to')" placeholder="TO" required>
+                                        <input type="hidden" id="to" name="destination">
+                                        <div id="to-locations" class="location-list">
+                                            <%                
+                                                for(Location l : locationDao.getAllLocation()) {
+                                                    for(Airport a : airportDao.getAllAirport()){
+                                                        if(a.getLocationId() == l.getId()){
+                                            %>
+                                            <div class="location-item" onclick="selectLocation('<%= a.getId() %>', '<%= l.getName() %>', 'to')">
+                                                <span style="font-weight: bold; font-size: 16px; color: black;">
+                                                    <%= l.getName() %>
+                                                </span></br>
+                                                <span style="font-size: 14px; color: grey; filter: blur(1%);">
+                                                    <%= a.getName() %>
+                                                </span>
+                                            </div>
+                                            <% } } } %>
+                                        </div>
+                                    </div>
+
+                                    <!-- Departure Date Field -->
+                                    <div class="col-md-2" style="padding-right: 0px">
+                                        <p style="color: black; margin: 0; font-size: 12px">DEPART</p>
+                                        <input type="text" class="form-control" id="departureDate" name="departureDate" style="height: 100%;font-size: 18px;" placeholder="yyyy-mm-dd" required>
+                                    </div>
+                                    <div class="col-md-2" id="returnDateField" style="display:none;padding-right: 0px">
+                                        <p style="color: black; margin: 0; font-size: 12px">RETURN</p>
+                                        <input type="text" id="returnDate" class="form-control" name="returnDate" style="height: 100%;font-size: 18px;" placeholder="yyyy-mm-dd">
+                                    </div>
+
+                                    <!-- Passengers Field -->
+                                    <div class="col-md-4" id="passengerField" style="position: relative; padding-right: 0;">
+                                        <p style="color: black; margin: 0; font-size: 12px">PASSENGER</p>
+                                        <input type="number" class="form-control" id="passengers" value="1" min="1" max="10" required readonly 
+                                               onclick="togglePassengerOptions()"
+                                               style="height: 100%; width: 100%; font-size: 18px;">
+
+                                        <div id="passenger-options" class="passenger-options" 
+                                             style="display: none; position: absolute; top: 50px; left: 15px; z-index: 1000;">
+                                            <div class="options-container" style="border: 2px solid #ccc">
+                                                <div class="passenger-selector">
+                                                    <div class="passenger-type">
+                                                        <div class="passenger-label">Adult</div>
+                                                        <div class="passenger-controls">
+                                                            <input type="number" id="adult-count" class="passenger-count" name="adult" value="1" min="1" max="10" class="passenger-input">
+                                                        </div>
+                                                    </div>
+                                                    <div class="passenger-type">
+                                                        <div class="passenger-label">Children</div>
+                                                        <div class="passenger-controls">
+                                                            <input type="number"id="child-count" class="passenger-count" name="child" value="0" min="0" max="9" class="passenger-input">
+                                                        </div>
+                                                        <div class="age-range">2-11 Year Olds</div>
+                                                    </div>
+                                                    <div class="passenger-type">
+                                                        <div class="passenger-label">Infant</div>
+                                                        <div class="passenger-controls">
+                                                            <input type="number" id="infant-count" class="passenger-count" name="infant" value="0" min="0" max="5" class="passenger-input">
+                                                        </div>
+                                                        <div class="age-range">0-2 Year Olds</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Submit Button -->
+                                    <div class="col-md-2">
+                                        <button type="submit" class="search-button" onclick="validateDates()">Search Flights</button>
+                                    </div> 
                                 </div>
                             </div>
                         </div>
@@ -228,9 +298,94 @@
                 </div>
             </div>
         </section>
+    <%-- quanHT --%>
+    <div class="main-container" id="body-1">
+            <div  id="introduction">
+                <h1>Chào mừng đến với Flyezy!</h1>
+                <p>Không gian mới, cảm xúc mới - Đặt vé ngay để bắt đầu hành trình của bạn.</p>
+            </div>
 
+            <div id="promotion">
+                <div class="promotion-item row" data-aos="fade-up" data-aos-anchor-placement="bottom-bottom">
+                    <div class="col-md-6">
+                        <img src="../img/jack.png" alt="">
+                    </div>
+                    <div class="col-md-6">
+                        <h3>Ưu đãi hấp dẫn</h3>
+                        <p>
+                            Công ty cam kết cung cấp giá vé phù hợp, nhiều lựa chọn vận chuyển cùng các chương trình khuyến mãi hấp dẫn. Đội ngũ chăm sóc 24/7 luôn sẵn sàng hỗ trợ để mang đến trải nghiệm tốt nhất cho quý khách.
+                        </p>
+                    </div>
+                </div>
+                <div class="promotion-item row" data-aos="fade-up" data-aos-anchor-placement="bottom-bottom">
+                    <div class="col-md-6">
+                        <img src="../img/Messi.jpg" alt="">
+                    </div>
+                    <div class="col-md-6">
+                        <h3>An bình khám phá</h3>
+                        <p>
+                            Công ty cam kết đảm bảo an toàn tuyệt đối cho khách hàng. Đội ngũ lái xe được đào tạo chuyên nghiệp, phương tiện luôn được bảo trì định kỳ và trang bị các thiết bị an toàn tiêu chuẩn, để mỗi chuyến đi của quý khách diễn ra suôn sẻ và bình an.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+            <div style=" background-image: linear-gradient(white,rgb(60, 110, 87));
+                 height: 150px"></div>
+
+        </div>
+        <div class="main-container" id="body-2">
+            <div id="statistics">
+                <h1 class="statistics-heading">Thông tin thống kê</h1>
+                <div class="stat-item" data-aos="fade-up">
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    <h3>100,000+</h3>
+                    <p>Người dùng</p>
+                    <div class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="#ffffff" d="M144 0a80 80 0 1 1 0 160A80 80 0 1 1 144 0zM512 0a80 80 0 1 1 0 160A80 80 0 1 1 512 0zM0 298.7C0 239.8 47.8 192 106.7 192h42.7c15.9 0 31 3.5 44.6 9.7c-1.3 7.2-1.9 14.7-1.9 22.3c0 38.2 16.8 72.5 43.3 96c-.2 0-.4 0-.7 0H21.3C9.6 320 0 310.4 0 298.7zM405.3 320c-.2 0-.4 0-.7 0c26.6-23.5 43.3-57.8 43.3-96c0-7.6-.7-15-1.9-22.3c13.6-6.3 28.7-9.7 44.6-9.7h42.7C592.2 192 640 239.8 640 298.7c0 11.8-9.6 21.3-21.3 21.3H405.3zM224 224a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zM128 485.3C128 411.7 187.7 352 261.3 352H378.7C452.3 352 512 411.7 512 485.3c0 14.7-11.9 26.7-26.7 26.7H154.7c-14.7 0-26.7-11.9-26.7-26.7z"/></svg>
+                    </div>
+                </div>
+                <div class="stat-item" data-aos="fade-up" data-aos-delay="100">
+                    <div class="stat-icon"><i class="fas fa-route"></i></div>
+                    <h3>5,000K+</h3>
+                    <p>Chuyến Bay</p>
+                    <div class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#ffffff" d="M512 96c0 50.2-59.1 125.1-84.6 155c-3.8 4.4-9.4 6.1-14.5 5H320c-17.7 0-32 14.3-32 32s14.3 32 32 32h96c53 0 96 43 96 96s-43 96-96 96H139.6c8.7-9.9 19.3-22.6 30-36.8c6.3-8.4 12.8-17.6 19-27.2H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320c-53 0-96-43-96-96s43-96 96-96h39.8c-21-31.5-39.8-67.7-39.8-96c0-53 43-96 96-96s96 43 96 96zM117.1 489.1c-3.8 4.3-7.2 8.1-10.1 11.3l-1.8 2-.2-.2c-6 4.6-14.6 4-20-1.8C59.8 473 0 402.5 0 352c0-53 43-96 96-96s96 43 96 96c0 30-21.1 67-43.5 97.9c-10.7 14.7-21.7 28-30.8 38.5l-.6 .7zM128 352a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zM416 128a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>
+                    </div>
+                </div>
+                <div class="stat-item" data-aos="fade-up" data-aos-delay="200">
+                    <div class="stat-icon"><i class="fas fa-bus-alt"></i></div>
+                    <h3>3000+</h3>
+                    <p>Phương tiện</p>
+                    <div class="icon">  
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#ffffff" d="M381 114.9L186.1 41.8c-16.7-6.2-35.2-5.3-51.1 2.7L89.1 67.4C78 73 77.2 88.5 87.6 95.2l146.9 94.5L136 240 77.8 214.1c-8.7-3.9-18.8-3.7-27.3 .6L18.3 230.8c-9.3 4.7-11.8 16.8-5 24.7l73.1 85.3c6.1 7.1 15 11.2 24.3 11.2l137.7 0c5 0 9.9-1.2 14.3-3.4L535.6 212.2c46.5-23.3 82.5-63.3 100.8-112C645.9 75 627.2 48 600.2 48l-57.4 0c-20.2 0-40.2 4.8-58.2 14L381 114.9zM0 480c0 17.7 14.3 32 32 32l576 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 448c-17.7 0-32 14.3-32 32z"/></svg>
+                    </div>
+                </div>
+                <div class="stat-item" data-aos="fade-up" data-aos-delay="300">
+                    <div class="stat-icon"><i class="fas fa-headset"></i></div>
+                    <h3>24/7</h3>
+                    <p>Hỗ trợ khách hàng</p>
+                    <div class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#ffffff" d="M256 48C141.1 48 48 141.1 48 256v40c0 13.3-10.7 24-24 24s-24-10.7-24-24V256C0 114.6 114.6 0 256 0S512 114.6 512 256V400.1c0 48.6-39.4 88-88.1 88L313.6 488c-8.3 14.3-23.8 24-41.6 24H240c-26.5 0-48-21.5-48-48s21.5-48 48-48h32c17.8 0 33.3 9.7 41.6 24l110.4 .1c22.1 0 40-17.9 40-40V256c0-114.9-93.1-208-208-208zM144 208h16c17.7 0 32 14.3 32 32V352c0 17.7-14.3 32-32 32H144c-35.3 0-64-28.7-64-64V272c0-35.3 28.7-64 64-64zm224 0c35.3 0 64 28.7 64 64v48c0 35.3-28.7 64-64 64H352c-17.7 0-32-14.3-32-32V240c0-17.7 14.3-32 32-32h16z"/></svg>
+                    </div>
+                </div>
+            </div>
+           
+        </div>
+      
         <%@include file="footer.jsp" %> 
-
+        <script src="js/locationBox.js" type="text/javascript"></script>
+        <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+        <script>
+            AOS.init();
+            window.addEventListener("load", () => {
+            const loader = document.querySelector(".loader");
+            loader.classList.add("loader-hidden");
+            loader.addEventListener("transitionend", () => {
+            document.body.removeChild(loader);
+            });
+            });
+        </script>
         <script>
             const passengersInput = document.getElementById('passengers');
             const adultCountInput = document.getElementById('adult-count');
@@ -274,7 +429,6 @@
 
             }
 
-            // Event listeners for the input fields
             adultCountInput.addEventListener('input', updateTotalPassengers);
             childCountInput.addEventListener('input', updateTotalPassengers);
             infantCountInput.addEventListener('input', updateTotalPassengers);
@@ -374,8 +528,8 @@
                     event.preventDefault(); // Prevent form submission
 
                     // Display error message
-                    errorMessageElement.textContent = "Điểm đi và điểm đến không được giống nhau.";
-                    errorMessageElement.style.color = "red"; // Optional: Add styling to the error message
+                    errorMessageElement.textContent = "Duplicate departure and destination";
+                    errorMessageElement.style.color = "red";
 
                     return false; // Prevent the form from submitting
                 }
