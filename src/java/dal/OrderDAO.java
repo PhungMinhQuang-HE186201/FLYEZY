@@ -51,7 +51,7 @@ public class OrderDAO extends DBConnect {
 
     public List<Order> getAllOrdersByAccountId(int accountId) {
         List<Order> list = new ArrayList<>();
-        String sql = "select * from flyezy.Order where Accounts_id=?";
+        String sql = "select * from flyezy.Order where Accounts_id=? order by id desc";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, accountId);
@@ -420,7 +420,7 @@ public class OrderDAO extends DBConnect {
 
     public List<Order> getListOrderByCodeAndAccountId(String code, int accountId) {
         List<Order> list = new ArrayList<>();
-        String sql = "SELECT * FROM flyezy.Order WHERE code= ? and Accounts_id = ?";
+        String sql = "SELECT * FROM flyezy.Order WHERE code= ? and Accounts_id = ? order by id desc";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, code);
@@ -453,7 +453,7 @@ public class OrderDAO extends DBConnect {
     public List<Order> getOrdersByStatusAndAccountId(int statusId, int accountId) {
         List<Order> list = new ArrayList<>();
         String sql = "select * from flyezy.Order\n"
-                + "where flyezy.order.Status_id=? and Accounts_id = ?";
+                + "where flyezy.order.Status_id=? and Accounts_id = ? order by id desc";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, statusId);
