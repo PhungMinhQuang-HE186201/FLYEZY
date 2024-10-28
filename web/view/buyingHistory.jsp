@@ -106,10 +106,12 @@
             }
 
             .status-label {
-                display: inline-block;
-                padding: 5px 10px;
-                font-size: 15px;
+                padding: 5px 10px;font-size: 15px;
+                color: white;
                 font-weight: bold;
+                display: inline-block;
+                text-align: center;
+                white-space: nowrap;
                 color: white;
                 border-radius: 12px;
                 text-align: center;
@@ -127,6 +129,30 @@
 
             .status-label.successful {
                 background-color: #28a745;
+            }
+            .status-label.request {
+                background-color: #ffc107; 
+            }
+            .status-label.canceled {
+                background-color: #28a745; 
+            }
+            .status-label.refund {
+                background-color: #28a745; 
+            }
+            .status-label.rejection {
+                background-color: #dc3545; 
+            }
+            .status-label.request {
+                background-color: #ffc107; 
+            }
+            .status-label.canceled {
+                background-color: #28a745; 
+            }
+            .status-label.refund {
+                background-color: #28a745; 
+            }
+            .status-label.rejection {
+                background-color: #dc3545; 
             }
 
 
@@ -266,8 +292,10 @@
                         </div>
 
                         <div class="ticket-actions" style="margin-top: 10px;">
-                            <div>Ticket price: <%= t.getTotalPrice() %></div>
-                            <div>Ticket status: <%= sd.getStatusNameById(t.getStatusid()) %></div>
+                            <div><strong><%= t.getTotalPrice() %></strong></div>
+                            <div class="status-label <%= sd.getStatusNameById(t.getStatusid()).toLowerCase() %>">
+                                <%= sd.getStatusNameById(t.getStatusid()) %>
+                            </div>
 
                             <% if(t.getStatusid() == 10 || t.getStatusid() == 12) { %>
                             <a class="btn btn-danger" style="text-decoration: none; margin-top: 5px;" onclick="openModalTicket(<%= t.getId() %>,<%= o.getId() %>)">Cancel ticket</a>
@@ -281,22 +309,13 @@
 
 
                     <div class="list-price" style="text-align: right; font-size: 1.2em;">
-                        <% for(PassengerType pt : ptd.getAllPassengerTypeByOrder(o.getId())) { %>
-                        <%total += td.getTicketPriceByOrderAndPassenger(o.getId(), pt.getId()) * pt.getPrice();%>
-                        <%= pt.getName() %> ticket x <%= pt.getNumberOfType() %>: <%= td.getTicketPriceByOrderAndPassenger(o.getId(), pt.getId()) * pt.getPrice() %><br>
-                        <% } %>
-                        <% if(ticketOfBaggage != 0){ %>
-                        Price of baggage: <%= ticketOfBaggage %>
-                        <% } %>
+                        <div class="order-discount">Discount: 0%</div>
+                        <div class="order-total"><strong>Total: <%= o.getTotalPrice() + ticketOfBaggage %></strong></div>
                     </div>
 
 
-                    <div class="order-total-section" style="display: flex; justify-content: space-between; font-size: 1.2em;margin-top: 30px;">
-                        <div style="text-align: left;">
-                            <div class="order-discount">Discount: 0%</div>
-                            <div class="order-total">Total: <span class="text-danger"><%= total + ticketOfBaggage %></span></div>
-                        </div>
-                        <div class="order-actions" style="align-items: end;">
+                    <div class="order-total-section" style="font-size: 1.2em;">
+                        <div class="order-actions" style="margin-top: 10px;text-align: right">
                             <% if (td.countNumberTicketNotCancel(o.getId()) == 0) { %>
                             <a class="btn btn-danger" style="text-decoration: none; display: none;" onclick="openModalOrder(<%= o.getId() %>)">Cancel Order</a>
                             <% } else { %>
@@ -318,11 +337,10 @@
                     </div>
 
                 </div>
+                <br>
             </div>
             <% } %>
             <%}%>
-
-            <br>
 
 
             <!--        Cancel ticket modal-->

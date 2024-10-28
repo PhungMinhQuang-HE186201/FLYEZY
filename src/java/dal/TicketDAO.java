@@ -411,7 +411,7 @@ public class TicketDAO extends DBConnect {
         TicketDAO td = new TicketDAO();
         AirlineManageDAO ad = new AirlineManageDAO();
         //tcd.confirmSuccessAllTicketsByOrderId(1);
-        //System.out.println(tcd.createTicket("C9", 1, 7, 2, "HIHI", 0, null, Date.valueOf("2000-10-10"), null, 0, 1, 1));
+        System.out.println(td.createTicket("C9", 1, 7, 2, "HIHI", 0, null, Date.valueOf("2000-10-10"), null, 0, 1, 1));
         //System.out.println(tcd.getAllTicketCodesById(1, 7));
 //        System.out.println(tcd.getTicketByCode("B1", 4, 8));
     }
