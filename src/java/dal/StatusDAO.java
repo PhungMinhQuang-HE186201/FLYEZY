@@ -73,7 +73,7 @@ public class StatusDAO extends DBConnect {
 
     public List<Status> getStatusOfOrder() {
         List<Status> list = new ArrayList<>();
-        String sql = "select * from Status where id = 8 or id = 10 or id = 12 ";
+        String sql = "select * from Status where id = 10 or id = 12 ";
 
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
@@ -89,7 +89,25 @@ public class StatusDAO extends DBConnect {
         }
         return list;
     }
+    
+    public List<Status> getStatusOfFeedback() {
+        List<Status> list = new ArrayList<>();
+        String sql = "select * from Status where id = 14 or id = 15 or id = 13 ";
 
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            ResultSet resultSet = prepare.executeQuery();
+            prepare = conn.prepareStatement(sql);
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                list.add(new Status(id, name));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return list;
+    }
     public List<Status> getStatusOfTicket() {
         List<Status> list = new ArrayList<>();
         String sql = "SELECT * \n"
@@ -128,7 +146,22 @@ public class StatusDAO extends DBConnect {
             System.out.println(ex);
         }
     }
+    public void changeStatusFeedback(int id, int status) {
+        String sql = "UPDATE Feedbacks\n"
+                + "   SET Statusid=?"
+                + " WHERE id=?";
 
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setInt(1, status);
+            pre.setInt(2, id);
+
+            pre.executeUpdate();
+
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+    }
     public List<Status> getStatusOfFlightDetaisl() {
         List<Status> ls = new ArrayList<>();
         try {

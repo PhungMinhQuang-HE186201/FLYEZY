@@ -16,6 +16,7 @@
 <%@page import="dal.PlaneCategoryDAO"%>
 <%@page import="dal.SeatCategoryDAO"%>
 <%@page import="dal.BaggageManageDAO"%>
+<%@page import="dal.FeedbackDao"%>
 <%@page import="java.util.List"%>
 <%@page import="model.Status"%>
 <%@page import="model.Order"%>
@@ -28,6 +29,7 @@
 <%@page import="model.PlaneCategory"%>
 <%@page import="model.SeatCategory"%>
 <%@page import="model.Baggages"%>
+<%@page import="model.Feedbacks"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -35,6 +37,8 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+
 
         <title>JSP Page</title>
         <style>
@@ -64,10 +68,10 @@
                 display: flex;
                 align-items: center;
                 padding: 10px 0;
-                border-bottom: 1px dashed #ddd;
+                border-bottom: 1px solid #ddd;
             }
             .list-price{
-                border-bottom: 1px dashed #ddd;
+                border-bottom: 1px solid #ddd;
             }
 
             .airline-image {
@@ -86,6 +90,40 @@
             }
             .order-total{
                 text-align: right;
+            }
+            /* General icon styling */
+            .ticket-details i {
+                color: #666;
+                margin-right: 5px;
+                font-size: 0.9em;
+                vertical-align: middle;
+            }
+
+            /* Aligning icons and text in flight info */
+            .flight-info div {
+                line-height: 1.5;
+                color: #333;
+            }
+
+            .status-label {
+                display: inline-block;
+                padding: 5px 10px;
+                font-size: 12px;
+                font-weight: bold;
+                color: white;
+                border-radius: 12px;
+            }
+
+            .status-label.completed {
+                background-color: black; /* Adjust to match the color of "Completed" in the image */
+            }
+
+            .status-label.pending {
+                background-color: #ffc107; /* Example color for pending status */
+            }
+
+            .status-label.successful {
+                background-color: #28a745; /* Example color for confirmed status */
             }
 
 
@@ -159,70 +197,83 @@
                     <div class="order-header">
 
                         <div class="order-id">
-                            <%=o.getCode()%><br>
+                            <strong><%=o.getCode()%></strong><br>
 
-                            Contact name: <%=o.getContactName()%><br>
-                            Contact phone: <%=o.getContactPhone()%><br>
-                            Contact email: <%=o.getContactEmail()%>
+
+                            <div class="contact-info">
+                                Contact: <i class="fas fa-user"></i> <%= o.getContactName() %> | 
+                                <i class="fas fa-phone"></i> <%= o.getContactPhone() %> | 
+                                <i class="fas fa-envelope"></i> <%= o.getContactEmail() %>
+                            </div>
+
                         </div>
 
 
                         <div class="order-details">
-                            Created at: <%=o.getCreated_at()%>
-
+                            Created at: <%=o.getCreated_at()%><br>
+                            <span class="status-label <%= sd.getStatusNameById(o.getStatus_id()).toLowerCase() %>">
+                                <%= sd.getStatusNameById(o.getStatus_id()) %>
+                            </span>
                         </div>
                     </div>
 
                     <% int ticketOfBaggage = 0; int count = 1; int total = 0;%>
                     <% for(Ticket t : listTicketInOrder) { %>
                     <% ticketOfBaggage = bmd.getPriceBaggagesById(t.getId()); %>
-                    <% id = t.getId();%>
+                    <% id = t.getId(); %>
                     <div class="ticket-details">
-                        <div class="flight-info">
-                            <div style="display: flex">
-                                <% for(Airline a : ad.getAllAirline()) {
-                        if(a.getId() == od.getAirlineIdByOrder(o.getId())) { %>
+                        <div class="flight-info" style="display: flex; flex-direction: column; gap: 5px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
                                 <div class="airline-image">
-                                    <img src="<%=a.getImage()%>" alt="Airline Logo" class="img-fluid">
+                                    <img src="<%=ad.getImageById(td.getAirlineByTicket(t.getId()))%>" alt="Airline Logo" class="img-fluid">
                                 </div>
-                                <% } } %>
-                                Ticket <%= count %><br>
-                                Passenger: <%= t.getpSex() == 1 ? "Mr." : "Mrs." %><%= t.getpName() %><br>
-                                <%= scd.getSeatCategoryById(t.getSeat_Categoryid()).getName() %> - <%= t.getCode() %><br>
-                                <%for(FlightDetails detail : fdd.getAll()){
-                if(detail.getId() == t.getFlightDetailId()){ %>
-                               
-                                    
-                                    From: <%= fd.getDepartureByFlight(od.getFlightIdByOrder(o.getId())) %> to <%= fd.getDestinationByFlight(od.getFlightIdByOrder(o.getId())) %>
-                                    in <%=detail.getDate()%> at <%=detail.getTime()%><br>
-                                    <%=pcd.getPlaneCategoryById(detail.getPlaneCategoryId()).getName()%> - <%=fd.getFlightById(detail.getFlightId()).getMinutes()%> minutes<br>
-
-                                
-                                <%}}%>    <br>
-                                <% for(Baggages b : bmd.getAllBaggages()) {
-                        if(b.getId() == t.getBaggagesid()) { %>
-                                Extra checked baggages bought: <%=b.getWeight()%>
-                                <% } } %>
+                                <div>
+                                    <div>Ticket <%= count %></div>
+                                    <div><%= t.getpSex() == 1 ? "Mr." : "Mrs." %> <%= t.getpName() %></div>
+                                    <div><%= scd.getSeatCategoryById(t.getSeat_Categoryid()).getName() %> - <%= t.getCode() %></div>
+                                </div>
                             </div>
+                            <% for(FlightDetails detail : fdd.getAll()) {
+                if(detail.getId() == t.getFlightDetailId()) { %>
+
+                            <!-- Flight route icon -->
+                            <div><i class="fas fa-plane"></i> <%= fd.getDepartureByFlight(od.getFlightIdByOrder(o.getId())) %> to <%= fd.getDestinationByFlight(od.getFlightIdByOrder(o.getId())) %></div>
+
+                            <!-- Date and Time with icons -->
+                            <div>
+                                <i class="far fa-calendar-alt"></i>
+                                <%= detail.getDate() %>
+                                <span class="time-separator" style="margin-left: 10px;">
+                                    <i class="far fa-clock"></i>
+                                    <%= detail.getTime() %>
+                                </span>
+                            </div>
+
+
+                            <!-- Plane category and flight duration with icons -->
+                            <div><i class="fas fa-plane-departure"></i> <%= pcd.getPlaneCategoryById(detail.getPlaneCategoryId()).getName() %> - <%= fd.getFlightById(detail.getFlightId()).getMinutes() %> minutes</div>
+
+                            <% }} %>
+
+                            <!-- Extra baggage with icon -->
+                            <% for(Baggages b : bmd.getAllBaggages()) {
+                if(b.getId() == t.getBaggagesid()) { %>
+                            <div><i class="fas fa-suitcase"></i> Extra baggage: <%= b.getWeight() %>kg</div>
+                            <% } } %>
                         </div>
 
-                        <div class="ticket-actions">
-                            Ticket price: <%= t.getTotalPrice() %><br>
-                            Ticket status: <%= sd.getStatusNameById(t.getStatusid()) %><br>
-                            <%if(t.getStatusid() == 10 || t.getStatusid() == 12){%>
-                            <a class="btn btn-danger" style="text-decoration: none" onclick="openModalTicket(<%= t.getId() %>,<%= o.getId() %>)">Cancel ticket</a>
-                            <!-- Cancel Ticket Modal -->
+                        <div class="ticket-actions" style="margin-top: 10px;">
+                            <div>Ticket price: <%= t.getTotalPrice() %></div>
+                            <div>Ticket status: <%= sd.getStatusNameById(t.getStatusid()) %></div>
 
-                            <%}%>
-
+                            <% if(t.getStatusid() == 10 || t.getStatusid() == 12) { %>
+                            <a class="btn btn-danger" style="text-decoration: none; margin-top: 5px;" onclick="openModalTicket(<%= t.getId() %>,<%= o.getId() %>)">Cancel ticket</a>
+                            <% } %>
                         </div>
-
                     </div>
-
-
                     <% count++; %>
-
                     <% } %>
+
 
 
 
@@ -237,61 +288,79 @@
                     </div>
 
 
-                    <div class="order-total-section" style="text-align: right; font-size: 1.2em;">
-                        <div class="order-discount">Discount: 0%</div>
-                        <div class="order-total">Total: <span class="text-danger"><%= total + ticketOfBaggage %></span></div>
-                        <div class="order-actions">
-
+                    <div class="order-total-section" style="display: flex; justify-content: space-between; font-size: 1.2em;">
+                        <div style="text-align: left;">
+                            <div class="order-discount">Discount: 0%</div>
+                            <div class="order-total">Total: <span class="text-danger"><%= total + ticketOfBaggage %></span></div>
+                        </div>
+                        <div class="order-actions" style="align-items: end;">
                             <% if (td.countNumberTicketNotCancel(o.getId()) == 0) { %>
                             <a class="btn btn-danger" style="text-decoration: none; display: none;" onclick="openModalOrder(<%= o.getId() %>)">Cancel Order</a>
                             <% } else { %>
                             <a class="btn btn-danger" style="text-decoration: none;" onclick="openModalOrder(<%= o.getId() %>)">Cancel Order</a>
                             <% } %>
-                            <a class="btn btn-outline-secondary">Feedback</a>
+                            <% FeedbackDao fd1 = new FeedbackDao(); 
+                               Integer idd = (Integer) session.getAttribute("id"); 
+                               Feedbacks f = fd1.getFeedbakByOrderId(o.getId(), idd); 
+                               if (f == null) { %>
+                            <a href="evaluateController?orderId=<%= o.getId() %>">
+                                <button class="btn btn-outline-secondary">Feedback</button>
+                            </a>
+                            <% } else { %>
+                            <a href="evaluateController?action=viewUpdate&orderId=<%= o.getId() %>">
+                                <button class="btn btn-outline-secondary">Update Feedback</button>
+                            </a>
+                            <% } %>
                         </div>
                     </div>
+
                 </div>
-                <% } %>
-                <%}%>
             </div>
+            <% } %>
+            <%}%>
+
+            <br>
+
+
+            <!--        Cancel ticket modal-->
+            <div id="cancelTicketModal" class="modal" role="dialog" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);">
+                <div class="modal-dialog" style="margin: 15% auto; width: 30%; position: relative;">
+                    <div class="modal-content" style="background-color: #fff; padding: 20px; border: 1px solid #888;">
+                        <form action="cancelTicket" method="post">
+                            <input type="hidden" id="modalTicketId" name="ticketId" value="">
+                            <input type="hidden" id="modalOrderId" name="orderId" value="">
+                            <h2>Cancel Ticket</h2>
+                            <p>Are you sure you want to cancel this ticket?</p>
+                            <!-- Container for buttons with flex display -->
+                            <div style="display: flex; justify-content: space-between;">
+                                <button type="submit" id="confirmCancel" class="btn btn-danger" style="flex: 1; margin-right: 10px;">Yes</button>
+                                <button type="button" id="closeModal" class="btn btn-secondary" style="flex: 1;" onclick="closeModal()">No</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div id="cancelOrderModal" class="modal" role="dialog" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);">
+                <div class="modal-dialog" style="margin: 15% auto; width: 30%; position: relative;">
+                    <div class="modal-content" style="background-color: #fff; padding: 20px; border: 1px solid #888;">
+                        <form action="cancelOrder" method="post">
+                            <input type="hidden" id="modalOrderId2" name="orderId" value="">
+                            <h2>Cancel Order</h2>
+                            <p>Are you sure you want to cancel this order?</p>
+                            <!-- Container for buttons with flex display -->
+                            <div style="display: flex; justify-content: space-between;">
+                                <button type="submit" id="confirmCancelOrder" class="btn btn-danger" style="flex: 1; margin-right: 10px;">Yes</button>
+                                <button type="button" id="closeOrderModal" class="btn btn-secondary" style="flex: 1;" onclick="closeOrderModal()">No</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
 
         </div>
 
-        <!--        Cancel ticket modal-->
-        <div id="cancelTicketModal" class="modal" role="dialog" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);">
-            <div class="modal-dialog" style="margin: 15% auto; width: 30%; position: relative;">
-                <div class="modal-content" style="background-color: #fff; padding: 20px; border: 1px solid #888;">
-                    <form action="cancelTicket" method="post">
-                        <input type="hidden" id="modalTicketId" name="ticketId" value="">
-                        <input type="hidden" id="modalOrderId" name="orderId" value="">
-                        <h2>Cancel Ticket</h2>
-                        <p>Are you sure you want to cancel this ticket?</p>
-                        <!-- Container for buttons with flex display -->
-                        <div style="display: flex; justify-content: space-between;">
-                            <button type="submit" id="confirmCancel" class="btn btn-danger" style="flex: 1; margin-right: 10px;">Yes</button>
-                            <button type="button" id="closeModal" class="btn btn-secondary" style="flex: 1;" onclick="closeModal()">No</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <div id="cancelOrderModal" class="modal" role="dialog" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);">
-            <div class="modal-dialog" style="margin: 15% auto; width: 30%; position: relative;">
-                <div class="modal-content" style="background-color: #fff; padding: 20px; border: 1px solid #888;">
-                    <form action="cancelOrder" method="post">
-                        <input type="hidden" id="modalOrderId2" name="orderId" value="">
-                        <h2>Cancel Order</h2>
-                        <p>Are you sure you want to cancel this order?</p>
-                        <!-- Container for buttons with flex display -->
-                        <div style="display: flex; justify-content: space-between;">
-                            <button type="submit" id="confirmCancelOrder" class="btn btn-danger" style="flex: 1; margin-right: 10px;">Yes</button>
-                            <button type="button" id="closeOrderModal" class="btn btn-secondary" style="flex: 1;" onclick="closeOrderModal()">No</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
 
         <script>
 
