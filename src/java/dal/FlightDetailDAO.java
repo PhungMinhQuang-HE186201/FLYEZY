@@ -257,7 +257,7 @@ public class FlightDetailDAO extends DBConnect {
     }
 
     public void addnew(FlightDetails flightDetail) {
-        String sql = "INSERT INTO Flight_Detail (date, time, price, flightid, Plane_Categoryid, Status_id) VALUES (?, ?, ?, ?, ?, 3)";
+        String sql = "INSERT INTO Flight_Detail (date, time, price, flightid, Plane_Categoryid, Status_id) VALUES (?, ?, ?, ?, ?, 1)";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
 

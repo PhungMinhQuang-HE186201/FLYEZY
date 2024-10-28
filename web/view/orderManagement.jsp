@@ -292,6 +292,9 @@
                             Order Tickets
                             <span style="margin-left: 8px" class="glyphicon glyphicon-menu-right"></span>
                         </a>
+                        <a href="evaluateController?action=view&orderId=<%=o.getId()%>" class="btn btn-primary" style="margin-left: 10px; background-color:green">
+                            Feedback
+                        </a>
                     </td>
                 </tr>
                 <!--confirm modal btn3-->

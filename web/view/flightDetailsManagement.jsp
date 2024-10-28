@@ -18,6 +18,8 @@
 <%@page import="model.Location"%>
 <%@page import="model.Country"%>
 <%@page import="model.Airline"%>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %>
 <html>
     <head>
         <link rel="stylesheet" href="../css/styleAdminController.css"/>
@@ -51,7 +53,7 @@
                 align-items: flex-start;
             }
             .details {
-                width: 45%; 
+                width: 45%;
             }
             .details p {
                 font-size: 16px;
@@ -185,10 +187,14 @@
                         </select>
                     </td>
                     <td>
-                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#update-<%=fd.getId()%>">
+                        <%
+                        // Kiểm tra xem status ID có phải là 2 không
+                        boolean isStatusTwo = (fd.getStatusId() == 2);
+                        %>
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#update-<%=fd.getId()%>"  <%= isStatusTwo ? "disabled" : "" %>>
                             Update
                         </button>
-                        <a style="margin-right: 5px;text-decoration: none" class="btn btn-warning"  href="TicketController?flightDetailID=<%= fd.getId() %>">
+                        <a style="margin-right: 5px;text-decoration: none;<%= isStatusTwo ? "pointer-events: none;opacity: 0.5" : "" %>" class="btn btn-warning"  href="TicketController?flightDetailID=<%= fd.getId() %>">
                             Ticket Detail
                             <span style="margin-left: 8px" class="glyphicon glyphicon-menu-right"></span>
                         </a>
@@ -230,7 +236,7 @@
                                 <input type="hidden" name="airlineId" value="<%=aid%>">
                                 <div class="mb-3">
                                     <label for="flightDate" class="form-label">Date: </label>
-                                    <input type="date" class="form-control" id="uflightDate-<%=fd.getId()%>" name="date" oninput="validateDate(<%=fd.getId()%>)" value=<%= fd.getDate()%> required>
+                                    <input type="date" class="form-control" id="uflightDate-<%=fd.getId()%>" name="date"  oninput="validateForm(<%=fd.getId()%>, 'or')" value=<%= fd.getDate()%> required>
                                     <span id="dateError-<%=fd.getId()%>" style="color:red; display:none;">Date cannot be in the past</span>
                                 </div>
                                 <div class="mb-3">
@@ -239,7 +245,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="flightPrice" class="form-label">Price: </label>
-                                    <input type="number" class="form-control" id="uflightPrice-<%=fd.getId()%>" oninput="validatePrice(<%=fd.getId()%>)" name="price" value="<%= fd.getPrice() %>" required>
+                                    <input type="number" class="form-control" id="uflightPrice-<%=fd.getId()%>"  oninput="validateForm(<%=fd.getId()%>, 'or')" name="price" value="<%= fd.getPrice() %>" required>
                                     <span id="priceError-<%=fd.getId()%>" style="color:red; display:none;">Price must be less than 100,000,000 VND</span>
                                 </div>
                                 <div class="mb-3">
@@ -287,7 +293,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="date">Date:</label>
-                        <input type="date" class="form-control" id="uflightDate-<%=fid%>"  oninput="validateDate(<%=fid%>)" name="date" required>
+                        <input type="date" class="form-control" id="uflightDate-<%=fid%>"   oninput="validateForm(<%=fid%>, 'or')" name="date" required>
                         <div id="dateError-<%=fid%>" style="display:none; color:red;">Date must be today or later.</div>
                     </div>
                     <div class="form-group">
@@ -297,7 +303,7 @@
                     </div>
                     <div class="form-group">
                         <label for="price">Price:</label>
-                        <input type="number" class="form-control" id="uflightPrice-<%=fid%>" oninput="validatePrice(<%=fid%>)" name="price" required>
+                        <input type="number" class="form-control" id="uflightPrice-<%=fid%>"  oninput="validateForm(<%=fid%>, 'or')" name="price" required>
                         <div id="priceError-<%=fid%>" style="display:none; color:red;">Price must be less than 100,000,000.</div>
                     </div>
                     <div class="form-group">
@@ -361,33 +367,43 @@
 
 
 <script>
-    function validatePrice(id) {
+    function validateForm(id, mode) {
         var priceInput = document.getElementById("uflightPrice-" + id).value;
-        var priceError = document.getElementById("priceError-" + id);
-        var btnsubmit = document.getElementById("submitbtn-" + id);
-        var maxPrice = 100000000;
-        priceError.style.display = "none";
-        if (priceInput >= maxPrice) {
-            priceError.style.display = "inline";
-            btnsubmit.disabled = true;
-        } else {
-            btnsubmit.disabled = false;
-        }
-    }
-    function validateDate(id) {
         var dateInput = document.getElementById("uflightDate-" + id).value;
+
+        var priceError = document.getElementById("priceError-" + id);
         var dateError = document.getElementById("dateError-" + id);
         var btnsubmit = document.getElementById("submitbtn-" + id);
+
+        var maxPrice = 100000000;
         var currentDate = new Date();
         var inputDate = new Date(dateInput);
-        dateError.style.display = "none";
+
         // Đặt giờ của currentDate về 00:00:00 để so sánh ngày
         currentDate.setHours(0, 0, 0, 0);
-        if (inputDate < currentDate) {
+
+        // Ẩn các thông báo lỗi
+        priceError.style.display = "none";
+        dateError.style.display = "none";
+
+        var isPriceValid = priceInput < maxPrice;
+        var isDateValid = inputDate >= currentDate;
+
+        // Hiển thị thông báo lỗi khi cần
+        if (!isPriceValid) {
+            priceError.style.display = "inline";
+        }
+        if (!isDateValid) {
             dateError.style.display = "inline";
-            btnsubmit.disabled = true;
-        } else {
-            btnsubmit.disabled = false;
+        }
+
+        // Xử lý logic theo mode
+        if (mode === "or") {
+            // "Hoặc": btnsubmit bị disabled nếu một trong hai điều kiện không hợp lệ
+            btnsubmit.disabled = !isPriceValid || !isDateValid;
+        } else if (mode === "and") {
+            // "Và": btnsubmit bị disabled nếu cả hai điều kiện không hợp lệ
+            btnsubmit.disabled = !isPriceValid && !isDateValid;
         }
     }
 </script>

@@ -16,6 +16,7 @@
 <%@page import="dal.PlaneCategoryDAO"%>
 <%@page import="dal.SeatCategoryDAO"%>
 <%@page import="dal.BaggageManageDAO"%>
+<%@page import="dal.FeedbackDao"%>
 <%@page import="java.util.List"%>
 <%@page import="model.Status"%>
 <%@page import="model.Order"%>
@@ -28,6 +29,7 @@
 <%@page import="model.PlaneCategory"%>
 <%@page import="model.SeatCategory"%>
 <%@page import="model.Baggages"%>
+<%@page import="model.Feedbacks"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -298,6 +300,19 @@
                             <a class="btn btn-danger" style="text-decoration: none;" onclick="openModalOrder(<%= o.getId() %>)">Cancel Order</a>
                             <% } %>
                             <a class="btn btn-outline-secondary" style="color: black; background-color: white; border-color: black;">Feedback</a>
+                    <div class="order-total-section" style="text-align: right; font-size: 1.2em;">
+                        <div class="order-discount">Discount: 0%</div>
+                        <div class="order-total">Total: <span class="text-danger"><%= total + ticketOfBaggage %></span></div>
+                        <div class="order-actions">
+                            <button class="btn btn-danger">Cancel Order</button>
+                            <%FeedbackDao fd1 = new FeedbackDao();
+                             Integer id = (Integer) session.getAttribute("id");
+                              Feedbacks f = fd1.getFeedbakByOrderId(o.getId(),id);
+                              if(f==null){%>
+                                <a href="evaluateController?orderId=<%=o.getId()%>"><button class="btn btn-outline-secondary">Feedback</button></a>
+                            <%}else{%>
+                                <a href="evaluateController?action=viewUpdate&orderId=<%=o.getId()%>"><button class="btn btn-outline-secondary">Update Feedback</button></a>
+                            <%}%>
                         </div>
                     </div>
 
