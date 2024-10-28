@@ -27,6 +27,7 @@ public class TicketDAO extends DBConnect {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Ticket t = new Ticket(rs.getInt("id"),
+                        rs.getInt("Flight_Detail_id"),
                         rs.getInt("Seat_Categoryid"),
                         rs.getInt("Passenger_Typesid"),
                         rs.getString("code"),
@@ -60,6 +61,24 @@ public class TicketDAO extends DBConnect {
             e.printStackTrace();
         }
 
+    }
+
+    public int getAirlineByTicket(int id) {
+        String sql = "select f.airline_id from Ticket t \n"
+                + "join Flight_detail fd on fd.id = t.Flight_detail_id\n"
+                + "join Flight f on f.id = fd.flightid\n"
+                + "where t.id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("Airline_id");
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return -1;
     }
 
     public int countNumberTicketNotCancel(int orderId) {
@@ -151,7 +170,7 @@ public class TicketDAO extends DBConnect {
                         rs.getInt("Order_id"),
                         rs.getInt("Statusid"),
                         rs.getInt("Flight_Type_id"));
-                        
+
                 ls.add(t);
             }
             return ls;
@@ -388,8 +407,9 @@ public class TicketDAO extends DBConnect {
     }
 
     public static void main(String[] args) {
-        TicketDAO tcd = new TicketDAO();
+        TicketDAO td = new TicketDAO();
+        AirlineManageDAO ad = new AirlineManageDAO();
         //tcd.confirmSuccessAllTicketsByOrderId(1);
-        System.out.println(tcd.getAllTicketsById(1));
+        System.out.println(ad.getImageById(td.getAirlineByTicket(1)));
     }
 }

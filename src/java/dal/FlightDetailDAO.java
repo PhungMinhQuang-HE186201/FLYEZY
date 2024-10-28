@@ -407,7 +407,11 @@ public class FlightDetailDAO extends DBConnect {
         return 0;
     }
     public static void main(String[] args) {
-        
-
+        FlightDetailDAO fdd = new FlightDetailDAO();
+        String d = "2024-10-01";
+        Date date = Date.valueOf(d);
+        for (Object object : fdd.getFlightDetailsByAirportAndDDate(1, 2, date)) {
+            System.out.println(object);
+        }
     }
 }

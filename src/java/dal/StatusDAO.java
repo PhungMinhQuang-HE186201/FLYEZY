@@ -73,7 +73,7 @@ public class StatusDAO extends DBConnect {
 
     public List<Status> getStatusOfOrder() {
         List<Status> list = new ArrayList<>();
-        String sql = "select * from Status where id = 8 or id = 10 or id = 12 ";
+        String sql = "select * from Status where id = 10 or id = 12 ";
 
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
