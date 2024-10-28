@@ -136,6 +136,24 @@ public class AccountsDAO extends DBConnect {
         }
         return null;
     }
+    public String getAccountEmailById(int id) {
+        String sql = "SELECT * FROM Accounts WHERE id = ?";
+        try {
+            PreparedStatement st = conn.prepareStatement(sql);
+            st.setInt(1, id);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                Accounts a = new Accounts(rs.getInt("id"), rs.getString("name"), rs.getString("email"),
+                        rs.getString("password"), rs.getString("phoneNumber"),
+                        rs.getString("address"), rs.getString("image"), rs.getDate("dob"), rs.getInt("Rolesid"), rs.getInt("Airlineid"),
+                        rs.getTimestamp("created_at"), rs.getTimestamp("updated_at"), rs.getInt("Status_id"));
+                return a.getEmail();
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return null;
+    }
 
     public void updateAccount(Accounts account) {
         String sql = "UPDATE Accounts\n"
