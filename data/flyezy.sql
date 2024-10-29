@@ -179,13 +179,23 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `flyezy`.`Discount` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `percentage` DECIMAL(5,2) NULL DEFAULT NULL,
+  `percentage` DECIMAL(5,2) NOT NULL,
+  `minimum_order_value` INT NOT NULL,
+  `date_created` TIMESTAMP NOT NULL,
+  `valid_until` TIMESTAMP NOT NULL,
   `Airline_id` INT NOT NULL,
+  `Status_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_Discount_Airline1_idx` (`Airline_id` ASC) VISIBLE,
+  INDEX `fk_Discount_Status1_idx` (`Status_id` ASC) VISIBLE,
   CONSTRAINT `fk_Discount_Airline1`
     FOREIGN KEY (`Airline_id`)
     REFERENCES `flyezy`.`Airline` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Discount_Status1`
+    FOREIGN KEY (`Status_id`)
+    REFERENCES `flyezy`.`Status` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -555,6 +565,7 @@ SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
+
 -- ------------------------------------------------
 -- INSERT DATA
 ---------------------------------------------------
@@ -659,6 +670,12 @@ VALUES
 (1, 1, 7, 1, 'A1', 'Passenger 1', 1, '0912345678', '1990-01-01', 1, NULL,0, 1, 10),
 (2, 2, 8, 2, 'C2', 'Passenger 2', 1, '0987654321', '1992-05-10', 1, NULL,0, 1, 10),
 (3, 2, 7, 1, 'B3', 'Passenger 3', 1, '0978123456', '1988-08-20', 1, NULL,0, 2, 10);
+
+INSERT INTO `flyezy`.`News_Category` (`name`) VALUES 
+('News'),
+('Promotion');
+
+
 
 
 
