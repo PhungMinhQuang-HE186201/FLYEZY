@@ -164,6 +164,13 @@
                 background-color: #3C6E57;
             }
 
+            .age-range{
+                margin-top: 8px;
+                color: #3C6E57;
+                font-size: 12px;
+                font-weight: 600;
+            }
+
 
 
         </style>
@@ -298,8 +305,8 @@
                 </div>
             </div>
         </section>
-    <%-- quanHT --%>
-    <div class="main-container" id="body-1">
+        <%-- quanHT --%>
+        <div class="main-container" id="body-1">
             <div  id="introduction">
                 <h1>Chào mừng đến với Flyezy!</h1>
                 <p>Không gian mới, cảm xúc mới - Đặt vé ngay để bắt đầu hành trình của bạn.</p>
@@ -370,21 +377,21 @@
                     </div>
                 </div>
             </div>
-           
+
         </div>
-      
+
         <%@include file="footer.jsp" %> 
         <script src="js/locationBox.js" type="text/javascript"></script>
         <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
         <script>
-            AOS.init();
-            window.addEventListener("load", () => {
-            const loader = document.querySelector(".loader");
-            loader.classList.add("loader-hidden");
-            loader.addEventListener("transitionend", () => {
-            document.body.removeChild(loader);
-            });
-            });
+                                            AOS.init();
+                                            window.addEventListener("load", () => {
+                                                const loader = document.querySelector(".loader");
+                                                loader.classList.add("loader-hidden");
+                                                loader.addEventListener("transitionend", () => {
+                                                    document.body.removeChild(loader);
+                                                });
+                                            });
         </script>
         <script>
             const passengersInput = document.getElementById('passengers');

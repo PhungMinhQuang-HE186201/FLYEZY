@@ -27,6 +27,7 @@ public class TicketDAO extends DBConnect {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Ticket t = new Ticket(rs.getInt("id"),
+                        rs.getInt("Flight_Detail_id"),
                         rs.getInt("Seat_Categoryid"),
                         rs.getInt("Passenger_Typesid"),
                         rs.getString("code"),
@@ -60,6 +61,24 @@ public class TicketDAO extends DBConnect {
             e.printStackTrace();
         }
 
+    }
+
+    public int getAirlineByTicket(int id) {
+        String sql = "select f.Airline_id from Ticket t \n"
+                + "join Flight_Detail fd on fd.id = t.Flight_Detail_id\n"
+                + "join Flight f on f.id = fd.Flightid\n"
+                + "where t.id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("Airline_id");
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return -1;
     }
 
     public int countNumberTicketNotCancel(int orderId) {
@@ -151,7 +170,8 @@ public class TicketDAO extends DBConnect {
                         rs.getInt("Order_id"),
                         rs.getInt("Statusid"),
                         rs.getInt("Flight_Type_id"));
-                        
+
+
                 ls.add(t);
             }
             return ls;
@@ -180,10 +200,9 @@ public class TicketDAO extends DBConnect {
     }
 
     public Ticket getTicketByCode(String code, int flightDetailID, int seatCategoryId) {
-        String sql = "SELECT t.* FROM Ticket t "
-                + "JOIN `flyezy`.`Order` o ON t.Order_id = o.id "
-                + "WHERE t.code = ? AND o.Flight_Detail_id = ? "
-                + "AND t.Statusid != 9 AND t.Seat_Categoryid = ?";
+        String sql = "SELECT * FROM Ticket t "
+                + "WHERE code = ? AND Flight_Detail_id = ? "
+                + "AND Statusid != 9 AND Seat_Categoryid = ?";
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -244,7 +263,7 @@ public class TicketDAO extends DBConnect {
 
     public int getTicketPriceByOrderAndPassenger(int orderId, int passengerTypeId) {
         String sql = "select sum(t.totalPrice) totalPriceType from Ticket t\n"
-                + "join flyezy.order o on o.id = t.Order_id\n"
+                + "join flyezy.Order o on o.id = t.Order_id\n"
                 + "where o.id = ? and t.Passenger_Typesid = ?";
         try {
             PreparedStatement st = conn.prepareStatement(sql);
@@ -356,29 +375,30 @@ public class TicketDAO extends DBConnect {
         return n;
     }
 
-    public int createTicket(String code, int seatCategoryId, int passengerTypeId, String pName, int pSex, String pPhoneNumber, Date pDob, Integer baggageId, int totalPrice, int orderId, int flightTypeId) {
+    public int createTicket(String code, int flightDetailId, int seatCategoryId, int passengerTypeId, String pName, int pSex, String pPhoneNumber, Date pDob, Integer baggageId, int totalPrice, int orderId, int flightTypeId) {
         int n = 0;
         String sql = "INSERT INTO `flyezy`.`Ticket` \n"
-                + "(`Seat_Categoryid`, `Passenger_Typesid`, `code`,`pName`,`pSex`,`pPhoneNumber`,`pDob`,`Baggagesid`,`totalPrice`,`Order_id`, `Statusid`,`Flight_Type_id`) \n"
-                + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+                + "(`Flight_Detail_id`,`Seat_Categoryid`, `Passenger_Typesid`, `code`,`pName`,`pSex`,`pPhoneNumber`,`pDob`,`Baggagesid`,`totalPrice`,`Order_id`, `Statusid`,`Flight_Type_id`) \n"
+                + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, seatCategoryId);
-            ps.setInt(2, passengerTypeId);
-            ps.setString(3, code);
-            ps.setString(4, pName);
-            ps.setInt(5, pSex);
-            ps.setString(6, pPhoneNumber);
-            ps.setDate(7, pDob);
+            ps.setInt(1, flightDetailId);
+            ps.setInt(2, seatCategoryId);
+            ps.setInt(3, passengerTypeId);
+            ps.setString(4, code);
+            ps.setString(5, pName);
+            ps.setInt(6, pSex);
+            ps.setString(7, pPhoneNumber);
+            ps.setDate(8, pDob);
             if (baggageId == null) {
-                ps.setNull(8, java.sql.Types.INTEGER);
+                ps.setNull(9, java.sql.Types.INTEGER);
             } else {
-                ps.setInt(8, baggageId);
+                ps.setInt(9, baggageId);
             }
-            ps.setInt(9, totalPrice);
-            ps.setInt(10, orderId);
-            ps.setInt(11, 12);
-            ps.setInt(12, flightTypeId);
+            ps.setInt(10, totalPrice);
+            ps.setInt(11, orderId);
+            ps.setInt(12, 12);
+            ps.setInt(13, flightTypeId);
 
             n = ps.executeUpdate();
         } catch (Exception ex) {
@@ -388,8 +408,11 @@ public class TicketDAO extends DBConnect {
     }
 
     public static void main(String[] args) {
-        TicketDAO tcd = new TicketDAO();
+        TicketDAO td = new TicketDAO();
+        AirlineManageDAO ad = new AirlineManageDAO();
         //tcd.confirmSuccessAllTicketsByOrderId(1);
-        System.out.println(tcd.getAllTicketsById(1));
+        System.out.println(td.createTicket("C9", 1, 7, 2, "HIHI", 0, null, Date.valueOf("2000-10-10"), null, 0, 1, 1));
+        //System.out.println(tcd.getAllTicketCodesById(1, 7));
+//        System.out.println(tcd.getTicketByCode("B1", 4, 8));
     }
 }
