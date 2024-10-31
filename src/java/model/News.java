@@ -12,32 +12,36 @@ public class News {
     private String content;
     private int newCategory;
     private int accountId;
+    private int Airline_id;
 
     public News() {
     }
 
-    public News(int id, String title, String content, int newCategory, int accountId) {
+    public News(int id, String title, String content, int newCategory, int accountId, int Airline_id) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.newCategory = newCategory;
         this.accountId = accountId;
+        this.Airline_id = Airline_id;
     }
-     public News( String title, String image,String content, int newCategory, int accountId) {
+     public News( String title, String image,String content, int newCategory, int accountId, int Airline_id) {
         this.title = title;
          this.image = image;
         this.content = content;
         this.newCategory = newCategory;
         this.accountId = accountId;
+        this.Airline_id = Airline_id;
     }
 
-    public News(int id, String title, String image, String content, int newCategory, int accountId) {
+    public News(int id, String title, String image, String content, int newCategory, int accountId, int Airline_id) {
         this.id = id;
         this.title = title;
         this.image = image;
         this.content = content;
         this.newCategory = newCategory;
         this.accountId = accountId;
+        this.Airline_id = Airline_id;
     }
      
      
@@ -88,6 +92,14 @@ public class News {
 
     public void setAccountId(int accountId) {
         this.accountId = accountId;
+    }
+
+    public void setAirline_id(int Airline_id) {
+        this.Airline_id = Airline_id;
+    }
+
+    public int getAirline_id() {
+        return Airline_id;
     }
     
     

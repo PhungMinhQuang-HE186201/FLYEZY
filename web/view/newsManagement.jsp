@@ -46,14 +46,15 @@
 
     <body>
         <%@include file="header.jsp" %>
-
+        <%@include file="admin-sideBar.jsp" %>
 
 
 
         <div id="main-content"  margin: 0">
-            <div class="filterController col-md-12" >
+            <div class="filterController col-md-12" style="margin-left: -182px;"  >
                 <form action="newsManagement" method="get" style="margin-left: 34%;margin-top: 7%;">
                     <input type="hidden" name="action" value="search">
+                    <input type="hidden" name="airlineId" value="${requestScope.account.getAirlineId()}">
                     <strong class="filterElm">News Category</strong>
                     <select class="filterElm" name="newsCategory">
                         <option value=""  ${param.newsCategory == null ? 'selected' : ''}>All</option>
@@ -70,7 +71,7 @@
                     <a class="btn btn-danger" href="newsManagement">Cancel</a>
                 </form>
                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#News" style="margin-top: -4%;flex-shrink: 0;margin-left: 20%;">
-                    Add New Airline
+                    Add News
                 </button>
             </div>
 
@@ -91,6 +92,7 @@
                             <form id="addNews" action="newsManagement" method="POST" >
                                 <input type="hidden" name="action" value="create">
                                 <input type="hidden" name="accountId" value="${requestScope.account.getId()}">
+                                 <input type="hidden" name="airlineId" value="${requestScope.account.getAirlineId()}">
 
                                 <!--Title -->
                                 <div class="form-group">
@@ -148,16 +150,16 @@
             <h4 style="color : red"></h4>
             <div class="row" style="margin: 0">
 
-                <div class="col-md-10" id="left-column" style="margin-left: 134px;">
+                <div class="col-md-10" id="left-column" style="margin-left: 44px;">
                     <table class="entity">
                         <thead>
                             <tr>
                                 <th style="width: 138px;">Title</th>
-                                <th style="width: 138px;">Title</th>
+                                <th style="width: 166px;">Image</th>
                                 <th style="width: 457px;">Content</th>
                                 <th style="width: 127px;">News Category</th>
                                 <th style="width: 131px;">Author</th>
-                                <th style="width: 15%">Actions</th>
+                                <th style="width: 18%">Actions</th>
 
                             </tr>
                         </thead>
@@ -196,6 +198,7 @@
                                                     <form  action="newsManagement" method="POST" >
                                                         <input type="hidden" name="action" value="update">
                                                         <input type="hidden" name="accountId" value="${requestScope.account.getId()}">
+                                                        <input type="hidden" name="airlineId" value="${requestScope.account.getAirlineId()}">
                                                         <input type="hidden" name="id" value="<%= list.getId() %>">
 
                                                         <div class="form-group">
@@ -272,19 +275,19 @@
         <script>
             function doDelete(id) {
                 if (confirm("Bạn có muốn xoá bài viết này? ")) {
-                    // Create a form dynamically and submit it
+                    
                     var form = document.createElement("form");
                     form.method = "POST";
                     form.action = "newsManagement";
 
-                    // Hidden input for action
+                   
                     var actionInput = document.createElement("input");
                     actionInput.type = "hidden";
                     actionInput.name = "action";
                     actionInput.value = "delete";
                     form.appendChild(actionInput);
 
-                    // Hidden input for id
+                    
                     var idInput = document.createElement("input");
                     idInput.type = "hidden";
                     idInput.name = "id";

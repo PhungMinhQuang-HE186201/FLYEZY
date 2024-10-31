@@ -84,16 +84,19 @@ public class NewsManagementServlet extends HttpServlet {
 
             List<NewCategory> newC = nc.getNewCategory();
             request.setAttribute("newC", newC);
+           
   
             String action = request.getParameter("action");
             if (action == null) {
-                List<News> lnew = nd.getNews();
+//                List<News> lnew = nd.getNews();
+                List<News> lnew = nd.getNewsByAirlineId(acc.getAirlineId());
                 request.setAttribute("lnew", lnew);
                 request.getRequestDispatcher("view/newsManagement.jsp").forward(request, response);
             } else if (action.equals("search")) {
                 String title = request.getParameter("title").trim();
                 String newsCategory = request.getParameter("newsCategory");
-                List<News> lnew = nd.searchNews(title, newsCategory);
+                int airlineId = Integer.parseInt(request.getParameter("airlineId"));
+                List<News> lnew = nd.searchNews(title, newsCategory, airlineId);
                 request.setAttribute("lnew", lnew);
                 request.getRequestDispatcher("view/newsManagement.jsp").forward(request, response);
             }
@@ -113,7 +116,8 @@ public class NewsManagementServlet extends HttpServlet {
             String Content = request.getParameter("Content");
             int newCategory = Integer.parseInt(request.getParameter("category"));
             int accountId = Integer.parseInt(request.getParameter("accountId"));
-            News a = new News(Title, image, Content, newCategory, accountId);
+            int airlineId = Integer.parseInt(request.getParameter("airlineId")); 
+            News a = new News(Title, image, Content, newCategory, accountId,airlineId);
             int n = nd.createNews(a);
             response.sendRedirect("newsManagement");
 
@@ -124,7 +128,8 @@ public class NewsManagementServlet extends HttpServlet {
             String Content = request.getParameter("content");
             int newCategory = Integer.parseInt(request.getParameter("category"));
             int accountId = Integer.parseInt(request.getParameter("accountId"));
-            News a = new News(id, Title,image, Content, newCategory, accountId);
+            int airlineId = Integer.parseInt(request.getParameter("airlineId"));
+            News a = new News(id, Title,image, Content, newCategory, accountId,airlineId);
             nd.UpdateNews(a);
             response.sendRedirect("newsManagement");
         } else if (action.equals("delete")) {

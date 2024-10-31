@@ -31,6 +31,11 @@ Admin --%> <%@page contentType="text/html" pageEncoding="UTF-8"%>
                         Flight Management
                     </a>
                 </li>
+                <li>
+                    <a href="newsManagement" class="<%= currentPage.equals("/flyezy/view/newsManagement.jsp") ? "current-page" : "" %>">
+                        News Management
+                    </a>
+                </li>
                 
             </ul>
         </div>

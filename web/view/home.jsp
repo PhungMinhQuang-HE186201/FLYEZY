@@ -7,18 +7,23 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
+<%@page import="dal.AirlineManageDAO" %>
 <%@page import="model.Location"%>
 <%@page import="model.Airport"%>
 <%@page import="dal.LocationDAO"%>
 <%@page import="dal.AirportDAO"%>
+<%@page import="model.News" %>
+<%@page import="dal.NewsDAO" %>
+
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="shortcut icon" type="image/png" href="img/flyezy-logo3.png" />
+
         <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
         <link rel="stylesheet" href="../flyezy/css/styleHome.css"/>
-
+        <link rel="stylesheet" href="css/styleNews.css"/>
         <title>Flight Booking Form</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
@@ -338,7 +343,11 @@
 
             </div>
             <div style=" background-image: linear-gradient(white,rgb(60, 110, 87));
-                 height: 150px"></div>
+                 height: 150px">
+
+
+
+            </div>
 
         </div>
         <div class="main-container" id="body-2">
@@ -380,18 +389,61 @@
 
         </div>
 
+
+        <div class="main-container" id="body-2">
+           
+                <div style="display: ${empty param.id ? '' : 'none'};margin: 130px 0">
+                <h1 style="margin-bottom: 20px; text-align: center;">Tin tức</h1>
+                <div class="news-container">
+                    <% 
+                        AirlineManageDAO amd = new AirlineManageDAO();
+                        List<News> listNew = (List<News>) request.getAttribute("listNew");
+                        if (listNew != null) {
+                            for (int i = listNew.size() - 1; i >= 0; i--) {
+                                News n = listNew.get(i);
+                    %>
+                    <div class="news-item" onclick="viewNews('<%= n.getId() %>');">
+                        <img src="<%= n.getImage() %>" alt="<%= n.getTitle() %>" >
+
+                        <h2 style="height: 25%;"><%= n.getTitle() %></h2>
+                            <div class="news-content" style="display: none;">
+                            <p><%= n.getContent() %></p>
+                    </div>
+
+                    <div   style="margin-top: 19%;margin-left: 63%;">
+                        <img src="<%=amd.getImageById(n.getAirline_id())%>" style="width: 17%;height: 17%;">
+                        <p style="margin-top: -16%;margin-left: 20%;"><%= amd.getNameById(n.getAirline_id()) %></p>
+                    </div>
+
+                </div>
+                <% 
+                       }
+                   }
+                %>
+            </div>
+        </div>
+
+
+            </div>
+
+
+
+        </div>
+
+
+
         <%@include file="footer.jsp" %> 
         <script src="js/locationBox.js" type="text/javascript"></script>
         <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
         <script>
-                                            AOS.init();
-                                            window.addEventListener("load", () => {
-                                                const loader = document.querySelector(".loader");
-                                                loader.classList.add("loader-hidden");
-                                                loader.addEventListener("transitionend", () => {
-                                                    document.body.removeChild(loader);
-                                                });
-                                            });
+                        AOS.init();
+                        window.addEventListener("load", () => {
+                            const loader = document.querySelector(".loader");
+                            loader.classList.add("loader-hidden");
+                            loader.addEventListener("transitionend", () => {
+                                document.body.removeChild(loader);
+                            });
+                        });
         </script>
         <script>
             const passengersInput = document.getElementById('passengers');
@@ -630,7 +682,11 @@
 
         </script>
 
-
+        <script>
+            function viewNews(newsId) {
+                window.location.href = 'News?id=' + newsId;
+            }
+        </script>
         <!-- jQuery -->
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
