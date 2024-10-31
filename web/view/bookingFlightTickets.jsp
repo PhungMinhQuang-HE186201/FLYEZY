@@ -8,7 +8,6 @@
 <%@page import="java.text.SimpleDateFormat"%>
 <%@ page import="java.text.NumberFormat" %>
 <%@ page import="java.util.Locale" %>
-<%@page import="java.text.NumberFormat" %>
 <%@page import="java.util.Calendar" %>
 <%@page import="model.FlightDetails" %>
 <%@page import="model.Flights" %>
@@ -414,7 +413,7 @@
                                                 <option value="0">Buy 0kg extra checked baggage - <%=currencyFormatter.format(0)%></option>
                                                 <% for(Baggages b : bmd.getAllBaggagesByAirline(airlineId)){
                                                 %>
-                                                <option value="<%=b.getId()%>">Buy <%=b.getWeight()%>kg extra checked baggage - <%=currencyFormatter.format(b.getPrice())%></option>
+                                                <option value="<%=b.getId()%>" data-price="<%=b.getPrice()%>">Buy <%=b.getWeight()%>kg extra checked baggage - <%=currencyFormatter.format(b.getPrice())%></option>
                                                 <%
                                                     }
                                                 %>
@@ -436,7 +435,7 @@
                                                 <option value="0">Buy 0kg extra checked baggage - <%=currencyFormatter.format(0)%></option>
                                                 <% for(Baggages b : bmd.getAllBaggagesByAirline(airlineId2)){
                                                 %>
-                                                <option value="<%=b.getId()%>">Buy <%=b.getWeight()%>kg extra checked baggage - <%=currencyFormatter.format(b.getPrice())%></option>
+                                                <option value="<%=b.getId()%>" data-price="<%=b.getPrice()%>" >Buy <%=b.getWeight()%>kg extra checked baggage - <%=currencyFormatter.format(b.getPrice())%></option>
                                                 <%
                                                     }
                                                 %>
@@ -856,20 +855,28 @@
 
             }
 
+
             function updateTotalBaggage() {
                 var totalBaggage = 0;
                 var baggageId = 0;
                 for (var i = 1; i <= <%=adultTicket%>; i++) {
                     var baggageElement = document.getElementById("baggage" + i);
-                    console.log(baggageElement);
                     baggageId = parseInt(baggageElement ? baggageElement.value : 0);
-                    totalBaggage += isNaN(baggageId) ? 0 : baggageId;
+                    if (baggageId !== 0) {
+                        var selectedOption = baggageElement.options[baggageElement.selectedIndex];
+                        console.log(parseInt(selectedOption.getAttribute('data-price')));
+                        totalBaggage += parseInt(selectedOption.getAttribute('data-price'));
+                    }
+
                 }
                 for (var i = <%=adultTicket+childTicket+infantTicket+1%>; i <= <%=totalPassengers%>; i++) {
                     var baggageElement = document.getElementById("baggage" + i);
-                    console.log(baggageElement);
                     baggageId = parseInt(baggageElement ? baggageElement.value : 0);
-                    totalBaggage += isNaN(baggageId) ? 0 : baggageId;
+                    if (baggageId !== 0) {
+                        var selectedOption = baggageElement.options[baggageElement.selectedIndex];
+                        console.log(parseInt(selectedOption.getAttribute('data-price')));
+                        totalBaggage += parseInt(selectedOption.getAttribute('data-price'));
+                    }
                 }
                 document.getElementById("totalBaggage").innerText = "= " + new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(totalBaggage);
                 updateTotalPrice(totalBaggage);
