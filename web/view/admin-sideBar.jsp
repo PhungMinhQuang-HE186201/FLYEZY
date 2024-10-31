@@ -31,7 +31,12 @@ Admin --%> <%@page contentType="text/html" pageEncoding="UTF-8"%>
                         Flight Management
                     </a>
                 </li>
-                
+                <li>
+                    <a href="discountManagement" class="<%= currentPage.equals("/flyezy/view/discountManagement.jsp") ? "current-page" : "" %>">
+                        Discount Management
+                    </a>
+                </li>
+
             </ul>
         </div>
     </body>

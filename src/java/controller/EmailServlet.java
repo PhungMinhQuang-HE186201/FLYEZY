@@ -19,9 +19,9 @@ import model.Order;
 
 public class EmailServlet {
 
-    final String from = "quanshu6699@gmail.com";
+   final String from = "flyezy.work@gmail.com";
     //pass flyezySWP2024
-    final String passWord = "ywue szgf pets benq";
+    final String passWord = "ylis mjup krwy nrck";
 
     public String generateOTP(int length) {
         StringBuilder otp = new StringBuilder();
