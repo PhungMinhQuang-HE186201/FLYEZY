@@ -146,6 +146,22 @@ public class StatusDAO extends DBConnect {
             System.out.println(ex);
         }
     }
+    public void changeStatusRefund(int id, int status) {
+        String sql = "UPDATE Refund\n"
+                + "   SET Statusid=?"
+                + " WHERE id=?";
+
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setInt(1, status);
+            pre.setInt(2, id);
+
+            pre.executeUpdate();
+
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+    }
     public void changeStatusFeedback(int id, int status) {
         String sql = "UPDATE Feedbacks\n"
                 + "   SET Statusid=?"

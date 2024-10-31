@@ -13,8 +13,12 @@
 <%@page import="model.Accounts"%>
 <%@page import="model.Feedbacks"%>
 <%@page import="model.Status"%>
+<%@page import="model.Refund"%>
 <%@page import="dal.AirlineManageDAO"%>
 <%@page import="dal.StatusDAO"%>
+<%@page import="dal.RefundDAO"%>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -50,7 +54,7 @@
         <%@include file="admin-sideBar.jsp" %>
         <div id="main-content" style="padding:15vh 0vw 15vh 16vw; margin: 0">
             <div class="filterController col-md-12" style="width: 100%">
-                <form action="feedbackController" method="get" style="margin-bottom: 20px;">
+                <form action="RefundController" method="get" style="margin-bottom: 20px;">
                     <input type="hidden" name="action" value="search">
                     <input type="hidden" name="orderId" value="${orderId}">
                     <strong class="filterElm">Status:</strong>
@@ -60,134 +64,54 @@
                             <option value="${status.id}" ${param.fStaus != null && (param.fStaus==status.id) ? 'selected' : ''}>${status.name}</option>
                         </c:forEach>
                     </select>
-                    <strong>Rated star :</strong>
-                    <input class="filterElm" type="text" name="fStar" value="${param.fStar}"  >
-                    <strong>Account email :</strong>
-                    <input class="filterElm" type="text" name="fEmail" value="${param.fEmail}" placeholder="Enter Email">
+                    <strong>Request Date from :</strong>
+                    <input class="filterElm" type="date" name="fDateFrom" value="${param.fDateFrom}" placeholder="Enter Email">
+                    <strong>Request Date to :</strong>
+                    <input class="filterElm" type="date" name="fDateTo" value="${param.fDateTo}" placeholder="Enter Email">
+                    <strong>Refund Date from :</strong>
+                    <input class="filterElm" type="date" name="fDateFrom1" value="${param.fDateFrom1}" placeholder="Enter Email">
+                    <strong>Refund Date to :</strong>
+                    <input class="filterElm" type="date" name="fDateTo1" value="${param.fDateTo1}" placeholder="Enter Email">
                     <button class="btn btn-info" type="submit">
                         Search
                     </button>
-                    <a class="btn btn-danger" href="evaluateController?action=view&orderId=${orderId}">Cancel</a>
+                    <a class="btn btn-danger" href="RefundController">Cancel</a>
                 </form>
 
 
-            </div>
-
-            <button type="button" class="btn btn-success" id="myBtn">Add New Account</button>
-            <!-- Create Modal -->   
-            <div class="container">
-                <!-- Modal -->
-                <div class="modal fade" id="myModal" role="dialog">
-                    <div class="modal-dialog">
-                        <!-- Modal content-->
-                        <div class="modal-content">
-                            <div class="modal-header" style="padding:5px 5px;">
-                                <button type="button" class="close" style="font-size: 30px; margin-right: 12px;" data-dismiss="modal">&times;</button>
-                                <h4 style="margin-left: 12px">Create new account</h4>
-                            </div>
-                            <div class="modal-body" style="padding:40px 50px;" id="addAccount">
-                                <c:if test="${not empty error}">
-                                    <p id="error" class="text-danger"><%= request.getAttribute("error") != null ? request.getAttribute("error") : "" %></p>
-                                </c:if>
-                                <form role="form" action="accountController" method="Post">
-                                    <input type="hidden" name="action" value="create"/>
-                                    <div class="row" style="margin-bottom: 20px">
-
-                                        <div class="form-group col-md-6">
-                                            <label for="image"><span class="glyphicon glyphicon-picture"></span>Avatar:</label>
-                                            <input type="file" class="form-control" name="image" onchange="displayImage(this)">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <img  id="previewImage" src="#" alt="Preview"
-                                                  style="display: none; max-width: 130px; float: left">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group col-md-6">
-                                            <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Role:</label></div>
-                                            <select name="roleId" value="" style="height:  34px;width: 100%;">
-                                            </select>
-                                        </div>
-
-                                        <div class="form-group col-md-6">
-                                            <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Airline:</label></div>
-                                            <select name="airlineID" value="" style="height:  34px; width: 100%;">
-                                            </select>
-                                        </div>
-
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="name"><span class="glyphicon glyphicon-user"></span>Name:</label>
-                                        <input type="text" class="form-control" name="name" pattern="^[\p{L}\s]+$">
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group col-md-6">
-                                            <label for="dob"><span class="glyphicon glyphicon-calendar"></span>Date of birth:</label>
-                                            <input type="date" class="form-control" name="dob" required>
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <label for="phoneNumber"><span class="glyphicon glyphicon-earphone"></span>Phone number:</label>
-                                            <input type="text" class="form-control" name="phoneNumber" oninput="validatePhone(this)">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="email"><span class="glyphicon glyphicon-envelope"></span>Email:</label>
-                                        <input type="email" class="form-control" name="email" value="">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="password"><span class="glyphicon glyphicon-eye-open"></span>Password:</label>
-                                        <input type="password" class="form-control" name="password" value="">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="address"><span class="glyphicon glyphicon-home"></span>Address:</label>
-                                        <input type="text" class="form-control" name="address" pattern="^[\p{L}\s]+$">
-                                    </div>
-                                    <button type="submit" class="btn btn-success btn-block">
-                                        Confirm
-                                    </button>
-                                    <p style="color: red; font-size: 20px">${message}</p>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div> 
             </div>
             <h4 style="color : red">${message}</h4>
             <table class="entity" >
                 <thead>
                     <tr>
-                        <th>Email</th>
-                        <th>Rated star</th>
-                        <th>Comment</th>
-                        <th>Date</th>
-                        <th>Create At</th>
-                        <th>Update at</th>
+                        <th>ID</th>
+                        <th>Bank Name</th>
+                        <th>Bank Account</th>
+                        <th>Request Date</th>
+                        <th>Refund Date</th>
+                        <th>Ticket ID</th>
                         <th>Status</th>
-                        <th>Order Id</th>
                         <th style="padding: 0 55px; min-width: 156px">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <%
-                      AccountsDAO ad = new AccountsDAO();
                       StatusDAO sd = new StatusDAO();
-                      List<Feedbacks> list = (List<Feedbacks>)request.getAttribute("feedbackList");
-                      for(Feedbacks f : list){
+                      RefundDAO rd = new RefundDAO();
+                      List<Refund> list = (List<Refund>)request.getAttribute("refundList");
+                      for(Refund r : list){
                     %>
                     <tr>
-                        <td><%=ad.getAccountEmailById(f.getAccountsid())%></td>
-                        <td><%=f.getRatedStar()%></td>
-                        <td><%=f.getComment()%></td>
-                        <td><%=f.getDate()%></td>
-                        <td><%=f.getCreated_at()%></td>
-                        <td><%=f.getUpdated_at()%></td>
-                        <td><%=sd.getStatusNameById(f.getStatusid())%></td>
-                        <td><%=f.getOrder_id()%></td>
+                        <td><%=r.getId()%></td>
+                        <td><%=r.getBank()%></td>
+                        <td><%=r.getBankAccount()%></td>
+                        <td><%=r.getRequestDate()%></td>
+                        <td><%=r.getRefundDate()%></td>
+                        <td><%=r.getTicketid()%></td>
+                        <td><%=sd.getStatusNameById(r.getStatusid())%></td>
                         <td>
-                            <a class="btn btn-info" style="text-decoration: none" id="myBtn<%= f.getId() %>" onclick="openModal(<%= f.getId() %>)">Change status</a>
-                            <div class="modal fade" id="myModal<%= f.getId() %>" role="dialog">
+                            <a class="btn btn-info" style="text-decoration: none" id="myBtn<%= r.getId() %>" onclick="openModal(<%= r.getId() %>)">Change status</a>
+                            <div class="modal fade" id="myModal<%= r.getId() %>" role="dialog">
                                 <div class="modal-dialog">
                                     <!-- Modal content-->
                                     <div class="modal-content">
@@ -196,22 +120,21 @@
                                             <h4 style="margin-left: 12px">Change status</h4>
                                         </div>
                                         <div class="modal-body" style="padding:40px 50px;">
-                                            <form role="form" action="feedbackController" method="post">
+                                            <form role="form" action="RefundController" method="post">
                                                 <input type="hidden" name="action" value="changeStatus"/>
-                                                <input type="hidden" name="feedBackId" value="<%=f.getId()%>">
-                                                <input type="hidden" name="orderId" value="<%=f.getOrder_id()%>">
+                                                <input type="hidden" name="refundId" value="<%=r.getId()%>">
                                                 <input type="hidden" name="createdAt" value=""/>
                                                 <div class="row">
                                                     <div class="form-group col-md-4">
                                                         <label for="usrname"><span class="glyphicon glyphicon-globe"></span>ID:</label>
-                                                        <input type="text" class="form-control" id="usrname" name="id" value="<%= f.getId() %>" readonly="">
+                                                        <input type="text" class="form-control" id="usrname" name="id" value="<%= r.getId() %>" readonly="">
                                                     </div>
                                                     <div class="form-group col-md-8">
                                                         <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Status:</label></div>
                                                         <select name="statusID" value="" style="height:  34px">
                                                             <%List<Status> statusList = (List<Status>)request.getAttribute("statusList");
                                                             for(Status status : statusList){%>
-                                                               <option value="<%=status.getId()%>" <%=(f.getStatusid() == status.getId())?"selected":""%>><%=status.getName()%></option>"
+                                                            <option value="<%=status.getId()%>" <%=(r.getStatusid() == status.getId())?"selected":""%>><%=status.getName()%></option>"
                                                             <%}%>
                                                         </select>
                                                     </div>                    
