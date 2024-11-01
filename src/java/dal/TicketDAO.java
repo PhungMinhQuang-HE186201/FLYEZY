@@ -170,8 +170,8 @@ public class TicketDAO extends DBConnect {
                         rs.getInt("Order_id"),
                         rs.getInt("Statusid"),
                         rs.getInt("Flight_Type_id"));
-
-
+                
+                
                 ls.add(t);
             }
             return ls;
@@ -280,10 +280,10 @@ public class TicketDAO extends DBConnect {
         return -1;
     }
 
-    public List<Ticket> searchTickets(String passengerType, String statusTicket, String name, String phoneNumber, int Flight_Detailid, String Flight_Type_id, int orderId) {
+    public List<Ticket> searchTickets(String passengerType, String statusTicket, String name, String phoneNumber, int Flight_Detailid, String Flight_Type_id, String orderCode) {
         List<Ticket> ls = new ArrayList<>();
         StringBuilder sql = new StringBuilder("select t.* from Ticket t \n"
-                + "join `flyezy`.`Order` o On t.Order_id=o.id\n"
+                + "join flyezy.Order o on o.id = t.Order_id\n"
                 + "where Flight_Detail_id=" + Flight_Detailid + " and Statusid!=9");
         if ((Flight_Type_id + "") != null && !(Flight_Type_id + "").isEmpty()) {
             sql.append(" AND Flight_Type_id = ?");
@@ -300,8 +300,8 @@ public class TicketDAO extends DBConnect {
         if (phoneNumber != null && !phoneNumber.isEmpty()) {
             sql.append(" AND pPhoneNumber LIKE ?");
         }
-        if (orderId != -1) {
-            sql.append(" AND Order_id = ?");
+        if (orderCode != null && !orderCode.isEmpty()) {
+            sql.append(" AND o.code = ?");
         }
 
         try {
@@ -327,13 +327,14 @@ public class TicketDAO extends DBConnect {
                 }
                 ps.setString(i++, "%" + vp + "%");
             }
-            if (orderId != -1) {
-                ps.setInt(i++, orderId);
+            if (orderCode != null && !orderCode.isEmpty()) {
+                ps.setString(i++, orderCode);
             }
 
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Ticket t = new Ticket(rs.getInt("id"),
+                        rs.getInt("Flight_Detail_id"),
                         rs.getInt("Seat_Categoryid"),
                         rs.getInt("Passenger_Typesid"),
                         rs.getString("code"),
@@ -390,8 +391,9 @@ public class TicketDAO extends DBConnect {
         TicketDAO td = new TicketDAO();
         AirlineManageDAO ad = new AirlineManageDAO();
         //tcd.confirmSuccessAllTicketsByOrderId(1);
-        System.out.println(td.createTicket("C9", 1, 7, 2, "HIHI", 0, null, Date.valueOf("2000-10-10"), null, 0, 1, 1));
+        //System.out.println(td.createTicket("C9", 1, 7, 2, "HIHI", 0, null, Date.valueOf("2000-10-10"), null, 0, 1, 1));
         //System.out.println(tcd.getAllTicketCodesById(1, 7));
 //        System.out.println(tcd.getTicketByCode("B1", 4, 8));
+        System.out.println(td.searchTickets("", "", "", "", 1, "", "FJA84IUTJ"));
     }
 }

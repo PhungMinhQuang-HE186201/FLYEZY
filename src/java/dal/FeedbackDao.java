@@ -78,6 +78,23 @@ public class FeedbackDao extends DBConnect {
         return null;
     }
 
+    public Feedbacks getFeedbakByOrderId1(int orderId) {
+        int n = 0;
+        String sql = "Select * from Feedbacks where Order_id =?";
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, orderId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new Feedbacks(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getString(4), rs.getTimestamp(5), rs.getTimestamp(6), rs.getTimestamp(7), rs.getInt(8), rs.getInt(9));
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
     public List<Feedbacks> getFeedbakByOrderId2(int orderId) {
         int n = 0;
         String sql = "Select * from Feedbacks where Order_id =?";
@@ -132,10 +149,10 @@ public class FeedbackDao extends DBConnect {
         }
     }
 
-    public List<Feedbacks> searchFeedback(String Status, String Star, String Email,int orderId) {
+    public List<Feedbacks> searchFeedback(String Status, String Star, String Email, int orderId) {
         List<Feedbacks> ls = new ArrayList<>();
         StringBuilder sql = new StringBuilder("SELECT f.id,f.Accountsid,f.ratedStar,f.comment,f.date,f.created_at,f.updated_at,f.Statusid,f.Order_id,a.email FROM Feedbacks f\n"
-                + "              join Accounts a On f.Accountsid=a.id WHERE Order_id="+orderId);
+                + "              join Accounts a On f.Accountsid=a.id WHERE Order_id=" + orderId);
 
         if (Status != null && !Status.isEmpty()) {
             sql.append(" AND Statusid = ?");

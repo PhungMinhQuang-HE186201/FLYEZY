@@ -90,7 +90,8 @@
                 align-items: flex-start;
             }
             .details {
-                width: 45%; /* Đảm bảo hai khối có kích thước vừa đủ */
+                width: 50%; /* Đảm bảo hai khối có kích thước vừa đủ */
+                margin: 0 0 0 26%;
             }
             .details p {
                 font-size: 16px;
@@ -125,82 +126,153 @@
                 margin-left: 5px;
                 color: #555;
             }
+
+            .flight-card {
+                background: white;
+                border-radius: 10px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+                width: 90%;
+                margin: 25px auto;
+            }
+
+            .flight-info {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .flight-section {
+                flex: 1;
+                text-align: center;
+                padding: 20px;
+            }
+
+            .flight-section.middle {
+                border-left: 1px solid #e0e0e0;
+                border-right: 1px solid #e0e0e0;
+            }
+
+            .flight-section i {
+                font-size: 24px;
+                color: #3C6E57;
+                margin-bottom: 10px;
+            }
+
+            .details p {
+                margin: 5px 0;
+                font-size: 14px;
+            }
+
+            .details p strong {
+                font-size: 16px;
+            }
+
+            @media (max-width: 768px) {
+                .flight-info {
+                    flex-direction: column;
+                }
+
+                .flight-section {
+                    padding: 10px 0;
+                }
+
+                .flight-section.middle {
+                    border-left: none;
+                    border-right: none;
+                    border-top: 1px solid #e0e0e0;
+                    border-bottom: 1px solid #e0e0e0;
+                    margin: 10px 0;
+                }
+            }
         </style>
 
     </head>
     <body>
         <%@include file="header.jsp" %>
         <%@include file="admin-sideBar.jsp" %>
+        <%
+  Flights flight = (Flights)request.getAttribute("flight");
+  Airport airportDep =(Airport)request.getAttribute("airportDep");
+  Airport airportDes =(Airport)request.getAttribute("airportDes");
+  FlightDetails flightDetail = (FlightDetails)request.getAttribute("flightDetail");
+  Location locationDep = (Location)request.getAttribute("locationDep");
+  Location locationDes = (Location)request.getAttribute("locationDes");
+  Country countryDep = (Country)request.getAttribute("countryDep");
+  Country countryDes = (Country)request.getAttribute("countryDes");
+  PlaneCategory planeCatrgory = (PlaneCategory)request.getAttribute("planeCatrgory");
+        %>
         <div id="main-content" style="padding:15vh 0vw 15vh 16vw; margin: 0">
             <div class="filterController col-md-12" style="width: 100%">
                 <a href="flightDetailManagement?flightId=${requestScope.flight.getId()}&airlineId=${requestScope.airlineId}" class="btn btn-warning" >Back</a>
-                <div class="main-container">
-                    <%
-                      Flights flight = (Flights)request.getAttribute("flight");
-                      Airport airportDep =(Airport)request.getAttribute("airportDep");
-                      Airport airportDes =(Airport)request.getAttribute("airportDes");
-                      FlightDetails flightDetail = (FlightDetails)request.getAttribute("flightDetail");
-                      Location locationDep = (Location)request.getAttribute("locationDep");
-                      Location locationDes = (Location)request.getAttribute("locationDes");
-                      Country countryDep = (Country)request.getAttribute("countryDep");
-                      Country countryDes = (Country)request.getAttribute("countryDes");
-                      PlaneCategory planeCatrgory = (PlaneCategory)request.getAttribute("planeCatrgory");
-                    %>
-                    <div class="details">
-                        <p>Departure: <span><%=airportDep.getName()%> (<%=locationDep.getName()%>)</span></p>
-                        <p>From:  <span><%=countryDep.getName()%></span></p>
-                        <p>Date: <span><%=flightDetail.getDate()%>  <%=flightDetail.getTime()%></span></p>
-                        <p>Plane Category: <span><%=planeCatrgory.getName()%></span></p>
+            </div>   
 
+            <div class="flight-card">
+                <div class="flight-info">
+                    <div class="flight-section">
+                        <i class="fas fa-plane-departure"></i>
+                        <div class="details">
+                            <p><strong><%=airportDep.getName()%></strong> </p>
+                            <p>(<%=locationDep.getName()%>, <%=countryDep.getName()%>)</p>
+                        </div>
                     </div>
-                    <div class="details">
-                        <p>Destination: <span><%=airportDes.getName()%> (<%=locationDes.getName()%>) </span></p>
-                        <p>To: <span><%=countryDes.getName()%></span></p>
-                        <p>Time: <span><%=flight.getMinutes()%> minutes</span></p>
-                        <%
-                    List<SeatCategory> seatList = (List<SeatCategory>) request.getAttribute("seatList");
-                        for (SeatCategory list : seatList) {%>
-                        <p><%=list.getName()%> :<span><%=list.getNumberOfSeat()-list.getCountSeat()%>  /<%=list.getNumberOfSeat()%></span></p>
-                        <%}%>
+                    <div class="flight-section middle">
+                        <i class="fas fa-plane"></i>
+                        <p><%=planeCatrgory.getName()%></p>
+                        <p>
+                            <i class="fas fa-calendar-alt"></i> <%=flightDetail.getDate()%> <%=flightDetail.getTime()%>
+                            <i class="fas fa-clock" style="margin-left: 20px"></i> <%=flight.getMinutes()%> min
+                        </p>
+                    </div>
+                    <div class="flight-section">
+                        <i class="fas fa-plane-arrival"></i>
+                        <div class="details">
+                            <p><strong><%=airportDes.getName()%></strong></p>
+                            <p>(<%=locationDes.getName()%>, <%=countryDes.getName()%>)</p>
+                        </div>
                     </div>
                 </div>
-                <form action="TicketController" method="get" style="margin-bottom: 20px;">
-                    <input type="hidden" name="action" value="search">
-                    <input type="hidden" name="flightDetailID" value="${flightDetailID}">
-                    <strong class="filterElm">Flight Type</strong>
-                    <select class="filterElm" name="flightType">
-                        <option value="" ${param.flightType == null ? 'selected' : ''}>All</option>
-                        <c:forEach items="${flightTypeList}" var="type">
-                            <option value="${type.id}" ${param.flightType != null && (param.flightType==type.id) ? 'selected' : ''}>${type.name}</option>
-                        </c:forEach>
-                    </select>
-                    <strong class="filterElm">Passenger Type</strong>
-                    <select class="filterElm" name="passengerType">
-                        <option value="" ${param.passengerType == null ? 'selected' : ''}>All</option>
-                        <c:forEach items="${passengerTypeList}" var="type">
-                            <option value="${type.id}" ${param.passengerType != null && (param.passengerType==type.id) ? 'selected' : ''}>${type.name}</option>
-                        </c:forEach>
-                    </select>
-
-                    <strong class="filterElm">Status</strong>
-                    <select class="filterElm" name="statusTicket">
-                        <option value="" ${param.statusTicket == null ? 'selected' : ''}>All</option>
-                        <c:forEach items="${statusTicketList}" var="status">
-                            <option value="${status.id}" ${param.statusTicket != null && (param.statusTicket==status.id) ? 'selected' : ''}>${status.name}</option>
-                        </c:forEach>
-                    </select>
-                    <strong>Passenger Name: </strong>
-                    <input class="filterElm" type="text" name="fName" value="${param.fName}" placeholder="Enter name">
-                    <strong>Phone number: </strong>
-                    <input class="filterElm" type="number" name="fPhoneNumber" value="${param.fPhoneNumber}" placeholder="Enter phone number">
-                    <button class="btn btn-info" type="submit">
-                        Search
-                    </button>
-                    <a class="btn btn-danger" href="TicketController?flightDetailID=${flightDetailID}">Cancle</a>
-                </form>
-
-
             </div>
+            <form action="TicketController" method="get" style="margin-bottom: 20px;">
+                <input type="hidden" name="action" value="search">
+                <input type="hidden" name="flightDetailID" value="${flightDetailID}">
+                <strong class="filterElm">Flight Type</strong>
+                <select class="filterElm" name="flightType">
+                    <option value="" ${param.flightType == null ? 'selected' : ''}>All</option>
+                    <c:forEach items="${flightTypeList}" var="type">
+                        <option value="${type.id}" ${param.flightType != null && (param.flightType==type.id) ? 'selected' : ''}>${type.name}</option>
+                    </c:forEach>
+                </select>
+                <strong class="filterElm">Passenger Type</strong>
+                <select class="filterElm" name="passengerType">
+                    <option value="" ${param.passengerType == null ? 'selected' : ''}>All</option>
+                    <c:forEach items="${passengerTypeList}" var="type">
+                        <option value="${type.id}" ${param.passengerType != null && (param.passengerType==type.id) ? 'selected' : ''}>${type.name}</option>
+                    </c:forEach>
+                </select>
+
+                <strong class="filterElm">Status</strong>
+                <select class="filterElm" name="statusTicket">
+                    <option value="" ${param.statusTicket == null ? 'selected' : ''}>All</option>
+                    <c:forEach items="${statusTicketList}" var="status">
+                        <option value="${status.id}" ${param.statusTicket != null && (param.statusTicket==status.id) ? 'selected' : ''}>${status.name}</option>
+                    </c:forEach>
+                </select>
+                <strong>Passenger Name: </strong>
+                <input class="filterElm" type="text" name="fName" value="${param.fName}" placeholder="Enter name">
+                <strong>Phone number: </strong>
+                <input class="filterElm" type="number" name="fPhoneNumber" value="${param.fPhoneNumber}" placeholder="Enter phone number">
+                <strong>Order code: </strong>
+                
+                <input class="filterElm" type="text" name="orderCode" value="${param.orderCode}" placeholder="Enter order code">
+                <button class="btn btn-info" type="submit">
+                    Search
+                </button>
+                <a class="btn btn-danger" href="TicketController?flightDetailID=${flightDetailID}">Cancle</a>
+            </form>
+
+
+
 
 
             <!-- Update Modal -->   
@@ -254,7 +326,7 @@
                         <td><%= sd.getStatusNameById(list.getStatusid()) %></td>
                         <td>
                             <!--change status modal-->
-                            <a class="btn btn-info" style="text-decoration: none" id="myBtn<%= list.getId() %>" onclick="openModal(<%= list.getId() %>)">Change status</a>
+                            <a class="btn btn-info" style="text-decoration: none;width: 65%;margin-bottom: 4%;border-radius: 4px;" id="myBtn<%= list.getId() %>" onclick="openModal(<%= list.getId() %>)">Change status</a>
                             <div class="modal fade" id="myModal<%= list.getId() %>" role="dialog">
                                 <div class="modal-dialog">
                                     <!-- Modal content-->
@@ -293,7 +365,7 @@
                                 </div>
                             </div>
                             <!--order in4 modal-->
-                            <a class="btn btn-warning" style="text-decoration: none" id="myBtn2<%= list.getId() %>" onclick="openModal2(<%= list.getId() %>)">Order Information</a>
+                            <a class="btn btn-warning" style="text-decoration: none;width: 65%;" id="myBtn2<%= list.getId() %>" onclick="openModal2(<%= list.getId() %>)">Order Information <span style="margin-left: 8px" class="glyphicon glyphicon-menu-right"></span></a>
                             <div class="modal fade" id="myModal2<%= list.getId() %>" role="dialog">
                                 <div class="modal-dialog modal-lg">
                                     <!-- Modal content-->
@@ -304,17 +376,17 @@
                                         </div>
                                         <div class="modal-body" style="padding:40px 50px;">
                                             <input type="hidden" name="ticketId" value="<%= list.getId() %>">
-                                            
-                                            
-                                                <p><i class="fas fa-receipt"></i> <strong>Order Code:</strong> <%= od.getOrderInfoByTicket(list.getId()).getCode() %></p>
-                                                <p><i class="fas fa-user"></i> <strong>Contact Name:</strong> <%= od.getOrderInfoByTicket(list.getId()).getContactName() %></p>
-                                                <p><i class="fas fa-phone"></i> <strong>Contact Phone:</strong> <%= od.getOrderInfoByTicket(list.getId()).getContactPhone() %></p>
-                                                <p><i class="fas fa-envelope"></i> <strong>Contact Mail:</strong> <%= od.getOrderInfoByTicket(list.getId()).getContactEmail() %></p>
-                                                <p><i class="fas fa-user-circle"></i> <strong>Account:</strong> <%= acd.getAccountNameById(od.getOrderInfoByTicket(list.getId()).getAccountsId()) %></p>
-                                                <p><i class="fas fa-credit-card"></i> <strong>Payment Type:</strong> <%= PTD.getPaymentTypeNameById(od.getOrderInfoByTicket(list.getId()).getPaymentTypesId()) %></p>
-                                                <p><i class="fas fa-clock"></i> <strong>Payment Time:</strong> <%= od.getOrderInfoByTicket(list.getId()).getPaymentTime() %></p>
-                                                <p><i class="fas fa-info-circle"></i> <strong>Status:</strong> <%= sd.getStatusNameById(od.getOrderInfoByTicket(list.getId()).getStatus_id()) %></p>
-                                            
+
+
+                                            <p><i class="fas fa-receipt"></i> <strong>Order Code:</strong> <%= od.getOrderInfoByTicket(list.getId()).getCode() %></p>
+                                            <p><i class="fas fa-user"></i> <strong>Contact Name:</strong> <%= od.getOrderInfoByTicket(list.getId()).getContactName() %></p>
+                                            <p><i class="fas fa-phone"></i> <strong>Contact Phone:</strong> <%= od.getOrderInfoByTicket(list.getId()).getContactPhone() %></p>
+                                            <p><i class="fas fa-envelope"></i> <strong>Contact Mail:</strong> <%= od.getOrderInfoByTicket(list.getId()).getContactEmail() %></p>
+                                            <p><i class="fas fa-user-circle"></i> <strong>Account:</strong> <%= acd.getAccountNameById(od.getOrderInfoByTicket(list.getId()).getAccountsId()) %></p>
+                                            <p><i class="fas fa-credit-card"></i> <strong>Payment Type:</strong> <%= PTD.getPaymentTypeNameById(od.getOrderInfoByTicket(list.getId()).getPaymentTypesId()) %></p>
+                                            <p><i class="fas fa-clock"></i> <strong>Payment Time:</strong> <%= od.getOrderInfoByTicket(list.getId()).getPaymentTime() %></p>
+                                            <p><i class="fas fa-info-circle"></i> <strong>Status:</strong> <%= sd.getStatusNameById(od.getOrderInfoByTicket(list.getId()).getStatus_id()) %></p>
+
                                         </div>
                                     </div>
                                 </div>

@@ -1,13 +1,11 @@
 <%-- 
-    Document   : buyingHistory
-    Created on : Oct 17, 2024, 5:20:41 PM
-    Author     : PMQUANG
+    Document   : findOrder
+    Created on : Oct 30, 2024, 8:20:07 AM
+    Author     : phung
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.text.SimpleDateFormat"%>
-<%@ page import="java.text.NumberFormat" %>
-<%@ page import="java.util.Locale" %>
 <%@page import="dal.StatusDAO"%>
 <%@page import="dal.AirlineManageDAO"%>
 <%@page import="dal.FlightDetailDAO"%>
@@ -90,11 +88,7 @@
             .ticket-actions {
                 display: flex;
                 flex-direction: column;
-                justify-content: space-between;
-                align-items: flex-end;
                 gap: 5px;
-                height: 230px;
-                padding: 10px 0;
             }
             .order-total{
                 text-align: right;
@@ -123,6 +117,7 @@
                 border-radius: 12px;
                 text-align: center;
                 width: 165px;
+                margin: 10px
             }
 
             .status-label.completed {
@@ -162,14 +157,12 @@
             }
 
 
-
         </style>
     </head>
     <body>
         <%@include file="header.jsp" %>
         <%
             SimpleDateFormat sdf = new java.text.SimpleDateFormat("HH:mm dd-MM-yyyy");
-            NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
             StatusDAO sd = new StatusDAO();
             List<Status> listStatusOrder = sd.getStatusOfOrder();
             AirlineManageDAO ad = new AirlineManageDAO();
@@ -183,36 +176,17 @@
             SeatCategoryDAO scd = new SeatCategoryDAO();
             BaggageManageDAO bmd = new BaggageManageDAO();
             
-            List<Order> listOrder = (List<Order>)request.getAttribute("listOrder");
+            Order o = (Order)request.getAttribute("order");
             List<FlightDetails> listFlightDetails = (List<FlightDetails>)request.getAttribute("listFlightDetails");
         %>
 
         <!-- Container for the order details -->
 
         <div class="container mt-5 order-container" style="transform: translateY(45px)">
-            <!-- Status Tabs Section -->
-            <div class="row" style="margin-top: 20px">
-                <div class="col-md-12">
-                    <ul class="nav nav-tabs">
-                        <li class="nav-item">
-                            <a style="color: green" class="nav-link <%= request.getParameter("statusId") == null ? "active" : "" %>" href="buyingHistory">All</a>
-                        </li>
-                        <% for (Status st : listStatusOrder) { %>
-                        <li class="nav-item">
-                            <a style="color: green" class="nav-link <%= request.getParameter("statusId") != null && request.getParameter("statusId").equals(String.valueOf(st.getId())) ? "active" : "" %>" href="buyingHistory?statusId=<%=st.getId()%>">
-                                <%=st.getName()%>
-                            </a>
-                        </li>
-                        <% } %>
-                    </ul>
-                </div>
-            </div>
-
             <!-- Search Bar Section -->
-            <% if (request.getParameter("statusId") == null) { %>
             <div class="row mt-3 mb-3">
                 <div class="col-md-12">
-                    <form action="buyingHistory" method="get" class="form-inline justify-content-center">
+                    <form action="findOrder" method="get" class="form-inline justify-content-center">
                         <input type="text" value="${param.code}" class="form-control" name="code" placeholder="Enter code here to search ..." aria-label="Search" style="width: 30%; font-size: 1.2em">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" type="submit">
@@ -222,15 +196,16 @@
                     </form>
                 </div>
             </div>
-            <% } %>
 
             <!-- Buying History Section -->
             <div class="buying-history">
                 <%int id = 0;%>
-                <% for(Order o : listOrder) { 
+                <% if(o!=null){             
                     List<Ticket> listTicketInOrder = td.getAllTicketsByOrderId(o.getId());
                     if (!listTicketInOrder.isEmpty()) { %>
 
+                <% Boolean isVerified = (Boolean) request.getAttribute("isVerified"); %>
+                <% if (isVerified != null && isVerified) { %>
                 <div class="order-card">
                     <div class="order-header">
 
@@ -248,14 +223,15 @@
 
 
                         <div class="order-details">
-                            <span style="margin: 10px" class="status-label <%= sd.getStatusNameById(o.getStatus_id()).toLowerCase() %>">
+                            <span class="status-label <%= sd.getStatusNameById(o.getStatus_id()).toLowerCase() %>">
                                 <%= sd.getStatusNameById(o.getStatus_id()) %>
                             </span>
                         </div>
                     </div>
 
-                    <% int count = 1; int total = 0;%>
+                    <% int ticketOfBaggage = 0; int count = 1; int total = 0;%>
                     <% for(Ticket t : listTicketInOrder) { %>
+                    <% ticketOfBaggage = bmd.getPriceBaggagesById(t.getId()); %>
                     <% id = t.getId(); %>
                     <div class="ticket-details">
                         <div class="flight-info" style="display: flex; flex-direction: column; gap: 5px;">
@@ -270,7 +246,7 @@
                                 </div>
                             </div>
                             <% for(FlightDetails detail : fdd.getAll()) {
-                            if(detail.getId() == t.getFlightDetailId()) { %>
+                if(detail.getId() == t.getFlightDetailId()) { %>
 
                             <!-- Flight route icon -->
                             <div><i class="fas fa-plane"></i> <%= fd.getDepartureByFlight(od.getFlightIdByOrder(o.getId())) %> to <%= fd.getDestinationByFlight(od.getFlightIdByOrder(o.getId())) %></div>
@@ -285,6 +261,7 @@
                                 </span>
                             </div>
 
+
                             <!-- Plane category and flight duration with icons -->
                             <div><i class="fas fa-plane-departure"></i> <%= pcd.getPlaneCategoryById(detail.getPlaneCategoryId()).getName() %> </div>
 
@@ -292,25 +269,20 @@
 
                             <!-- Extra baggage with icon -->
                             <% for(Baggages b : bmd.getAllBaggages()) {
-                            if(b.getId() == t.getBaggagesid()) { %>
+                if(b.getId() == t.getBaggagesid()) { %>
                             <div><i class="fas fa-suitcase"></i> Extra baggage: <%= b.getWeight() %>kg</div>
                             <% } } %>
                         </div>
 
-                        <div class="ticket-actions">
-
+                        <div class="ticket-actions" style="margin-top: 10px;">
+                            <div><strong><%= t.getTotalPrice() %></strong></div>
                             <div class="status-label <%= sd.getStatusNameById(t.getStatusid()).toLowerCase() %>">
                                 <%= sd.getStatusNameById(t.getStatusid()) %>
                             </div>
-                            <div><strong style="font-size: 16px"><%= currencyFormatter.format(t.getTotalPrice()) %></strong></div>
-                                <% if(t.getStatusid() == 10 || t.getStatusid() == 12) { %>
+
+                            <% if(t.getStatusid() == 10 || t.getStatusid() == 12) { %>
                             <a class="btn btn-danger" style="text-decoration: none; margin-top: 5px;" onclick="openModalTicket(<%= t.getId() %>,<%= o.getId() %>)">Cancel ticket</a>
-                            <% } else if(t.getStatusid() == 7 && o.getStatus_id()==10){//phải thanh toán order rồi mới có nút hoàn tiền
-                            %>
-                            <a class="btn btn-warning" style="text-decoration: none; margin-top: 5px;" onclick="openModalTicket(<%= t.getId() %>,<%= o.getId() %>)">Request refund</a>
-                            <%
-                            }
-                            %>
+                            <% } %>
                         </div>
                     </div>
                     <% count++; %>
@@ -319,11 +291,9 @@
 
 
 
-                    <div class="list-price" style="text-align: right; padding: 15px 0 "> 
-                        <div>Order Tickets: <%=currencyFormatter.format(o.getTotalPrice()) %></div>
-                        <div>Cancel Tickets: <%=currencyFormatter.format(od.getTotalPriceCancelledTicket(o.getId())) %></div>
+                    <div class="list-price" style="text-align: right; font-size: 1.2em;">
                         <div class="order-discount">Discount: 0%</div>
-                        <div class="order-total"><strong style="font-size: 1.2em;">Total: <%=currencyFormatter.format(o.getTotalPrice()-od.getTotalPriceCancelledTicket(o.getId())) %></strong></div>
+                        <div class="order-total"><strong>Total: <%= o.getTotalPrice() + ticketOfBaggage %></strong></div>
                     </div>
 
 
@@ -334,25 +304,23 @@
                             <% } else { %>
                             <a class="btn btn-danger" style="text-decoration: none;" onclick="openModalOrder(<%= o.getId() %>)">Cancel Order</a>
                             <% } %>
-                            <% FeedbackDao fd1 = new FeedbackDao(); 
-                               Integer idd = (Integer) session.getAttribute("id"); 
-                               Feedbacks f = fd1.getFeedbakByOrderId(o.getId(), idd); 
-                               if (f == null) { %>
-                            <a href="evaluateController?orderId=<%= o.getId() %>">
-                                <button class="btn btn-outline-secondary">Feedback</button>
-                            </a>
-                            <% } else { %>
-                            <a href="evaluateController?action=viewUpdate&orderId=<%= o.getId() %>">
-                                <button class="btn btn-outline-secondary">Update Feedback</button>
-                            </a>
-                            <% } %>
                         </div>
                     </div>
 
                 </div>
                 <br>
             </div>
-            <% } %>
+            <% }else{ %>
+            <div class="contact-verification mt-3">
+                <form action="findOrder" method="get">
+                    <input type="hidden" name="code" value="<%= o.getCode() %>">
+                    <label for="contactInfo">Please verify your contact information:</label>
+                    <input type="text" id="contactInfo" name="contactInfo" class="form-control" placeholder="Enter your contact mail/phone/name">
+                    <button type="submit" class="btn btn-primary mt-2">Verify</button>
+                </form>
+            </div>
+            <%}%>
+            <%}%>
             <%}%>
 
 
