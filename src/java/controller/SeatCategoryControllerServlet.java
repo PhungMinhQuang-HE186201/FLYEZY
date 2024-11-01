@@ -109,10 +109,10 @@ public class SeatCategoryControllerServlet extends HttpServlet {
             e.printStackTrace();
             return;
         }
-        
+
         if (action != null && action.equals("changeStatus")) {
             try {
-                int id = Integer.parseInt(request.getParameter("seatCategoryid"));             
+                int id = Integer.parseInt(request.getParameter("seatCategoryid"));
                 if (scd.getSeatCategoryById(id).getStatusId() == 1) {
                     scd.deactivateSeatCategoryById(id);
                 } else {
@@ -125,7 +125,7 @@ public class SeatCategoryControllerServlet extends HttpServlet {
                 return;
             }
         }
-        
+
         // Process adding/updating seat categories
         String idStr = request.getParameter("id");
         String image = "img/" + request.getParameter("image");
@@ -151,10 +151,15 @@ public class SeatCategoryControllerServlet extends HttpServlet {
                 if (image.equals("img/")) {
                     image = scd.getSeatCategoryById(id).getImage();
                 }
+                if (!scd.isDuplicateSeatCategoryName(name, planeCategoryId)) {
+                    scd.updateSeatCategory(new SeatCategory(id, name, numberOfSeat, image, info, seatEachRow, surcharge, planeCategoryId, statusId));
+                }
 
-                scd.updateSeatCategory(new SeatCategory(id, name, numberOfSeat, image, info, seatEachRow, surcharge, planeCategoryId, statusId));
             } else {
-                scd.addSeatCategory(new SeatCategory(name, numberOfSeat, image, info, seatEachRow, surcharge, planeCategoryId, 1));
+                if (!scd.isDuplicateSeatCategoryName(name, planeCategoryId)) {
+                    scd.addSeatCategory(new SeatCategory(name, numberOfSeat, image, info, seatEachRow, surcharge, planeCategoryId, 1));
+                }
+
             }
             response.sendRedirect("seatCategoryController?planeCategoryId=" + planeCategoryId);
         } catch (Exception e) {

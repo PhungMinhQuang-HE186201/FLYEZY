@@ -6,6 +6,7 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="model.News" %>
+<%@page import="dal.AirlineManageDAO" %>
 <%@page import="dal.NewsDAO" %>
 <%@page import="java.util.List" %>
 <!DOCTYPE html>
@@ -23,82 +24,90 @@
                 <h1 style="margin-bottom: 20px; text-align: center;">Tin tức</h1>
                 <div class="news-container">
                     <% 
+                        AirlineManageDAO amd = new AirlineManageDAO();
                         List<News> listNew = (List<News>) request.getAttribute("listNew");
                         if (listNew != null) {
                             for (int i = listNew.size() - 1; i >= 0; i--) {
                                 News n = listNew.get(i);
                     %>
                     <div class="news-item" onclick="viewNews('<%= n.getId() %>');">
-                        <img src="<%= n.getImage() %>" alt="<%= n.getTitle() %>">
-                        
-                        <h2><%= n.getTitle() %></h2>
-                        <div class="news-content" style="display: none;">
+                        <img src="<%= n.getImage() %>" alt="<%= n.getTitle() %>" >
+
+                        <h2 style="height: 25%;"><%= n.getTitle() %></h2>
+                            <div class="news-content" style="display: none;">
                             <p><%= n.getContent() %></p>
-                        </div>
                     </div>
-                    <% 
-                           }
+
+
+                    <div   style="margin-top: 19%;margin-left: 49%;">
+                        <img src="<%=amd.getImageById(n.getAirline_id())%>" style="width: 17%;height: 17%;">
+                        <p style="margin-top: -16%;margin-left: 20%;"><%= amd.getNameById(n.getAirline_id()) %></p>
+                    </div>
+
+                </div>
+                <% 
                        }
-                    %>    
-                </div>
-            </div>
-
-            <div id="selected" style="display: ${empty param.id ? 'none' : ''}" class="row">
-                <div class="col-md-2"></div>
-                <div class="col-md-6" style="margin: 130px 0">
-                    <% 
-                    NewsDAO nd = new NewsDAO();
-                    String newsIdStr = request.getParameter("id");
-                    if (newsIdStr != null) {
-                        try {
-                            int newsId = Integer.parseInt(newsIdStr);
-                            News selectedNews = nd.getNewsById(newsId); 
-                            if (selectedNews != null) {
-                    %>
-                    <div class="selected-news">
-                        <h1><%= selectedNews.getTitle() %></h1>
-                        <img src="<%= selectedNews.getImage() %>" alt="<%= selectedNews.getTitle() %>">
-                        <p><%= selectedNews.getContent() %></p>
-"
-                    </div>
-
-                    <% 
-                        }
-                            } catch (NumberFormatException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    %>
-                </div>
-
-                <div class="col-md-4" style="margin: 130px 0">
-                    <div class="news-list">
-                        <% 
-                            if (listNew != null) {
-                                for (int i = listNew.size() - 1; i >= 0; i--) {
-                                    News n = listNew.get(i);
-                        %>
-                        <div class="news-item-small" onclick="viewNews('<%= n.getId() %>');">
-                            <img src="<%= n.getImage() %>" alt="<%= n.getTitle() %>">
-                            <h2><%= n.getTitle() %></h2>
-
-                        </div>
-                        <% 
-                                }
-                            }
-                        %>
-                    </div>
-                </div>
-
-
-
-
+                   }
+                %>
             </div>
         </div>
-        <script>
-            function viewNews(newsId) {
-                window.location.href = 'News?id=' + newsId;
-            }
-        </script>
-    </body>
+
+        <div id="selected" style="display: ${empty param.id ? 'none' : ''}" class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-6" style="margin: 130px 0">
+                <% 
+                NewsDAO nd = new NewsDAO();
+                String newsIdStr = request.getParameter("id");
+                if (newsIdStr != null) {
+                    try {
+                        int newsId = Integer.parseInt(newsIdStr);
+                        News selectedNews = nd.getNewsById(newsId); 
+                        if (selectedNews != null) {
+                %>
+                <div class="selected-news">
+                    <h1><%= selectedNews.getTitle() %></h1>
+                    <img src="<%= selectedNews.getImage() %>" alt="<%= selectedNews.getTitle() %>">
+                    <p><%= selectedNews.getContent() %></p>
+
+                </div>
+
+                <% 
+                    }
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                %>
+            </div>
+
+            <div class="col-md-4" style="margin: 130px 0">
+                <div class="news-list">
+                    <% 
+                        if (listNew != null) {
+                            for (int i = listNew.size() - 1; i >= 0; i--) {
+                                News n = listNew.get(i);
+                    %>
+                    <div class="news-item-small" onclick="viewNews('<%= n.getId() %>');">
+                        <img src="<%= n.getImage() %>" alt="<%= n.getTitle() %>">
+                        <h2><%= n.getTitle() %></h2>
+
+                    </div>
+                    <% 
+                            }
+                        }
+                    %>
+                </div>
+            </div>
+
+
+
+
+        </div>
+    </div>
+    <script>
+        function viewNews(newsId) {
+            window.location.href = 'News?id=' + newsId;
+        }
+    </script>
+</body>
 </html>

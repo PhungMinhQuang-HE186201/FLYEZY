@@ -55,12 +55,8 @@
                     </div>
                     <ul id="header-subnav" style="display: none;">
                         <li><a href="info">Account Information</a></li>
-                            <c:if test="${requestScope.account.getRoleId()==1}">
-                            <li><a href="accountController">Manage</a></li>
-                            </c:if>
-                            <c:if test="${requestScope.account.getRoleId()==4}">
-                            <li><a href="newsManagement">News Manage</a></li>
-                            </c:if>
+
+                        <li><a href="accountController">Manage</a></li>
                         <li><a href="buyingHistory">Ticket Buying History</a></li>
                         <li><a href="changePassword">Change Password</a></li>
                         <li><a style="color: red;" href="logout">Log out</a></li>

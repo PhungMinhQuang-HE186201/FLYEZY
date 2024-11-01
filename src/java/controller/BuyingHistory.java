@@ -54,15 +54,12 @@ public class BuyingHistory extends HttpServlet {
         List<Order> listOrder;
         if (statusIdParam != null && !statusIdParam.isEmpty()) {
             int statusId = Integer.parseInt(statusIdParam);
-            // Fetch orders by status for the specific account ID
             listOrder = od.getOrdersByStatusAndAccountId(statusId, idd);
         } else {
             String code = request.getParameter("code");
             if (code != null && !code.isEmpty()) {
-                // Fetch orders by code for the specific account ID
-                listOrder = od.getListOrderByCodeAndAccountId(code, idd);
+                listOrder = od.getListOrderByCodeAndAccountId(code.trim(), idd);
             } else {
-                // Fetch all orders for the specific account ID
                 listOrder = od.getAllOrdersByAccountId(idd);
             }
         }

@@ -6,6 +6,8 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.text.SimpleDateFormat"%>
+<%@ page import="java.text.NumberFormat" %>
+<%@ page import="java.util.Locale" %>
 <%@page import="dal.StatusDAO"%>
 <%@page import="dal.AirlineManageDAO"%>
 <%@page import="dal.FlightDetailDAO"%>
@@ -88,7 +90,11 @@
             .ticket-actions {
                 display: flex;
                 flex-direction: column;
+                justify-content: space-between;
+                align-items: flex-end;
                 gap: 5px;
+                height: 230px;
+                padding: 10px 0;
             }
             .order-total{
                 text-align: right;
@@ -106,7 +112,8 @@
             }
 
             .status-label {
-                padding: 5px 10px;font-size: 15px;
+                padding: 5px 10px;
+                font-size: 15px;
                 color: white;
                 font-weight: bold;
                 display: inline-block;
@@ -116,7 +123,6 @@
                 border-radius: 12px;
                 text-align: center;
                 width: 165px;
-                margin: 10px
             }
 
             .status-label.completed {
@@ -131,29 +137,30 @@
                 background-color: #28a745;
             }
             .status-label.request {
-                background-color: #ffc107; 
+                background-color: #ffc107;
             }
             .status-label.canceled {
-                background-color: #28a745; 
+                background-color: #28a745;
             }
             .status-label.refund {
-                background-color: #28a745; 
+                background-color: #28a745;
             }
             .status-label.rejection {
-                background-color: #dc3545; 
+                background-color: #dc3545;
             }
             .status-label.request {
-                background-color: #ffc107; 
+                background-color: #ffc107;
             }
             .status-label.canceled {
-                background-color: #28a745; 
+                background-color: #28a745;
             }
             .status-label.refund {
-                background-color: #28a745; 
+                background-color: #28a745;
             }
             .status-label.rejection {
-                background-color: #dc3545; 
+                background-color: #dc3545;
             }
+
 
 
         </style>
@@ -162,6 +169,7 @@
         <%@include file="header.jsp" %>
         <%
             SimpleDateFormat sdf = new java.text.SimpleDateFormat("HH:mm dd-MM-yyyy");
+            NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
             StatusDAO sd = new StatusDAO();
             List<Status> listStatusOrder = sd.getStatusOfOrder();
             AirlineManageDAO ad = new AirlineManageDAO();
@@ -240,15 +248,14 @@
 
 
                         <div class="order-details">
-                            <span class="status-label <%= sd.getStatusNameById(o.getStatus_id()).toLowerCase() %>">
+                            <span style="margin: 10px" class="status-label <%= sd.getStatusNameById(o.getStatus_id()).toLowerCase() %>">
                                 <%= sd.getStatusNameById(o.getStatus_id()) %>
                             </span>
                         </div>
                     </div>
 
-                    <% int ticketOfBaggage = 0; int count = 1; int total = 0;%>
+                    <% int count = 1; int total = 0;%>
                     <% for(Ticket t : listTicketInOrder) { %>
-                    <% ticketOfBaggage = bmd.getPriceBaggagesById(t.getId()); %>
                     <% id = t.getId(); %>
                     <div class="ticket-details">
                         <div class="flight-info" style="display: flex; flex-direction: column; gap: 5px;">
@@ -278,7 +285,6 @@
                                 </span>
                             </div>
 
-
                             <!-- Plane category and flight duration with icons -->
                             <div><i class="fas fa-plane-departure"></i> <%= pcd.getPlaneCategoryById(detail.getPlaneCategoryId()).getName() %> </div>
 
@@ -291,13 +297,13 @@
                             <% } } %>
                         </div>
 
-                        <div class="ticket-actions" style="margin-top: 10px;">
-                            <div><strong><%= t.getTotalPrice() %></strong></div>
+                        <div class="ticket-actions">
+
                             <div class="status-label <%= sd.getStatusNameById(t.getStatusid()).toLowerCase() %>">
                                 <%= sd.getStatusNameById(t.getStatusid()) %>
                             </div>
-
-                            <% if(t.getStatusid() == 10 || t.getStatusid() == 12) { %>
+                            <div><strong style="font-size: 16px"><%= currencyFormatter.format(t.getTotalPrice()) %></strong></div>
+                                <% if(t.getStatusid() == 10 || t.getStatusid() == 12) { %>
                             <a class="btn btn-danger" style="text-decoration: none; margin-top: 5px;" onclick="openModalTicket(<%= t.getId() %>,<%= o.getId() %>)">Cancel ticket</a>
                             <% } %>
                         </div>
@@ -308,9 +314,9 @@
 
 
 
-                    <div class="list-price" style="text-align: right; font-size: 1.2em;">
+                    <div class="list-price" style="text-align: right; padding: 15px 0 ">
                         <div class="order-discount">Discount: 0%</div>
-                        <div class="order-total"><strong>Total: <%= o.getTotalPrice() + ticketOfBaggage %></strong></div>
+                        <div class="order-total"><strong style="font-size: 1.2em;">Total: <%=currencyFormatter.format(o.getTotalPrice()) %></strong></div>
                     </div>
 
 

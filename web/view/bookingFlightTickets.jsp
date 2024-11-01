@@ -8,7 +8,6 @@
 <%@page import="java.text.SimpleDateFormat"%>
 <%@ page import="java.text.NumberFormat" %>
 <%@ page import="java.util.Locale" %>
-<%@page import="java.text.NumberFormat" %>
 <%@page import="java.util.Calendar" %>
 <%@page import="model.FlightDetails" %>
 <%@page import="model.Flights" %>
@@ -413,9 +412,11 @@
                                             <select name="pBaggages<%=i%>" id="baggage<%=i%>" onchange="updateTotalBaggage()">
                                                 <option value="0">Buy 0kg extra checked baggage - <%=currencyFormatter.format(0)%></option>
                                                 <% for(Baggages b : bmd.getAllBaggagesByAirline(airlineId)){
+                                                    if(b.getStatusId() == 1){
                                                 %>
-                                                <option value="<%=b.getId()%>">Buy <%=b.getWeight()%>kg extra checked baggage - <%=currencyFormatter.format(b.getPrice())%></option>
+                                                <option value="<%=b.getId()%>" data-price="<%=b.getPrice()%>">Buy <%=b.getWeight()%>kg extra checked baggage - <%=currencyFormatter.format(b.getPrice())%></option>
                                                 <%
+                                                    }
                                                     }
                                                 %>
                                             </select>
@@ -436,7 +437,7 @@
                                                 <option value="0">Buy 0kg extra checked baggage - <%=currencyFormatter.format(0)%></option>
                                                 <% for(Baggages b : bmd.getAllBaggagesByAirline(airlineId2)){
                                                 %>
-                                                <option value="<%=b.getId()%>">Buy <%=b.getWeight()%>kg extra checked baggage - <%=currencyFormatter.format(b.getPrice())%></option>
+                                                <option value="<%=b.getId()%>" data-price="<%=b.getPrice()%>" >Buy <%=b.getWeight()%>kg extra checked baggage - <%=currencyFormatter.format(b.getPrice())%></option>
                                                 <%
                                                     }
                                                 %>
@@ -690,12 +691,21 @@
                                     </div>
                                     <div style="margin-bottom: 10px">
                                         <svg width="40" height="32" viewBox="0 0 40 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="8.75" y="2.75" width="22.5" height="26.5" rx="2.25" fill="#FFE878" stroke="#FFBF00" stroke-width="1.5" stroke-linejoin="round"></rect>
+                                        <rect x="10.25" y="11.75" width="14.5" height="5.5" rx="2.25" transform="rotate(90 10.25 11.75)" fill="#FFE878" stroke="#FFBF00" stroke-width="1.5" stroke-linejoin="round"></rect>
+                                        <rect x="35.25" y="11.75" width="14.5" height="5.5" rx="2.25" transform="rotate(90 35.25 11.75)" fill="#FFE878" stroke="#FFBF00" stroke-width="1.5" stroke-linejoin="round"></rect>
+                                        <rect x="8.75" y="22.75" width="22.5" height="6.5" rx="2.25" fill="#FFE878" stroke="#FFBF00" stroke-width="1.5" stroke-linejoin="round"></rect>
+                                        </svg>
+                                        Booked Seat
+                                    </div>
+                                    <div style="margin-bottom: 10px">
+                                        <svg width="40" height="32" viewBox="0 0 40 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <rect x="8.75" y="2.75" width="22.5" height="26.5" rx="2.25" fill="rgb(255, 177, 177)" stroke="red" stroke-width="1.5" stroke-linejoin="round"></rect>
                                         <rect x="10.25" y="11.75" width="14.5" height="5.5" rx="2.25" transform="rotate(90 10.25 11.75)" fill="rgb(255, 177, 177)" stroke="red" stroke-width="1.5" stroke-linejoin="round"></rect>
                                         <rect x="35.25" y="11.75" width="14.5" height="5.5" rx="2.25" transform="rotate(90 35.25 11.75)" fill="rgb(255, 177, 177)" stroke="red" stroke-width="1.5" stroke-linejoin="round"></rect>
                                         <rect x="8.75" y="22.75" width="22.5" height="6.5" rx="2.25" fill="rgb(255, 177, 177)" stroke="red" stroke-width="1.5" stroke-linejoin="round"></rect>
                                         </svg>
-                                        Booked Seat
+                                        Paid Seat
                                     </div>
                                     <div style="margin-right: auto; font-size: 15px; font-weight: bold; color: green;">
                                         Choosing Seat:</br> <%=seatCat%> - <span id="selectedSeatCode<%=j%>">None</span>
@@ -856,20 +866,28 @@
 
             }
 
+
             function updateTotalBaggage() {
                 var totalBaggage = 0;
                 var baggageId = 0;
                 for (var i = 1; i <= <%=adultTicket%>; i++) {
                     var baggageElement = document.getElementById("baggage" + i);
-                    console.log(baggageElement);
                     baggageId = parseInt(baggageElement ? baggageElement.value : 0);
-                    totalBaggage += isNaN(baggageId) ? 0 : baggageId;
+                    if (baggageId !== 0) {
+                        var selectedOption = baggageElement.options[baggageElement.selectedIndex];
+                        console.log(parseInt(selectedOption.getAttribute('data-price')));
+                        totalBaggage += parseInt(selectedOption.getAttribute('data-price'));
+                    }
+
                 }
                 for (var i = <%=adultTicket+childTicket+infantTicket+1%>; i <= <%=totalPassengers%>; i++) {
                     var baggageElement = document.getElementById("baggage" + i);
-                    console.log(baggageElement);
                     baggageId = parseInt(baggageElement ? baggageElement.value : 0);
-                    totalBaggage += isNaN(baggageId) ? 0 : baggageId;
+                    if (baggageId !== 0) {
+                        var selectedOption = baggageElement.options[baggageElement.selectedIndex];
+                        console.log(parseInt(selectedOption.getAttribute('data-price')));
+                        totalBaggage += parseInt(selectedOption.getAttribute('data-price'));
+                    }
                 }
                 document.getElementById("totalBaggage").innerText = "= " + new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(totalBaggage);
                 updateTotalPrice(totalBaggage);

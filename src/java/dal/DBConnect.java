@@ -16,17 +16,16 @@ import java.sql.ResultSet;
  *
  * @author PMQUANG
  */
-public class DBConnect extends EncodeController{
+public class DBConnect extends EncodeController {
 
     public Connection conn = null;
 
     public DBConnect(String url, String username, String pass) {
         try {
-            //        url: string connection: chứa thông tin server, DB
-//        acc:user, pass: acc của server
             //Driver
             Class.forName("com.mysql.cj.jdbc.Driver");
             //connection
+
             conn = DriverManager.getConnection(url, username, pass);
             System.out.println("connected");
         } catch (ClassNotFoundException ex) {
@@ -52,10 +51,10 @@ public class DBConnect extends EncodeController{
         }
         return rs;
     }
-    
+
     public static void main(String[] args) {
         AccountsDAO db = new AccountsDAO();
-        for(Accounts a : db.getAllAccounts()){
+        for (Accounts a : db.getAllAccounts()) {
             System.out.println(a.getName());
         }
     }

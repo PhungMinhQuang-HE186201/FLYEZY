@@ -81,10 +81,7 @@ public class Baggages {
         this.statusId = statusId;
     }
 
-    @Override
-    public String toString() {
-        return "Baggages{" + "id=" + id + ", weight=" + weight + ", price=" + price + ", airlineId=" + airlineId + ", statusId=" + statusId + '}';
-    }
+    
 
     
     
