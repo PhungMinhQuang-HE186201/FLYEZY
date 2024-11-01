@@ -179,6 +179,7 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `flyezy`.`Discount` (
   `id` INT NOT NULL AUTO_INCREMENT,
+  `code` VARCHAR(45) NOT NULL,
   `percentage` DECIMAL(5,2) NOT NULL,
   `minimum_order_value` INT NOT NULL,
   `date_created` TIMESTAMP NOT NULL,
@@ -421,15 +422,22 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`News` (
   `content` TEXT NULL DEFAULT NULL,
   `News_Categoryid` INT NOT NULL,
   `Accountsid` INT NOT NULL,
+  `Airline_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `FKNews232818` (`News_Categoryid` ASC) VISIBLE,
   INDEX `FKNews924154` (`Accountsid` ASC) VISIBLE,
+  INDEX `fk_News_Airline1_idx` (`Airline_id` ASC) VISIBLE,
   CONSTRAINT `FKNews232818`
     FOREIGN KEY (`News_Categoryid`)
     REFERENCES `flyezy`.`News_Category` (`id`),
   CONSTRAINT `FKNews924154`
     FOREIGN KEY (`Accountsid`)
-    REFERENCES `flyezy`.`Accounts` (`id`))
+    REFERENCES `flyezy`.`Accounts` (`id`),
+  CONSTRAINT `fk_News_Airline1`
+    FOREIGN KEY (`Airline_id`)
+    REFERENCES `flyezy`.`Airline` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -564,6 +572,7 @@ COLLATE = utf8mb4_0900_ai_ci;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
 
 
 -- ------------------------------------------------

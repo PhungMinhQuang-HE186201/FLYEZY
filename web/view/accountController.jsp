@@ -104,7 +104,7 @@
                                     <div class="row">
                                         <div class="form-group col-md-6">
                                             <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Role:</label></div>
-                                            <select id="role1" name="roleId" value="" style="height:  34px;width: 100%;" onchange="changeRole()">
+                                            <select id="role0" name="roleId" value="" style="height:  34px;width: 100%;" onchange="changeRole(0)">
                                                 <%List<Roles> rolesList = (List<Roles>)request.getAttribute("rolesList");
                                                   for(Roles role : rolesList){%>
                                                 <option value="<%=role.getId()%>"><%=role.getName()%></option>"
@@ -115,7 +115,7 @@
 
                                         <div class="form-group col-md-6">
                                             <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Airline:</label></div>
-                                            <select id="airline1" name="airlineID" value="" style=" display: none;height:  34px; width: 100%;">
+                                            <select id="airline0" name="airlineID" value="" style=" display: none;height:  34px; width: 100%;">
                                                 <%List<Airline> airlineList = (List<Airline>)request.getAttribute("airlineList");
                                                   for(Airline airline : airlineList){%>
                                                 <option value="<%=airline.getId()%>"><%=airline.getName()%></option>"
@@ -234,7 +234,7 @@
                                                 <div class="row">
                                                     <div class="form-group col-md-6">
                                                         <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Role:</label></div>
-                                                        <select name="roleId" value="<%= list.getRoleId() %>" style="height:  34px;width: 100%;">
+                                                        <select id="role<%= list.getId() %>" onchange="changeRole(<%= list.getId() %>)" name="roleId" value="<%= list.getRoleId() %>" style="height:  34px;width: 100%;">
                                                             <%
                                                             for(Roles role : rolesList){%>
                                                             <option value="<%=role.getId()%>" <%= (list.getRoleId() == role.getId()) ? "selected" : "" %>><%=role.getName()%></option>
@@ -243,7 +243,7 @@
                                                     </div>
                                                     <div class="form-group col-md-6">
                                                         <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Airline:</label></div>
-                                                        <select name="airlineID" value="<%= list.getAirlineId()%>" style="height:  34px;width: 100%;">
+                                                        <select id="airline<%= list.getId() %>" name="airlineID" value="<%= list.getAirlineId()%>" style="height:  34px;width: 100%;">
                                                             <%
                                                             for(Airline airline : airlineList){%>
                                                             <option value="<%=airline.getId()%>" <%= (list.getAirlineId() == airline.getId()) ? "selected" : "" %>><%=airline.getName()%></option>
@@ -404,10 +404,10 @@
 
             });
 
-            function changeRole() {
-                var roleNow = document.getElementById("role1").value;
+            function changeRole(i) {
+                var roleNow = document.getElementById("role"+i).value;
                 console.log(roleNow);
-                var airlineBox = document.getElementById("airline1");
+                var airlineBox = document.getElementById("airline"+i);
                 if (roleNow === "2") {
                     airlineBox.style.display = "block";
                 } else {

@@ -256,10 +256,12 @@
                                     <select name="planeCategoryId">
                                         <%
                                             for (PlaneCategory category : categories) {
+                                                if(category.getStatusId()==1){
                                         %>
                                         <option value="<%=category.getId()%>"><%=category.getName()%></option>
                                         <%
                                             }
+                                        }
                                         %>
                                     </select>
                                 </div>
@@ -313,11 +315,13 @@
                         <label for="planeCategoryId" class="form-label">Plane Category: </label>
                         <select name="planeCategoryId">
                             <%
-                                for (PlaneCategory category : categories) {
+                            for (PlaneCategory category : categories) {
+                                if(category.getStatusId()==1){
                             %>
                             <option value="<%=category.getId()%>"><%=category.getName()%></option>
                             <%
                                 }
+                            }
                             %>
                         </select>
                     </div>
