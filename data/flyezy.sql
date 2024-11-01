@@ -578,7 +578,7 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 -- ------------------------------------------------
 -- INSERT DATA
 ---------------------------------------------------
-INSERT INTO `Status` VALUES (1,'Activated'),(2,'Deactivated'),(3,'Pre-flight'),(4,'In-flight'),(5,'Landed'),(6,'Cancellation Request'),(7,'Successfully Canceled'),(8,'Refund completed'),(9,'Is Empty'),(10,'Successful Payment'),(11,'Cancellation Rejection'), ('12', 'Is Pending');
+INSERT INTO `Status` VALUES (1,'Activated'),(2,'Deactivated'),(3,'Is Processing'),(4,'Accepted'),(5,'Rejected'),(6,'Cancellation Request'),(7,'Is Cancelled'),(8,'Refund Completed'),(9,'Is Empty'),(10,'Successful Payment'),(11,'Cancellation Rejection'), (12, 'Is Pending');
 
 INSERT INTO `Roles` VALUES 
 (1,'Admin'),
@@ -595,8 +595,10 @@ INSERT INTO `Airline` VALUES
 INSERT INTO `Baggages` VALUES (4,10,180000,3,1),(5,20,310000,3,1),(6,30,440000,3,1),(7,40,570000,3,1),(8,50,700000,3,1),(9,60,830000,3,1),(10,20,266000,4,1),(11,30,374000,4,1),(12,40,482000,4,1),(13,50,644000,4,1),(14,60,752000,4,1),(15,70,860000,4,1),(16,10,200000,2,1),(17,20,350000,2,1),(18,30,500000,2,1);
 
 INSERT INTO `Accounts` VALUES 
-(1,'Ngô Tùng Dương','duongnthe186310@fpt.edu.vn','KIymfC4XfLDNFnygtZuXNQ==','0862521226','','img/avatar.jpg','2004-11-16',1,3,'2024-09-23 14:07:56','2024-09-23 14:20:15', 1),
-(2,'Hồ Trần Quân','abc@gmail.com','KIymfC4XfLDNFnygtZuXNQ==','0123','','img/jack.png','2024-09-18',2,2,'2024-09-23 14:19:19',NULL, 1);
+(1,'Ngô Tùng Dương','duongnthe186310@fpt.edu.vn','KIymfC4XfLDNFnygtZuXNQ==','0862521226','','img/avatar.jpg','2004-11-16',1,1,'2024-09-23 14:07:56','2024-09-23 14:20:15', 1),
+(2,'Vietnam Airline Staff','airline@gmail.com','KIymfC4XfLDNFnygtZuXNQ==','0123','','img/jack.png','2024-09-18',2,2,'2024-09-23 14:19:19',NULL, 1),
+(3,'Bamboo Staff','bamboo@gmail.com','KIymfC4XfLDNFnygtZuXNQ==','0456','','img/jack.png','2024-09-19',2,3,'2024-09-24 14:19:19',NULL, 1),
+(4,'Service Staff','flyfly@gmail.com','KIymfC4XfLDNFnygtZuXNQ==','0789','','img/jack.png','2024-09-19',4,1,'2024-09-24 14:19:19',NULL, 1);
 
 INSERT INTO Plane_Category 
 VALUES 

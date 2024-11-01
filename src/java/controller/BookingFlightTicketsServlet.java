@@ -190,6 +190,8 @@ public class BookingFlightTicketsServlet extends HttpServlet {
                 Accounts acc = ad.getAccountsById(id);
                 request.setAttribute("account", acc);
             }
+            o = od.getOrderByCode(orderCode);
+            
             request.getRequestDispatcher("view/successfulBooking.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();

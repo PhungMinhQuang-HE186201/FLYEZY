@@ -270,7 +270,7 @@
                                 </div>
                             </div>
                             <% for(FlightDetails detail : fdd.getAll()) {
-                if(detail.getId() == t.getFlightDetailId()) { %>
+                            if(detail.getId() == t.getFlightDetailId()) { %>
 
                             <!-- Flight route icon -->
                             <div><i class="fas fa-plane"></i> <%= fd.getDepartureByFlight(od.getFlightIdByOrder(o.getId())) %> to <%= fd.getDestinationByFlight(od.getFlightIdByOrder(o.getId())) %></div>
@@ -292,7 +292,7 @@
 
                             <!-- Extra baggage with icon -->
                             <% for(Baggages b : bmd.getAllBaggages()) {
-                if(b.getId() == t.getBaggagesid()) { %>
+                            if(b.getId() == t.getBaggagesid()) { %>
                             <div><i class="fas fa-suitcase"></i> Extra baggage: <%= b.getWeight() %>kg</div>
                             <% } } %>
                         </div>
@@ -305,7 +305,12 @@
                             <div><strong style="font-size: 16px"><%= currencyFormatter.format(t.getTotalPrice()) %></strong></div>
                                 <% if(t.getStatusid() == 10 || t.getStatusid() == 12) { %>
                             <a class="btn btn-danger" style="text-decoration: none; margin-top: 5px;" onclick="openModalTicket(<%= t.getId() %>,<%= o.getId() %>)">Cancel ticket</a>
-                            <% } %>
+                            <% } else if(t.getStatusid() == 7 && o.getStatus_id()==10){//phải thanh toán order rồi mới có nút hoàn tiền
+                            %>
+                            <a class="btn btn-warning" style="text-decoration: none; margin-top: 5px;" onclick="openModalTicket(<%= t.getId() %>,<%= o.getId() %>)">Request refund</a>
+                            <%
+                            }
+                            %>
                         </div>
                     </div>
                     <% count++; %>
@@ -314,9 +319,11 @@
 
 
 
-                    <div class="list-price" style="text-align: right; padding: 15px 0 ">
+                    <div class="list-price" style="text-align: right; padding: 15px 0 "> 
+                        <div>Order Tickets: <%=currencyFormatter.format(o.getTotalPrice()) %></div>
+                        <div>Cancel Tickets: <%=currencyFormatter.format(od.getTotalPriceCancelledTicket(o.getId())) %></div>
                         <div class="order-discount">Discount: 0%</div>
-                        <div class="order-total"><strong style="font-size: 1.2em;">Total: <%=currencyFormatter.format(o.getTotalPrice()) %></strong></div>
+                        <div class="order-total"><strong style="font-size: 1.2em;">Total: <%=currencyFormatter.format(o.getTotalPrice()-od.getTotalPriceCancelledTicket(o.getId())) %></strong></div>
                     </div>
 
 

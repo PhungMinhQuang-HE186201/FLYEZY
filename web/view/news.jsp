@@ -21,7 +21,7 @@
         <%@ include file="header.jsp" %>
         <div class="box" >
             <div style="display: ${empty param.id ? '' : 'none'};margin: 130px 0">
-                <h1 style="margin-bottom: 20px; text-align: center;">Tin tức</h1>
+                <h1 style="margin-bottom: 20px; text-align: center;">NEWS</h1>
                 <div class="news-container">
                     <% 
                         AirlineManageDAO amd = new AirlineManageDAO();

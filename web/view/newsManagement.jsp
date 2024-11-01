@@ -10,11 +10,6 @@
 <%@page import="model.NewCategory"%>
 <%@page import="model.News"%>
 <%@page import="java.util.List"%>
-
-
-
-
-
 <!DOCTYPE html>
 <html>
     <head>
@@ -26,10 +21,6 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.css">
         <link rel="stylesheet" href="css/styleGeneral.css"/>
-
-
-
-
         <style>
             .modal-body{
                 text-align: left

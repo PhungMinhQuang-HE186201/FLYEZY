@@ -65,16 +65,13 @@ public class News extends HttpServlet {
         HttpSession session = request.getSession();
 
         Integer idd = (Integer) session.getAttribute("id");
-        if (idd == null) {
-            response.sendRedirect("login");
-            return;
-        } else {
+        if (idd != null) {
             int i = (idd != null) ? idd : -1;
             Accounts acc = ad.getAccountsById(i);
             request.setAttribute("account", acc);
-            request.setAttribute("listNew", nw.getNews());
-            request.getRequestDispatcher("view/news.jsp").forward(request, response);
         }
+        request.setAttribute("listNew", nw.getNews());
+        request.getRequestDispatcher("view/news.jsp").forward(request, response);
     }
 
     @Override

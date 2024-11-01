@@ -43,8 +43,7 @@ public class News {
         this.accountId = accountId;
         this.Airline_id = Airline_id;
     }
-     
-     
+
     public int getId() {
         return id;
     }
@@ -68,7 +67,6 @@ public class News {
     public void setImage(String image) {
         this.image = image;
     }
-    
 
     public String getContent() {
         return content;
@@ -94,13 +92,15 @@ public class News {
         this.accountId = accountId;
     }
 
-    public void setAirline_id(int Airline_id) {
-        this.Airline_id = Airline_id;
-    }
-
     public int getAirline_id() {
         return Airline_id;
     }
+
+    public void setAirline_id(int Airline_id) {
+        this.Airline_id = Airline_id;
+    }
+     
+   
     
     
 }

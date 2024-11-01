@@ -50,7 +50,7 @@ public class NewsManageDAO extends DBConnect {
 
     public int createNews(News news) {
         int n = 0;
-        String sql = "INSERT INTO `flyezy`.`news` (title, content, image, News_Categoryid, Accountsid, Airline_id)"
+        String sql = "INSERT INTO `flyezy`.`News` (title, content, image, News_Categoryid, Accountsid, Airline_id)"
                 + "VALUES (?, ?, ?, ?, ?, ?);";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -69,7 +69,7 @@ public class NewsManageDAO extends DBConnect {
     }
 
     public void deleteNewsById(int id) {
-        String sql = "DELETE FROM `flyezy`.`news`\n"
+        String sql = "DELETE FROM `flyezy`.`News`\n"
                 + "WHERE id = ?;";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -81,7 +81,7 @@ public class NewsManageDAO extends DBConnect {
     }
 
     public void UpdateNews(News news) {
-        String sql = "UPDATE `flyezy`.`news`\n"
+        String sql = "UPDATE `flyezy`.`News`\n"
                 + "SET\n"
                 + "title = ?,\n"
                 + "image = ?,\n"
@@ -107,7 +107,7 @@ public class NewsManageDAO extends DBConnect {
     }
 
     public void deleteNews(int id) {
-        String sql = "DELETE FROM `flyezy`.`news`\n"
+        String sql = "DELETE FROM `flyezy`.`News`\n"
                 + "WHERE id = ?;";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);

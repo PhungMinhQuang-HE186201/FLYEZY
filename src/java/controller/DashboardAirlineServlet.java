@@ -50,9 +50,7 @@ public class DashboardAirlineServlet extends HttpServlet {
             int i = (idd != null) ? idd : -1;
             Accounts acc = ad.getAccountsById(i);
             request.setAttribute("account", acc);
-            //list airline
             List<Airline> listAirline;
-            //list baggage
             List<Baggages> listBaggage = baggageManageDao.getAllBaggages();
             String submit = request.getParameter("submit");
             if (submit == null) {

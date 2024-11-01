@@ -107,7 +107,7 @@ public class TicketDAO extends DBConnect {
 
     public void cancelTicketById(int id) {
 
-        String sql = "UPDATE Ticket SET Statusid = 6 where id=?";
+        String sql = "UPDATE Ticket SET Statusid = 7 where id=?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
@@ -352,27 +352,6 @@ public class TicketDAO extends DBConnect {
             e.printStackTrace();
         }
         return ls;
-    }
-
-    public int createTicketWhenChangeStatus(int id, Ticket ticket) {
-        int n = 0;
-        String sql = "INSERT INTO `flyezy`.`Ticket` \n"
-                + "(`id`, `Seat_Categoryid`, `code`, `Statusid`,`Flight_Type_id`) \n"
-                + "VALUES(?,?,?,?,?)";
-
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, id);
-            ps.setInt(2, ticket.getSeat_Categoryid());
-            ps.setString(3, ticket.getCode());
-            ps.setInt(4, 9);
-            ps.setInt(5, ticket.getFlight_Type_id());
-            // Set các giá trị vào PreparedStatement
-            n = ps.executeUpdate();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return n;
     }
 
     public int createTicket(String code, int flightDetailId, int seatCategoryId, int passengerTypeId, String pName, int pSex, String pPhoneNumber, Date pDob, Integer baggageId, int totalPrice, int orderId, int flightTypeId) {
