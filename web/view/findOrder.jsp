@@ -1,7 +1,7 @@
 <%-- 
-    Document   : buyingHistory
-    Created on : Oct 17, 2024, 5:20:41 PM
-    Author     : PMQUANG
+    Document   : findOrder
+    Created on : Oct 30, 2024, 8:20:07 AM
+    Author     : phung
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -106,7 +106,8 @@
             }
 
             .status-label {
-                padding: 5px 10px;font-size: 15px;
+                padding: 5px 10px;
+                font-size: 15px;
                 color: white;
                 font-weight: bold;
                 display: inline-block;
@@ -131,28 +132,28 @@
                 background-color: #28a745;
             }
             .status-label.request {
-                background-color: #ffc107; 
+                background-color: #ffc107;
             }
             .status-label.canceled {
-                background-color: #28a745; 
+                background-color: #28a745;
             }
             .status-label.refund {
-                background-color: #28a745; 
+                background-color: #28a745;
             }
             .status-label.rejection {
-                background-color: #dc3545; 
+                background-color: #dc3545;
             }
             .status-label.request {
-                background-color: #ffc107; 
+                background-color: #ffc107;
             }
             .status-label.canceled {
-                background-color: #28a745; 
+                background-color: #28a745;
             }
             .status-label.refund {
-                background-color: #28a745; 
+                background-color: #28a745;
             }
             .status-label.rejection {
-                background-color: #dc3545; 
+                background-color: #dc3545;
             }
 
 
@@ -175,36 +176,17 @@
             SeatCategoryDAO scd = new SeatCategoryDAO();
             BaggageManageDAO bmd = new BaggageManageDAO();
             
-            List<Order> listOrder = (List<Order>)request.getAttribute("listOrder");
+            Order o = (Order)request.getAttribute("order");
             List<FlightDetails> listFlightDetails = (List<FlightDetails>)request.getAttribute("listFlightDetails");
         %>
 
         <!-- Container for the order details -->
 
         <div class="container mt-5 order-container" style="transform: translateY(45px)">
-            <!-- Status Tabs Section -->
-            <div class="row" style="margin-top: 20px">
-                <div class="col-md-12">
-                    <ul class="nav nav-tabs">
-                        <li class="nav-item">
-                            <a style="color: green" class="nav-link <%= request.getParameter("statusId") == null ? "active" : "" %>" href="buyingHistory">All</a>
-                        </li>
-                        <% for (Status st : listStatusOrder) { %>
-                        <li class="nav-item">
-                            <a style="color: green" class="nav-link <%= request.getParameter("statusId") != null && request.getParameter("statusId").equals(String.valueOf(st.getId())) ? "active" : "" %>" href="buyingHistory?statusId=<%=st.getId()%>">
-                                <%=st.getName()%>
-                            </a>
-                        </li>
-                        <% } %>
-                    </ul>
-                </div>
-            </div>
-
             <!-- Search Bar Section -->
-            <% if (request.getParameter("statusId") == null) { %>
             <div class="row mt-3 mb-3">
                 <div class="col-md-12">
-                    <form action="buyingHistory" method="get" class="form-inline justify-content-center">
+                    <form action="findOrder" method="get" class="form-inline justify-content-center">
                         <input type="text" value="${param.code}" class="form-control" name="code" placeholder="Enter code here to search ..." aria-label="Search" style="width: 30%; font-size: 1.2em">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" type="submit">
@@ -214,15 +196,16 @@
                     </form>
                 </div>
             </div>
-            <% } %>
 
             <!-- Buying History Section -->
             <div class="buying-history">
                 <%int id = 0;%>
-                <% for(Order o : listOrder) { 
+                <% if(o!=null){             
                     List<Ticket> listTicketInOrder = td.getAllTicketsByOrderId(o.getId());
                     if (!listTicketInOrder.isEmpty()) { %>
 
+                <% Boolean isVerified = (Boolean) request.getAttribute("isVerified"); %>
+                <% if (isVerified != null && isVerified) { %>
                 <div class="order-card">
                     <div class="order-header">
 
@@ -321,25 +304,23 @@
                             <% } else { %>
                             <a class="btn btn-danger" style="text-decoration: none;" onclick="openModalOrder(<%= o.getId() %>)">Cancel Order</a>
                             <% } %>
-                            <% FeedbackDao fd1 = new FeedbackDao(); 
-                               Integer idd = (Integer) session.getAttribute("id"); 
-                               Feedbacks f = fd1.getFeedbakByOrderId(o.getId(), idd); 
-                               if (f == null) { %>
-                            <a href="evaluateController?orderId=<%= o.getId() %>">
-                                <button class="btn btn-outline-secondary">Feedback</button>
-                            </a>
-                            <% } else { %>
-                            <a href="evaluateController?action=viewUpdate&orderId=<%= o.getId() %>">
-                                <button class="btn btn-outline-secondary">Update Feedback</button>
-                            </a>
-                            <% } %>
                         </div>
                     </div>
 
                 </div>
                 <br>
             </div>
-            <% } %>
+            <% }else{ %>
+            <div class="contact-verification mt-3">
+                <form action="findOrder" method="get">
+                    <input type="hidden" name="code" value="<%= o.getCode() %>">
+                    <label for="contactInfo">Please verify your contact information:</label>
+                    <input type="text" id="contactInfo" name="contactInfo" class="form-control" placeholder="Enter your contact mail/phone/name">
+                    <button type="submit" class="btn btn-primary mt-2">Verify</button>
+                </form>
+            </div>
+            <%}%>
+            <%}%>
             <%}%>
 
 

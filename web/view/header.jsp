@@ -15,7 +15,7 @@
         <link rel="stylesheet" href="css/styleHeader.css" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-      
+
     </head>
     <style>
         .transparent-header {
@@ -33,7 +33,9 @@
             </div>
             <ul id="header-nav1" style="font-weight: 520">
                 <li "><a href="home" >HOME</a></li>
-                <li "><a href="routeTicket" >TICKETS</a></li>
+                <li>
+                    <a href="${requestScope.account == null ? 'findOrder' : 'buyingHistory'}">TICKETS</a>
+                </li>
                 <li "><a href="News">NEWS</a></li>
                 <li "><a href="#footer" >CONTACT</a></li>
             </ul>

@@ -157,27 +157,31 @@ public class TicketManagementServlet extends HttpServlet {
         if (action == null) {
             request.getRequestDispatcher("view/ticketManagement.jsp").forward(request, response);
         } else if (action.equals("search")) {
-            
+
             String flightType = request.getParameter("flightType");
             String passengerType = request.getParameter("passengerType");
             String statusTicket = request.getParameter("statusTicket");
             String fName = request.getParameter("fName").trim();
             String fPhoneNumber = request.getParameter("fPhoneNumber").trim();
-            String orderIdStr = request.getParameter("orderId");
-            int orderId = -1;
+            String orderCode = request.getParameter("orderCode").trim();
+            request.setAttribute("orderCode", orderCode);
 
-            if (orderIdStr != null && !orderIdStr.isEmpty()) {
-                try {
-                    orderId = Integer.parseInt(orderIdStr);
-                } catch (NumberFormatException e) {
-                    
-                    System.err.println("Invalid order ID format: " + orderIdStr);
-                    orderId = -1; 
-                }
+            boolean allFieldsEmpty = (flightType == null || flightType.isEmpty())
+                    && (passengerType == null || passengerType.isEmpty())
+                    && (statusTicket == null || statusTicket.isEmpty())
+                    && fName.isEmpty()
+                    && fPhoneNumber.isEmpty()
+                    && orderCode == null || orderCode.isEmpty();
+            List<Ticket> ticketSearchList;
+            if (allFieldsEmpty) {
+                // Get all tickets by flightDetailId
+                ticketSearchList = td.getAllTicketsById(flightDetailId);
+            } //            List<Accounts> accountList = ad.searchAccounts(fRole, fName, fPhoneNumber);
+            //            request.setAttribute("accountList", accountList);
+            else {
+                // Proceed with filtered search
+                ticketSearchList = td.searchTickets(passengerType, statusTicket, fName, fPhoneNumber, flightDetailId, flightType, orderCode);
             }
-//            List<Accounts> accountList = ad.searchAccounts(fRole, fName, fPhoneNumber);
-//            request.setAttribute("accountList", accountList);
-            List<Ticket> ticketSearchList = td.searchTickets(passengerType, statusTicket, fName, fPhoneNumber, flightDetailId, flightType, orderId);
             request.setAttribute("ticketList", ticketSearchList);
             request.getRequestDispatcher("view/ticketManagement.jsp").forward(request, response);
         }

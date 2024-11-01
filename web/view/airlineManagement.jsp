@@ -71,23 +71,6 @@
                                     <textarea pattern="^[\p{L}\s]+$" class="editor" name="airlineInfo"></textarea>
                                 </div>
                             </div>  
-
-                            <!-- Baggage Checkbox -->
-                            <div class="form-group">
-                                <label>
-                                    <input type="checkbox" id="hasBaggageCheckbox" name="hasBaggage" onchange="toggleBaggageInputs()"> Do you want to add baggages?
-                                </label>
-                            </div>
-
-                            <!-- Baggage Inputs -->
-                            <input type="hidden" name="airlineId" value="${maxAirlineId}">
-                            <div id="baggageInputs" style="display: none;">
-                                <!-- Container for dynamic baggage inputs -->
-                                <div id="baggageContainer"></div>
-
-                                <!-- Button to add baggage -->
-                                <button type="button" class="btn btn-secondary" onclick="addBaggageInput()">Add Baggage</button>
-                            </div>
                         </form>
                     </div>
                     <div class="modal-footer">

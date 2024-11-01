@@ -101,22 +101,6 @@ public class AirlineManagementServlet extends HttpServlet {
             // Thêm airline vào cơ sở dữ liệu
             // Lấy airlineId
             int airlineId = airlineManageDao.createAirline(airline);
-
-            // Lấy danh sách baggage
-            String[] baggageWeights = request.getParameterValues("baggageWeight");
-            String[] baggagePrices = request.getParameterValues("baggagePrice");
-
-            // Kiểm tra và thêm baggage vào cơ sở dữ liệu
-            if (baggageWeights != null && baggagePrices != null) {
-                for (int i = 0; i < baggageWeights.length; i++) {
-                    // Phân tích và thêm baggage vào cơ sở dữ liệu
-                    float weight = Float.parseFloat(baggageWeights[i]);
-                    int price = Integer.parseInt(baggagePrices[i]);
-
-                    // Thêm baggage vào cơ sở dữ liệu với airlineId
-                    baggageManageDao.createBaggages(new Baggages(weight, price, airlineId));
-                }
-            }
         } catch (NumberFormatException e) {
             e.printStackTrace();
         } catch (Exception e) {
