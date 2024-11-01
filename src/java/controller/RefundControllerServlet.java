@@ -4,8 +4,6 @@
  */
 package controller;
 
-import dal.AccountsDAO;
-import dal.NewsManageDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,15 +11,27 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import dal.AccountsDAO;
+import dal.RefundDAO;
+import dal.RolesDAO;
+import dal.AirlineManageDAO;
+import dal.StatusDAO;
 import jakarta.servlet.http.HttpSession;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.List;
 import model.Accounts;
+import model.Roles;
+import model.Airline;
+import model.Refund;
+import model.Status;
 
 /**
  *
- * @author Admin
+ * @author Fantasy
  */
-@WebServlet(name = "HomeServlet", urlPatterns = {"/home"})
-public class HomeServlet extends HttpServlet {
+@WebServlet(name = "RefundControllerServlet", urlPatterns = {"/RefundController"})
+public class RefundControllerServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,10 +50,10 @@ public class HomeServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet HomeServlet</title>");
+            out.println("<title>Servlet RefundControllerServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet HomeServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet RefundControllerServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -61,16 +71,46 @@ public class HomeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        AccountsDAO ad = new AccountsDAO();
-         NewsManageDAO nw =new NewsManageDAO();
         HttpSession session = request.getSession();
+        AccountsDAO ad = new AccountsDAO();
+        RefundDAO rd = new RefundDAO();
+        StatusDAO sd = new StatusDAO();
+        String statusMessage = (String) session.getAttribute("result");
+        if (statusMessage != null) {
+            request.setAttribute("result", statusMessage);
+            session.removeAttribute("result");
+        }
 
         Integer idd = (Integer) session.getAttribute("id");
-        int i = (idd != null) ? idd : -1;
-        Accounts acc = ad.getAccountsById(i);
-        request.setAttribute("account", acc);
-           request.setAttribute("listNew", nw.getNews());
-        request.getRequestDispatcher("view/home.jsp").forward(request, response);
+        if (idd == null) {
+            response.sendRedirect("login");
+            return;
+        } else {
+            int i = (idd != null) ? idd : -1;
+            Accounts acc = ad.getAccountsById(i);
+            request.setAttribute("account", acc);
+
+            List<Refund> refundList = rd.getAllRefund();
+            request.setAttribute("refundList", refundList);
+
+            List<Status> statusList = sd.getStatusOfFeedback();
+            request.setAttribute("statusList", statusList);
+
+            String action = request.getParameter("action");
+            if (action == null) {
+                request.getRequestDispatcher("view/Refund.jsp").forward(request, response);
+            } else if (action.equals("search")) {
+                String fStaus = request.getParameter("fStaus");
+                String fDateFrom = request.getParameter("fDateFrom");
+                String fDateTo = request.getParameter("fDateTo");
+                String fDateFrom1 = request.getParameter("fDateFrom1");
+                String fDateTo1 = request.getParameter("fDateTo1");
+                List<Refund> refundListSearch = rd.searchRefund(fStaus, fDateFrom, fDateTo,fDateFrom1,fDateTo1);
+                request.setAttribute("refundList", refundListSearch);
+                request.getRequestDispatcher("view/Refund.jsp").forward(request, response);
+            }
+        }
+
     }
 
     /**
@@ -84,7 +124,14 @@ public class HomeServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String action = request.getParameter("action");
+        if (action.equals("changeStatus")) {
+            StatusDAO sd = new StatusDAO();
+            int statusID = Integer.parseInt(request.getParameter("statusID"));
+            int refundID = Integer.parseInt(request.getParameter("refundId"));
+            sd.changeStatusRefund(refundID, statusID);
+            response.sendRedirect("RefundController");
+        }
     }
 
     /**

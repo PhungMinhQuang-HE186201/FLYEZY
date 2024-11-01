@@ -20,18 +20,18 @@
                 flex-direction: column;
                 align-items: center;
                 padding: 20px;
-                background-color: #f3f3f3;
+                background-color: #fffff;
                 border-radius: 8px;
-                width: 320px;
+                width: 350px;
+                height: 400px;
                 margin: auto;
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
                 font-family: Arial, sans-serif;
             }
-
-            /* Icon styling */
+            /* Điều chỉnh kích thước và phong cách của GIF */
             .icon {
-                font-size: 48px;
-                color: #4a90e2;
+                width: 64px; /* Thay đổi kích thước theo nhu cầu */
+                height: 64px;
                 margin-bottom: 15px;
             }
 
@@ -94,6 +94,8 @@
                 border-radius: 4px;
                 outline: none;
                 transition: border-color 0.3s;
+                margin-top: 15px;
+                margin-bottom: -62px;
             }
 
             /* css focus button */
@@ -109,7 +111,7 @@
             }
 
             #submit {
-                margin-top: 10px;
+                margin-top: 80px;
                 padding: 10px 20px;
                 font-size: 16px;
                 background-color: #3c6e57;
@@ -130,11 +132,14 @@
                 font-size: 14px;
                 text-align: center;
             }
+            .footcard{
+                margin-top: 40px;
+            }
         </style>
     </head>
     <body>
         <div class="container">
-            <div class="icon">🔒</div>
+            <img src="img/verify.gif" alt="Loading Icon" class="icon">
             <h4 class="otp-title">Please enter your OTP</h4>
 
             <form action="verify" method="POST">
@@ -157,10 +162,14 @@
                     <input type="hidden" name="genotp" value="<%= request.getAttribute("otp") %>">
                 </div>
             </form>
-
             <c:if test="${not empty requestScope.error}">
                 <h5 class="error-message">${requestScope.error}</h5>
             </c:if>
+            <div class="footcard">
+
+                You want to retry register?<hr> <br/> <a style="display: flex;justify-content: center" class="letDoIt" href="register">Register</a>
+            </div>
+
         </div>
         <script>
             function moveToNext(current, nextFieldID) {

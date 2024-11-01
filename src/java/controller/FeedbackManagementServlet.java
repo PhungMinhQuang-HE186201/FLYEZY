@@ -29,8 +29,8 @@ import model.Feedbacks;
  *
  * @author Fantasy
  */
-@WebServlet(name = "evaluteControllerServlet", urlPatterns = {"/evaluateController"})
-public class evaluteControllerServlet extends HttpServlet {
+@WebServlet(name = "FeedbackManagementServlet", urlPatterns = {"/feedbackController"})
+public class FeedbackManagementServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -84,60 +84,22 @@ public class evaluteControllerServlet extends HttpServlet {
             request.setAttribute("account", acc);
         }
         String action = request.getParameter("action");
-        String action1 = request.getParameter("action1");
-        String orderID = request.getParameter("orderId");
-        if (orderID != null) {
-            int orderid = Integer.parseInt(orderID);
-            session.setAttribute("orderId", orderid);
-        }
-        int orderId = (int) session.getAttribute("orderId");
-        
-        if(action1!=null){
-            action = "";
-        }
-        if (action == null) {
-            request.setAttribute("ratingValue", 5);
-            request.getRequestDispatcher("view/evaluate.jsp").forward(request, response);
-        } else {
-            
-            if (action.equals("evaluate")) {
-                String comment = request.getParameter("editor");
-                if (comment == "") {
-                    comment = " ";
-                } else {
-                    comment = comment.substring(3, comment.length() - 4);
-                }
-                int ratedStar = Integer.parseInt(request.getParameter("ratingValue"));
 
-                SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-                String timeStr = dateFormat.format(new Timestamp(System.currentTimeMillis()));
-                Feedbacks feedback = new Feedbacks(idd, ratedStar, comment, new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), 13, orderId);
-                int n = fd.createFeedback(feedback);
-                request.getRequestDispatcher("view/successfullEvaluate.jsp").forward(request, response);
-            } else if (action.equals("viewUpdate")) {
-                Feedbacks feedback = fd.getFeedbakByOrderId(orderId, idd);
-                int ratingValue = feedback.getRatedStar();
-                String comment = feedback.getComment();
-                request.setAttribute("ratedStar", ratingValue);
-                request.setAttribute("comment", comment);
-                request.getRequestDispatcher("view/evaluate.jsp").forward(request, response);
-            } else if (action.equals("update")) {
-                String comment = request.getParameter("editor");
-                if (comment == "") {
-                    comment = " ";
-                } else {
-                    comment = comment.substring(3, comment.length() - 4);
-                }
-                int ratedStar = Integer.parseInt(request.getParameter("ratingValue"));
-                Feedbacks feedback = new Feedbacks(idd, ratedStar, comment, new Timestamp(System.currentTimeMillis()), orderId);
-                fd.updateFeedback(feedback);
-                request.getRequestDispatcher("view/successfullEvaluate.jsp").forward(request, response);
-            }
-            if (action1 != null) {
-                fd.deleteFeedback(idd, orderId);
-                response.sendRedirect("home");
-            }
-            
+        if (action == null) {
+            List<Feedbacks> feedbackList = fd.getAllFeedback();
+            List<Status> statusList = sd.getStatusOfFeedback();
+            request.setAttribute("feedbackList", feedbackList);
+            request.setAttribute("statusList", statusList);
+            request.getRequestDispatcher("view/Feedback.jsp").forward(request, response);
+        } else if (action.equals("search")) {
+            String fStaus = request.getParameter("fStaus");
+            String fStar = request.getParameter("fStar");
+            String fEmail = request.getParameter("fEmail");
+            List<Feedbacks> feedbackList = fd.searchFeedback2(fStaus, fStar, fEmail);
+            List<Status> statusList = sd.getStatusOfFeedback();
+            request.setAttribute("feedbackList", feedbackList);
+            request.setAttribute("statusList", statusList);
+            request.getRequestDispatcher("view/Feedback.jsp").forward(request, response);
         }
     }
 
@@ -151,16 +113,16 @@ public class evaluteControllerServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-         String action = request.getParameter("action");
-         if(action.equals("changeStatus")){
-             StatusDAO sd = new StatusDAO();
-             int statusID = Integer.parseInt(request.getParameter("statusID"));
-             int feedBackId = Integer.parseInt(request.getParameter("feedBackId"));
-             int orderId = Integer.parseInt(request.getParameter("orderId"));
-             sd.changeStatusFeedback(feedBackId, statusID);
-             response.sendRedirect("evaluateController?action=view&orderId="+orderId);
-         }
+            throws ServletException, IOException {
+        String action = request.getParameter("action");
+        if (action.equals("changeStatus")) {
+            StatusDAO sd = new StatusDAO();
+            int statusID = Integer.parseInt(request.getParameter("statusID"));
+            int feedBackId = Integer.parseInt(request.getParameter("feedBackId"));
+            sd.changeStatusFeedback(feedBackId, statusID);
+            response.sendRedirect("feedbackController");
+
+        }
     }
 
     /**

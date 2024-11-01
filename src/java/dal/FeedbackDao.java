@@ -95,7 +95,22 @@ public class FeedbackDao extends DBConnect {
         }
         return list;
     }
-
+    public List<Feedbacks> getAllFeedback() {
+        int n = 0;
+        String sql = "Select * from Feedbacks";
+        List<Feedbacks> list = new ArrayList<>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Feedbacks f = new Feedbacks(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getString(4), rs.getTimestamp(5), rs.getTimestamp(6), rs.getTimestamp(7), rs.getInt(8), rs.getInt(9));
+                list.add(f);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return list;
+    }
     public void updateFeedback(Feedbacks feedbacks) {
         String sql = "UPDATE Feedbacks\n"
                 + "   SET ratedStar = ?\n"
@@ -157,7 +172,46 @@ public class FeedbackDao extends DBConnect {
         }
         return ls;
     }
+    public List<Feedbacks> searchFeedback2(String Status, String Star, String Email) {
+        List<Feedbacks> ls = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT f.id,f.Accountsid,f.ratedStar,f.comment,f.date,f.created_at,f.updated_at,f.Statusid,f.Order_id,a.email FROM Feedbacks f\n"
+                + "              join Accounts a On f.Accountsid=a.id WHERE 1=1");
 
+        if (Status != null && !Status.isEmpty()) {
+            sql.append(" AND Statusid = ?");
+        }
+        if (Star != null && !Star.isEmpty()) {
+            sql.append(" AND ratedStar = ?");
+        }
+        if (Email != null && !Email.isEmpty()) {
+            sql.append(" AND email LIKE ?");
+        }
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql.toString());
+            int i = 1;
+            if (Status != null && !Status.isEmpty()) {
+                int status = Integer.parseInt(Status);
+                ps.setInt(i++, status);
+            }
+            if (Star != null && !Star.isEmpty()) {
+                int star = Integer.parseInt(Star);
+                ps.setInt(i++, star);
+            }
+            if (Email != null && !Email.isEmpty()) {
+                ps.setString(i++, "%" + Email + "%");
+            }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Feedbacks f = new Feedbacks(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getString(4), rs.getTimestamp(5), rs.getTimestamp(6), rs.getTimestamp(7), rs.getInt(8), rs.getInt(9));
+                ls.add(f);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ls;
+    }
     public static void main(String[] args) {
         FeedbackDao fd = new FeedbackDao();
         List<Feedbacks> list = fd.getFeedbakByOrderId2(1);

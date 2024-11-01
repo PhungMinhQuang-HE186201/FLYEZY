@@ -40,7 +40,7 @@ public class AirlineManageDAO extends DBConnect {
     }
 
     public String getNameById(int id) {
-        String sql = "select * from Airline where id = ?";
+        String sql = "select name from Airline where id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
@@ -54,7 +54,7 @@ public class AirlineManageDAO extends DBConnect {
     }
     
     public String getImageById(int id) {
-        String sql = "select * from Airline where id = ?";
+        String sql = "select image from Airline where id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
