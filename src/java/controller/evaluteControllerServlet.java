@@ -111,7 +111,7 @@ public class evaluteControllerServlet extends HttpServlet {
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
                 String timeStr = dateFormat.format(new Timestamp(System.currentTimeMillis()));
-                Feedbacks feedback = new Feedbacks(idd, ratedStar, comment, new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), 13, orderId);
+                Feedbacks feedback = new Feedbacks(idd, ratedStar, comment, new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), 3, orderId);
                 int n = fd.createFeedback(feedback);
                 request.getRequestDispatcher("view/successfullEvaluate.jsp").forward(request, response);
             } else if (action.equals("viewUpdate")) {

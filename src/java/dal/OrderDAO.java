@@ -275,7 +275,19 @@ public class OrderDAO extends DBConnect {
         }
         return false;
     }
-    
+    public boolean successfullPayment(int orderId) {
+        String sql = "UPDATE flyezy.Order SET Status_id = 10 WHERE id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, orderId);
+            int rowsUpdated = ps.executeUpdate();
+            return rowsUpdated > 0;
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
     public String createOrder(String contactName, String contactPhone, String contactEmail, int totalPrice, Integer accountId) {
         String sql = "INSERT INTO `Order` (code, contactName, contactPhone, contactEmail, totalPrice, Accounts_id,Status_id, created_at) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
