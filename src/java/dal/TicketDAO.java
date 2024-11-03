@@ -40,7 +40,8 @@ public class TicketDAO extends DBConnect {
                         rs.getInt("totalPrice"),
                         rs.getInt("Order_id"),
                         rs.getInt("Statusid"),
-                        rs.getInt("Flight_Type_id"));
+                        rs.getInt("Flight_Type_id"),
+                        rs.getTimestamp("cancelled_at"));
                 ls.add(t);
             }
             return ls;
@@ -52,7 +53,7 @@ public class TicketDAO extends DBConnect {
 
     public void confirmSuccessAllTicketsByOrderId(int orderId) {
 
-        String sql = "UPDATE Ticket SET Statusid = 10 where Order_id=?";
+        String sql = "UPDATE Ticket SET Statusid = 10 where Order_id=? and Statusid = 12";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, orderId);
@@ -168,7 +169,8 @@ public class TicketDAO extends DBConnect {
                         rs.getInt("totalPrice"),
                         rs.getInt("Order_id"),
                         rs.getInt("Statusid"),
-                        rs.getInt("Flight_Type_id"));
+                        rs.getInt("Flight_Type_id"),
+                        rs.getTimestamp("cancelled_at"));
 
                 ls.add(t);
             }
@@ -347,7 +349,8 @@ public class TicketDAO extends DBConnect {
                         rs.getInt("totalPrice"),
                         rs.getInt("Order_id"),
                         rs.getInt("Statusid"),
-                        rs.getInt("Flight_Type_id"));
+                        rs.getInt("Flight_Type_id"),
+                        rs.getTimestamp("cancelled_at"));
                 ls.add(t);
             }
         } catch (Exception e) {

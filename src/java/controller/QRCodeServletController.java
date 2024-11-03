@@ -17,8 +17,11 @@ import java.sql.Timestamp;
 import java.util.List;
 import dal.OrderDAO;
 import dal.AccountsDAO;
+import dal.TicketDAO;
 import jakarta.servlet.http.HttpSession;
 import model.Accounts;
+import model.Order;
+
 /**
  *
  * @author Fantasy
@@ -66,6 +69,7 @@ public class QRCodeServletController extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         OrderDAO od = new OrderDAO();
+        TicketDAO td = new TicketDAO();
         AccountsDAO ad = new AccountsDAO();
         Integer idd = (Integer) session.getAttribute("id");
         if (idd == null) {
@@ -76,8 +80,9 @@ public class QRCodeServletController extends HttpServlet {
             Accounts acc = ad.getAccountsById(i);
             request.setAttribute("account", acc);
         }
-        int orderID = (int)session.getAttribute("orderID");
-        od.successfullPayment(orderID);
+        int orderID = (int) session.getAttribute("orderID");
+        od.successfullPayment(orderID, 1);
+        td.confirmSuccessAllTicketsByOrderId(orderID);
         request.getRequestDispatcher("view/successfullPayment.jsp").forward(request, response);
     }
 
@@ -95,6 +100,7 @@ public class QRCodeServletController extends HttpServlet {
         HttpSession session = request.getSession();
         Integer idd = (Integer) session.getAttribute("id");
         AccountsDAO ad = new AccountsDAO();
+        OrderDAO od = new OrderDAO();
         if (idd == null) {
             response.sendRedirect("login");
             return;
@@ -103,18 +109,16 @@ public class QRCodeServletController extends HttpServlet {
             Accounts acc = ad.getAccountsById(i);
             request.setAttribute("account", acc);
         }
-        String orderID =request.getParameter("orderID");
-        if(orderID!=null){
+        String orderID = request.getParameter("orderID");
+        if (orderID != null) {
             int orderId = Integer.parseInt(orderID);
+            Order o = od.getOrderById(orderId);
             session.setAttribute("orderID", orderId);
+            request.setAttribute("email",o.getContactEmail());
+            request.setAttribute("phone", o.getContactPhone());
+            request.setAttribute("totalCost", o.getTotalPrice());
+            request.getRequestDispatcher("view/paymen-QRCode.jsp").forward(request, response);
         }
-        String totalCost = request.getParameter("totalCost");
-        String email = request.getParameter("email");
-        String phone = request.getParameter("phone");
-        request.setAttribute("email", email);
-        request.setAttribute("phone", phone);
-        request.setAttribute("totalCost", totalCost);
-        request.getRequestDispatcher("view/paymen-QRCode.jsp").forward(request, response);
     }
 
     /**

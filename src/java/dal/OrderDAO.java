@@ -275,11 +275,13 @@ public class OrderDAO extends DBConnect {
         }
         return false;
     }
-    public boolean successfullPayment(int orderId) {
-        String sql = "UPDATE flyezy.Order SET Status_id = 10 WHERE id = ?";
+    public boolean successfullPayment(int orderId, int paymentType) {
+        String sql = "UPDATE flyezy.Order SET Payment_Types_id = ?, paymentTime = ?,  Status_id = 10 WHERE id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, orderId);
+            ps.setInt(1, paymentType);
+            ps.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
+            ps.setInt(3, orderId);
             int rowsUpdated = ps.executeUpdate();
             return rowsUpdated > 0;
             
@@ -386,6 +388,37 @@ public class OrderDAO extends DBConnect {
             e.printStackTrace();
         }
         return null;
+    }
+    
+    public Order getOrderById(int id) {
+        List<Order> list = new ArrayList<>();
+        String sql = "SELECT * FROM flyezy.Order WHERE id= ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Order order = new Order(
+                        rs.getInt("id"),
+                        rs.getString("code"),
+                        rs.getString("contactName"),
+                        rs.getString("contactPhone"),
+                        rs.getString("contactEmail"),
+                        rs.getInt("totalPrice"),
+                        rs.getInt("Accounts_id"),
+                        rs.getInt("Payment_Types_id"),
+                        rs.getTimestamp("paymentTime"),
+                        rs.getTimestamp("created_at"),
+                        rs.getInt("Discount_id"),
+                        rs.getInt("Status_id")
+                );
+                return order;
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null; // Return null if no order is found
     }
     
     public Order getOrderByCode(String code) {
@@ -504,6 +537,21 @@ public class OrderDAO extends DBConnect {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    
+    public int getTotalPriceAllTickets(int orderId) {
+        String sql = "SELECT SUM(totalPrice) as total FROM flyezy.Ticket WHERE Order_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, orderId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("total");                
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;        
     }
     
     public int getTotalPriceCancelledTicket(int orderId) {

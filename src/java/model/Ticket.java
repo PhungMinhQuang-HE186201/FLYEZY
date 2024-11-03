@@ -29,7 +29,7 @@ public class Ticket {
     private int Flight_Type_id;
     private Timestamp cancelled_at;
 
-    public Ticket(int id, int flightDetailId, int Seat_Categoryid, int Passenger_Typesid, String code, String pName, int pSex, String pPhoneNumber, Date pDob, int Baggagesid, int totalPrice, int Order_id, int Statusid, int Flight_Type_id) {
+    public Ticket(int id, int flightDetailId, int Seat_Categoryid, int Passenger_Typesid, String code, String pName, int pSex, String pPhoneNumber, Date pDob, int Baggagesid, int totalPrice, int Order_id, int Statusid, int Flight_Type_id, Timestamp cancelled_at) {
         this.id = id;
         this.flightDetailId = flightDetailId;
         this.Seat_Categoryid = Seat_Categoryid;
@@ -44,7 +44,10 @@ public class Ticket {
         this.Order_id = Order_id;
         this.Statusid = Statusid;
         this.Flight_Type_id = Flight_Type_id;
+        this.cancelled_at = cancelled_at;
     }
+
+    
 
     public Ticket(int flightDetailId, int Seat_Categoryid, int Passenger_Typesid, String code, String pName, int pSex, String pPhoneNumber, Date pDob, int Baggagesid, int totalPrice, int Order_id, int Statusid, int Flight_Type_id) {
         this.flightDetailId = flightDetailId;

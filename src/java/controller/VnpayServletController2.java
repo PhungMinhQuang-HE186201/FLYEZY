@@ -78,7 +78,7 @@ public class VnpayServletController2 extends HttpServlet {
         
         if (code.equals("00")) {
             int orderID1 = (int) session.getAttribute("orderID");
-            od.successfullPayment(orderID1);
+            od.successfullPayment(orderID1,2);
             request.getRequestDispatcher("view/successfullPayment.jsp").forward(request, response);
         }else{
             request.getRequestDispatcher("view/failedPayment.jsp").forward(request, response);
