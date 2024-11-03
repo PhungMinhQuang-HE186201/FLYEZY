@@ -27,6 +27,7 @@ public class Ticket {
     private int Order_id;
     private int Statusid;
     private int Flight_Type_id;
+    private Timestamp cancelled_at;
 
     public Ticket(int id, int flightDetailId, int Seat_Categoryid, int Passenger_Typesid, String code, String pName, int pSex, String pPhoneNumber, Date pDob, int Baggagesid, int totalPrice, int Order_id, int Statusid, int Flight_Type_id) {
         this.id = id;
@@ -186,6 +187,16 @@ public class Ticket {
     public void setTotalPrice(int totalPrice) {
         this.totalPrice = totalPrice;
     }
+
+    public Timestamp getCancelled_at() {
+        return cancelled_at;
+    }
+
+    public void setCancelled_at(Timestamp cancelled_at) {
+        this.cancelled_at = cancelled_at;
+    }
+    
+    
 
     @Override
     public String toString() {

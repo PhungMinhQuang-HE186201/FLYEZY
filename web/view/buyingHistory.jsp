@@ -139,8 +139,8 @@
             .status-label.request {
                 background-color: #ffc107;
             }
-            .status-label.canceled {
-                background-color: #28a745;
+            .status-label.cancelled {
+                background-color: #dc3545;
             }
             .status-label.refund {
                 background-color: #28a745;
@@ -148,21 +148,6 @@
             .status-label.rejection {
                 background-color: #dc3545;
             }
-            .status-label.request {
-                background-color: #ffc107;
-            }
-            .status-label.canceled {
-                background-color: #28a745;
-            }
-            .status-label.refund {
-                background-color: #28a745;
-            }
-            .status-label.rejection {
-                background-color: #dc3545;
-            }
-
-
-
         </style>
     </head>
     <body>
@@ -305,7 +290,8 @@
                             <div><strong style="font-size: 16px"><%= currencyFormatter.format(t.getTotalPrice()) %></strong></div>
                                 <% if(t.getStatusid() == 10 || t.getStatusid() == 12) { %>
                             <a class="btn btn-danger" style="text-decoration: none; margin-top: 5px;" onclick="openModalTicket(<%= t.getId() %>,<%= o.getId() %>)">Cancel ticket</a>
-                            <% } else if(t.getStatusid() == 7 && o.getStatus_id()==10){//phải thanh toán order rồi mới có nút hoàn tiền
+                            <% } else if(o.getStatus_id() == 10 && t.getStatusid() == 7 && o.getPaymentTime() != null && t.getCancelled_at() != null && o.getPaymentTime().after(t.getCancelled_at())){
+                            //phải thanh toán order rồi mới có nút hoàn tiền và thời gian cancel phải sau thời gian thanh toán
                             %>
                             <a class="btn btn-warning" style="text-decoration: none; margin-top: 5px;" onclick="openModalTicket(<%= t.getId() %>,<%= o.getId() %>)">Request refund</a>
                             <%

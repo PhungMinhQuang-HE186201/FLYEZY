@@ -57,8 +57,7 @@ public class CancelTicketRequestServlet extends HttpServlet {
             td.cancelTicketById(ticketId);
             
             if(td.countNumberTicketNotCancel(orderId) == 0){
-                od.updateOrderStatus(orderId, 12);
-                
+                od.updateOrderStatus(orderId, 12); 
             }
         } catch (Exception e) {
 
