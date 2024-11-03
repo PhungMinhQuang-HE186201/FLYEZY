@@ -40,6 +40,10 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link href="/vnpay_jsp/assets/bootstrap.min.css" rel="stylesheet"/>
+        <!-- Custom styles for this template -->
+        <link href="/vnpay_jsp/assets/jumbotron-narrow.css" rel="stylesheet">      
+        <script src="/vnpay_jsp/assets/jquery-1.11.3.min.js"></script>
 
         <title>Ticket Buying History</title>
         <style>
@@ -148,6 +152,73 @@
             .status-label.rejection {
                 background-color: #dc3545;
             }
+            .status-label.request {
+                background-color: #ffc107;
+            }
+            .status-label.canceled {
+                background-color: #28a745;
+            }
+            .status-label.refund {
+                background-color: #28a745;
+            }
+            .status-label.rejection {
+                background-color: #dc3545;
+            }
+            #payment_methods {
+                margin-top: 10px;
+                border-radius: 3px;
+                background-color: #f9f9f9;
+            }
+
+            #payment_methods h2 {
+                font-size: 25px;
+                margin-bottom: 50px;
+                text-align: center;
+            }
+            .imgPayment{
+                width: 70px;
+                height: 70px;
+            }
+            .payment-options {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                margin-bottom: 15px;
+            }
+
+            .payment-option {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                padding: 8px;
+                flex: 1;
+                margin-right: 10px;
+            }
+
+            .payment-option:last-child {
+                margin-right: 0; /* Remove right margin for the last item */
+            }
+
+            .payment-option input[type="radio"] {
+                margin-right: 10px;
+            }
+
+            .payment-option label {
+                display: flex;
+                align-items: center;
+                cursor: pointer;
+            }
+
+            .name-pay {
+                padding: 5px 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                width: 100%;
+                font-family: Arial, sans-serif;
+                text-align: left;
+                font-size: 15px;
+            }
+
         </style>
     </head>
     <body>
@@ -320,6 +391,11 @@
                             <% } else { %>
                             <a class="btn btn-danger" style="text-decoration: none;" onclick="openModalOrder(<%= o.getId() %>)">Cancel Order</a>
                             <% } %>
+
+                            <%if(o.getStatus_id()==12){%>
+                            <button type="submit" class="btn btn-default" id="togglePaymentBtn">Thanh toán</button>
+                            <%}%>
+
                             <% FeedbackDao fd1 = new FeedbackDao(); 
                                Integer idd = (Integer) session.getAttribute("id"); 
                                Feedbacks f = fd1.getFeedbakByOrderId(o.getId(), idd); 
@@ -338,6 +414,47 @@
                 </div>
                 <br>
             </div>
+            <div id="payment_methods" style="display: none;">
+                <h2>Payments Method</h2>
+                <div class="payment-options">
+                    <div class="payment-option">
+                        <form action="VnpayServlet" id="frmCreateOrder"  method="post"> 
+                            <input type="hidden" name="orderID" value="<%=o.getId()%>"/>
+                            <input type="hidden" name="bankCode" value="">
+                            <input type="hidden" class="form-control" data-val="true" data-val-number="The field Amount must be a number." data-val-required="The Amount field is required." id="amount" max="1000000000" min="1" name="amount" type="number" value="<%=o.getTotalPrice()%>" />
+                            <input type="hidden" name="language" checked value="vn">
+                            <button type="submit" class="btn btn-default">
+                                <label for="payment_gateway" id="submitLabel"> 
+                                    <img class="imgPayment" src="<c:url value='/img/VnPay.jpg'/>"> &nbsp;
+                                    <div class="name-pay">
+                                        VNPAY<br>
+                                        VNPAY payment gateway
+                                    </div>
+                                </label>
+                            </button>
+                        </form>
+                    </div>
+                    <div class="payment-option">
+                        <form action="QRCodeController" method="post"> 
+                            <input type="hidden" name="orderID" value="<%=o.getId()%>"/>
+                            <input type="hidden" name="totalCost" value="<%=o.getTotalPrice()%>"/>
+                            <input type="hidden" name="email" value="<%=o.getContactPhone()%>"/>
+                            <input type="hidden" name="phone" value="<%=o.getContactEmail()%>"/>
+                            <button type="submit" class="btn btn-default" href>
+                                <label for="payment_ORcode">
+                                    <img class="imgPayment" src="<c:url value='/img/qr_code.jpg'/>" alt="QR Code"> &nbsp;
+                                    <div class="name-pay">
+                                        QR Code<br>
+                                        Pay by QR Code transfer
+                                    </div>
+                                </label>
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
             <% } %>
             <%}%>
 
@@ -381,55 +498,88 @@
 
         </div>
 
-
+        <link href="https://pay.vnpay.vn/lib/vnpay/vnpay.css" rel="stylesheet" />
+        <script src="https://pay.vnpay.vn/lib/vnpay/vnpay.min.js"></script>
         <script>
 
 
-            function openModalTicket(ticketId, orderId) {
-                // Set the ticket ID in the hidden input field
-                document.getElementById("modalTicketId").value = ticketId;
-                document.getElementById("modalOrderId").value = orderId;
-                // Display the modal
-                document.getElementById("cancelTicketModal").style.display = "block";
-            }
+                                    function openModalTicket(ticketId, orderId) {
+                                        // Set the ticket ID in the hidden input field
+                                        document.getElementById("modalTicketId").value = ticketId;
+                                        document.getElementById("modalOrderId").value = orderId;
+                                        // Display the modal
+                                        document.getElementById("cancelTicketModal").style.display = "block";
+                                    }
 
-            function closeModal() {
-                // Hide the modal
-                document.getElementById("cancelTicketModal").style.display = "none";
-            }
-            document.getElementById("closeModal").onclick = function () {
-                document.getElementById("cancelTicketModal").style.display = "none";
-            };
-            // Close modal if user clicks outside of it
-            window.onclick = function (event) {
-                const modal = document.getElementById("cancelTicketModal");
-                if (event.target === modal) {
-                    modal.style.display = "none";
-                }
-            };
+                                    function closeModal() {
+                                        // Hide the modal
+                                        document.getElementById("cancelTicketModal").style.display = "none";
+                                    }
+                                    document.getElementById("closeModal").onclick = function () {
+                                        document.getElementById("cancelTicketModal").style.display = "none";
+                                    };
+                                    // Close modal if user clicks outside of it
+                                    window.onclick = function (event) {
+                                        const modal = document.getElementById("cancelTicketModal");
+                                        if (event.target === modal) {
+                                            modal.style.display = "none";
+                                        }
+                                    };
 
 
-            function openModalOrder(orderId) {
-                // Set the order ID in the hidden input field
-                document.getElementById('modalOrderId2').value = orderId;
+                                    function openModalOrder(orderId) {
+                                        // Set the order ID in the hidden input field
+                                        document.getElementById('modalOrderId2').value = orderId;
 
-                // Display the modal
-                document.getElementById('cancelOrderModal').style.display = 'block';
-            }
-            function closeOrderModal() {
-                // Hide the modal
-                document.getElementById('cancelOrderModal').style.display = 'none';
-            }
-            document.getElementById("closeOrderModal").onclick = function () {
-                document.getElementById("cancelOrderModal").style.display = "none";
-            };
-            // Close modal if user clicks outside of it
-            window.onclick = function (event) {
-                const modal = document.getElementById("cancelOrderModal");
-                if (event.target === modal) {
-                    modal.style.display = "none";
-                }
-            };
+                                        // Display the modal
+                                        document.getElementById('cancelOrderModal').style.display = 'block';
+                                    }
+                                    function closeOrderModal() {
+                                        // Hide the modal
+                                        document.getElementById('cancelOrderModal').style.display = 'none';
+                                    }
+                                    document.getElementById("closeOrderModal").onclick = function () {
+                                        document.getElementById("cancelOrderModal").style.display = "none";
+                                    };
+                                    // Close modal if user clicks outside of it
+                                    window.onclick = function (event) {
+                                        const modal = document.getElementById("cancelOrderModal");
+                                        if (event.target === modal) {
+                                            modal.style.display = "none";
+                                        }
+                                    };
+                                    $("#frmCreateOrder").submit(function () {
+                                        var postData = $("#frmCreateOrder").serialize();
+                                        var submitUrl = $("#frmCreateOrder").attr("action");
+                                        $.ajax({
+                                            type: "POST",
+                                            url: submitUrl,
+                                            data: postData,
+                                            dataType: 'JSON',
+                                            success: function (x) {
+                                                if (x.code === '00') {
+                                                    if (window.vnpay) {
+                                                        vnpay.open({width: 768, height: 600, url: x.data});
+                                                    } else {
+                                                        location.href = x.data;
+                                                    }
+                                                    return false;
+                                                } else {
+                                                    alert(x.Message);
+                                                }
+                                            }
+                                        });
+                                        return false;
+                                    });
+                                    
+                                    document.getElementById('togglePaymentBtn').addEventListener('click', function () {
+                                        var paymentMethods = document.getElementById('payment_methods');
+                                        if (paymentMethods.style.display === 'none' || paymentMethods.style.display === '') {
+                                            paymentMethods.style.display = 'block';
+                                        } else {
+                                            paymentMethods.style.display = 'none';
+                                        }
+                                    });
         </script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>

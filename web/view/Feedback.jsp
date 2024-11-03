@@ -61,7 +61,7 @@
                         </c:forEach>
                     </select>
                     <strong>Rated star :</strong>
-                    <input class="filterElm" type="text" name="fStar" value="${param.fStar}"  >
+                    <input class="filterElm" type="number" name="fStar" value="${param.fStar}">
                     <strong>Account email :</strong>
                     <input class="filterElm" type="text" name="fEmail" value="${param.fEmail}" placeholder="Enter Email">
                     <button class="btn btn-info" type="submit">
@@ -72,8 +72,6 @@
 
 
             </div>
-
-            <button type="button" class="btn btn-success" id="myBtn">Add New Account</button>
             <!-- Create Modal -->   
             <div class="container">
                 <!-- Modal -->
