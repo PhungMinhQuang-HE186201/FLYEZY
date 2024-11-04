@@ -209,11 +209,11 @@
                                 <h3 id="errorMessage" style="color: red;margin-bottom: 10px"></h3> 
                                 <%if(request.getAttribute("account") != null && ((Accounts)request.getAttribute("account")).getRoleId() != 3){
                                 %>
-                                    <h3 style="color: red;margin-bottom: 10px">Please use customer account to use the service.</h3> 
+                                <h3 style="color: red;margin-bottom: 10px">Please use customer account to use the service.</h3> 
                                 <%
                                     }
                                 %>
-                                
+
                                 <div class="row" style="height: 55px">
                                     <!-- From Field -->
                                     <div class="col-md-2" style="padding-right: 0px">
@@ -623,13 +623,19 @@
         }
         // Assuming you have jQuery and Bootstrap Datepicker included
         $(document).ready(function () {
+            // Get today's date
+            var today = new Date();
+            var formattedToday = today.getFullYear() + '-' +
+                    ('0' + (today.getMonth() + 1)).slice(-2) + '-' +
+                    ('0' + today.getDate()).slice(-2);
+            
             // Initialize datepicker for departureDate
             $('#departureDate').datepicker({
                 format: 'yyyy-mm-dd', // Custom date format
                 autoclose: true, // Automatically close the calendar after picking a date
                 todayHighlight: true, // Highlight today's date
                 orientation: 'bottom auto', // Ensure the calendar pops up below the input
-                startDate: '2024-10-01' // Minimum date is 01/10/2024
+                startDate: formattedToday // Minimum date is 01/10/2024
             }).on('changeDate', function (selected) {
                 // Get the selected departure date
                 var minReturnDate = new Date(selected.date.valueOf());
@@ -649,7 +655,7 @@
                 autoclose: true, // Automatically close the calendar after picking a date
                 todayHighlight: true, // Highlight today's date
                 orientation: 'bottom auto', // Ensure the calendar pops up below the input
-                startDate: '2024-10-01' // Default minimum date for return (will change based on departure)
+                startDate: formattedToday // Default minimum date for return (will change based on departure)
             });
         });
 

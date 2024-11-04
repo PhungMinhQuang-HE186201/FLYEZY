@@ -149,10 +149,10 @@
                                         <c:forEach items="${requestScope.listStatus}" var="status">
                                             <c:if test="${status.getId() == airline.getStatusId()}">
                                                 <c:if test="${airline.getStatusId() == 1}">
-                                                    <button class="btn btn-success" data-toggle="modal" data-target="#changeActive-airline-${airline.getId()}">Activate</button>
+                                                    <button class="btn btn-success" data-toggle="modal" data-target="#changeActive-airline-${airline.getId()}" ${account.roleId == 2 ? 'disabled' : ''}>Activate</button>
                                                 </c:if>
                                                 <c:if test="${airline.getStatusId() == 2}">
-                                                    <button class="btn btn-danger" data-toggle="modal" data-target="#changeActive-airline-${airline.getId()}">Deactivate</button>
+                                                    <button class="btn btn-danger" data-toggle="modal" data-target="#changeActive-airline-${airline.getId()}" ${account.roleId == 2 ? 'disabled' : ''}>Deactivate</button>
                                                 </c:if>
                                             </c:if>
                                         </c:forEach>

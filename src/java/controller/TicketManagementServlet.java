@@ -176,15 +176,15 @@ public class TicketManagementServlet extends HttpServlet {
                     && fPhoneNumber.isEmpty()
                     && orderCode == null || orderCode.isEmpty();
             List<Ticket> ticketSearchList;
-            if (allFieldsEmpty) {
-                // Get all tickets by flightDetailId
-                ticketSearchList = td.getAllTicketsById(flightDetailId);
-            } //            List<Accounts> accountList = ad.searchAccounts(fRole, fName, fPhoneNumber);
+//            if (allFieldsEmpty) {
+//                // Get all tickets by flightDetailId
+//                ticketSearchList = td.getAllTicketsById(flightDetailId);
+//            } //            List<Accounts> accountList = ad.searchAccounts(fRole, fName, fPhoneNumber);
             //            request.setAttribute("accountList", accountList);
-            else {
+//            else {
                 // Proceed with filtered search
                 ticketSearchList = td.searchTickets(passengerType, statusTicket, fName, fPhoneNumber, flightDetailId, flightType, orderCode);
-            }
+//            }
             request.setAttribute("ticketList", ticketSearchList);
             request.getRequestDispatcher("view/ticketManagement.jsp").forward(request, response);
         }

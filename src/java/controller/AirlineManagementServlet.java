@@ -4,8 +4,11 @@
  */
 package controller;
 
+import dal.AccountsDAO;
 import dal.AirlineManageDAO;
 import dal.BaggageManageDAO;
+import dal.FlightDetailDAO;
+import dal.FlightManageDAO;
 import dal.PlaneCategoryDAO;
 import dal.SeatCategoryDAO;
 import java.io.IOException;
@@ -27,6 +30,9 @@ public class AirlineManagementServlet extends HttpServlet {
     BaggageManageDAO baggageManageDao = new BaggageManageDAO();
     PlaneCategoryDAO planeCategoryDao = new PlaneCategoryDAO();
     SeatCategoryDAO seatCategoryDao = new SeatCategoryDAO();
+    FlightManageDAO flightManageDao = new FlightManageDAO();
+    FlightDetailDAO flightDetailDao = new FlightDetailDAO();
+    AccountsDAO accountDao = new AccountsDAO();
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -118,11 +124,17 @@ public class AirlineManagementServlet extends HttpServlet {
                 baggageManageDao.DeactiveAllByAirline(airlineId);
                 planeCategoryDao.deactivatePlaneCategoryByAirline(airlineId);
                 seatCategoryDao.deactivateAllSeatCategoryByAirline(airlineId);
+                flightManageDao.deactivateAllFlightByAirline(airlineId);
+                flightDetailDao.deactivateAllFlightDetailByAirline(airlineId);
+                accountDao.deactivateAllAccountByAirline(airlineId);
                 newStatusId = 2;
             }else if(statusId == 2){
                 baggageManageDao.ReactiveAllByAirline(airlineId);
                 planeCategoryDao.activatePlaneCategoryByAirline(airlineId);
                 seatCategoryDao.activateAllSeatCategoryByAirline(airlineId);
+                flightManageDao.activateAllFlightByAirline(airlineId);
+                flightDetailDao.activateAllFlightDetailByAirline(airlineId);
+                accountDao.activateAllAccountByAirline(airlineId);
                 newStatusId = 1;
             }
             airlineManageDao.changeStatus(airlineId, newStatusId);
