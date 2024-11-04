@@ -112,7 +112,7 @@ public class FlightDetailDAO extends DBConnect {
         String sql = "SELECT fd.* FROM Flight_Detail fd "
                 + "JOIN Flight f ON fd.flightId = f.id "
                 + "WHERE fd.date = ? AND f.departureAirportId = ? AND f.destinationAirportId = ? "
-                + "AND (fd.date > current_date() OR (fd.date = current_date() AND fd.time > ?))";
+                + "AND (fd.date > current_date() OR (fd.date = current_date() AND DATE_SUB(fd.time, INTERVAL 1 HOUR) > ?))";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setDate(1, date);

@@ -260,6 +260,7 @@
                 </select>
                 <strong>Passenger Name: </strong>
                 <input class="filterElm" type="text" name="fName" value="${param.fName}" placeholder="Enter name">
+                <br><br>
                 <strong>Phone number: </strong>
                 <input class="filterElm" type="number" name="fPhoneNumber" value="${param.fPhoneNumber}" placeholder="Enter phone number">
                 <strong>Order code: </strong>

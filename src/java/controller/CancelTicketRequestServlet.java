@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.Accounts;
+import model.Order;
 
 /**
  *
@@ -54,11 +55,13 @@ public class CancelTicketRequestServlet extends HttpServlet {
             int ticketId = Integer.parseInt(ticketIdStr);
             int orderId = Integer.parseInt(orderIdStr);
             request.setAttribute("orderId", orderId);
+            Order o = od.getOrderById(orderId);
             td.cancelTicketById(ticketId);
-            
+            if(o.getPaymentTime()==null){
+                od.updateTotalPrice(orderId, od.getTotalPriceAllTickets(orderId) - od.getTotalPriceCancelledTicket(orderId));
+            }
             if(td.countNumberTicketNotCancel(orderId) == 0){
-                od.updateOrderStatus(orderId, 12);
-                
+                od.updateOrderStatus(orderId, 12); 
             }
         } catch (Exception e) {
 

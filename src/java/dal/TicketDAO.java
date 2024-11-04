@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import model.Ticket;
@@ -39,7 +40,8 @@ public class TicketDAO extends DBConnect {
                         rs.getInt("totalPrice"),
                         rs.getInt("Order_id"),
                         rs.getInt("Statusid"),
-                        rs.getInt("Flight_Type_id"));
+                        rs.getInt("Flight_Type_id"),
+                        rs.getTimestamp("cancelled_at"));
                 ls.add(t);
             }
             return ls;
@@ -51,7 +53,7 @@ public class TicketDAO extends DBConnect {
 
     public void confirmSuccessAllTicketsByOrderId(int orderId) {
 
-        String sql = "UPDATE Ticket SET Statusid = 10 where Order_id=?";
+        String sql = "UPDATE Ticket SET Statusid = 10 where Order_id=? and Statusid = 12";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, orderId);
@@ -106,17 +108,15 @@ public class TicketDAO extends DBConnect {
     }
 
     public void cancelTicketById(int id) {
-
-        String sql = "UPDATE Ticket SET Statusid = 7 where id=?";
+        String sql = "UPDATE Ticket SET Statusid = 7, cancelled_at = ? WHERE id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, id);
+            ps.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+            ps.setInt(2, id);
             ps.executeUpdate();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     public List<Ticket> getAllTickets() {
@@ -169,9 +169,9 @@ public class TicketDAO extends DBConnect {
                         rs.getInt("totalPrice"),
                         rs.getInt("Order_id"),
                         rs.getInt("Statusid"),
-                        rs.getInt("Flight_Type_id"));
-                
-                
+                        rs.getInt("Flight_Type_id"),
+                        rs.getTimestamp("cancelled_at"));
+
                 ls.add(t);
             }
             return ls;
@@ -183,20 +183,23 @@ public class TicketDAO extends DBConnect {
 
     public List<String> getAllTicketCodesById(int flightDetailID, int seatCategoryId) {
         List<String> ls = new ArrayList<>();
-        String sql = "select * from Ticket t \n"
-                + "join `flyezy`.`Order` o On t.Order_id=o.id\n"
-                + "where Flight_Detail_id= " + flightDetailID + " and Statusid!=9 and Seat_Categoryid = " + seatCategoryId;
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                ls.add(rs.getString("code"));
+        String sql = "SELECT t.code FROM Ticket t "
+                + "JOIN `flyezy`.`Order` o ON t.Order_id = o.id "
+                + "WHERE Flight_Detail_id = ? AND (Statusid = 12 OR Statusid = 10) AND Seat_Categoryid = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, flightDetailID);
+            ps.setInt(2, seatCategoryId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    if (rs.getString("code") != null) {
+                        ls.add(rs.getString("code"));
+                    }
+                }
             }
-            return ls;
-
         } catch (Exception e) {
+            e.printStackTrace();
         }
-        return null;
+        return ls;
     }
 
     public Ticket getTicketByCode(String code, int flightDetailID, int seatCategoryId) {
@@ -346,7 +349,8 @@ public class TicketDAO extends DBConnect {
                         rs.getInt("totalPrice"),
                         rs.getInt("Order_id"),
                         rs.getInt("Statusid"),
-                        rs.getInt("Flight_Type_id"));
+                        rs.getInt("Flight_Type_id"),
+                        rs.getTimestamp("cancelled_at"));
                 ls.add(t);
             }
         } catch (Exception e) {
@@ -392,8 +396,8 @@ public class TicketDAO extends DBConnect {
         AirlineManageDAO ad = new AirlineManageDAO();
         //tcd.confirmSuccessAllTicketsByOrderId(1);
         //System.out.println(td.createTicket("C9", 1, 7, 2, "HIHI", 0, null, Date.valueOf("2000-10-10"), null, 0, 1, 1));
-        //System.out.println(tcd.getAllTicketCodesById(1, 7));
+        System.out.println(td.getAllTicketCodesById(4, 1));
 //        System.out.println(tcd.getTicketByCode("B1", 4, 8));
-        System.out.println(td.searchTickets("", "", "", "", 1, "", "FJA84IUTJ"));
+//        System.out.println(td.searchTickets("", "", "", "", 1, "", "FJA84IUTJ"));
     }
 }
