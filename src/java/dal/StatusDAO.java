@@ -4,6 +4,7 @@
  */
 package dal;
 
+import java.sql.Timestamp;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.ResultSet;
@@ -89,10 +90,10 @@ public class StatusDAO extends DBConnect {
         }
         return list;
     }
-    
+
     public List<Status> getStatusOfFeedback() {
         List<Status> list = new ArrayList<>();
-        String sql = "select * from Status where id = 14 or id = 15 or id = 13 ";
+        String sql = "select * from Status where id = 4 or id = 5 or id = 3 ";
 
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
@@ -108,6 +109,7 @@ public class StatusDAO extends DBConnect {
         }
         return list;
     }
+
     public List<Status> getStatusOfTicket() {
         List<Status> list = new ArrayList<>();
         String sql = "SELECT * \n"
@@ -146,6 +148,29 @@ public class StatusDAO extends DBConnect {
             System.out.println(ex);
         }
     }
+
+    public void changeStatusRefund(int id, int status) {
+        String sql = "UPDATE Refund\n"
+                + "   SET Statusid=?, refundDate = ?"
+                + " WHERE id=?";
+
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setInt(1, status);
+            if (status == 8) {
+                pre.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
+            } else {
+                pre.setTimestamp(2, null);
+            }
+            pre.setInt(3, id);
+
+            pre.executeUpdate();
+
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+    }
+
     public void changeStatusFeedback(int id, int status) {
         String sql = "UPDATE Feedbacks\n"
                 + "   SET Statusid=?"
@@ -162,6 +187,7 @@ public class StatusDAO extends DBConnect {
             System.out.println(ex);
         }
     }
+
     public List<Status> getStatusOfFlightDetaisl() {
         List<Status> ls = new ArrayList<>();
         try {
@@ -184,7 +210,27 @@ public class StatusDAO extends DBConnect {
 //        System.out.println(dao.getAllStatus());
         StatusDAO sd = new StatusDAO();
         List<Status> statuses = (List<Status>) sd.getStatusOfFlightDetaisl();
-        String name = sd.getStatusNameById(2);
-        System.out.println(name);
-}
+        for (Status status : statuses) {
+            System.out.println(status.getId());
+        }
+    }
+
+    public List<Status> getStatusOfRefund() {
+        List<Status> list = new ArrayList<>();
+        String sql = "select * from Status where id = 3 or id = 8 or id = 5 ";
+
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            ResultSet resultSet = prepare.executeQuery();
+            prepare = conn.prepareStatement(sql);
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                list.add(new Status(id, name));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return list;
+    }
 }

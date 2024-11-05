@@ -71,23 +71,6 @@
                                     <textarea pattern="^[\p{L}\s]+$" class="editor" name="airlineInfo"></textarea>
                                 </div>
                             </div>  
-
-                            <!-- Baggage Checkbox -->
-                            <div class="form-group">
-                                <label>
-                                    <input type="checkbox" id="hasBaggageCheckbox" name="hasBaggage" onchange="toggleBaggageInputs()"> Do you want to add baggages?
-                                </label>
-                            </div>
-
-                            <!-- Baggage Inputs -->
-                            <input type="hidden" name="airlineId" value="${maxAirlineId}">
-                            <div id="baggageInputs" style="display: none;">
-                                <!-- Container for dynamic baggage inputs -->
-                                <div id="baggageContainer"></div>
-
-                                <!-- Button to add baggage -->
-                                <button type="button" class="btn btn-secondary" onclick="addBaggageInput()">Add Baggage</button>
-                            </div>
                         </form>
                     </div>
                     <div class="modal-footer">
@@ -100,34 +83,37 @@
         </div>
 
         <div id="main-content">
-            <div>
-                <!-- Search bar -->
-                <div style="max-width: 60%;">
-                    <form action="airlineController" method="GET" style="display: flex; width: 50%; align-items: center;">
-                        <input type="hidden" name="search" value="search">
-                        <strong class="filterElm">Status:</strong>
-                        <select class="filterElm" name="status">
-                            <option value="" ${param.status == null ? 'selected' : ''}>All</option>
-                            <c:set var="counter" value="0" />
-                            <c:forEach items="${requestScope.listStatus}" var="status">
-                                <c:if test="${counter < 2}">
-                                    <option value="${status.id}" ${param.status != null && (param.status == status.id) ? 'selected' : ''}>${status.name}</option>
-                                    <c:set var="counter" value="${counter + 1}" />
-                                </c:if>
-                            </c:forEach>
-                        </select>
-                        <strong>Name: </strong>
-                        <input class="filterElm" value="${param.keyword}" type="text" pattern="^[\p{L}\s]+$" placeholder="Airline Name ..." name="keyword" style="margin-left:5px"/>
-                        <input type="submit" class="btn btn-info" name="submit" value="Search" style="margin-right: 5px">
-                        <a class="btn btn-danger" href="airlineController">Cancel</a>
-                    </form>
-                </div>
+            <c:if test="${requestScope.account.getRoleId() == 1}">
+                <div>
+                    <!-- Search bar -->
+                    <div style="max-width: 60%;">
+                        <form action="airlineController" method="GET" style="display: flex; width: 50%; align-items: center;">
+                            <input type="hidden" name="search" value="search">
+                            <strong class="filterElm">Status:</strong>
+                            <select class="filterElm" name="status">
+                                <option value="" ${param.status == null ? 'selected' : ''}>All</option>
+                                <c:set var="counter" value="0" />
+                                <c:forEach items="${requestScope.listStatus}" var="status">
+                                    <c:if test="${counter < 2}">
+                                        <option value="${status.id}" ${param.status != null && (param.status == status.id) ? 'selected' : ''}>${status.name}</option>
+                                        <c:set var="counter" value="${counter + 1}" />
+                                    </c:if>
+                                </c:forEach>
+                            </select>
+                            <strong>Name: </strong>
+                            <input class="filterElm" value="${param.keyword}" type="text" pattern="^[\p{L}\s]+$" placeholder="Airline Name ..." name="keyword" style="margin-left:5px"/>
+                            <input type="submit" class="btn btn-info" name="submit" value="Search" style="margin-right: 5px">
+                            <a class="btn btn-danger" href="airlineController">Cancel</a>
+                        </form>
+                    </div>
 
-                <!-- Trigger the modal with a button -->
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addAirline" style="margin-top: 20px;flex-shrink: 0;">
-                    Add New Airline
-                </button>
-            </div>
+                    <!-- Trigger the modal with a button -->
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addAirline" style="margin-top: 20px;flex-shrink: 0;">
+                        Add New Airline
+                    </button>
+                </div>
+            </c:if> 
+
             <% StatusDAO statusDao = new StatusDAO();
             
             %>
@@ -141,11 +127,12 @@
                                 <th>Image</th>
                                 <th>Information</th>
                                 <th>Status</th>
-                                <th style="min-width: 156px">Actions</th>
+                                    <c:if test="${requestScope.account.getRoleId() == 2}">
+                                    <th style="min-width: 156px" >Actions</th>
+                                    </c:if>                             
                             </tr>
                         </thead>
                         <tbody>
-
                             <c:forEach items="${requestScope.listAirline}" var="airline">
                                 <tr>
                                     <td name="name">${airline.getName()}</td>
@@ -162,21 +149,22 @@
                                         <c:forEach items="${requestScope.listStatus}" var="status">
                                             <c:if test="${status.getId() == airline.getStatusId()}">
                                                 <c:if test="${airline.getStatusId() == 1}">
-                                                    <button class="btn btn-success" data-toggle="modal" data-target="#changeActive-airline-${airline.getId()}">Activate</button>
+                                                    <button class="btn btn-success" data-toggle="modal" data-target="#changeActive-airline-${airline.getId()}" ${account.roleId == 2 ? 'disabled' : ''}>Activate</button>
                                                 </c:if>
                                                 <c:if test="${airline.getStatusId() == 2}">
-                                                    <button class="btn btn-danger" data-toggle="modal" data-target="#changeActive-airline-${airline.getId()}">Deactivate</button>
+                                                    <button class="btn btn-danger" data-toggle="modal" data-target="#changeActive-airline-${airline.getId()}" ${account.roleId == 2 ? 'disabled' : ''}>Deactivate</button>
                                                 </c:if>
                                             </c:if>
                                         </c:forEach>
                                     </td>
-
-                                    <td>
-                                        <button class="btn btn-info" data-toggle="modal" data-target="#update-airline-${airline.getId()}">Update</button>
-                                        <button class="btn btn-warning" onclick="toggleBaggageDetails(${airline.id})">Baggage Detail
-                                            <span id="arrow${airline.id}" style="margin-left: 8px" class="glyphicon glyphicon-menu-down"></span>
-                                        </button>
-                                    </td>
+                                    <c:if test="${requestScope.account.getRoleId() == 2}">
+                                        <td>
+                                            <button class="btn btn-info" data-toggle="modal" data-target="#update-airline-${airline.getId()}">Update</button>
+                                            <button class="btn btn-warning" onclick="toggleBaggageDetails(${airline.id})">Baggage Detail
+                                                <span id="arrow${airline.id}" style="margin-left: 8px" class="glyphicon glyphicon-menu-down"></span>
+                                            </button>
+                                        </td>
+                                    </c:if> 
                                 </tr>
                                 <!--change status airline modal-->
                             <div class="modal fade" id="changeActive-airline-${airline.getId()}" tabindex="-1" role="dialog" aria-labelledby="delete-modal-label" aria-hidden="true">
@@ -565,7 +553,7 @@
         </script>
         <script type="module">
             import {
-                ClassicEditor,
+            ClassicEditor,
                     Essentials,
                     Paragraph,
                     Bold,
@@ -591,10 +579,10 @@
                         });
             });
         </script>
-        
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        
+
         <script>
             $(document).ready(function () {
             <% if (request.getAttribute("result") != null) { %>

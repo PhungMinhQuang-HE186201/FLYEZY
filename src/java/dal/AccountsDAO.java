@@ -28,10 +28,10 @@ public class AccountsDAO extends DBConnect {
                 + "LIMIT 5 OFFSET ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, (index-1)*5);
+            ps.setInt(1, (index - 1) * 5);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-               Accounts a = new Accounts(rs.getInt("id"), rs.getString("name"), rs.getString("email"),
+                Accounts a = new Accounts(rs.getInt("id"), rs.getString("name"), rs.getString("email"),
                         rs.getString("password"), rs.getString("phoneNumber"),
                         rs.getString("address"), rs.getString("image"), rs.getDate("dob"), rs.getInt("Rolesid"), rs.getInt("Airlineid"),
                         rs.getTimestamp("created_at"), rs.getTimestamp("updated_at"), rs.getInt("Status_id"));
@@ -43,7 +43,7 @@ public class AccountsDAO extends DBConnect {
         }
         return null;
     }
-    
+
     public List<Accounts> getAllAccounts() {
         List<Accounts> ls = new ArrayList<>();
         String sql = "Select * from Accounts";
@@ -136,6 +136,7 @@ public class AccountsDAO extends DBConnect {
         }
         return null;
     }
+
     public String getAccountEmailById(int id) {
         String sql = "SELECT * FROM Accounts WHERE id = ?";
         try {
@@ -420,6 +421,30 @@ public class AccountsDAO extends DBConnect {
             sb.append(CHARACTERS.charAt(index));
         }
         return sb.toString();
+    }
+
+    public void deactivateAllAccountByAirline(int airlineId) {
+        String sql = "UPDATE Accounts SET Status_id = ? WHERE Airlineid = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, 2);
+            ps.setInt(2, airlineId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void activateAllAccountByAirline(int airlineId) {
+        String sql = "UPDATE Accounts SET Status_id = ? WHERE Airlineid = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, 1);
+            ps.setInt(2, airlineId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {

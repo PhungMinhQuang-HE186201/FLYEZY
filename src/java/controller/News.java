@@ -16,7 +16,6 @@ import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Accounts;
 
-
 /**
  *
  * @author user
@@ -40,7 +39,7 @@ public class News extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet News</title>");            
+            out.println("<title>Servlet News</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet News at " + request.getContextPath() + "</h1>");
@@ -61,27 +60,20 @@ public class News extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-            AccountsDAO ad = new AccountsDAO();
-            NewsManageDAO nw =new NewsManageDAO();
-            HttpSession session = request.getSession();
-    
-       Integer idd = (Integer) session.getAttribute("id");
-        if (idd == null) {
-            response.sendRedirect("login");
-            return;
-        } else {
+        AccountsDAO ad = new AccountsDAO();
+        NewsManageDAO nw = new NewsManageDAO();
+        HttpSession session = request.getSession();
+
+        Integer idd = (Integer) session.getAttribute("id");
+        if (idd != null) {
             int i = (idd != null) ? idd : -1;
             Accounts acc = ad.getAccountsById(i);
             request.setAttribute("account", acc);
-            
-         
-            
-            request.setAttribute("listNew", nw.getNews());
-            request.getRequestDispatcher("view/news.jsp").forward(request, response);
-    }
+        }
+        request.setAttribute("listNew", nw.getNews());
+        request.getRequestDispatcher("view/news.jsp").forward(request, response);
     }
 
-    
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

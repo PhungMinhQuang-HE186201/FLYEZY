@@ -4,24 +4,36 @@
  */
 package controller;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import dal.AccountsDAO;
-import dal.NewsManageDAO;
-import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+import dal.Config;
 import jakarta.servlet.http.HttpSession;
 import model.Accounts;
-
+import dal.OrderDAO;
 /**
  *
- * @author Admin
+ * @author Fantasy
  */
-@WebServlet(name = "HomeServlet", urlPatterns = {"/home"})
-public class HomeServlet extends HttpServlet {
+@WebServlet(name = "VnpayServletController2", urlPatterns = {"/VnpayController2"})
+public class VnpayServletController2 extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,18 +47,7 @@ public class HomeServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet HomeServlet</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet HomeServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -61,16 +62,27 @@ public class HomeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        AccountsDAO ad = new AccountsDAO();
-        NewsManageDAO nw = new NewsManageDAO();
+        String code = request.getParameter("vnp_TransactionStatus");
         HttpSession session = request.getSession();
-
         Integer idd = (Integer) session.getAttribute("id");
-        int i = (idd != null) ? idd : -1;
-        Accounts acc = ad.getAccountsById(i);
-        request.setAttribute("account", acc);
-        request.setAttribute("listNew", nw.getNews());
-        request.getRequestDispatcher("view/home.jsp").forward(request, response);
+        OrderDAO od = new OrderDAO();
+        AccountsDAO ad = new AccountsDAO();
+        if (idd == null) {
+            response.sendRedirect("login");
+            return;
+        } else {
+            int i = (idd != null) ? idd : -1;
+            Accounts acc = ad.getAccountsById(i);
+            request.setAttribute("account", acc);
+        }
+        
+        if (code.equals("00")) {
+            int orderID1 = (int) session.getAttribute("orderID");
+            od.successfullPayment(orderID1,2);
+            request.getRequestDispatcher("view/successfullPayment.jsp").forward(request, response);
+        }else{
+            request.getRequestDispatcher("view/failedPayment.jsp").forward(request, response);
+        }
     }
 
     /**

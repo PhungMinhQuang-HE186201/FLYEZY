@@ -40,6 +40,11 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <link href="/vnpay_jsp/assets/bootstrap.min.css" rel="stylesheet"/>
+        <!-- for vnpay -->
+        <link href="/vnpay_jsp/assets/jumbotron-narrow.css" rel="stylesheet">      
+        <script src="/vnpay_jsp/assets/jquery-1.11.3.min.js"></script>
 
         <title>Ticket Buying History</title>
         <style>
@@ -139,13 +144,21 @@
             .status-label.request {
                 background-color: #ffc107;
             }
-            .status-label.canceled {
-                background-color: #28a745;
+
+            .status-label.processing {
+                background-color: orange;
+            }
+
+            .status-label.cancelled {
+                background-color: #dc3545;
             }
             .status-label.refund {
                 background-color: #28a745;
             }
             .status-label.rejection {
+                background-color: #dc3545;
+            }
+            .status-label.rejected {
                 background-color: #dc3545;
             }
             .status-label.request {
@@ -160,8 +173,60 @@
             .status-label.rejection {
                 background-color: #dc3545;
             }
+            #payment_methods {
+                margin-top: 10px;
+                border-radius: 3px;
+                background-color: #f9f9f9;
+            }
 
+            #payment_methods h2 {
+                font-size: 25px;
+                margin-bottom: 50px;
+                text-align: center;
+            }
+            .imgPayment{
+                width: 70px;
+                height: 70px;
+            }
+            .payment-options {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                margin-bottom: 15px;
+            }
 
+            .payment-option {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                padding: 8px;
+                flex: 1;
+                margin-right: 10px;
+            }
+
+            .payment-option:last-child {
+                margin-right: 0; /* Remove right margin for the last item */
+            }
+
+            .payment-option input[type="radio"] {
+                margin-right: 10px;
+            }
+
+            .payment-option label {
+                display: flex;
+                align-items: center;
+                cursor: pointer;
+            }
+
+            .name-pay {
+                padding: 5px 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                width: 100%;
+                font-family: Arial, sans-serif;
+                text-align: left;
+                font-size: 15px;
+            }
 
         </style>
     </head>
@@ -213,7 +278,7 @@
             <div class="row mt-3 mb-3">
                 <div class="col-md-12">
                     <form action="buyingHistory" method="get" class="form-inline justify-content-center">
-                        <input type="text" class="form-control" name="code" placeholder="Enter code here to search ..." aria-label="Search" style="width: 30%; font-size: 1.2em">
+                        <input type="text" value="${param.code}" class="form-control" name="code" placeholder="Enter code here to search ..." aria-label="Search" style="width: 30%; font-size: 1.2em">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" type="submit">
                                 <i class="fa fa-search"></i> 
@@ -270,7 +335,7 @@
                                 </div>
                             </div>
                             <% for(FlightDetails detail : fdd.getAll()) {
-                if(detail.getId() == t.getFlightDetailId()) { %>
+                            if(detail.getId() == t.getFlightDetailId()) { %>
 
                             <!-- Flight route icon -->
                             <div><i class="fas fa-plane"></i> <%= fd.getDepartureByFlight(od.getFlightIdByOrder(o.getId())) %> to <%= fd.getDestinationByFlight(od.getFlightIdByOrder(o.getId())) %></div>
@@ -292,7 +357,7 @@
 
                             <!-- Extra baggage with icon -->
                             <% for(Baggages b : bmd.getAllBaggages()) {
-                if(b.getId() == t.getBaggagesid()) { %>
+                            if(b.getId() == t.getBaggagesid()) { %>
                             <div><i class="fas fa-suitcase"></i> Extra baggage: <%= b.getWeight() %>kg</div>
                             <% } } %>
                         </div>
@@ -305,7 +370,15 @@
                             <div><strong style="font-size: 16px"><%= currencyFormatter.format(t.getTotalPrice()) %></strong></div>
                                 <% if(t.getStatusid() == 10 || t.getStatusid() == 12) { %>
                             <a class="btn btn-danger" style="text-decoration: none; margin-top: 5px;" onclick="openModalTicket(<%= t.getId() %>,<%= o.getId() %>)">Cancel ticket</a>
-                            <% } %>
+
+                            <% }
+                            if (o.getStatus_id() == 10 && t.getStatusid() == 7 && o.getPaymentTime() != null && t.getCancelled_at() != null 
+                                && o.getPaymentTime().compareTo(t.getCancelled_at()) < 0) { // vé bị huỷ trước lúc thanh toán sẽ không cho phép refund
+                            %>
+                            <a class="btn btn-warning" style="text-decoration: none; margin-top: 5px;" onclick="openModalRequestRefund(<%= t.getId() %>,<%= o.getId() %>)">Request refund</a>
+                            <%
+                            }
+                            %>
                         </div>
                     </div>
                     <% count++; %>
@@ -314,9 +387,12 @@
 
 
 
-                    <div class="list-price" style="text-align: right; padding: 15px 0 ">
+                    <div class="list-price" style="text-align: right; padding: 15px 0 "> 
+                        <div>Order Tickets: <%=currencyFormatter.format(od.getTotalPriceAllTickets(o.getId())) %></div>
+                        <div>Cancel Tickets: <%=currencyFormatter.format(od.getTotalPriceCancelledTicket(o.getId())) %></div>
+                        <div>Is Paid <%=currencyFormatter.format((o.getPaymentTime()!=null)?o.getTotalPrice():0) %></div>
                         <div class="order-discount">Discount: 0%</div>
-                        <div class="order-total"><strong style="font-size: 1.2em;">Total: <%=currencyFormatter.format(o.getTotalPrice()) %></strong></div>
+                        <div class="order-total"><strong style="font-size: 1.2em;">Total: <%=currencyFormatter.format(od.getTotalPriceAllTickets(o.getId())-od.getTotalPriceCancelledTicket(o.getId())) %></strong></div>
                     </div>
 
 
@@ -327,6 +403,11 @@
                             <% } else { %>
                             <a class="btn btn-danger" style="text-decoration: none;" onclick="openModalOrder(<%= o.getId() %>)">Cancel Order</a>
                             <% } %>
+
+                            <%if(o.getStatus_id()==12){%>
+                            <button type="submit" class="btn btn-success" id="togglePaymentBtn">PAY NOW</button>
+                            <%}%>
+
                             <% FeedbackDao fd1 = new FeedbackDao(); 
                                Integer idd = (Integer) session.getAttribute("id"); 
                                Feedbacks f = fd1.getFeedbakByOrderId(o.getId(), idd); 
@@ -345,98 +426,243 @@
                 </div>
                 <br>
             </div>
+            <div id="payment_methods" style="display: none;">
+                <h2>Payments Method</h2>
+                <div class="payment-options">
+                    <div class="payment-option">
+                        <form action="VnpayServlet" id="frmCreateOrder"  method="post"> 
+                            <input type="hidden" name="orderID" value="<%=o.getId()%>"/>
+                            <input type="hidden" name="bankCode" value="">
+                            <input type="hidden" class="form-control" data-val="true" data-val-number="The field Amount must be a number." data-val-required="The Amount field is required." id="amount" max="1000000000" min="1" name="amount" type="number" value="<%=o.getTotalPrice()%>" />
+                            <input type="hidden" name="language" checked value="vn">
+                            <button type="submit" class="btn btn-default">
+                                <label for="payment_gateway" id="submitLabel"> 
+                                    <img class="imgPayment" src="<c:url value='/img/VnPay.jpg'/>"> &nbsp;
+                                    <div class="name-pay">
+                                        VNPAY<br>
+                                        VNPAY payment gateway
+                                    </div>
+                                </label>
+                            </button>
+                        </form>
+                    </div>
+                    <div class="payment-option">
+                        <form action="QRCodeController" method="post"> 
+                            <input type="hidden" name="orderID" value="<%=o.getId()%>"/>
+                            <button type="submit" class="btn btn-default" href>
+                                <label for="payment_ORcode">
+                                    <img class="imgPayment" src="<c:url value='/img/qr_code.jpg'/>" alt="QR Code"> &nbsp;
+                                    <div class="name-pay">
+                                        QR Code<br>
+                                        Pay by QR Code transfer
+                                    </div>
+                                </label>
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
             <% } %>
             <%}%>
-
-
-            <!--        Cancel ticket modal-->
-            <div id="cancelTicketModal" class="modal" role="dialog" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);">
-                <div class="modal-dialog" style="margin: 15% auto; width: 30%; position: relative;">
-                    <div class="modal-content" style="background-color: #fff; padding: 20px; border: 1px solid #888;">
-                        <form action="cancelTicket" method="post">
-                            <input type="hidden" id="modalTicketId" name="ticketId" value="">
-                            <input type="hidden" id="modalOrderId" name="orderId" value="">
-                            <h2>Cancel Ticket</h2>
-                            <p>Are you sure you want to cancel this ticket?</p>
-                            <!-- Container for buttons with flex display -->
-                            <div style="display: flex; justify-content: space-between;">
-                                <button type="submit" id="confirmCancel" class="btn btn-danger" style="flex: 1; margin-right: 10px;">Yes</button>
-                                <button type="button" id="closeModal" class="btn btn-secondary" style="flex: 1;" onclick="closeModal()">No</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <div id="cancelOrderModal" class="modal" role="dialog" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);">
-                <div class="modal-dialog" style="margin: 15% auto; width: 30%; position: relative;">
-                    <div class="modal-content" style="background-color: #fff; padding: 20px; border: 1px solid #888;">
-                        <form action="cancelOrder" method="post">
-                            <input type="hidden" id="modalOrderId2" name="orderId" value="">
-                            <h2>Cancel Order</h2>
-                            <p>Are you sure you want to cancel this order?</p>
-                            <!-- Container for buttons with flex display -->
-                            <div style="display: flex; justify-content: space-between;">
-                                <button type="submit" id="confirmCancelOrder" class="btn btn-danger" style="flex: 1; margin-right: 10px;">Yes</button>
-                                <button type="button" id="closeOrderModal" class="btn btn-secondary" style="flex: 1;" onclick="closeOrderModal()">No</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-
         </div>
 
+        <!--        Cancel ticket modal-->
+        <div id="cancelTicketModal" class="modal" role="dialog" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);">
+            <div class="modal-dialog" style="margin: 15% auto; width: 30%; position: relative;">
+                <div class="modal-content" style="background-color: #fff; padding: 20px; border: 1px solid #888;">
+                    <form action="cancelTicket" method="post">
+                        <input type="hidden" id="modalTicketId" name="ticketId" value="">
+                        <input type="hidden" id="modalOrderId" name="orderId" value="">
+                        <h2>Cancel Ticket</h2>
+                        <p>Are you sure you want to cancel this ticket?</p>
+                        <!-- Container for buttons with flex display -->
+                        <div style="display: flex; justify-content: space-between;">
+                            <button type="submit" id="confirmCancel" class="btn btn-danger" style="flex: 1; margin-right: 10px;">Yes</button>
+                            <button type="button" id="closeModal" class="btn btn-secondary" style="flex: 1;" onclick="closeModal()">No</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="cancelOrderModal" class="modal" role="dialog" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);">
+            <div class="modal-dialog" style="margin: 15% auto; width: 30%; position: relative;">
+                <div class="modal-content" style="background-color: #fff; padding: 20px; border: 1px solid #888;">
+                    <form action="cancelOrder" method="post">
+                        <input type="hidden" id="modalOrderId1" name="orderId" value="">
+                        <h2>Cancel Order</h2>
+                        <p>Are you sure you want to cancel this order?</p>
+                        <!-- Container for buttons with flex display -->
+                        <div style="display: flex; justify-content: space-between;">
+                            <button type="submit" id="confirmCancelOrder" class="btn btn-danger" style="flex: 1; margin-right: 10px;">Yes</button>
+                            <button type="button" id="closeOrderModal" class="btn btn-secondary" style="flex: 1;" onclick="closeOrderModal()">No</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="requestRefundModal" class="modal" role="dialog" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);">
+            <div class="modal-dialog" style="margin: 15% auto; width: 30%; position: relative;">
+                <div class="modal-content" style="background-color: #fff; padding: 20px; border: 1px solid #888;">
+                    <form action="requestRefund" method="post" onsubmit="return validateBankAccount()">
+                        <input type="hidden" id="modalTicketId2" name="ticketId" value="">
+                        <input type="hidden" id="modalOrderId2" name="orderId" value="">
+                        <h2 id="requestRefundLabel">Request Refund</h2>
+                        <p id="requestRefundDescription">Please provide your bank details to request a refund.</p>
+                        <div class="form-group">
+                            <label for="bank">Bank Name</label>
+                            <select id="bank" name="bank" required class="form-control">
+                                <option value="">Select a bank</option>
+                                <option value="BIDV">BIDV</option>
+                                <option value="TP Bank">TP Bank</option>
+                                <option value="MB Bank">MB Bank</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="bankAccount">Bank Account</label>
+                            <input type="text" id="bankAccount" name="bankAccount" required class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmBankAccount">Confirm Bank Account</label>
+                            <input type="text" id="confirmBankAccount" name="confirmBankAccount" required class="form-control">
+                        </div>
+                        <!-- Container for buttons with flex display -->
+                        <div style="display: flex; justify-content: space-between;">
+                            <button type="submit" id="confirmRequestRefund" class="btn btn-danger" style="flex: 1; margin-right: 10px;">Yes</button>
+                            <button type="button" id="closeRequestRefundModal" class="btn btn-secondary" style="flex: 1;" onclick="closeOrderModal()">No</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
         <script>
+            function validateBankAccount() {
+                const bankSelect = document.getElementById('bank').value;
+                const bankAccount = document.getElementById('bankAccount').value;
+                let regex;
 
+                switch (bankSelect) {
+                    case 'BIDV':
+                        // BIDV account: 14 digits and starts with 455
+                        regex = /^455\d{11}$/;
+                        break;
+                    case 'TP Bank':
+                        // TP Bank account: 11 digits and starts with 0000
+                        regex = /^0000\d{7}$/;
+                        break;
+                    case 'MB Bank':
+                        // MB Bank account: 10 digits
+                        regex = /^\d{10}$/;
+                        break;
+                    default:
+                        alert('Please select a valid bank.');
+                        return false;
+                }
+
+                if (!regex.test(bankAccount)) {
+                    alert('Invalid bank account number for the selected bank.');
+                    return false;
+                }
+
+                const confirmBankAccount = document.getElementById('confirmBankAccount').value;
+                if (bankAccount !== confirmBankAccount) {
+                    alert('Bank account and confirm bank account do not match.');
+                    return false;
+                }
+
+                return true;
+            }
+        </script>
+
+        <link href="https://pay.vnpay.vn/lib/vnpay/vnpay.css" rel="stylesheet" />
+        <script src="https://pay.vnpay.vn/lib/vnpay/vnpay.min.js"></script>
+        <script>
+            function openModalRequestRefund(ticketId, orderId) {
+                document.getElementById("modalTicketId2").value = ticketId;
+                document.getElementById("modalOrderId2").value = orderId;
+                document.getElementById("requestRefundModal").style.display = "block";
+            }
+
+            function closeModalRequestRefund() {
+                document.getElementById("requestRefundModal").style.display = "none";
+            }
+
+            document.getElementById("closeRequestRefundModal").onclick = closeModalRequestRefund;
 
             function openModalTicket(ticketId, orderId) {
-                // Set the ticket ID in the hidden input field
                 document.getElementById("modalTicketId").value = ticketId;
                 document.getElementById("modalOrderId").value = orderId;
-                // Display the modal
                 document.getElementById("cancelTicketModal").style.display = "block";
             }
 
-            function closeModal() {
-                // Hide the modal
+            function closeModalTicket() {
                 document.getElementById("cancelTicketModal").style.display = "none";
             }
-            document.getElementById("closeModal").onclick = function () {
-                document.getElementById("cancelTicketModal").style.display = "none";
-            };
-            // Close modal if user clicks outside of it
-            window.onclick = function (event) {
-                const modal = document.getElementById("cancelTicketModal");
-                if (event.target === modal) {
-                    modal.style.display = "none";
-                }
-            };
 
+            document.getElementById("closeModal").onclick = closeModalTicket;
 
             function openModalOrder(orderId) {
-                // Set the order ID in the hidden input field
-                document.getElementById('modalOrderId2').value = orderId;
-
-                // Display the modal
+                document.getElementById('modalOrderId1').value = orderId;
                 document.getElementById('cancelOrderModal').style.display = 'block';
             }
+
             function closeOrderModal() {
-                // Hide the modal
                 document.getElementById('cancelOrderModal').style.display = 'none';
             }
-            document.getElementById("closeOrderModal").onclick = function () {
-                document.getElementById("cancelOrderModal").style.display = "none";
-            };
-            // Close modal if user clicks outside of it
+
+            document.getElementById("closeOrderModal").onclick = closeOrderModal;
+
+            // Consolidated click outside handler
             window.onclick = function (event) {
-                const modal = document.getElementById("cancelOrderModal");
-                if (event.target === modal) {
-                    modal.style.display = "none";
-                }
+                const modals = [
+                    document.getElementById("requestRefundModal"),
+                    document.getElementById("cancelTicketModal"),
+                    document.getElementById("cancelOrderModal")
+                ];
+
+                modals.forEach(function (modal) {
+                    if (event.target === modal) {
+                        modal.style.display = "none";
+                    }
+                });
             };
+
+            $("#frmCreateOrder").submit(function () {
+                var postData = $("#frmCreateOrder").serialize();
+                var submitUrl = $("#frmCreateOrder").attr("action");
+                $.ajax({
+                    type: "POST",
+                    url: submitUrl,
+                    data: postData,
+                    dataType: 'JSON',
+                    success: function (x) {
+                        if (x.code === '00') {
+                            if (window.vnpay) {
+                                vnpay.open({width: 768, height: 600, url: x.data});
+                            } else {
+                                location.href = x.data;
+                            }
+                            return false;
+                        } else {
+                            alert(x.Message);
+                        }
+                    }
+                });
+                return false;
+            });
+
+            document.getElementById('togglePaymentBtn').addEventListener('click', function () {
+                var paymentMethods = document.getElementById('payment_methods');
+                if (paymentMethods.style.display === 'none' || paymentMethods.style.display === '') {
+                    paymentMethods.style.display = 'block';
+                } else {
+                    paymentMethods.style.display = 'none';
+                }
+            });
         </script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>

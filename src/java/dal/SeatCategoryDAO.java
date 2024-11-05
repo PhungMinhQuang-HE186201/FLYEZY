@@ -231,6 +231,22 @@ public class SeatCategoryDAO extends DBConnect {
         }
         return ls;
     }
+    
+    public boolean isDuplicateSeatCategoryName(String name, int planeCategoryId) {
+    String sql = "SELECT * FROM Seat_Category WHERE name = ? AND Plane_Categoryid = ?";
+    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, name);
+        ps.setInt(2, planeCategoryId);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            return true;
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false; 
+}
+
 
     public static void main(String[] args) {
         SeatCategoryDAO scd = new SeatCategoryDAO();

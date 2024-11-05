@@ -179,6 +179,7 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `flyezy`.`Discount` (
   `id` INT NOT NULL AUTO_INCREMENT,
+  `code` VARCHAR(45) NOT NULL,
   `percentage` DECIMAL(5,2) NOT NULL,
   `minimum_order_value` INT NOT NULL,
   `date_created` TIMESTAMP NOT NULL,
@@ -421,15 +422,22 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`News` (
   `content` TEXT NULL DEFAULT NULL,
   `News_Categoryid` INT NOT NULL,
   `Accountsid` INT NOT NULL,
+  `Airline_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `FKNews232818` (`News_Categoryid` ASC) VISIBLE,
   INDEX `FKNews924154` (`Accountsid` ASC) VISIBLE,
+  INDEX `fk_News_Airline1_idx` (`Airline_id` ASC) VISIBLE,
   CONSTRAINT `FKNews232818`
     FOREIGN KEY (`News_Categoryid`)
     REFERENCES `flyezy`.`News_Category` (`id`),
   CONSTRAINT `FKNews924154`
     FOREIGN KEY (`Accountsid`)
-    REFERENCES `flyezy`.`Accounts` (`id`))
+    REFERENCES `flyezy`.`Accounts` (`id`),
+  CONSTRAINT `fk_News_Airline1`
+    FOREIGN KEY (`Airline_id`)
+    REFERENCES `flyezy`.`Airline` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -496,6 +504,7 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Ticket` (
   `Statusid` INT NOT NULL,
   `Flight_Type_id` INT NOT NULL,
   `Flight_Detail_id` INT NOT NULL,
+  `cancelled_at` TIMESTAMP NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `FKTicket339557` (`Passenger_Typesid` ASC) VISIBLE,
   INDEX `FKTicket999927` (`Baggagesid` ASC) VISIBLE,
@@ -545,6 +554,7 @@ CREATE TABLE IF NOT EXISTS `flyezy`.`Refund` (
   `bankAccount` VARCHAR(255) NULL DEFAULT NULL,
   `requestDate` TIMESTAMP NULL,
   `refundDate` TIMESTAMP NULL,
+  `refundPrice` INT NULL,
   `Ticketid` INT NOT NULL,
   `Statusid` INT NOT NULL,
   PRIMARY KEY (`id`),
@@ -566,10 +576,11 @@ SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 
+
 -- ------------------------------------------------
 -- INSERT DATA
 ---------------------------------------------------
-INSERT INTO `Status` VALUES (1,'Activated'),(2,'Deactivated'),(3,'Pre-flight'),(4,'In-flight'),(5,'Landed'),(6,'Cancellation Request'),(7,'Successfully Canceled'),(8,'Refund completed'),(9,'Is Empty'),(10,'Successful Payment'),(11,'Cancellation Rejection'), ('12', 'Is Pending');
+INSERT INTO `Status` VALUES (1,'Activated'),(2,'Deactivated'),(3,'Is Processing'),(4,'Accepted'),(5,'Rejected'),(6,'Cancellation Request'),(7,'Is Cancelled'),(8,'Refund Completed'),(9,'Is Empty'),(10,'Successful Payment'),(11,'Cancellation Rejection'), (12, 'Is Pending');
 
 INSERT INTO `Roles` VALUES 
 (1,'Admin'),
@@ -585,9 +596,13 @@ INSERT INTO `Airline` VALUES
 
 INSERT INTO `Baggages` VALUES (4,10,180000,3,1),(5,20,310000,3,1),(6,30,440000,3,1),(7,40,570000,3,1),(8,50,700000,3,1),(9,60,830000,3,1),(10,20,266000,4,1),(11,30,374000,4,1),(12,40,482000,4,1),(13,50,644000,4,1),(14,60,752000,4,1),(15,70,860000,4,1),(16,10,200000,2,1),(17,20,350000,2,1),(18,30,500000,2,1);
 
-INSERT INTO `Accounts` VALUES 
-(1,'Ngô Tùng Dương','duongnthe186310@fpt.edu.vn','KIymfC4XfLDNFnygtZuXNQ==','0862521226','','img/avatar.jpg','2004-11-16',1,3,'2024-09-23 14:07:56','2024-09-23 14:20:15', 1),
-(2,'Hồ Trần Quân','abc@gmail.com','KIymfC4XfLDNFnygtZuXNQ==','0123','','img/jack.png','2024-09-18',2,2,'2024-09-23 14:19:19',NULL, 1);
+INSERT INTO `Accounts` 
+VALUES 
+(1,'Ngô Tùng Dương','duongnthe186310@fpt.edu.vn','KIymfC4XfLDNFnygtZuXNQ==','0862521226','','img/avatar.jpg','2004-11-16',1,1,'2024-09-23 14:07:56','2024-09-23 14:20:15',1),
+(2,'Vietnam Airline Staff','airline@gmail.com','KIymfC4XfLDNFnygtZuXNQ==','0123','','img/jack.png','2024-09-18',2,2,'2024-09-23 14:19:19',NULL,1),
+(3,'Bamboo Staff','bamboo@gmail.com','KIymfC4XfLDNFnygtZuXNQ==','0456','','img/jack.png','2024-09-19',2,3,'2024-09-24 14:19:19',NULL,1),
+(4,'Service Staff','flyfly@gmail.com','KIymfC4XfLDNFnygtZuXNQ==','0789','','img/jack.png','2024-09-19',4,1,'2024-09-24 14:19:19',NULL,1),
+(5,'Sơn Tùng MTP','td2k416@gmail.com','ep9TogRphbhALmP7tn8/RA==','0938273888','Thái Bình','img/mtp.jpg','1994-07-05',3,1,'2024-11-02 11:32:45',NULL,1);
 
 INSERT INTO Plane_Category 
 VALUES 
@@ -650,8 +665,8 @@ VALUES
 (3, 'Infant', 0.5);
 
 
-INSERT INTO `Flight` VALUES (1,120,1,2,1,3),(2,120,2,1,1,3),(3,360,1,3,1,3),(4,360,3,1,1,3),(5,360,2,3,1,3),(6,360,3,2,1,3),(7,300,1,4,1,2),(8,300,4,1,1,2),(9,300,2,6,1,2),(10,300,6,2,1,2);
-INSERT INTO `Flight_Detail` VALUES (1,'2024-10-01','14:30:00',1200000,1,1,3),(2,'2024-10-02','15:45:00',1350000,1,2,3),(3,'2024-10-03','10:00:00',1500000,1,3,3);
+INSERT INTO `Flight` VALUES (1,120,1,2,1,3),(2,120,2,1,1,3),(3,360,1,3,1,3),(4,360,3,1,1,3),(5,360,2,3,1,3),(6,360,3,2,1,3),(7,300,1,4,1,2),(8,300,4,1,1,2),(9,300,2,6,1,2),(10,300,6,2,1,2),(11,120,2,1,1,2);
+INSERT INTO `Flight_Detail` VALUES (1,'2024-10-01','14:30:00',1200000,1,1,3),(2,'2024-10-02','15:45:00',1350000,1,2,3),(3,'2024-10-03','10:00:00',1500000,1,3,3),(4,'2024-11-10','12:10:52',1200000,1,1,1),(5,'2024-11-10','01:00:00',1200000,11,4,1),(6,'2024-11-10','22:00:00',1200000,11,4,1),(7,'2024-11-11','09:00:00',1250000,11,4,1);
 INSERT INTO `Flight_Type` VALUES (1,'Outbound '),(2,'RT-Outbound'),(3,'RT-Inbound');
 
 INSERT INTO `flyezy`.`Payment_Types` (`id`, `name`,`image`)
@@ -661,15 +676,20 @@ VALUES
 
 INSERT INTO `flyezy`.`Order` (`id`, `code`, `contactName`, `contactPhone`, `contactEmail`, `totalPrice`, `Accounts_id`, `Payment_Types_id`, `paymentTime`, `created_at`, `Discount_id`, `Status_id`)
 VALUES 
-(1, 'FJA84IUTJ', 'John Doe', '0912345678', 'john.doe@example.com', 1200000, 1, 1, '2024-10-01 14:00:00', NOW(), null, 10),
-(2, 'BDNA83JFK', 'Jane Smith', '0987654321', 'jane.smith@example.com', 1350000, 1, 2, '2024-10-02 15:15:00', NOW(), null, 10),
-(3, 'O3MFKALSS', 'Alice Johnson', '0978123456', 'alice.johnson@example.com', 1500000, 1, 1, '2024-10-03 09:30:00', NOW(), null, 10);
+(1,'13NG3UVQ8','Sơn Tùng MTP','0873232111','td2k416@gmail.com',10280000,5,NULL,NULL,'2024-11-02 10:50:24',NULL,12);
 
-INSERT INTO `flyezy`.`Ticket` (`id`, `Flight_Detail_id`, `Seat_Categoryid`, `Passenger_Typesid`, `code`, `pName`, `pSex`, `pPhoneNumber`, `pDob`, `Flight_Type_id`, `Baggagesid`, `totalPrice`, `Order_id`, `Statusid`)
+INSERT INTO `flyezy`.`Ticket` 
+(`id`, `Flight_Detail_id`, `Seat_Categoryid`, `Passenger_Typesid`, `code`, `pName`, `pSex`, `pPhoneNumber`, `pDob`, `Flight_Type_id`, `Baggagesid`, `totalPrice`, `Order_id`, `Statusid`, `cancelled_at`)
 VALUES 
-(1, 1, 7, 1, 'A1', 'Passenger 1', 1, '0912345678', '1990-01-01', 1, NULL,0, 1, 10),
-(2, 2, 8, 2, 'C2', 'Passenger 2', 1, '0987654321', '1992-05-10', 1, NULL,0, 1, 10),
-(3, 2, 7, 1, 'B3', 'Passenger 3', 1, '0978123456', '1988-08-20', 1, NULL,0, 2, 10);
+(1, 4, 1, 1, 'B1', 'Nguyễn Thanh Tùng', 1, '1230114182', '1994-07-05', 2, 4, 1380000, 1, 12, NULL),
+(2, 6, 8, 1, 'A1', 'Nguyễn Thanh Tùng', 1, '1230114182', '1994-07-05', 3, 16, 2000000, 1, 12, NULL),
+(3, 4, 1, 1, 'C1', 'Nguyễn Thanh Thanh', 1, '1231231231', '1995-11-05', 2, NULL, 1200000, 1, 12, NULL),
+(4, 6, 8, 1, 'B1', 'Nguyễn Thanh Thanh', 1, '1231231231', '1995-11-05', 3, NULL, 1800000, 1, 12, NULL),
+(5, 4, 1, 2, 'D1', 'Nguyễn Văn Văn', 1, NULL, '2020-12-11', 2, NULL, 960000, 1, 12, NULL),
+(6, 6, 8, 2, 'C1', 'Nguyễn Văn Văn', 1, NULL, '2020-12-11', 3, NULL, 1440000, 1, 12, NULL),
+(7, 4, 1, 3, NULL, 'Nguyễn Baby', 1, NULL, '2023-12-11', 2, NULL, 600000, 1, 12, NULL),
+(8, 6, 8, 3, NULL, 'Nguyễn Baby', 1, NULL, '2023-12-11', 3, NULL, 900000, 1, 12, NULL);
+
 
 INSERT INTO `flyezy`.`News_Category` (`name`) VALUES 
 ('News'),

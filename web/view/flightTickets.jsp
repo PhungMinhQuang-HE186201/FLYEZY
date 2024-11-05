@@ -370,7 +370,7 @@
                     </div>
                     <div id="ticket-category-container<%=fd.getId()%>" style="max-height: 0; overflow: hidden; transition: max-height 0.5s ease, opacity 0.5s ease; opacity: 0;">
                         <div style="text-align: center; font-size: 20px">Select Ticket Class</div>
-                        <div class="ticket-category-list">
+                        <div class="ticket-category-list" style="display: flex; flex-wrap: wrap;">
                             <% 
                                 int activated = 0;
                                 for(int i = 0; i<ticketCatList.size(); i++){

@@ -25,7 +25,7 @@ public class NewsDAO extends DBConnect{
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                News a = new News(rs.getInt("id"), rs.getString("title"), rs.getString("image"), rs.getString("content"), rs.getInt("News_Categoryid"), rs.getInt("Accountsid"));
+                News a = new News(rs.getInt("id"), rs.getString("title"), rs.getString("image"), rs.getString("content"), rs.getInt("News_Categoryid"), rs.getInt("Accountsid"), rs.getInt("Airline_id"));
                return a;
             }
         } catch (SQLException ex) {

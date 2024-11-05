@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import model.Flights;
 import model.PlaneCategory;
@@ -40,14 +41,15 @@ public class FlightDetailDAO extends DBConnect {
 
         return list;
     }
-    public List<FlightDetails> getFlightDetailWithPaging(int flightId,int index) {
+
+    public List<FlightDetails> getFlightDetailWithPaging(int flightId, int index) {
         List<FlightDetails> list = new ArrayList<>();
         String sql = "select * from flyezy.Flight_Detail where Flightid  =?"
                 + " LIMIT 5 OFFSET ?";
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
             prepare.setInt(1, flightId);
-            prepare.setInt(2, (index-1)*5);
+            prepare.setInt(2, (index - 1) * 5);
             ResultSet resultSet = prepare.executeQuery();
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
@@ -65,13 +67,14 @@ public class FlightDetailDAO extends DBConnect {
 
         return list;
     }
+
     public int getNumberOfFlightDetail(int flightId) {
         String sql = "select Count(*) from flyezy.Flight_Detail where Flightid  =?";
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
             prepare.setInt(1, flightId);
             ResultSet resultSet = prepare.executeQuery();
-            if(resultSet.next()){
+            if (resultSet.next()) {
                 return resultSet.getInt(1);
             }
         } catch (SQLException ex) {
@@ -80,6 +83,7 @@ public class FlightDetailDAO extends DBConnect {
 
         return 0;
     }
+
     public FlightDetails getFlightDetailById(int idd) {
         String sql = "select * from flyezy.Flight_Detail where id =?";
         try {
@@ -107,12 +111,14 @@ public class FlightDetailDAO extends DBConnect {
         List<FlightDetails> ls = new ArrayList<>();
         String sql = "SELECT fd.* FROM Flight_Detail fd "
                 + "JOIN Flight f ON fd.flightId = f.id "
-                + "WHERE fd.date = ? AND f.departureAirportId = ? AND f.destinationAirportId = ?";
+                + "WHERE fd.date = ? AND f.departureAirportId = ? AND f.destinationAirportId = ? "
+                + "AND (fd.date > current_date() OR (fd.date = current_date() AND DATE_SUB(fd.time, INTERVAL 1 HOUR) > ?))";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setDate(1, date);
             ps.setInt(2, depAirportId);
             ps.setInt(3, desAirportId);
+            ps.setTime(4, new Time(System.currentTimeMillis()));
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 ls.add(new FlightDetails(rs.getInt("id"), rs.getDate("date"),
@@ -183,14 +189,14 @@ public class FlightDetailDAO extends DBConnect {
         return -1;
     }
 
-    public List<FlightDetails> getAllDetailByFlightId(int flightid,int index) {
+    public List<FlightDetails> getAllDetailByFlightId(int flightid, int index) {
         List<FlightDetails> ls = new ArrayList<>();
         String sql = "SELECT * FROM flyezy.Flight_Detail WHERE flightid = ? "
                 + " LIMIT 5 OFFSET ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, flightid);
-            ps.setInt(2,(index-1)*5);
+            ps.setInt(2, (index - 1) * 5);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 FlightDetails flightDetail = new FlightDetails();
@@ -295,7 +301,6 @@ public class FlightDetailDAO extends DBConnect {
         return false;
     }
 
-
     public void updateFlightStatus(int Id, int status) {
         String sql = "UPDATE Flight_Detail SET Status_id = ? WHERE id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -307,7 +312,7 @@ public class FlightDetailDAO extends DBConnect {
         }
     }
 
-    public List<FlightDetails> searchByStatus(int statusId, int flightId,int index) {
+    public List<FlightDetails> searchByStatus(int statusId, int flightId, int index) {
         List<FlightDetails> flightDetails = new ArrayList<>();
         String query = "SELECT * FROM Flight_Detail WHERE status_id = ? AND flightid = ?"
                 + " LIMIT 5 OFFSET 0";
@@ -315,7 +320,7 @@ public class FlightDetailDAO extends DBConnect {
         try (PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, statusId);
             ps.setInt(2, flightId);
-            ps.setInt(3, (index-1)*5);
+            ps.setInt(3, (index - 1) * 5);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -336,7 +341,7 @@ public class FlightDetailDAO extends DBConnect {
         return flightDetails;
     }
 
-    public List<FlightDetails> searchByDate(Date date, int flightId,int index) {
+    public List<FlightDetails> searchByDate(Date date, int flightId, int index) {
         List<FlightDetails> flightDetails = new ArrayList<>();
         String query = "SELECT * FROM Flight_Detail WHERE date = ? AND flightid = ?"
                 + " LIMIT 5 OFFSET 0";
@@ -344,7 +349,7 @@ public class FlightDetailDAO extends DBConnect {
         try (PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setDate(1, date);
             ps.setInt(2, flightId);
-            ps.setInt(3, (index-1)*5);
+            ps.setInt(3, (index - 1) * 5);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -364,7 +369,7 @@ public class FlightDetailDAO extends DBConnect {
         return flightDetails;
     }
 
-    public List<FlightDetails> searchByTimeRange(Time fromTime, Time toTime, int flightId,int index) {
+    public List<FlightDetails> searchByTimeRange(Time fromTime, Time toTime, int flightId, int index) {
         List<FlightDetails> flightDetails = new ArrayList<>();
         String query = "SELECT * FROM Flight_Detail WHERE time BETWEEN ? AND ? AND flightid = ?"
                 + " LIMIT 5 OFFSET ?";
@@ -373,7 +378,7 @@ public class FlightDetailDAO extends DBConnect {
             ps.setTime(1, fromTime);
             ps.setTime(2, toTime);
             ps.setInt(3, flightId);
-            ps.setInt(4,(index-1)*5);
+            ps.setInt(4, (index - 1) * 5);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -392,12 +397,13 @@ public class FlightDetailDAO extends DBConnect {
         }
         return flightDetails;
     }
+
     public int getPlaneCategoryIdFromFlightDetail(int id) {
-        String sql = "Select Plane_Categoryid from Flight_Detail where id ="+id;
+        String sql = "Select Plane_Categoryid from Flight_Detail where id =" + id;
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 int Plane_Categoryid = rs.getInt("Plane_Categoryid");
                 return Plane_Categoryid;
             }
@@ -406,9 +412,44 @@ public class FlightDetailDAO extends DBConnect {
         }
         return 0;
     }
+
+    public void deactivateAllFlightDetailByAirline(int airlineId) {
+        String sql = "UPDATE Flight_Detail fd "
+                + "SET fd.Status_id = ? "
+                + "WHERE fd.Flightid IN ( "
+                + "   SELECT f.id FROM Flight f "
+                + "   WHERE f.Airline_id = ? "
+                + ")";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, 2);
+            ps.setInt(2, airlineId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void activateAllFlightDetailByAirline(int airlineId) {
+        String sql = "UPDATE Flight_Detail fd "
+                + "SET fd.Status_id = ? "
+                + "WHERE fd.Flightid IN ( "
+                + "   SELECT f.id FROM Flight f "
+                + "   WHERE f.Airline_id = ? "
+                + ")";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, 1);
+            ps.setInt(2, airlineId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
         FlightDetailDAO fdd = new FlightDetailDAO();
-        String d = "2024-10-01";
+        String d = "2024-10-30";
         Date date = Date.valueOf(d);
         for (Object object : fdd.getFlightDetailsByAirportAndDDate(1, 2, date)) {
             System.out.println(object);

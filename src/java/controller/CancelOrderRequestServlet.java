@@ -73,8 +73,12 @@ public class CancelOrderRequestServlet extends HttpServlet {
         if (idd != null) {
             Accounts acc = ad.getAccountsById(idd);
             request.setAttribute("account", acc);
+            response.sendRedirect("buyingHistory");
         }
-        request.getRequestDispatcher("view/cancelOrderRequest.jsp").forward(request, response);
+        else{
+            response.sendRedirect("findOrder");
+        }
+        
     }
 
     /**
@@ -93,7 +97,6 @@ public class CancelOrderRequestServlet extends HttpServlet {
             int orderId = Integer.parseInt(orderIdStr);
             
             td.cancelAllTicketsByOrderId(orderId);
-            od.updateOrderStatus(orderId, 12);
             
         } catch (Exception e) {
 

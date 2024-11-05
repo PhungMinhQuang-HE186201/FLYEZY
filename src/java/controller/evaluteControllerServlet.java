@@ -83,14 +83,15 @@ public class evaluteControllerServlet extends HttpServlet {
             Accounts acc = ad.getAccountsById(idd);
             request.setAttribute("account", acc);
         }
+        String action = request.getParameter("action");
+        String action1 = request.getParameter("action1");
         String orderID = request.getParameter("orderId");
         if (orderID != null) {
             int orderid = Integer.parseInt(orderID);
             session.setAttribute("orderId", orderid);
         }
         int orderId = (int) session.getAttribute("orderId");
-        String action = request.getParameter("action");
-        String action1 = request.getParameter("action1");
+        
         if(action1!=null){
             action = "";
         }
@@ -110,7 +111,7 @@ public class evaluteControllerServlet extends HttpServlet {
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
                 String timeStr = dateFormat.format(new Timestamp(System.currentTimeMillis()));
-                Feedbacks feedback = new Feedbacks(idd, ratedStar, comment, new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), 13, orderId);
+                Feedbacks feedback = new Feedbacks(idd, ratedStar, comment, new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), 3, orderId);
                 int n = fd.createFeedback(feedback);
                 request.getRequestDispatcher("view/successfullEvaluate.jsp").forward(request, response);
             } else if (action.equals("viewUpdate")) {
@@ -131,23 +132,6 @@ public class evaluteControllerServlet extends HttpServlet {
                 Feedbacks feedback = new Feedbacks(idd, ratedStar, comment, new Timestamp(System.currentTimeMillis()), orderId);
                 fd.updateFeedback(feedback);
                 request.getRequestDispatcher("view/successfullEvaluate.jsp").forward(request, response);
-            }else if(action.equals("view")){
-                int orderid = Integer.parseInt(request.getParameter("orderId"));
-                List<Feedbacks> feedbackList = fd.getFeedbakByOrderId2(orderid);
-                List<Status> statusList = sd.getStatusOfFeedback();
-                request.setAttribute("feedbackList", feedbackList);
-                request.setAttribute("statusList", statusList);
-                request.getRequestDispatcher("view/Feedback.jsp").forward(request, response);
-            }else if (action.equals("search")){
-                int orderid = Integer.parseInt(request.getParameter("orderId"));
-                String fStaus = request.getParameter("fStaus");
-                String fStar = request.getParameter("fStar");
-                String fEmail = request.getParameter("fEmail");
-                List<Feedbacks> feedbackList = fd.searchFeedback(fStaus, fStar, fEmail,orderid);
-                List<Status> statusList = sd.getStatusOfFeedback();
-                request.setAttribute("feedbackList", feedbackList);
-                request.setAttribute("statusList", statusList);
-                request.getRequestDispatcher("view/Feedback.jsp").forward(request, response);
             }
             if (action1 != null) {
                 fd.deleteFeedback(idd, orderId);

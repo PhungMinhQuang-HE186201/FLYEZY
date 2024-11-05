@@ -69,8 +69,8 @@
                     </p></div>
 
                 <br />
-                <span id="phoneError" style="color:red; display:none;">Phone Number is invalid!</span>
-                <p id="capslock-warning" style="display: none; margin-bottom: 30px">⚠️ Caps Lock is on</p>
+                <span id="phoneError" style="color:red; display:none; margin-bottom: 20px; font-weight: bold">Phone Number is invalid!</span>
+                <p id="capslock-warning" style="display: none; margin-bottom: 20px">⚠️ Caps Lock is on</p>
                 <p style="color: red">${requestScope.existedUsername}</p>
                 <div class="button">
                     <input id="submit" type="submit" value="Register" /><br /><br />
@@ -104,7 +104,7 @@
                     phoneError.style.display = "none";
                 } else if (!phoneNumber.match(phoneRegex)) {
                     submit.disabled = true;
-                    phoneError.style.display = "inline";
+                    phoneError.style.display = "block";
                 } else {
                     submit.disabled = false;
                     phoneError.style.display = "none";

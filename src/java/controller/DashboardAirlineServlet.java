@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 import model.Accounts;
 import model.Airline;
@@ -50,31 +51,37 @@ public class DashboardAirlineServlet extends HttpServlet {
             int i = (idd != null) ? idd : -1;
             Accounts acc = ad.getAccountsById(i);
             request.setAttribute("account", acc);
-            //list airline
-            List<Airline> listAirline;
-            //list baggage
+            List<Airline> listAirline = new ArrayList<>();
             List<Baggages> listBaggage = baggageManageDao.getAllBaggages();
             String submit = request.getParameter("submit");
-            if (submit == null) {
-                listAirline = airlineManageDao.getAllAirline();
-            } else {
-                // Search for airlines based on keyword and status
-                String keyword = request.getParameter("keyword") != null ? request.getParameter("keyword").trim() : null;
-                String statusParam = request.getParameter("status");
-                int statusId = -1;
+            if (acc.getRoleId() == 1) {
+                if (submit == null) {
+                    listAirline = airlineManageDao.getAllAirline();
+                } else {
+                    // Search for airlines based on keyword and status
+                    String keyword = request.getParameter("keyword") != null ? request.getParameter("keyword").trim() : null;
+                    String statusParam = request.getParameter("status");
+                    int statusId = -1;
 
-                // Ensure status is a valid integer
-                if (statusParam != null && !statusParam.isEmpty()) {
-                    try {
-                        statusId = Integer.parseInt(statusParam);
-                    } catch (NumberFormatException e) {
-                        // Log the error and handle it accordingly (e.g., set statusId to null or default)
-                        System.out.println("Invalid status ID format: " + e.getMessage());
+                    // Ensure status is a valid integer
+                    if (statusParam != null && !statusParam.isEmpty()) {
+                        try {
+                            statusId = Integer.parseInt(statusParam);
+                        } catch (NumberFormatException e) {
+                            // Log the error and handle it accordingly (e.g., set statusId to null or default)
+                            System.out.println("Invalid status ID format: " + e.getMessage());
+                        }
                     }
-                }
 
-                // Fetch the airlines based on search criteria
-                listAirline = airlineManageDao.searchAirline(keyword, statusId);
+                    // Fetch the airlines based on search criteria
+                    listAirline = airlineManageDao.searchAirline(keyword, statusId);
+                }
+            }else if(acc.getRoleId() == 2){
+                listAirline = new ArrayList<>();
+                Airline airline = airlineManageDao.getAirlineById(acc.getAirlineId());
+                if(airline != null){
+                    listAirline.add(airline);
+                }
             }
             List<Status> listStatus = statusDao.getAllStatus();
             request.setAttribute("listAirline", listAirline);

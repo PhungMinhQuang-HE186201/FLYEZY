@@ -28,14 +28,12 @@
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
                 font-family: Arial, sans-serif;
             }
-            /* Điều chỉnh kích thước và phong cách của GIF */
             .icon {
                 width: 64px; /* Thay đổi kích thước theo nhu cầu */
                 height: 64px;
                 margin-bottom: 15px;
             }
 
-            /* Typing animation for the OTP title */
             .otp-title {
                 font-size: 20px;
                 color: #333;
@@ -167,7 +165,7 @@
             </c:if>
             <div class="footcard">
 
-                You want to retry register?<hr> <br/> <a style="display: flex;justify-content: center" class="letDoIt" href="register">Register</a>
+                You want to retry register? <a class="letDoIt" href="register">Register</a>
             </div>
 
         </div>

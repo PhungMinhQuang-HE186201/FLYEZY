@@ -72,7 +72,7 @@ public class PlaneCategoryControllerServlet extends HttpServlet {
         String statusMessage = (String) session.getAttribute("result");
         if (statusMessage != null) {
             request.setAttribute("result", statusMessage);
-            session.removeAttribute("result"); 
+            session.removeAttribute("result");
         }
 
         // DuongNT: Retrieve the account information of the currently logged-in user using session
@@ -153,12 +153,20 @@ public class PlaneCategoryControllerServlet extends HttpServlet {
                     image = pcd.getPlaneCategoryById(id).getImage();
                 }
                 PlaneCategory pc = new PlaneCategory(id, name, image, info, airlineId, statusId);
-                pcd.updatePlaneCategoryById(pc);
-                result = "Update plane category successfully!";
+                if (pcd.isDuplicateCategoryName(name, airlineId)) {
+                    result = "Duplicate plane category name!";
+                } else {
+                    pcd.updatePlaneCategoryById(pc);
+                    result = "Update plane category successfully!";
+                }
             } else {
                 PlaneCategory pc = new PlaneCategory(name, image, info, airlineId, statusId);
-                pcd.addPlaneCategory(pc);
+                if (pcd.isDuplicateCategoryName(name, airlineId)) {
+                    result = "Duplicate plane category name!";
+                } else {
+                    pcd.addPlaneCategory(pc);
                 result = "Add plane category successfully!";
+                }      
             }
 
             // DuongNT: Retrieve the account information of the currently logged-in user using session

@@ -4,8 +4,6 @@
  */
 package controller;
 
-import dal.AccountsDAO;
-import dal.NewsManageDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,14 +12,22 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.List;
+import dal.OrderDAO;
+import dal.AccountsDAO;
+import dal.TicketDAO;
+import jakarta.servlet.http.HttpSession;
 import model.Accounts;
+import model.Order;
 
 /**
  *
- * @author Admin
+ * @author Fantasy
  */
-@WebServlet(name = "HomeServlet", urlPatterns = {"/home"})
-public class HomeServlet extends HttpServlet {
+@WebServlet(name = "QRCodeServletController", urlPatterns = {"/QRCodeController"})
+public class QRCodeServletController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,10 +46,10 @@ public class HomeServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet HomeServlet</title>");
+            out.println("<title>Servlet QRCodeServletController</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet HomeServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet QRCodeServletController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -61,16 +67,23 @@ public class HomeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        AccountsDAO ad = new AccountsDAO();
-        NewsManageDAO nw = new NewsManageDAO();
         HttpSession session = request.getSession();
-
+        OrderDAO od = new OrderDAO();
+        TicketDAO td = new TicketDAO();
+        AccountsDAO ad = new AccountsDAO();
         Integer idd = (Integer) session.getAttribute("id");
-        int i = (idd != null) ? idd : -1;
-        Accounts acc = ad.getAccountsById(i);
-        request.setAttribute("account", acc);
-        request.setAttribute("listNew", nw.getNews());
-        request.getRequestDispatcher("view/home.jsp").forward(request, response);
+        if (idd == null) {
+            response.sendRedirect("login");
+            return;
+        } else {
+            int i = (idd != null) ? idd : -1;
+            Accounts acc = ad.getAccountsById(i);
+            request.setAttribute("account", acc);
+        }
+        int orderID = (int) session.getAttribute("orderID");
+        od.successfullPayment(orderID, 1);
+        td.confirmSuccessAllTicketsByOrderId(orderID);
+        request.getRequestDispatcher("view/successfullPayment.jsp").forward(request, response);
     }
 
     /**
@@ -84,7 +97,28 @@ public class HomeServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession();
+        Integer idd = (Integer) session.getAttribute("id");
+        AccountsDAO ad = new AccountsDAO();
+        OrderDAO od = new OrderDAO();
+        if (idd == null) {
+            response.sendRedirect("login");
+            return;
+        } else {
+            int i = (idd != null) ? idd : -1;
+            Accounts acc = ad.getAccountsById(i);
+            request.setAttribute("account", acc);
+        }
+        String orderID = request.getParameter("orderID");
+        if (orderID != null) {
+            int orderId = Integer.parseInt(orderID);
+            Order o = od.getOrderById(orderId);
+            session.setAttribute("orderID", orderId);
+            request.setAttribute("email",o.getContactEmail());
+            request.setAttribute("phone", o.getContactPhone());
+            request.setAttribute("totalCost", o.getTotalPrice());
+            request.getRequestDispatcher("view/paymen-QRCode.jsp").forward(request, response);
+        }
     }
 
     /**

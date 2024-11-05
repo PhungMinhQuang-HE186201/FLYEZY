@@ -15,7 +15,7 @@
         <link rel="stylesheet" href="css/styleHeader.css" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-      
+
     </head>
     <style>
         .transparent-header {
@@ -33,7 +33,9 @@
             </div>
             <ul id="header-nav1" style="font-weight: 520">
                 <li "><a href="home" >HOME</a></li>
-                <li "><a href="routeTicket" >TICKETS</a></li>
+                <li>
+                    <a href="${requestScope.account == null ? 'findOrder' : 'buyingHistory'}">TICKETS</a>
+                </li>
                 <li "><a href="News">NEWS</a></li>
                 <li "><a href="#footer" >CONTACT</a></li>
             </ul>
@@ -53,12 +55,17 @@
                     </div>
                     <ul id="header-subnav" style="display: none;">
                         <li><a href="info">Account Information</a></li>
-                            <c:if test="${requestScope.account.getRoleId()==1}">
+                        <c:if test="${requestScope.account.getRoleId()==1}">
                             <li><a href="accountController">Manage</a></li>
-                            </c:if>
-                            <c:if test="${requestScope.account.getRoleId()==4}">
-                            <li><a href="newsManagement">News Manage</a></li>
-                            </c:if>
+                        </c:if>
+
+                        <c:if test="${requestScope.account.getRoleId()==2}">
+                            <li><a href="airlineController">Manage</a></li>
+                        </c:if>
+                            
+                        <c:if test="${requestScope.account.getRoleId()==4}">
+                            <li><a href="discountManagement">Manage</a></li>
+                        </c:if>
                         <li><a href="buyingHistory">Ticket Buying History</a></li>
                         <li><a href="changePassword">Change Password</a></li>
                         <li><a style="color: red;" href="logout">Log out</a></li>

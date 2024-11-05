@@ -51,7 +51,7 @@ public class FlightManageDAO extends DBConnect {
                 + "INNER JOIN Country AS c2 ON c2.id = l2.country_id\n"
                 + "INNER JOIN Status AS s ON s.id = f.Status_id\n"
                 + "INNER JOIN Accounts AS acc ON acc.Airlineid = f.Airline_id\n"
-                + "WHERE acc.id = "+idd;
+                + "WHERE acc.id = " + idd;
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
             ResultSet resultSet = prepare.executeQuery();
@@ -126,7 +126,7 @@ public class FlightManageDAO extends DBConnect {
                 int destinationAirportId = resultSet.getInt("destinationAirportId");
                 int statusId = resultSet.getInt("Status_id");
                 int airlineId = resultSet.getInt("Airline_id");
-                return new Flights(flightId, minutes, departureAirportId, destinationAirportId, statusId,airlineId);
+                return new Flights(flightId, minutes, departureAirportId, destinationAirportId, statusId, airlineId);
             }
         } catch (Exception e) {
         }
@@ -274,10 +274,34 @@ public class FlightManageDAO extends DBConnect {
         }
     }
 
+    public void deactivateAllFlightByAirline(int airlineId) {
+        String sql = "UPDATE Flight SET Status_id = ? WHERE Airline_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, 2);
+            ps.setInt(2, airlineId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void activateAllFlightByAirline(int airlineId) {
+        String sql = "UPDATE Flight SET Status_id = ? WHERE Airline_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, 1);
+            ps.setInt(2, airlineId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
         FlightManageDAO dao = new FlightManageDAO();
         System.out.println(dao.getDepartureByFlight(2));
-        
+
     }
 
 }

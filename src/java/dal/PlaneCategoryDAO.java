@@ -34,7 +34,7 @@ public class PlaneCategoryDAO extends DBConnect {
         }
         return null;
     }
-    
+
     // DuongNT: to get a plane categories of corresponding airline with its id- OK
     public PlaneCategory getPlaneCategoryById(int planeCategoryId) {
         String sql = "SELECT * FROM Plane_Category WHERE id =?";
@@ -196,34 +196,51 @@ public class PlaneCategoryDAO extends DBConnect {
 
         return categoryName;
     }
+
     //QuanHT: get all categories
     public List<PlaneCategory> getAllCategories() {
-    List<PlaneCategory> categories = new ArrayList<>();
-    String sql = "SELECT * FROM Plane_Category";
-    
+        List<PlaneCategory> categories = new ArrayList<>();
+        String sql = "SELECT * FROM Plane_Category";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                PlaneCategory pc = new PlaneCategory(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("image"),
+                        rs.getString("info"),
+                        rs.getInt("Airlineid"),
+                        rs.getInt("Status_id")
+                );
+                categories.add(pc);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return categories;
+    }
+    public boolean isDuplicateCategoryName(String name, int airlineId) {
+    String sql = "SELECT * FROM Plane_Category WHERE name = ? AND Airlineid = ?";
     try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, name);
+        ps.setInt(2, airlineId);
         ResultSet rs = ps.executeQuery();
-        
-        while (rs.next()) {
-            PlaneCategory pc = new PlaneCategory(
-                rs.getInt("id"),
-                rs.getString("name"),
-                rs.getString("image"),
-                rs.getString("info"),
-                rs.getInt("Airlineid"),
-                rs.getInt("Status_id")
-            );
-            categories.add(pc);
+        if (rs.next()) {
+            return true;
         }
     } catch (SQLException e) {
         e.printStackTrace();
     }
-    
-    return categories;
+    return false;
 }
+
+
     public static void main(String[] args) {
         PlaneCategoryDAO pd = new PlaneCategoryDAO();
-        for(PlaneCategory ls : pd.getAllCategories()){
+        for (PlaneCategory ls : pd.getAllCategories()) {
             System.out.println("cc");
         }
 

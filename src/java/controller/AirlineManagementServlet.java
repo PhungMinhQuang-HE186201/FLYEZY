@@ -4,8 +4,11 @@
  */
 package controller;
 
+import dal.AccountsDAO;
 import dal.AirlineManageDAO;
 import dal.BaggageManageDAO;
+import dal.FlightDetailDAO;
+import dal.FlightManageDAO;
 import dal.PlaneCategoryDAO;
 import dal.SeatCategoryDAO;
 import java.io.IOException;
@@ -27,6 +30,9 @@ public class AirlineManagementServlet extends HttpServlet {
     BaggageManageDAO baggageManageDao = new BaggageManageDAO();
     PlaneCategoryDAO planeCategoryDao = new PlaneCategoryDAO();
     SeatCategoryDAO seatCategoryDao = new SeatCategoryDAO();
+    FlightManageDAO flightManageDao = new FlightManageDAO();
+    FlightDetailDAO flightDetailDao = new FlightDetailDAO();
+    AccountsDAO accountDao = new AccountsDAO();
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -101,22 +107,6 @@ public class AirlineManagementServlet extends HttpServlet {
             // Thêm airline vào cơ sở dữ liệu
             // Lấy airlineId
             int airlineId = airlineManageDao.createAirline(airline);
-
-            // Lấy danh sách baggage
-            String[] baggageWeights = request.getParameterValues("baggageWeight");
-            String[] baggagePrices = request.getParameterValues("baggagePrice");
-
-            // Kiểm tra và thêm baggage vào cơ sở dữ liệu
-            if (baggageWeights != null && baggagePrices != null) {
-                for (int i = 0; i < baggageWeights.length; i++) {
-                    // Phân tích và thêm baggage vào cơ sở dữ liệu
-                    float weight = Float.parseFloat(baggageWeights[i]);
-                    int price = Integer.parseInt(baggagePrices[i]);
-
-                    // Thêm baggage vào cơ sở dữ liệu với airlineId
-                    baggageManageDao.createBaggages(new Baggages(weight, price, airlineId));
-                }
-            }
         } catch (NumberFormatException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -134,11 +124,17 @@ public class AirlineManagementServlet extends HttpServlet {
                 baggageManageDao.DeactiveAllByAirline(airlineId);
                 planeCategoryDao.deactivatePlaneCategoryByAirline(airlineId);
                 seatCategoryDao.deactivateAllSeatCategoryByAirline(airlineId);
+                flightManageDao.deactivateAllFlightByAirline(airlineId);
+                flightDetailDao.deactivateAllFlightDetailByAirline(airlineId);
+                accountDao.deactivateAllAccountByAirline(airlineId);
                 newStatusId = 2;
             }else if(statusId == 2){
                 baggageManageDao.ReactiveAllByAirline(airlineId);
                 planeCategoryDao.activatePlaneCategoryByAirline(airlineId);
                 seatCategoryDao.activateAllSeatCategoryByAirline(airlineId);
+                flightManageDao.activateAllFlightByAirline(airlineId);
+                flightDetailDao.activateAllFlightDetailByAirline(airlineId);
+                accountDao.activateAllAccountByAirline(airlineId);
                 newStatusId = 1;
             }
             airlineManageDao.changeStatus(airlineId, newStatusId);

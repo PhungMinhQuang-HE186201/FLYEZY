@@ -4,8 +4,6 @@
  */
 package controller;
 
-import dal.AccountsDAO;
-import dal.NewsManageDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,14 +12,25 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.List;
 import model.Accounts;
+import model.Airline;
+import model.Status;
+import dal.AccountsDAO;
+import dal.FeedbackDao;
+import dal.StatusDAO;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Date;
+import model.Feedbacks;
 
 /**
  *
- * @author Admin
+ * @author Fantasy
  */
-@WebServlet(name = "HomeServlet", urlPatterns = {"/home"})
-public class HomeServlet extends HttpServlet {
+@WebServlet(name = "FeedbackManagementServlet", urlPatterns = {"/feedbackController"})
+public class FeedbackManagementServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,10 +49,10 @@ public class HomeServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet HomeServlet</title>");
+            out.println("<title>Servlet evaluteControllerServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet HomeServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet evaluteControllerServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -61,16 +70,37 @@ public class HomeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        AccountsDAO ad = new AccountsDAO();
-        NewsManageDAO nw = new NewsManageDAO();
         HttpSession session = request.getSession();
-
+        String statusMessage = (String) session.getAttribute("result");
+        AccountsDAO ad = new AccountsDAO();
+        FeedbackDao fd = new FeedbackDao();
+        StatusDAO sd = new StatusDAO();
         Integer idd = (Integer) session.getAttribute("id");
-        int i = (idd != null) ? idd : -1;
-        Accounts acc = ad.getAccountsById(i);
-        request.setAttribute("account", acc);
-        request.setAttribute("listNew", nw.getNews());
-        request.getRequestDispatcher("view/home.jsp").forward(request, response);
+        if (idd == null) {
+            response.sendRedirect("login");
+            return;
+        } else {
+            Accounts acc = ad.getAccountsById(idd);
+            request.setAttribute("account", acc);
+        }
+        String action = request.getParameter("action");
+
+        if (action == null) {
+            List<Feedbacks> feedbackList = fd.getAllFeedback();
+            List<Status> statusList = sd.getStatusOfFeedback();
+            request.setAttribute("feedbackList", feedbackList);
+            request.setAttribute("statusList", statusList);
+            request.getRequestDispatcher("view/Feedback.jsp").forward(request, response);
+        } else if (action.equals("search")) {
+            String fStaus = request.getParameter("fStaus");
+            String fStar = request.getParameter("fStar");
+            String fEmail = request.getParameter("fEmail");
+            List<Feedbacks> feedbackList = fd.searchFeedback2(fStaus, fStar, fEmail);
+            List<Status> statusList = sd.getStatusOfFeedback();
+            request.setAttribute("feedbackList", feedbackList);
+            request.setAttribute("statusList", statusList);
+            request.getRequestDispatcher("view/Feedback.jsp").forward(request, response);
+        }
     }
 
     /**
@@ -84,7 +114,15 @@ public class HomeServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String action = request.getParameter("action");
+        if (action.equals("changeStatus")) {
+            StatusDAO sd = new StatusDAO();
+            int statusID = Integer.parseInt(request.getParameter("statusID"));
+            int feedBackId = Integer.parseInt(request.getParameter("feedBackId"));
+            sd.changeStatusFeedback(feedBackId, statusID);
+            response.sendRedirect("feedbackController");
+
+        }
     }
 
     /**
