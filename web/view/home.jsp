@@ -417,9 +417,11 @@
                             <p><%= n.getContent() %></p>
                         </div>
 
-                        <div   style="margin-top: 19%;margin-left: 63%;">
-                            <img src="<%=amd.getImageById(n.getAirline_id())%>" style="width: 17%;height: 17%;">
-                            <p style="margin-top: -16%;margin-left: 20%;"><%= amd.getNameById(n.getAirline_id()) %></p>
+                        <div   style="margin-top: 7%;margin-left: 3%;">
+                            <img src="<%=amd.getImageById(n.getAirline_id())%>" style="width: 12%; height: 100%;">
+                            <p style="margin-top: -8%;
+                               margin-left: 14%;
+                               font-size: 16px;"><%= amd.getNameById(n.getAirline_id()) %></p>
                         </div>
 
                     </div>

@@ -588,6 +588,10 @@
 
 
             <%//Modal chọn ghế
+            TicketDAO td = new TicketDAO();
+            int rowNumber = 1;
+            String[] seatLetters = {"A", "B", "C", "D", "E", "F"}; 
+            int seatIndex = 0;
             for(int j = 1; j<=totalPassengers;j++){ %>
             <div class="modal fade " id="seatModal<%=j%>"  tabindex="-1" aria-labelledby="seatModalLabel" aria-hidden="true">
                 <div class="modal-dialog" style="min-width: 45%">
@@ -600,10 +604,6 @@
                             <div>
                                 <table>
                                     <%
-                                        TicketDAO td = new TicketDAO();
-                                        int rowNumber = 1;
-                                        String[] seatLetters = {"A", "B", "C", "D", "E", "F"}; 
-                                        int seatIndex = 0;
                                         int seatEachRow = sc.getSeatEachRow();
                                         int numberOfSeat = sc.getNumberOfSeat();
                                         String seatCat = sc.getName();
@@ -632,15 +632,11 @@
                                         <tr>
                                             <% } 
                                             String seatCode = seatLetters[i % seatEachRow] + rowNumber; 
-                                            String seatColor = bookedSeats.contains(seatCode) ? "rgb(255, 177, 177)" : "#FFF"; 
-                                            String strokeColor = bookedSeats.contains(seatCode) ? "red" : "#B8B8B8"; 
+                                            String seatColor = bookedSeats.contains(seatCode) ? "#D8D8D8" : "#FFF"; 
+                                            String strokeColor = "#B8B8B8"; 
                                             Ticket thisTicket = td.getTicketByCode(seatCode, flightDetailId, sc.getId());
                                             if(j>adultTicket+childTicket+infantTicket){
                                                 thisTicket = td.getTicketByCode(seatCode, flightDetailId2, sc2.getId());
-                                            }
-                                            if (thisTicket != null && thisTicket.getStatusid() == 12) {
-                                                seatColor = "#FFE878";
-                                                strokeColor = "#FFBF00";
                                             }
                                             %>
 
@@ -691,21 +687,12 @@
                                     </div>
                                     <div style="margin-bottom: 10px">
                                         <svg width="40" height="32" viewBox="0 0 40 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <rect x="8.75" y="2.75" width="22.5" height="26.5" rx="2.25" fill="#FFE878" stroke="#FFBF00" stroke-width="1.5" stroke-linejoin="round"></rect>
-                                        <rect x="10.25" y="11.75" width="14.5" height="5.5" rx="2.25" transform="rotate(90 10.25 11.75)" fill="#FFE878" stroke="#FFBF00" stroke-width="1.5" stroke-linejoin="round"></rect>
-                                        <rect x="35.25" y="11.75" width="14.5" height="5.5" rx="2.25" transform="rotate(90 35.25 11.75)" fill="#FFE878" stroke="#FFBF00" stroke-width="1.5" stroke-linejoin="round"></rect>
-                                        <rect x="8.75" y="22.75" width="22.5" height="6.5" rx="2.25" fill="#FFE878" stroke="#FFBF00" stroke-width="1.5" stroke-linejoin="round"></rect>
+                                        <rect x="8.75" y="2.75" width="22.5" height="26.5" rx="2.25" fill="rgb(255, 177, 177)" stroke="#D8D8D8" stroke-width="1.5" stroke-linejoin="round"></rect>
+                                        <rect x="10.25" y="11.75" width="14.5" height="5.5" rx="2.25" transform="rotate(90 10.25 11.75)" fill="#B8B8B8" stroke="#D8D8D8" stroke-width="1.5" stroke-linejoin="round"></rect>
+                                        <rect x="35.25" y="11.75" width="14.5" height="5.5" rx="2.25" transform="rotate(90 35.25 11.75)" fill="#B8B8B8" stroke="#D8D8D8" stroke-width="1.5" stroke-linejoin="round"></rect>
+                                        <rect x="8.75" y="22.75" width="22.5" height="6.5" rx="2.25" fill="rgb(255, 177, 177)" stroke="#D8D8D8" stroke-width="1.5" stroke-linejoin="round"></rect>
                                         </svg>
                                         Booked Seat
-                                    </div>
-                                    <div style="margin-bottom: 10px">
-                                        <svg width="40" height="32" viewBox="0 0 40 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <rect x="8.75" y="2.75" width="22.5" height="26.5" rx="2.25" fill="rgb(255, 177, 177)" stroke="red" stroke-width="1.5" stroke-linejoin="round"></rect>
-                                        <rect x="10.25" y="11.75" width="14.5" height="5.5" rx="2.25" transform="rotate(90 10.25 11.75)" fill="rgb(255, 177, 177)" stroke="red" stroke-width="1.5" stroke-linejoin="round"></rect>
-                                        <rect x="35.25" y="11.75" width="14.5" height="5.5" rx="2.25" transform="rotate(90 35.25 11.75)" fill="rgb(255, 177, 177)" stroke="red" stroke-width="1.5" stroke-linejoin="round"></rect>
-                                        <rect x="8.75" y="22.75" width="22.5" height="6.5" rx="2.25" fill="rgb(255, 177, 177)" stroke="red" stroke-width="1.5" stroke-linejoin="round"></rect>
-                                        </svg>
-                                        Paid Seat
                                     </div>
                                     <div style="margin-right: auto; font-size: 15px; font-weight: bold; color: green;">
                                         Choosing Seat:</br> <%=seatCat%> - <span id="selectedSeatCode<%=j%>">None</span>
