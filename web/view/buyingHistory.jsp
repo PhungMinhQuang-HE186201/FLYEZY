@@ -144,6 +144,11 @@
             .status-label.request {
                 background-color: #ffc107;
             }
+
+            .status-label.processing {
+                background-color: orange;
+            }
+
             .status-label.cancelled {
                 background-color: #dc3545;
             }
@@ -151,6 +156,9 @@
                 background-color: #28a745;
             }
             .status-label.rejection {
+                background-color: #dc3545;
+            }
+            .status-label.rejected {
                 background-color: #dc3545;
             }
             .status-label.request {
@@ -367,7 +375,7 @@
                             if (o.getStatus_id() == 10 && t.getStatusid() == 7 && o.getPaymentTime() != null && t.getCancelled_at() != null 
                                 && o.getPaymentTime().compareTo(t.getCancelled_at()) < 0) { // vé bị huỷ trước lúc thanh toán sẽ không cho phép refund
                             %>
-                            <a class="btn btn-warning" style="text-decoration: none; margin-top: 5px;" onclick="openModalTicket(<%= t.getId() %>,<%= o.getId() %>)">Request refund</a>
+                            <a class="btn btn-warning" style="text-decoration: none; margin-top: 5px;" onclick="openModalRequestRefund(<%= t.getId() %>,<%= o.getId() %>)">Request refund</a>
                             <%
                             }
                             %>
@@ -483,7 +491,7 @@
             <div class="modal-dialog" style="margin: 15% auto; width: 30%; position: relative;">
                 <div class="modal-content" style="background-color: #fff; padding: 20px; border: 1px solid #888;">
                     <form action="cancelOrder" method="post">
-                        <input type="hidden" id="modalOrderId2" name="orderId" value="">
+                        <input type="hidden" id="modalOrderId1" name="orderId" value="">
                         <h2>Cancel Order</h2>
                         <p>Are you sure you want to cancel this order?</p>
                         <!-- Container for buttons with flex display -->
@@ -496,88 +504,165 @@
             </div>
         </div>
 
+        <div id="requestRefundModal" class="modal" role="dialog" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);">
+            <div class="modal-dialog" style="margin: 15% auto; width: 30%; position: relative;">
+                <div class="modal-content" style="background-color: #fff; padding: 20px; border: 1px solid #888;">
+                    <form action="requestRefund" method="post" onsubmit="return validateBankAccount()">
+                        <input type="hidden" id="modalTicketId2" name="ticketId" value="">
+                        <input type="hidden" id="modalOrderId2" name="orderId" value="">
+                        <h2 id="requestRefundLabel">Request Refund</h2>
+                        <p id="requestRefundDescription">Please provide your bank details to request a refund.</p>
+                        <div class="form-group">
+                            <label for="bank">Bank Name</label>
+                            <select id="bank" name="bank" required class="form-control">
+                                <option value="">Select a bank</option>
+                                <option value="BIDV">BIDV</option>
+                                <option value="TP Bank">TP Bank</option>
+                                <option value="MB Bank">MB Bank</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="bankAccount">Bank Account</label>
+                            <input type="text" id="bankAccount" name="bankAccount" required class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmBankAccount">Confirm Bank Account</label>
+                            <input type="text" id="confirmBankAccount" name="confirmBankAccount" required class="form-control">
+                        </div>
+                        <!-- Container for buttons with flex display -->
+                        <div style="display: flex; justify-content: space-between;">
+                            <button type="submit" id="confirmRequestRefund" class="btn btn-danger" style="flex: 1; margin-right: 10px;">Yes</button>
+                            <button type="button" id="closeRequestRefundModal" class="btn btn-secondary" style="flex: 1;" onclick="closeOrderModal()">No</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function validateBankAccount() {
+                const bankSelect = document.getElementById('bank').value;
+                const bankAccount = document.getElementById('bankAccount').value;
+                let regex;
+
+                switch (bankSelect) {
+                    case 'BIDV':
+                        // BIDV account: 14 digits and starts with 455
+                        regex = /^455\d{11}$/;
+                        break;
+                    case 'TP Bank':
+                        // TP Bank account: 11 digits and starts with 0000
+                        regex = /^0000\d{7}$/;
+                        break;
+                    case 'MB Bank':
+                        // MB Bank account: 10 digits
+                        regex = /^\d{10}$/;
+                        break;
+                    default:
+                        alert('Please select a valid bank.');
+                        return false;
+                }
+
+                if (!regex.test(bankAccount)) {
+                    alert('Invalid bank account number for the selected bank.');
+                    return false;
+                }
+
+                const confirmBankAccount = document.getElementById('confirmBankAccount').value;
+                if (bankAccount !== confirmBankAccount) {
+                    alert('Bank account and confirm bank account do not match.');
+                    return false;
+                }
+
+                return true;
+            }
+        </script>
+
         <link href="https://pay.vnpay.vn/lib/vnpay/vnpay.css" rel="stylesheet" />
         <script src="https://pay.vnpay.vn/lib/vnpay/vnpay.min.js"></script>
         <script>
+            function openModalRequestRefund(ticketId, orderId) {
+                document.getElementById("modalTicketId2").value = ticketId;
+                document.getElementById("modalOrderId2").value = orderId;
+                document.getElementById("requestRefundModal").style.display = "block";
+            }
 
+            function closeModalRequestRefund() {
+                document.getElementById("requestRefundModal").style.display = "none";
+            }
 
-                                function openModalTicket(ticketId, orderId) {
-                                    // Set the ticket ID in the hidden input field
-                                    document.getElementById("modalTicketId").value = ticketId;
-                                    document.getElementById("modalOrderId").value = orderId;
-                                    // Display the modal
-                                    document.getElementById("cancelTicketModal").style.display = "block";
-                                }
+            document.getElementById("closeRequestRefundModal").onclick = closeModalRequestRefund;
 
-                                function closeModal() {
-                                    // Hide the modal
-                                    document.getElementById("cancelTicketModal").style.display = "none";
-                                }
-                                document.getElementById("closeModal").onclick = function () {
-                                    document.getElementById("cancelTicketModal").style.display = "none";
-                                };
-                                // Close modal if user clicks outside of it
-                                window.onclick = function (event) {
-                                    const modal = document.getElementById("cancelTicketModal");
-                                    if (event.target === modal) {
-                                        modal.style.display = "none";
-                                    }
-                                };
+            function openModalTicket(ticketId, orderId) {
+                document.getElementById("modalTicketId").value = ticketId;
+                document.getElementById("modalOrderId").value = orderId;
+                document.getElementById("cancelTicketModal").style.display = "block";
+            }
 
+            function closeModalTicket() {
+                document.getElementById("cancelTicketModal").style.display = "none";
+            }
 
-                                function openModalOrder(orderId) {
-                                    // Set the order ID in the hidden input field
-                                    document.getElementById('modalOrderId2').value = orderId;
+            document.getElementById("closeModal").onclick = closeModalTicket;
 
-                                    // Display the modal
-                                    document.getElementById('cancelOrderModal').style.display = 'block';
-                                }
-                                function closeOrderModal() {
-                                    // Hide the modal
-                                    document.getElementById('cancelOrderModal').style.display = 'none';
-                                }
-                                document.getElementById("closeOrderModal").onclick = function () {
-                                    document.getElementById("cancelOrderModal").style.display = "none";
-                                };
-                                // Close modal if user clicks outside of it
-                                window.onclick = function (event) {
-                                    const modal = document.getElementById("cancelOrderModal");
-                                    if (event.target === modal) {
-                                        modal.style.display = "none";
-                                    }
-                                };
-                                $("#frmCreateOrder").submit(function () {
-                                    var postData = $("#frmCreateOrder").serialize();
-                                    var submitUrl = $("#frmCreateOrder").attr("action");
-                                    $.ajax({
-                                        type: "POST",
-                                        url: submitUrl,
-                                        data: postData,
-                                        dataType: 'JSON',
-                                        success: function (x) {
-                                            if (x.code === '00') {
-                                                if (window.vnpay) {
-                                                    vnpay.open({width: 768, height: 600, url: x.data});
-                                                } else {
-                                                    location.href = x.data;
-                                                }
-                                                return false;
-                                            } else {
-                                                alert(x.Message);
-                                            }
-                                        }
-                                    });
-                                    return false;
-                                });
+            function openModalOrder(orderId) {
+                document.getElementById('modalOrderId1').value = orderId;
+                document.getElementById('cancelOrderModal').style.display = 'block';
+            }
 
-                                document.getElementById('togglePaymentBtn').addEventListener('click', function () {
-                                    var paymentMethods = document.getElementById('payment_methods');
-                                    if (paymentMethods.style.display === 'none' || paymentMethods.style.display === '') {
-                                        paymentMethods.style.display = 'block';
-                                    } else {
-                                        paymentMethods.style.display = 'none';
-                                    }
-                                });
+            function closeOrderModal() {
+                document.getElementById('cancelOrderModal').style.display = 'none';
+            }
+
+            document.getElementById("closeOrderModal").onclick = closeOrderModal;
+
+            // Consolidated click outside handler
+            window.onclick = function (event) {
+                const modals = [
+                    document.getElementById("requestRefundModal"),
+                    document.getElementById("cancelTicketModal"),
+                    document.getElementById("cancelOrderModal")
+                ];
+
+                modals.forEach(function (modal) {
+                    if (event.target === modal) {
+                        modal.style.display = "none";
+                    }
+                });
+            };
+
+            $("#frmCreateOrder").submit(function () {
+                var postData = $("#frmCreateOrder").serialize();
+                var submitUrl = $("#frmCreateOrder").attr("action");
+                $.ajax({
+                    type: "POST",
+                    url: submitUrl,
+                    data: postData,
+                    dataType: 'JSON',
+                    success: function (x) {
+                        if (x.code === '00') {
+                            if (window.vnpay) {
+                                vnpay.open({width: 768, height: 600, url: x.data});
+                            } else {
+                                location.href = x.data;
+                            }
+                            return false;
+                        } else {
+                            alert(x.Message);
+                        }
+                    }
+                });
+                return false;
+            });
+
+            document.getElementById('togglePaymentBtn').addEventListener('click', function () {
+                var paymentMethods = document.getElementById('payment_methods');
+                if (paymentMethods.style.display === 'none' || paymentMethods.style.display === '') {
+                    paymentMethods.style.display = 'block';
+                } else {
+                    paymentMethods.style.display = 'none';
+                }
+            });
         </script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>

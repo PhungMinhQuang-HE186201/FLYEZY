@@ -16,6 +16,7 @@ import dal.RefundDAO;
 import dal.RolesDAO;
 import dal.AirlineManageDAO;
 import dal.StatusDAO;
+import dal.TicketDAO;
 import jakarta.servlet.http.HttpSession;
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -93,7 +94,7 @@ public class RefundControllerServlet extends HttpServlet {
             List<Refund> refundList = rd.getAllRefund();
             request.setAttribute("refundList", refundList);
 
-            List<Status> statusList = sd.getStatusOfFeedback();
+            List<Status> statusList = sd.getStatusOfRefund();
             request.setAttribute("statusList", statusList);
 
             String action = request.getParameter("action");
@@ -105,7 +106,7 @@ public class RefundControllerServlet extends HttpServlet {
                 String fDateTo = request.getParameter("fDateTo");
                 String fDateFrom1 = request.getParameter("fDateFrom1");
                 String fDateTo1 = request.getParameter("fDateTo1");
-                List<Refund> refundListSearch = rd.searchRefund(fStaus, fDateFrom, fDateTo,fDateFrom1,fDateTo1);
+                List<Refund> refundListSearch = rd.searchRefund(fStaus, fDateFrom, fDateTo, fDateFrom1, fDateTo1);
                 request.setAttribute("refundList", refundListSearch);
                 request.getRequestDispatcher("view/Refund.jsp").forward(request, response);
             }
@@ -124,12 +125,19 @@ public class RefundControllerServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        TicketDAO td = new TicketDAO();
         String action = request.getParameter("action");
         if (action.equals("changeStatus")) {
             StatusDAO sd = new StatusDAO();
             int statusID = Integer.parseInt(request.getParameter("statusID"));
             int refundID = Integer.parseInt(request.getParameter("refundId"));
             sd.changeStatusRefund(refundID, statusID);
+            if (statusID == 8) {
+                td.completeTicketRefundById(refundID);
+            }
+            else if(statusID == 5){
+                td.rejectTicketRefundById(refundID);
+            }
             response.sendRedirect("RefundController");
         }
     }

@@ -98,7 +98,7 @@ public class TicketDAO extends DBConnect {
     }
 
     public void cancelAllTicketsByOrderId(int orderId) {
-        String sql = "UPDATE Ticket SET Statusid = 6 WHERE Order_id = ?";
+        String sql = "UPDATE Ticket SET Statusid = 7 WHERE Order_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, orderId);
             ps.executeUpdate();
@@ -113,6 +113,37 @@ public class TicketDAO extends DBConnect {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
             ps.setInt(2, id);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void completeTicketRefundById(int refundID) {
+        String sql = "UPDATE Ticket SET Statusid = 8 WHERE id = (SELECT ticketID FROM Refund WHERE id = ?)";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, refundID);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void rejectTicketRefundById(int refundID) {
+        String sql = "UPDATE Ticket SET Statusid = 5 WHERE id = (SELECT ticketID FROM Refund WHERE id = ?)";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, refundID);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void refundWaitingTicketById(int id) {
+        String sql = "UPDATE Ticket SET Statusid = 3 WHERE id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
             ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -399,5 +430,20 @@ public class TicketDAO extends DBConnect {
         System.out.println(td.getAllTicketCodesById(4, 1));
 //        System.out.println(tcd.getTicketByCode("B1", 4, 8));
 //        System.out.println(td.searchTickets("", "", "", "", 1, "", "FJA84IUTJ"));
+    }
+
+    public int getPriceById(int ticketId) {
+        String sql = "select t.TotalPrice from Ticket t where Id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, ticketId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("TotalPrice");
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return 0;
     }
 }

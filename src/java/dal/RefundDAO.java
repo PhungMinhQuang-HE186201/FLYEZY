@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.ArrayList;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -39,7 +40,7 @@ public class RefundDAO extends DBConnect {
         return null;
     }
 
-    public List<Refund> searchRefund(String Status, String requestDateFrom, String requestDateTo,String refundDateFrom,String refundDateTo) {
+    public List<Refund> searchRefund(String Status, String requestDateFrom, String requestDateTo, String refundDateFrom, String refundDateTo) {
         List<Refund> ls = new ArrayList<>();
         StringBuilder sql = new StringBuilder("Select * from Refund where 1=1");
 
@@ -90,5 +91,34 @@ public class RefundDAO extends DBConnect {
             e.printStackTrace();
         }
         return ls;
+    }
+
+    public int createRefund(Refund refund) {
+        String sql = "INSERT INTO `flyezy`.`Refund`\n"
+                + "(`bank`,`bankAccount`,`requestDate`,`refundDate`,`refundPrice`,`Ticketid`,`Statusid`)\n"
+                + "VALUES (?,?,?,?,?,?,3)";
+        int generatedId = -1;  // Giá trị mặc định cho trường hợp không thể lấy được ID
+        try (PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setString(1, refund.getBank());
+            preparedStatement.setString(2, refund.getBankAccount());
+            preparedStatement.setTimestamp(3, refund.getRequestDate());
+            preparedStatement.setTimestamp(4, refund.getRefundDate());
+            preparedStatement.setInt(5, refund.getRefundPrice());
+            preparedStatement.setInt(6, refund.getTicketid());
+            preparedStatement.executeUpdate();
+
+            // Lấy airlineId vừa được tạo
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                generatedId = generatedKeys.getInt(1);  // Trả về airlineId
+            } else {
+                System.err.println("Creating refund failed, no ID obtained.");
+            }
+        } catch (SQLException e) {
+            // Xử lý lỗi SQL tại đây
+            System.err.println("SQL Error: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return generatedId;  // Trả về ID hoặc giá trị mặc định -1 nếu có lỗi
     }
 }

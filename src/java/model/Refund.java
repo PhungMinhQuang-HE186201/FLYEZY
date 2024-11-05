@@ -15,6 +15,18 @@ public class Refund {
     private String bankAccount;
     private Timestamp requestDate;
     private Timestamp refundDate;
+    private int refundPrice;
+
+    public Refund(int id, String bank, String bankAccount, Timestamp requestDate, Timestamp refundDate, int refundPrice, int Ticketid, int Statusid) {
+        this.id = id;
+        this.bank = bank;
+        this.bankAccount = bankAccount;
+        this.requestDate = requestDate;
+        this.refundDate = refundDate;
+        this.refundPrice = refundPrice;
+        this.Ticketid = Ticketid;
+        this.Statusid = Statusid;
+    }
     private int Ticketid;
     private int Statusid;
 
@@ -33,6 +45,16 @@ public class Refund {
         this.bankAccount = bankAccount;
         this.requestDate = requestDate;
         this.refundDate = refundDate;
+        this.Ticketid = Ticketid;
+        this.Statusid = Statusid;
+    }
+
+    public Refund(String bank, String bankAccount, Timestamp requestDate, Timestamp refundDate, int refundPrice, int Ticketid, int Statusid) {
+        this.bank = bank;
+        this.bankAccount = bankAccount;
+        this.requestDate = requestDate;
+        this.refundDate = refundDate;
+        this.refundPrice = refundPrice;
         this.Ticketid = Ticketid;
         this.Statusid = Statusid;
     }
@@ -91,6 +113,14 @@ public class Refund {
 
     public void setStatusid(int Statusid) {
         this.Statusid = Statusid;
+    }
+
+    public int getRefundPrice() {
+        return refundPrice;
+    }
+
+    public void setRefundPrice(int refundPrice) {
+        this.refundPrice = refundPrice;
     }
     
     
