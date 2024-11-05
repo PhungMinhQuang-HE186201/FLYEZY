@@ -49,9 +49,21 @@ public class ChangePasswordServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        
         HttpSession session = request.getSession();
         AccountsDAO ad = new AccountsDAO();
+
+        String errorCurrent = (String) session.getAttribute("errorCurrent");
+        String errorNew = (String) session.getAttribute("errorNew");
+
+        if (errorCurrent != null) {
+            request.setAttribute("error", errorCurrent);
+            session.removeAttribute("errorCurrent");
+        }
+        if (errorNew != null) {
+            request.setAttribute("errorNew", errorNew);
+            session.removeAttribute("errorNew");
+        }
+
         int id = (int) session.getAttribute("id");
         Accounts acc = ad.getAccountsById(id);
         request.setAttribute("account", acc);
@@ -62,20 +74,38 @@ public class ChangePasswordServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         AccountsDAO ad = new AccountsDAO();
-            
+        HttpSession session = request.getSession();
+
         String newPass = request.getParameter("newPass");
         String idAccount = request.getParameter("idAccount");
-            ad.changePassword(idAccount, newPass);
-            response.sendRedirect("home");
-        
+        String newPass2 = request.getParameter("newPass2");
+        String pass = request.getParameter("pass");
+        String currentPass = request.getParameter("currentPassword");
+
+        if (!currentPass.equals(pass)) {
+//            request.setAttribute("errorCurrent", "Current password don't duplicated, please enter password again !");
+            session.setAttribute("errorCurrent", "Current password don't duplicated, please enter password again !");
+            response.sendRedirect("changePassword");
+        } else {
+            if (!newPass.equals(newPass2)) {
+//                request.setAttribute("errorNew", "New password don't duplicated, please enter new password again !");
+                session.setAttribute("errorNew", "New password don't duplicated, please enter new password again !");
+                response.sendRedirect("changePassword");
+            } else {
+                ad.changePassword(idAccount, newPass);
+                int id = (int) session.getAttribute("id");
+                Accounts acc = ad.getAccountsById(id);
+                request.setAttribute("account", acc);
+                request.getRequestDispatcher("view/successfulChangePassword.jsp").forward(request, response);
+
+            }
+        }
+
     }
 
-    
     @Override
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-    
-    
-    
+
 }
