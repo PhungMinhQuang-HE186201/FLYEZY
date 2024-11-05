@@ -133,6 +133,36 @@ public class FlightDetailDAO extends DBConnect {
         return null;
     }
 
+    public List<FlightDetails> getReturnFlightDetailsByAirportAndDDate(int depAirportId, int desAirportId, Date date, int depAirlineId, Date landingDate, Time landingTime) {
+        List<FlightDetails> ls = new ArrayList<>();
+        String sql = "SELECT fd.* FROM Flight_Detail fd "
+                + "JOIN Flight f ON fd.flightId = f.id "
+                + "WHERE fd.date = ? AND f.departureAirportId = ? AND f.destinationAirportId = ? AND f.Airline_id = ? "
+                + "AND (fd.date > ? OR (fd.date = ? AND fd.time > ?))";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setDate(1, date);
+            ps.setInt(2, depAirportId);
+            ps.setInt(3, desAirportId);
+            ps.setInt(4, depAirlineId);
+            ps.setDate(5, landingDate);
+            ps.setDate(6, landingDate);
+            Time landingTimePlus30 = Time.valueOf(landingTime.toLocalTime().plusMinutes(30));
+            ps.setTime(7, landingTimePlus30);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ls.add(new FlightDetails(rs.getInt("id"), rs.getDate("date"),
+                        rs.getTime("time"), rs.getInt("price"),
+                        rs.getInt("Flightid"), rs.getInt("Plane_Categoryid"),
+                        rs.getInt("Status_id")));
+            }
+            return ls;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return null;
+    }
+
     public Flights getFlightByFlightDetailId(int id) {
         String sql = "SELECT f.* FROM Flight f  "
                 + "JOIN Flight_Detail fd ON f.id = fd.Flightid "
@@ -449,10 +479,8 @@ public class FlightDetailDAO extends DBConnect {
 
     public static void main(String[] args) {
         FlightDetailDAO fdd = new FlightDetailDAO();
-        String d = "2024-10-30";
+        String d = "2024-11-10";
         Date date = Date.valueOf(d);
-        for (Object object : fdd.getFlightDetailsByAirportAndDDate(1, 2, date)) {
-            System.out.println(object);
-        }
+//        System.out.println(fdd.getReturnFlightDetailsByAirportAndDDate(1, 2, date,3,new Timestamp(2024, 11, 10, 6, 0, 0, 0)));
     }
 }

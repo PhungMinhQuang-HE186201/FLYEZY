@@ -145,6 +145,7 @@
         </div>
 
         <div id="main-content">
+            <div style="color:#3C6E57 "><h2>FLIGHT MANAGEMENT</h2></div>
             <div>
                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addFlight"  style="margin-top: 20px;flex-shrink: 0;">
                     Add New Flight
@@ -152,7 +153,7 @@
             </div>
 
             <div class="row" style="margin: 0">
-                <div class="col-md-8" id="left-column" style="padding: 0; margin-top: 10px">
+                <div class="col-md-8" id="left-column" style="padding: 0; margin-top: 20px">
                     <table class="entity">
                         <thead>     
                             <tr>

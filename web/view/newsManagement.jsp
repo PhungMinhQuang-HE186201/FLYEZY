@@ -45,8 +45,13 @@
 
 
         <div id="main-content"  margin: 0">
-            <div class="filterController col-md-12" style="margin-left: -182px;"  >
-                <form action="newsManagement" method="get" style="margin-left: 18%;margin-top: 7%;">
+
+            <div class="filterController col-md-12" style="margin-left: 45px;margin-top: 4%;"  >
+                <div style="margin-bottom: 35px; color:#3C6E57 "><h2>NEWS MANAGEMENT</h2></div>
+                <form action="newsManagement" method="get" style="margin-bottom: 20px">
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#News" style="flex-shrink: 0; margin-right: 20px">
+                        Add News
+                    </button>
                     <input type="hidden" name="action" value="search">
                     <input type="hidden" name="airlineId" value="${requestScope.account.getAirlineId()}">
                     <strong class="filterElm">News Category</strong>
@@ -64,9 +69,6 @@
                     </button>
                     <a class="btn btn-danger" href="newsManagement">Cancel</a>
                 </form>
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#News" style="margin-top: -3%;flex-shrink: 0;margin-left: 12%;">
-                    Add News
-                </button>
             </div>
 
 

@@ -6,6 +6,7 @@ package controller;
  */
 import dal.AccountsDAO;
 import dal.FlightDetailDAO;
+import dal.FlightManageDAO;
 import dal.FlightTypeDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -15,8 +16,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.sql.Timestamp;
 import java.sql.Date;
+import java.sql.Time;
+import java.util.Calendar;
 import model.Accounts;
+import model.FlightDetails;
+import model.Flights;
 
 /**
  *
@@ -65,6 +71,7 @@ public class FlightTicketsServlet extends HttpServlet {
             throws ServletException, IOException {
         AccountsDAO ad = new AccountsDAO();
         FlightDetailDAO fdd = new FlightDetailDAO();
+        FlightManageDAO fd = new FlightManageDAO();
         FlightTypeDAO ftd = new FlightTypeDAO();
         HttpSession session = request.getSession();
 
@@ -73,17 +80,13 @@ public class FlightTicketsServlet extends HttpServlet {
         Accounts acc = ad.getAccountsById(i);
         request.setAttribute("account", acc);
 
-        String adult = request.getParameter("adult");
-        String child = request.getParameter("child");
-        String infant = request.getParameter("infant");
-        String flightType = request.getParameter("flightType");
         String depAStr = request.getParameter("departure");
         String desAStr = request.getParameter("destination");
         String depDateStr = request.getParameter("departureDate");
 
-        String flightDetailId = request.getParameter("flightDetailId");
+        String flightDetailIdStr = request.getParameter("flightDetailId");
 
-        if (flightDetailId == null) {
+        if (flightDetailIdStr == null) {
             try {
                 int depA = Integer.parseInt(depAStr);
                 int desA = Integer.parseInt(desAStr);
@@ -93,6 +96,30 @@ public class FlightTicketsServlet extends HttpServlet {
             } catch (Exception e) {
             }
         } else {
+            int flightDetailId = Integer.parseInt(flightDetailIdStr);
+            int depAirlineId = fdd.getAirlineIdByFlightDetailId(flightDetailId);
+            FlightDetails depFlightDetail = fdd.getFlightDetailById(flightDetailId);
+            Flights depFlight = fd.getFlightById(depFlightDetail.getFlightId());
+
+            Date depDate = depFlightDetail.getDate();// ngày xuất phát
+            Time depTime = depFlightDetail.getTime();// thòi gian xuất phát
+            int flightMinutes = depFlight.getMinutes();// thời gian bay
+
+            //tính thời gian hạ cánh
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(depDate); // Set the date
+            calendar.set(Calendar.HOUR_OF_DAY, depTime.toLocalTime().getHour());
+            calendar.set(Calendar.MINUTE, depTime.toLocalTime().getMinute());
+            calendar.set(Calendar.SECOND, depTime.toLocalTime().getSecond());
+            calendar.set(Calendar.MILLISECOND, 0);
+
+            Timestamp departureTimestamp = new Timestamp(calendar.getTimeInMillis());
+            calendar.add(Calendar.MINUTE, flightMinutes);
+            Timestamp landing = new Timestamp(calendar.getTimeInMillis());
+            Date landingDate = new Date(landing.getTime());
+            Time landingTime = Time.valueOf(landing.toLocalDateTime().toLocalTime());
+            System.out.println(landingDate +""+ landingTime);
+
             String reDateStr = request.getParameter("returnDate");
             request.setAttribute("reDate", reDateStr);
             String seatCategory = request.getParameter("seatCategory");
@@ -101,7 +128,7 @@ public class FlightTicketsServlet extends HttpServlet {
                 int desA = Integer.parseInt(desAStr);
                 Date reDate = Date.valueOf(reDateStr);
 
-                request.setAttribute("flightTickets", fdd.getFlightDetailsByAirportAndDDate(desA, depA, reDate));
+                request.setAttribute("flightTickets", fdd.getReturnFlightDetailsByAirportAndDDate(desA, depA, reDate, depAirlineId, landingDate, landingTime));
             } catch (Exception e) {
             }
         }

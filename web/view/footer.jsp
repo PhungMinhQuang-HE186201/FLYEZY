@@ -10,7 +10,6 @@
             href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
             rel="stylesheet"
             />
-        <link rel="stylesheet" href="icon/themify-icons/themify-icons.css" />
     </head>
     <body>
         <footer id="footer">
@@ -20,23 +19,23 @@
                 </div>
                 <div class="col-md-2" id="footer-info">
                     <h4>FLYEZY</h4>
-                    <a href="#">Mua vé online</a>
-                    <a href="#">Tin tức & Khuyến mãi</a>
-                    <a href="#">Thành viên thân thiết</a>
-                    <a href="#footer">Liên hệ</a>
+                    <a href="#">Online Ticket Buying</a>
+                    <a href="#">News & Promotion</a>
+                    <a href="#">Loyal Member</a>
+                    <a href="#footer">Contact</a>
                 </div>
                 <div class="col-md-2" id="footer-contact">
                     <h4>Contact Us</h4>
                     <p>
-                        <i class="ti-user"></i>
+                        <i class="bi bi-envelope-fill"></i>
                         <a
                             style="text-decoration: none; color: white"
-                            href="mailto:eatsleepcode@gmail.com"
+                            href="mailto:flyezy.work@gmail.com"
                             >eatsleepcode@gmail.com</a
                         >
                     </p>
                     <p>
-                        <i class="ti-user"></i>
+                        <i class="bi bi-envelope-open-heart"></i>
                         <a
                             style="text-decoration: none; color: white"
                             href="mailto:duongo1604@gmail.com"
@@ -44,13 +43,13 @@
                         >
                     </p>
                     <p>
-                        <i class="ti-mobile"></i>
+                        <i class="bi bi-telephone-fill"></i>
                         <a style="text-decoration: none; color: white" href="tel:0862521226"
                            >0862521226</a
                         >
                     </p>
                     <p>
-                        <i class="ti-car"></i>
+                        <i class="bi bi-airplane-fill"></i>
                         <a style="text-decoration: none; color: white" href="home"
                            >Flyezy</a
                         >
@@ -61,22 +60,21 @@
                     <ul style="list-style: none; text-decoration: none; padding: 0">
                         <li>
                             <a href="https://www.youtube.com/@duonghocit" title="Youtube"
-                               ><i class="ti-youtube"></i
+                               ><i class="bi bi-youtube"></i
                                 ></a>
                         </li>
                         <li>
                             <a href="https://www.facebook.com/duongo1611/" title="Facebook"
-                               ><i class="ti-facebook"></i
-                                ></a>
+                               ><i class="bi bi-facebook"></i></a>
                         </li>
                         <li>
                             <a href="https://www.instagram.com/duongo16.11/" title="Instagram"
-                               ><i class="ti-instagram"></i
+                               ><i class="bi bi-instagram"></i
                                 ></a>
                         </li>
                         <li>
                             <a href="https://github.com/Duongo16" title="Github"
-                               ><i class="ti-github"></i
+                               ><i class="bi bi-github"></i
                                 ></a>
                         </li>
                     </ul>

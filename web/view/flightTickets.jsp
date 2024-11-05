@@ -279,6 +279,8 @@
                     </div>
 
 
+                    <%if(request.getParameter("flightDetailId")==null){
+                    %>
                     <div class="sorting-options">
                         <h5>Airline:</h5>
 
@@ -295,6 +297,8 @@
                         </div>
                         <%}%>
                     </div>
+                    <%
+                        }%>
 
                 </div>
             </div>
@@ -408,7 +412,7 @@
                                     <% } else if("roundTrip".equals(request.getParameter("flightType")) && request.getParameter("flightDetailId")==null){
                                     %>
                                     <form class="ticket-category-form" action="flightTickets" style="display: flex; justify-content: center; ">
-                                         <input type="hidden" name="flightType" value="${param.flightType}"/>
+                                        <input type="hidden" name="flightType" value="${param.flightType}"/>
                                         <input type="hidden" name="seatCategory" value="<%=ticketCatList.get(i).getId()%>"/>
                                         <input type="hidden" name="flightDetailId" value="<%=fd.getId()%>"/>
                                         <input type="hidden" name="departure" value="${param.departure}"/>

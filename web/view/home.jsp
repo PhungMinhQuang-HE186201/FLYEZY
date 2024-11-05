@@ -322,10 +322,10 @@
             </div>
         </section>
         <%-- quanHT --%>
-        <div class="main-container" style="height: 100vh">
-            <div  id="introduction">
-                <h1>Chào mừng đến với Flyezy!</h1>
-                <p>Không gian mới, cảm xúc mới - Đặt vé ngay để bắt đầu hành trình của bạn.</p>
+        <div class="main-container">
+            <div id="introduction">
+                <h1 style="font-size: 30px">Welcome to FLYEZY!</h1>
+                <p style="font-size: 16px">New space, new feeling - Book your ticket now to start your journey.</p>
             </div>
 
             <div id="promotion">
@@ -334,9 +334,9 @@
                         <img src="../img/jack.png" alt="">
                     </div>
                     <div class="col-md-6">
-                        <h3>Ưu đãi hấp dẫn</h3>
+                        <h3>Attractive offers</h3>
                         <p>
-                            Công ty cam kết cung cấp giá vé phù hợp, nhiều lựa chọn vận chuyển cùng các chương trình khuyến mãi hấp dẫn. Đội ngũ chăm sóc 24/7 luôn sẵn sàng hỗ trợ để mang đến trải nghiệm tốt nhất cho quý khách.
+                            FLYEZY is committed to providing reasonable fares, many transportation options and attractive promotions. The 24/7 customer care team is always ready to support to bring the best experience to you.
                         </p>
                     </div>
                 </div>
@@ -345,9 +345,9 @@
                         <img src="../img/Messi.jpg" alt="">
                     </div>
                     <div class="col-md-6">
-                        <h3>An bình khám phá</h3>
+                        <h3>Peaceful discovery</h3>
                         <p>
-                            Công ty cam kết đảm bảo an toàn tuyệt đối cho khách hàng. Đội ngũ lái xe được đào tạo chuyên nghiệp, phương tiện luôn được bảo trì định kỳ và trang bị các thiết bị an toàn tiêu chuẩn, để mỗi chuyến đi của quý khách diễn ra suôn sẻ và bình an.
+                            FLYEZY is committed to ensuring absolute safety for customers. The team of drivers are professionally trained, vehicles are always periodically maintained and equipped with standard safety equipment, so that each of your trips goes smoothly and safely.
                         </p>
                     </div>
                 </div>
@@ -357,9 +357,9 @@
                  height: 150px">
             </div>
         </div>
-        <div class="main-container" style="height: 100vh">
+        <div class="main-container" >
             <div id="statistics">
-                <h1 class="statistics-heading">Thông tin thống kê</h1>
+                <p class="statistics-heading" style="font-size: 30px">About Us</p>
                 <div class="stat-item" data-aos="fade-up">
                     <div class="stat-icon"><i class="fas fa-users"></i></div>
                     <h3>100,000+</h3>
@@ -371,7 +371,7 @@
                 <div class="stat-item" data-aos="fade-up" data-aos-delay="100">
                     <div class="stat-icon"><i class="fas fa-route"></i></div>
                     <h3>5,000K+</h3>
-                    <p>Chuyến Bay</p>
+                    <p>FLIGHT</p>
                     <div class="icon">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#ffffff" d="M512 96c0 50.2-59.1 125.1-84.6 155c-3.8 4.4-9.4 6.1-14.5 5H320c-17.7 0-32 14.3-32 32s14.3 32 32 32h96c53 0 96 43 96 96s-43 96-96 96H139.6c8.7-9.9 19.3-22.6 30-36.8c6.3-8.4 12.8-17.6 19-27.2H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320c-53 0-96-43-96-96s43-96 96-96h39.8c-21-31.5-39.8-67.7-39.8-96c0-53 43-96 96-96s96 43 96 96zM117.1 489.1c-3.8 4.3-7.2 8.1-10.1 11.3l-1.8 2-.2-.2c-6 4.6-14.6 4-20-1.8C59.8 473 0 402.5 0 352c0-53 43-96 96-96s96 43 96 96c0 30-21.1 67-43.5 97.9c-10.7 14.7-21.7 28-30.8 38.5l-.6 .7zM128 352a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zM416 128a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>
                     </div>
@@ -387,7 +387,7 @@
                 <div class="stat-item" data-aos="fade-up" data-aos-delay="300">
                     <div class="stat-icon"><i class="fas fa-headset"></i></div>
                     <h3>24/7</h3>
-                    <p>Hỗ trợ khách hàng</p>
+                    <p>Customer Support</p>
                     <div class="icon">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#ffffff" d="M256 48C141.1 48 48 141.1 48 256v40c0 13.3-10.7 24-24 24s-24-10.7-24-24V256C0 114.6 114.6 0 256 0S512 114.6 512 256V400.1c0 48.6-39.4 88-88.1 88L313.6 488c-8.3 14.3-23.8 24-41.6 24H240c-26.5 0-48-21.5-48-48s21.5-48 48-48h32c17.8 0 33.3 9.7 41.6 24l110.4 .1c22.1 0 40-17.9 40-40V256c0-114.9-93.1-208-208-208zM144 208h16c17.7 0 32 14.3 32 32V352c0 17.7-14.3 32-32 32H144c-35.3 0-64-28.7-64-64V272c0-35.3 28.7-64 64-64zm224 0c35.3 0 64 28.7 64 64v48c0 35.3-28.7 64-64 64H352c-17.7 0-32-14.3-32-32V240c0-17.7 14.3-32 32-32h16z"/></svg>
                     </div>
@@ -399,14 +399,14 @@
 
         <div class="main-container" id="body-2">
 
-            <div style="display: ${empty param.id ? '' : 'none'};margin: 130px 0">
-                <h1 style="margin-bottom: 20px; text-align: center;">NEWS</h1>
+            <div style="display: ${empty param.id ? '' : 'none'};margin: 60px 0">
+                <h1 style="margin-bottom: 30px; text-align: center; font-size: 30px">NEWS</h1>
                 <div class="news-container">
                     <% 
                         AirlineManageDAO amd = new AirlineManageDAO();
                         List<News> listNew = (List<News>) request.getAttribute("listNew");
                         if (listNew != null) {
-                            for (int i = listNew.size() - 1; i >= 0; i--) {
+                            for (int i = listNew.size() - 1; i >= listNew.size()-4; i--) {
                                 News n = listNew.get(i);
                     %>
                     <div class="news-item" onclick="viewNews('<%= n.getId() %>');">
@@ -429,6 +429,9 @@
                            }
                        }
                     %>
+                </div>
+                <div style="width: 100%; text-align: center; margin-top: 20px; ">
+                    <a href="News" style="font-size: 20px; color: #3C6E57">More >></a>
                 </div>
             </div>
 
