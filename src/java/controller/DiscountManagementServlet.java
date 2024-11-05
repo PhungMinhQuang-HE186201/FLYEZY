@@ -17,6 +17,8 @@ import dal.AccountsDAO;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import java.util.ArrayList;
+import java.sql.Date;
+import java.util.Random;
 import model.Accounts;
 
 /**
@@ -28,6 +30,7 @@ public class DiscountManagementServlet extends HttpServlet {
 
     DiscountDAO dd = new DiscountDAO();
     AccountsDAO ad = new AccountsDAO();
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -74,14 +77,25 @@ public class DiscountManagementServlet extends HttpServlet {
         } else {
             Accounts acc = ad.getAccountsById(idd);
             request.setAttribute("account", acc);
+            String action = request.getParameter("action");
+            String id = request.getParameter("id");
+            if (id != null) {
+                int sid = Integer.parseInt(id);
+                if ("Activate".equalsIgnoreCase(action)) {
+                    dd.updateStatus(sid, 1); // Cập nhật status_id thành 1 (Active)
+                } else if ("Deactivate".equalsIgnoreCase(action)) {
+                    dd.updateStatus(sid, 2); // Cập nhật status_id thành 0 (Inactive)
+                }
+            }
+            List<Discount> ls = dd.getDiscountByAirlineId(acc.getAirlineId());
+            for (Discount d : ls) {
+                request.setAttribute("did", d.getId());
+            }
+            request.setAttribute("discountlist", ls);
+            request.setAttribute("airlineid", acc.getAirlineId());
+            request.getRequestDispatcher("view/discountManagement.jsp").forward(request, response);
         }
 
-        List<Discount> ls = dd.getAll();
-        for (Discount d : ls) {
-            request.setAttribute("did", d.getId());
-        }
-        request.setAttribute("discountlist", ls);
-        request.getRequestDispatcher("view/discountManagement.jsp").forward(request, response);
     }
 
     /**
@@ -95,7 +109,49 @@ public class DiscountManagementServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String code = generatePromoCode();
+        String uid = request.getParameter("uid");
+        String ucode = request.getParameter("ucode");
+        String percentages = request.getParameter("percentages");
+        String min_order = request.getParameter("min_order");
+        String date_created = request.getParameter("date_created");
+        String valid_until = request.getParameter("valid_until");
+        String airline_id = request.getParameter("airline_id");
+        String action = request.getParameter("action");
+        if (action.equals("add")) {
+            double per = Double.parseDouble(percentages);
+            int min = Integer.parseInt(min_order);
+            Date dcreated = Date.valueOf(date_created);
+            Date valid = Date.valueOf(valid_until);
+            int aid = Integer.parseInt(airline_id);
+            dd.addNew(new Discount(code, per, min, dcreated, valid, aid, 1));
+        } else if (action.equals("update")) {
+            int id = Integer.parseInt(uid);
+            double per = Double.parseDouble(percentages);
+            int min = Integer.parseInt(min_order);
+            Date dcreated = Date.valueOf(date_created);
+            Date valid = Date.valueOf(valid_until);
+            int aid = Integer.parseInt(airline_id);
+            dd.updateDiscount(new Discount(ucode, per, min, dcreated, valid, aid), id);
+        }
+        response.sendRedirect("discountManagement");
+    }
+
+    public static String generatePromoCode() {
+        String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        Random random = new Random();
+        StringBuilder promoCode = new StringBuilder(10);
+
+        for (int i = 0; i < 10; i++) {
+            int index = random.nextInt(CHARACTERS.length()); // Chọn một chỉ số ngẫu nhiên
+            promoCode.append(CHARACTERS.charAt(index)); // Thêm ký tự vào mã
+        }
+
+        return promoCode.toString(); // Trả về mã khuyến mãi
+    }
+
+    public static void main(String[] args) {
+        System.out.println(generatePromoCode());
     }
 
     /**

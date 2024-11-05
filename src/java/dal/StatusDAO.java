@@ -184,8 +184,7 @@ public class StatusDAO extends DBConnect {
 //        System.out.println(dao.getAllStatus());
         StatusDAO sd = new StatusDAO();
         List<Status> statuses = (List<Status>) sd.getStatusOfFlightDetaisl();
-        for (Status status : statuses) {
-            System.out.println(status.getId());
-        }
-    }
+        String name = sd.getStatusNameById(2);
+        System.out.println(name);
+}
 }
