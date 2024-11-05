@@ -57,6 +57,7 @@ public class DashboardAirlineServlet extends HttpServlet {
             if (acc.getRoleId() == 1) {
                 if (submit == null) {
                     listAirline = airlineManageDao.getAllAirline();
+                    request.setAttribute("manager", "FLYEZY");
                 } else {
                     // Search for airlines based on keyword and status
                     String keyword = request.getParameter("keyword") != null ? request.getParameter("keyword").trim() : null;
@@ -79,6 +80,7 @@ public class DashboardAirlineServlet extends HttpServlet {
             }else if(acc.getRoleId() == 2){
                 listAirline = new ArrayList<>();
                 Airline airline = airlineManageDao.getAirlineById(acc.getAirlineId());
+                request.setAttribute("manager", airline.getName().toUpperCase());
                 if(airline != null){
                     listAirline.add(airline);
                 }

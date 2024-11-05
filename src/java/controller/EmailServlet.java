@@ -158,14 +158,18 @@ public class EmailServlet {
             msg.setFrom(from);
             msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
             //The subject of email
-            msg.setSubject("Successful Order", "UTF-8");
+            msg.setSubject("The Order Has Been Successfully Submitted", "UTF-8");
             //date
             msg.setSentDate(new Date());
             //quy dinh email phan hoi
             //msg.setReplyTo(InternetAddress.parse(from, false));
 
             //content
-            msg.setText("Order đặt thành công, vui lòng thanh toán trước ngày bay 10 ngày", "UTF-8");
+            msg.setContent("The customer: <b>" + o.getContactName() + "</b><br>"
+               + "Your code order is: " + o.getCode() + "<br>"
+               + "The total cost of your flight: " + o.getTotalPrice() + "<br>"
+               + "Please make the payment at least 10 days before the flight.", 
+               "text/html");
 
             //send email
             Transport.send(msg);

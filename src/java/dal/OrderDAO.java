@@ -495,10 +495,41 @@ public class OrderDAO extends DBConnect {
         return null; // Return null if no order is found
     }
     
+    public List<Order> getOrdersAccountId( int accountId) {
+        List<Order> list = new ArrayList<>();
+        String sql = "select * from flyezy.Order\n"
+                + "where Accounts_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, accountId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Order o = new Order(rs.getInt("id"),
+                        rs.getString("code"),
+                        rs.getString("contactName"),
+                        rs.getString("contactPhone"),
+                        rs.getString("contactEmail"),
+                        rs.getInt("totalPrice"),
+                        rs.getInt("Accounts_id"),
+                        rs.getInt("Payment_Types_id"),
+                        rs.getTimestamp("paymentTime"),
+                        rs.getTimestamp("created_at"),
+                        rs.getInt("Discount_id"),
+                        rs.getInt("Status_id")
+                );
+                list.add(o);
+            }
+            return list;
+            
+        } catch (Exception e) {
+        }
+        return null;
+    }
+    
     public List<Order> getOrdersByStatusAndAccountId(int statusId, int accountId) {
         List<Order> list = new ArrayList<>();
         String sql = "select * from flyezy.Order\n"
-                + "where flyezy.order.Status_id=? and Accounts_id = ? order by id desc";
+                + "where flyezy.Order.Status_id=? and Accounts_id = ? order by id desc";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, statusId);

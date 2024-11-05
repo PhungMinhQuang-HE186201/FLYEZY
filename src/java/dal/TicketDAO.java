@@ -235,8 +235,8 @@ public class TicketDAO extends DBConnect {
 
     public Ticket getTicketByCode(String code, int flightDetailID, int seatCategoryId) {
         String sql = "SELECT * FROM Ticket t "
-                + "WHERE code = ? AND Flight_Detail_id = ? "
-                + "AND Statusid != 9 AND Seat_Categoryid = ?";
+            + "WHERE code = ? AND Flight_Detail_id = ? "
+            + "AND (Statusid = 10 OR Statusid = 12) AND Seat_Categoryid = ?";
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -433,13 +433,13 @@ public class TicketDAO extends DBConnect {
     }
 
     public int getPriceById(int ticketId) {
-        String sql = "select t.TotalPrice from Ticket t where Id = ?";
+        String sql = "select t.totalprice from Ticket t where Id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, ticketId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                return rs.getInt("TotalPrice");
+                return rs.getInt("totalprice");
             }
         } catch (Exception e) {
             System.out.println(e);

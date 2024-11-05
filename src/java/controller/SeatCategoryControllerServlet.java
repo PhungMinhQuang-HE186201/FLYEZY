@@ -5,6 +5,7 @@
 package controller;
 
 import dal.AccountsDAO;
+import dal.PlaneCategoryDAO;
 import dal.SeatCategoryDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -63,6 +64,7 @@ public class SeatCategoryControllerServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         AccountsDAO ad = new AccountsDAO();
+        PlaneCategoryDAO pcd = new PlaneCategoryDAO();
         HttpSession session = request.getSession();
 
         String statusMessage = (String) session.getAttribute("result");
@@ -80,6 +82,7 @@ public class SeatCategoryControllerServlet extends HttpServlet {
             request.setAttribute("account", acc);
 
             String planeCategoryId = request.getParameter("planeCategoryId");
+            request.setAttribute("planeCatName", pcd.getPlaneCategoryById(Integer.parseInt(planeCategoryId)).getName());
             request.setAttribute("planeCategoryId", planeCategoryId);
             request.getRequestDispatcher("view/seatCategoryController.jsp").forward(request, response);
         }
@@ -151,7 +154,8 @@ public class SeatCategoryControllerServlet extends HttpServlet {
                 if (image.equals("img/")) {
                     image = scd.getSeatCategoryById(id).getImage();
                 }
-                if (!scd.isDuplicateSeatCategoryName(name, planeCategoryId)) {
+
+                if (name.equals(scd.getSeatCategoryById(id).getName()) || !scd.isDuplicateSeatCategoryName(name, planeCategoryId)) {
                     scd.updateSeatCategory(new SeatCategory(id, name, numberOfSeat, image, info, seatEachRow, surcharge, planeCategoryId, statusId));
                 }
 
@@ -163,7 +167,7 @@ public class SeatCategoryControllerServlet extends HttpServlet {
             }
             response.sendRedirect("seatCategoryController?planeCategoryId=" + planeCategoryId);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e);
         }
     }
 

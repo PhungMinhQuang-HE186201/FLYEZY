@@ -279,6 +279,8 @@
                     </div>
 
 
+                    <%if(request.getParameter("flightDetailId")==null){
+                    %>
                     <div class="sorting-options">
                         <h5>Airline:</h5>
 
@@ -295,6 +297,8 @@
                         </div>
                         <%}%>
                     </div>
+                    <%
+                        }%>
 
                 </div>
             </div>
@@ -368,7 +372,7 @@
                             </div>
                         </div>
                     </div>
-                    <div id="ticket-category-container<%=fd.getId()%>" style="max-height: 0; overflow: hidden; transition: max-height 0.5s ease, opacity 0.5s ease; opacity: 0;">
+                    <div id="ticket-category-container<%=fd.getId()%>" style="max-height: 0px; overflow: hidden; transition: max-height 0.5s ease, opacity 0.5s ease; opacity: 0;">
                         <div style="text-align: center; font-size: 20px">Select Ticket Class</div>
                         <div class="ticket-category-list" style="display: flex; flex-wrap: wrap;">
                             <% 
@@ -408,7 +412,7 @@
                                     <% } else if("roundTrip".equals(request.getParameter("flightType")) && request.getParameter("flightDetailId")==null){
                                     %>
                                     <form class="ticket-category-form" action="flightTickets" style="display: flex; justify-content: center; ">
-                                         <input type="hidden" name="flightType" value="${param.flightType}"/>
+                                        <input type="hidden" name="flightType" value="${param.flightType}"/>
                                         <input type="hidden" name="seatCategory" value="<%=ticketCatList.get(i).getId()%>"/>
                                         <input type="hidden" name="flightDetailId" value="<%=fd.getId()%>"/>
                                         <input type="hidden" name="departure" value="${param.departure}"/>
@@ -523,7 +527,7 @@
             var arrow = document.getElementById("arrow" + id);
 
             if (container.style.maxHeight === "0px" || container.style.maxHeight === "") {
-                container.style.maxHeight = "700px";
+                container.style.maxHeight = "800px";
                 container.style.opacity = "1";
                 arrow.style.transform = "rotate(180deg)";
             } else {

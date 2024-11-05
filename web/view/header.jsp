@@ -80,7 +80,7 @@
             };
 
             function checkScroll() {
-                if (window.location.pathname.endsWith("/home")) {
+                if (window.location.pathname.endsWith("/home")||window.location.pathname.endsWith("/")) {
                     if (window.scrollY === 0) {
                         document.getElementById("header").classList.add("transparent-header");
                     } else {

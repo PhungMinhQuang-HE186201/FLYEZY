@@ -142,10 +142,12 @@ input {
     display: flex;
     justify-content: space-around;
     margin: 50px 0;
+    font-size: 16px;
 }
 
 #promotion h3 {
-    color: rgb(60, 110, 87)
+    color: rgb(60, 110, 87);
+    font-size: 20px
 }
 
 #promotion p {
@@ -212,44 +214,39 @@ input {
     color: rgba(255, 255, 255, 0.8);
 }
 
-@media (max-width: 768px) {
-    .stat-item {
-        width: 100%;
-    }
+
+.icon{
+    margin-top: 30px
 }
 
-    .icon{
-        margin-top: 30px
-    }
+.icon svg {
+    width: 125px;
+    height: 125px
+}
 
-    .icon svg {
-        width: 125px;
-        height: 125px
-    }
+.ticket-button-container {
+    text-align: center;
+    padding-bottom: 30px;
+    margin-top: 50px
+}
 
-    .ticket-button-container {
-        text-align: center;
-        padding-bottom: 30px;
-        margin-top: 50px
-    }
+.ticket-button {
+    display: block;
+    width: 200px;
+    font-weight: 500;
+    padding: 15px 30px;
+    margin: 0 auto;
+    background-color: rgb(255, 193, 7);
+    color: black;
+    text-decoration: none;
+    font-size: 1.2em;
+    border-radius: 30px;
+    transition: background-color 0.3s, transform 0.3s;
+}
 
-    .ticket-button {
-        display: block;
-        width: 200px;
-        font-weight: 500;
-        padding: 15px 30px;
-        margin: 0 auto;
-        background-color: rgb(255, 193, 7);
-        color: black;
-        text-decoration: none;
-        font-size: 1.2em;
-        border-radius: 30px;
-        transition: background-color 0.3s, transform 0.3s;
-    }
-
-    .ticket-button:hover {
-        background-color: rgb(218, 165, 0);
-        transform: scale(1.05);
-        text-decoration: none;
-        color: black;
-    }
+.ticket-button:hover {
+    background-color: rgb(218, 165, 0);
+    transform: scale(1.05);
+    text-decoration: none;
+    color: black;
+}

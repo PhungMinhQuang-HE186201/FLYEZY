@@ -94,6 +94,7 @@ public class BookingFlightTicketsServlet extends HttpServlet {
         PassengerTypeDAO ptd = new PassengerTypeDAO();
         BaggageManageDAO bmd = new BaggageManageDAO();
         AccountsDAO ad = new AccountsDAO();
+        EmailServlet email = new EmailServlet();
         HttpSession session = request.getSession();
         Integer id = (Integer) session.getAttribute("id");
         int totalPrice = 0;
@@ -191,7 +192,7 @@ public class BookingFlightTicketsServlet extends HttpServlet {
                 request.setAttribute("account", acc);
             }
             o = od.getOrderByCode(orderCode);
-            
+            email.sendOrderEmail(o.getContactEmail(), o);
             request.getRequestDispatcher("view/successfulBooking.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();

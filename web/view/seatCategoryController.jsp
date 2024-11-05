@@ -57,6 +57,7 @@
             <div id="back" > 
                 <a href="planeCategoryController" class="btn btn-warning" >Back</a>
             </div>
+            <div style="margin-bottom: 30px; color:#3C6E57 "><h2>SEAT CATEGORY MANAGEMENT: ${requestScope.planeCatName}</h2></div>
             <div>
                 <a class="btn btn-success" style="text-decoration: none; margin-bottom: 20px" onclick="openModalInsertSeatCategory(<%= pc.getId() %>)">Add new seat category</a>
             </div>

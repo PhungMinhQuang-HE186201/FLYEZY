@@ -52,7 +52,8 @@
     <body>
         <%@include file="header.jsp" %>
         <%@include file="admin-sideBar.jsp" %>
-        <div id="main-content" style="padding:15vh 0vw 15vh 16vw; margin: 0">
+        <div id="main-content" style="margin: 6% 2% 0 15%;">
+            <div style="margin-bottom: 30px; color:#3C6E57 "><h2>REFUND MANAGEMENT</h2></div>
             <div class="filterController col-md-12" style="width: 100%">
                 <form action="RefundController" method="get" style="margin-bottom: 20px;">
                     <input type="hidden" name="action" value="search">
@@ -72,10 +73,10 @@
                     <input class="filterElm" type="date" name="fDateFrom1" value="${param.fDateFrom1}" placeholder="Enter Email">
                     <strong>Refund Date to :</strong>
                     <input class="filterElm" type="date" name="fDateTo1" value="${param.fDateTo1}" placeholder="Enter Email">
-                    <button class="btn btn-info" type="submit">
-                        Search
-                    </button>
-                    <a class="btn btn-danger" href="RefundController">Cancel</a>
+                    <div style="margin-top: 20px">
+                        <button class="btn btn-info" type="submit">Search</button>
+                        <a class="btn btn-danger" href="RefundController">Cancel</a>
+                    </div>
                 </form>
 
 

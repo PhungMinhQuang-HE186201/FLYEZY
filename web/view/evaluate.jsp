@@ -134,16 +134,16 @@
                 <input type="hidden" name="routeDetailId" value="${requestScope.routeDetailId}"/>
                 <textarea id="editor" name="editor" rows="5" cols="10" >${comment}</textarea>
                 <input type="submit" value="Submit" style="background-color:green ;color:white"/>
-                
+
                 <%FeedbackDao fd1 = new FeedbackDao();
                 Integer orderId = (Integer) session.getAttribute("orderId");
                 Integer id = (Integer) session.getAttribute("id");
                   Feedbacks f = fd1.getFeedbakByOrderId(orderId,id);
                   if(f==null){%>
-                    <input type="hidden" name="action" value="evaluate"/>
+                <input type="hidden" name="action" value="evaluate"/>
                 <%}else{%>
-                    <input type="hidden" name="action" value="update"/>
-                    <input type="submit" name="action1" value="Delete" style="background-color:red ;color:white"/>
+                <input type="hidden" name="action" value="update"/>
+                <input type="submit" name="action1" value="Delete" style="background-color:red ;color:white"/>
                 <%}%>
             </form>
         </div>

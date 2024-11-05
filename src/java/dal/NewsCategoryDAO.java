@@ -21,7 +21,7 @@ public class NewsCategoryDAO extends DBConnect {
 
     public List<NewCategory> getNewCategory() {
         List<NewCategory> list = new ArrayList<NewCategory>();
-        String sql = "select * from news_Category";
+        String sql = "select * from News_Category";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
@@ -37,7 +37,7 @@ public class NewsCategoryDAO extends DBConnect {
     }
 
     public String getNameNewsCategoryById(int newCategoryId) {
-        String sql = "SELECT * FROM news_Category WHERE id =?";
+        String sql = "SELECT * FROM News_Category WHERE id =?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, newCategoryId);
