@@ -151,7 +151,8 @@ public class SeatCategoryControllerServlet extends HttpServlet {
                 if (image.equals("img/")) {
                     image = scd.getSeatCategoryById(id).getImage();
                 }
-                if (!scd.isDuplicateSeatCategoryName(name, planeCategoryId)) {
+
+                if (name.equals(scd.getSeatCategoryById(id).getName()) || !scd.isDuplicateSeatCategoryName(name, planeCategoryId)) {
                     scd.updateSeatCategory(new SeatCategory(id, name, numberOfSeat, image, info, seatEachRow, surcharge, planeCategoryId, statusId));
                 }
 
@@ -163,7 +164,7 @@ public class SeatCategoryControllerServlet extends HttpServlet {
             }
             response.sendRedirect("seatCategoryController?planeCategoryId=" + planeCategoryId);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e);
         }
     }
 

@@ -153,7 +153,7 @@ public class PlaneCategoryControllerServlet extends HttpServlet {
                     image = pcd.getPlaneCategoryById(id).getImage();
                 }
                 PlaneCategory pc = new PlaneCategory(id, name, image, info, airlineId, statusId);
-                if (pcd.isDuplicateCategoryName(name, airlineId)) {
+                if (!name.equals(pc.getName()) && pcd.isDuplicateCategoryName(name, airlineId)) {
                     result = "Duplicate plane category name!";
                 } else {
                     pcd.updatePlaneCategoryById(pc);

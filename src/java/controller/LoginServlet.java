@@ -77,8 +77,8 @@ public class LoginServlet extends HttpServlet {
         EncodeController ec = new EncodeController();
         //quanHT: encode password before checkpass
         try {
-            String u = request.getParameter("user");
-            String p = request.getParameter("pass");
+            String u = request.getParameter("user").trim();
+            String p = request.getParameter("pass").trim();
             String r = request.getParameter("rem");
 
             String encode = ec.encryptAES(p, SECRET_KEY);

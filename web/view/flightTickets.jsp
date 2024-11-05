@@ -368,7 +368,7 @@
                             </div>
                         </div>
                     </div>
-                    <div id="ticket-category-container<%=fd.getId()%>" style="max-height: 0; overflow: hidden; transition: max-height 0.5s ease, opacity 0.5s ease; opacity: 0;">
+                    <div id="ticket-category-container<%=fd.getId()%>" style="max-height: 0px; overflow: hidden; transition: max-height 0.5s ease, opacity 0.5s ease; opacity: 0;">
                         <div style="text-align: center; font-size: 20px">Select Ticket Class</div>
                         <div class="ticket-category-list" style="display: flex; flex-wrap: wrap;">
                             <% 
@@ -523,7 +523,7 @@
             var arrow = document.getElementById("arrow" + id);
 
             if (container.style.maxHeight === "0px" || container.style.maxHeight === "") {
-                container.style.maxHeight = "700px";
+                container.style.maxHeight = "800px";
                 container.style.opacity = "1";
                 arrow.style.transform = "rotate(180deg)";
             } else {

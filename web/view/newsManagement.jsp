@@ -31,6 +31,9 @@
             #myBtn{
                 display: flex;
             }
+            #main-content{
+                margin: 2vh 0vw 10vh 11vw!important;
+            }
         </style>
     </head>
 
@@ -43,7 +46,7 @@
 
         <div id="main-content"  margin: 0">
             <div class="filterController col-md-12" style="margin-left: -182px;"  >
-                <form action="newsManagement" method="get" style="margin-left: 34%;margin-top: 7%;">
+                <form action="newsManagement" method="get" style="margin-left: 18%;margin-top: 7%;">
                     <input type="hidden" name="action" value="search">
                     <input type="hidden" name="airlineId" value="${requestScope.account.getAirlineId()}">
                     <strong class="filterElm">News Category</strong>
@@ -61,7 +64,7 @@
                     </button>
                     <a class="btn btn-danger" href="newsManagement">Cancel</a>
                 </form>
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#News" style="margin-top: -4%;flex-shrink: 0;margin-left: 20%;">
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#News" style="margin-top: -3%;flex-shrink: 0;margin-left: 12%;">
                     Add News
                 </button>
             </div>
@@ -83,7 +86,7 @@
                             <form id="addNews" action="newsManagement" method="POST" >
                                 <input type="hidden" name="action" value="create">
                                 <input type="hidden" name="accountId" value="${requestScope.account.getId()}">
-                                 <input type="hidden" name="airlineId" value="${requestScope.account.getAirlineId()}">
+                                <input type="hidden" name="airlineId" value="${requestScope.account.getAirlineId()}">
 
                                 <!--Title -->
                                 <div class="form-group">
@@ -166,7 +169,14 @@
                                 <td>
                                     <img src="<%= list.getImage() %>" alt="Image" style="max-width:100px; max-height:100px;">
                                 </td>
-                                <td><%= list.getContent() %></td>
+                                <td>
+                                    <div style="max-height: 100px;
+                                         text-align: left;
+                                         padding-left: 20px;
+                                         overflow-y: scroll;">
+                                        <%= list.getContent() %>
+                                    </div>
+                                </td>
                                 <td><%= nc.getNameNewsCategoryById(list.getNewCategory()) %></td>
                                 <td><%=ad.getAccountNameById(list.getAccountId())%></td>
 
@@ -266,19 +276,19 @@
         <script>
             function doDelete(id) {
                 if (confirm("Bạn có muốn xoá bài viết này? ")) {
-                    
+
                     var form = document.createElement("form");
                     form.method = "POST";
                     form.action = "newsManagement";
 
-                   
+
                     var actionInput = document.createElement("input");
                     actionInput.type = "hidden";
                     actionInput.name = "action";
                     actionInput.value = "delete";
                     form.appendChild(actionInput);
 
-                    
+
                     var idInput = document.createElement("input");
                     idInput.type = "hidden";
                     idInput.name = "id";

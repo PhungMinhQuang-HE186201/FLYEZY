@@ -76,10 +76,10 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String name = request.getParameter("name");
-        String email = request.getParameter("email");
-        String phoneNumber = request.getParameter("phoneNumber");
-        String pass = request.getParameter("pass");
+        String name = request.getParameter("name").trim();
+        String email = request.getParameter("email").trim();
+        String phoneNumber = request.getParameter("phoneNumber").trim();
+        String pass = request.getParameter("pass").trim();
         RegisterDAO d = new RegisterDAO();
         if (d.checkPhoneNumberExisted(phoneNumber)) {
             request.setAttribute("existedUsername", "Số điện thoại đã được đăng ký!");
