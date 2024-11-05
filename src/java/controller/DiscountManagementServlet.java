@@ -87,15 +87,20 @@ public class DiscountManagementServlet extends HttpServlet {
                     dd.updateStatus(sid, 2); // Cập nhật status_id thành 0 (Inactive)
                 }
             }
-            List<Discount> ls = dd.getDiscountByAirlineId(acc.getAirlineId());
-            for (Discount d : ls) {
-                request.setAttribute("did", d.getId());
+            if (acc.getRoleId() == 2) {
+                List<Discount> ls = dd.getDiscountByAirlineId(acc.getAirlineId());
+                for (Discount d : ls) {
+                    request.setAttribute("did", d.getId());
+                }
+                request.setAttribute("discountlist", ls);
+                request.setAttribute("airlineid", acc.getAirlineId());
+            } else if (acc.getRoleId() == 4) {
+                List<Discount> ls = dd.getDiscountByAirlineId(acc.getAirlineId());
+                request.setAttribute("discountlist", ls);
+                request.setAttribute("airlineid", acc.getAirlineId());
             }
-            request.setAttribute("discountlist", ls);
-            request.setAttribute("airlineid", acc.getAirlineId());
-            request.getRequestDispatcher("view/discountManagement.jsp").forward(request, response);
         }
-
+        request.getRequestDispatcher("view/discountManagement.jsp").forward(request, response);
     }
 
     /**

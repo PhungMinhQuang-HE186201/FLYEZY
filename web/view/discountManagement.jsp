@@ -16,9 +16,9 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" href="../css/styleAdminController.css"/>
+        <link rel="stylesheet" href="css/styleAdminController.css"/>
         <title>JSP Page</title>
-        <link rel="stylesheet" href="../css/styleAdminController.css"/>
+        <link rel="stylesheet" href="css/styleAdminController.css"/>
         <link rel="shortcut icon" type="image/png" href="img/flyezy-logo3.png" />
         <link rel="stylesheet" href="css/styleAdminController.css">
         <link rel="stylesheet" href="css/styleFlightManagement.css">
@@ -34,89 +34,13 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
         <script src="js/toastrNotification.js"></script>
-        <style>
-            :root {
-                --flyezyMainColor: rgb(60, 110, 87);
-            }
-
-            table.entity {
-                border-collapse: collapse;
-                border: 1px solid #ddd;
-                font-family: Arial, sans-serif;
-            }
-
-            table.entity thead {
-                background-color: #f2f2f2;
-            }
-
-            table.entity th,
-            table.entity td {
-                border: 1px solid #ddd;
-                padding: 6px;
-                text-align: center;
-                padding-top: 10px;
-                padding-bottom: 10px;
-                word-wrap: break-word;
-                font-size: 14px;
-            }
-
-            table.entity th {
-                background-color: var(--flyezyMainColor);
-                color: white;
-            }
-
-            table.entity td img {
-                height: 80px;
-                width: 80px;
-                object-fit: cover;
-            }
-
-            table.entity td a {
-                text-decoration: none;
-                margin-right: 10px;
-            }
-
-            table.entity td a:hover {
-                text-decoration: underline;
-            }
-
-
-            .filterController{
-                font-size: 14px;
-                float:left
-            }
-
-            .filterController button{
-                padding: 6px;
-            }
-
-            .filterElm{
-                margin-right: 15px;
-                padding: 0.3%;
-            }
-
-            .box {
-                margin: 100px auto;
-                box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1), 0 0 1px 0 rgba(0, 0, 0, 0.1);
-                border-radius: 10px;
-                padding: 35px !important;
-                font-size: 16px;
-                width: max-content;
-            }
-
-            .editor{
-                padding-left: 20px;
-            }
-
-
-
-        </style>
+        
     </head>
     <body>
         <%@include file="header.jsp" %>
         <%@include file="admin-sideBar.jsp" %>
         <%
-             int id = (int)request.getAttribute("did");
+             int id = (int)request.getAttribute("airlineid");
         %>
         <div class="container">
             <div style="display: flex; margin-top: 100px">

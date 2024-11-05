@@ -40,39 +40,40 @@
                 <input type="hidden" name="currentPassword" id="currentPassword" value="<%=ec.decryptAES(currentP,SECRET_KEY)%>"/>
                 <input type="hidden" name="idAccount" value="${requestScope.account.getId()}"/>
                 <!-- Error message display from session -->
-               <div style=" margin-bottom: 10px"><p id="wrongCurrentPass" style="display: none; color: red;">
+                <div style=" margin-bottom: 10px"><p id="wrongCurrentPass" style="display: none; color: red;">
                         Mật khẩu hiện tại không chính xác
                     </p></div>
-                
-                
+
+
                 <div class="form-group">
                     <input type="password" name="pass" id="password" onkeyup="checkCurrentPass()" required />
                     <label for="">Mật khẩu hiện tại</label>
                 </div>
-                
-                 <div style=" margin-bottom: 10px"><p id="wrongPassNew" style="display: none; color: red;">
+
+                <div style=" margin-bottom: 10px"><p id="wrongPassNew" style="display: none; color: red;">
                         Mật khẩu mới không trùng khớp
                     </p></div>
-                
+
                 <div class="form-group">
-                    <input type="password" name="newPass" id="newPass" required />
+                    <input type="password" name="newPass" id="newPass" oninput="checkLengthNewPass()" required />
                     <label for="">Mật khẩu mới</label>
                 </div>
-                
+
                 <div class="form-group">
                     <input type="password" id="confirmPassword" onkeyup="checkPass()"/>
                     <label for="">Nhập lại mật khẩu mới</label>
                 </div>
-                
-                
+
+
                 <p id="capslock-warning" style="display: none; margin-bottom: 30px">⚠️ Caps Lock is on</p>
+                <div id="errorPass" style="color: red; display: none;">Password must more than 6 characters</div>
                 <div class="button">
                     <input id="submit" type="submit" value="Đổi mật khẩu" /><br /><br />
                 </div>
             </form>
         </div>
         <script>
-             var p = document.getElementById("password");
+            var p = document.getElementById("password");
             var pn = document.getElementById("passNew");
             var sp = document.getElementById("currentPassword");
             var cp = document.getElementById("confirmPassword");
@@ -104,7 +105,18 @@
                     wrongPass.style.display = "none";
                 }
             }
-
+            
+            function checkLengthNewPass() {
+                var newPass = document.getElementById("newPass").value;
+                var errorPass = document.getElementById("errorPass");
+                if (newPass.length < 6) {
+                    errorPass.style.display = "inline";
+                    submit.disabled = true;
+                } else {
+                    errorPass.style.display = "none";
+                    submit.disabled = false;
+                }
+            }
             function checkCurrentPass() {
                 if (p.value !== sp.value) {
                     submit.disabled = true;
@@ -116,6 +128,6 @@
                     wrongCurrentPass.style.display = "none";
                 }
             }
-           </script>
+        </script>
     </body>
 </html> 
