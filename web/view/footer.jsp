@@ -6,10 +6,6 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title>JSP Page</title>
         <link rel="stylesheet" href="css/styleFooter.css" />
-        <link
-            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-            rel="stylesheet"
-            />
     </head>
     <body>
         <footer id="footer">

@@ -39,7 +39,6 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <link href="/vnpay_jsp/assets/bootstrap.min.css" rel="stylesheet"/>
         <!-- for vnpay -->
@@ -254,7 +253,7 @@
 
         <!-- Container for the order details -->
 
-        <div class="container mt-5 order-container" style="transform: translateY(45px)">
+        <div class="container mt-5 order-container" style="transform: translateY(45px); margin-bottom: 50px">
             <!-- Status Tabs Section -->
             <div class="row" style="margin-top: 20px">
                 <div class="col-md-12">
@@ -398,16 +397,14 @@
 
                     <div class="order-total-section" style="font-size: 1.2em;">
                         <div class="order-actions" style="margin-top: 10px;text-align: right">
+                            <%if(o.getStatus_id()==12){%>
+                            <button type="submit" class="btn btn-success" id="togglePaymentBtn">PAY NOW</button>
+                            <%}%>
                             <% if (td.countNumberTicketNotCancel(o.getId()) == 0) { %>
                             <a class="btn btn-danger" style="text-decoration: none; display: none;" onclick="openModalOrder(<%= o.getId() %>)">Cancel Order</a>
                             <% } else { %>
                             <a class="btn btn-danger" style="text-decoration: none;" onclick="openModalOrder(<%= o.getId() %>)">Cancel Order</a>
                             <% } %>
-
-                            <%if(o.getStatus_id()==12){%>
-                            <button type="submit" class="btn btn-success" id="togglePaymentBtn">PAY NOW</button>
-                            <%}%>
-
                             <% FeedbackDao fd1 = new FeedbackDao(); 
                                Integer idd = (Integer) session.getAttribute("id"); 
                                Feedbacks f = fd1.getFeedbakByOrderId(o.getId(), idd); 
@@ -538,6 +535,7 @@
                 </div>
             </div>
         </div>
+        <%@include file="footer.jsp" %>
 
         <script>
             function validateBankAccount() {
@@ -668,3 +666,12 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     </body>
 </html>
+
+
+
+
+
+
+
+
+
