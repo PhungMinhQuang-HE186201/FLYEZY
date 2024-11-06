@@ -18,23 +18,13 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="css/styleAdminController.css"/>
         <title>JSP Page</title>
-        <link rel="stylesheet" href="css/styleAdminController.css"/>
         <link rel="shortcut icon" type="image/png" href="img/flyezy-logo3.png" />
-        <link rel="stylesheet" href="css/styleAdminController.css">
-        <link rel="stylesheet" href="css/styleFlightManagement.css">
-        <link rel="stylesheet" href="css/styleToastNotification.css">
         <link rel="stylesheet" href="css/styleGeneral.css"/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.css">
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
         <script src="js/toastrNotification.js"></script>
-        
+
     </head>
     <body>
         <%@include file="header.jsp" %>
@@ -42,6 +32,7 @@
         <%
              int id = (int)request.getAttribute("airlineid");
         %>
+        <h2  style="color: rgb(60, 110, 87); position: relative; left: 351px; top: 106px; transition: none; cursor: move;">Discount Management</h2>
         <div class="container">
             <div style="display: flex; margin-top: 100px">
                 <button type="button" style="position: relative; left: 210px; top: 15px; transition: none; cursor: default;" class="btn btn-success" data-toggle="modal" data-target="#add-<%=id%>" >Add New Discount</button>
