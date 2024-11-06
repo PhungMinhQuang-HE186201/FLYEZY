@@ -72,9 +72,10 @@
             String airlineId = (String)request.getAttribute("aid");
                 int aid = Integer.parseInt(airlineId);
         %>
-        <div id="back" style="margin-left: 315px;margin-top: 110px;margin-bottom: -130px  " > 
+        <div id="back" style="margin-left: 18%;margin-top: 110px;margin-bottom: -130px  " > 
             <a href="flightManagement" class="btn btn-warning" >Back</a>
         </div>
+        
         <%
              Flights list = (Flights) request.getAttribute("listFlight");
              Airport listAirportDep = (Airport) request.getAttribute("listAirportDep");
@@ -86,7 +87,9 @@
             Country listCountryDes = (Country) request.getAttribute("listCountryDes");
           
         %>
-        <div class="main-container" style="margin-left: 17%;margin-top: 9%;width: 74%;">
+        <div style="margin-left: 18%;margin-top: 9%; color:#3C6E57 "><h2>FLIGHT DETAIL MANAGEMENT</h2></div>
+        <div class="main-container" style="margin-left: 18%;width: 74%;">
+            
             <div class="details">
                 <p>Departure: <span> <%= listAirportDep.getName() %> (<%= listLocationDep.getName() %>)</span></p>
                 <p>From:<span> <%= listCountryDep.getName() %>  </span></p>

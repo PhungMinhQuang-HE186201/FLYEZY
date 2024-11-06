@@ -83,6 +83,7 @@
         </div>
 
         <div id="main-content">
+            <div style="margin-bottom: 30px; color:#3C6E57 "><h2>WELCOME, ${requestScope.manager}! </h2></div>
             <c:if test="${requestScope.account.getRoleId() == 1}">
                 <div>
                     <!-- Search bar -->

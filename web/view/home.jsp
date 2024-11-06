@@ -22,20 +22,26 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="shortcut icon" type="image/png" href="img/flyezy-logo3.png" />
 
-        <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-        <link rel="stylesheet" href="../flyezy/css/styleHome.css"/>
-        <link rel="stylesheet" href="css/styleNews.css"/>
-        <title>FLYEZY</title>
+        <!-- Chọn một phiên bản duy nhất của Bootstrap -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+        <!-- CSS project-->
+        <link rel="stylesheet" href="../flyezy/css/styleHome.css"/>
+        <link rel="stylesheet" href="css/styleNews.css"/>
+
+        <title>FLYEZY</title>
+
+        <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
         <!-- Bootstrap Datepicker CSS -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
-        <!-- Bootstrap JS (optional for Bootstrap features) -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <!-- Bootstrap Datepicker JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
         <style>
             .flight-form {
                 position: relative;
@@ -193,7 +199,6 @@
                     <video src="vid/bg-vid.mp4" muted loop autoplay></video>
 
                     <form id="input-form" action="flightTickets" method="GET" class="row g-1" onsubmit="return validateLocations(event)">
-                        <div style="background-image: url('../img/modal-footer.png')"></div>
                         <div class="form-container" style="margin: 0 auto">
                             <div class="row form-input">
                                 <div style="display: flex; margin-bottom: 20px">
@@ -322,32 +327,32 @@
             </div>
         </section>
         <%-- quanHT --%>
-        <div class="main-container" style="height: 100vh">
-            <div  id="introduction">
-                <h1>Chào mừng đến với Flyezy!</h1>
-                <p>Không gian mới, cảm xúc mới - Đặt vé ngay để bắt đầu hành trình của bạn.</p>
+        <div class="main-container">
+            <div id="introduction">
+                <h1 style="font-size: 30px">Welcome to FLYEZY!</h1>
+                <p style="font-size: 16px">New space, new feeling - Book your ticket now to start your journey.</p>
             </div>
 
             <div id="promotion">
-                <div class="promotion-item row" data-aos="fade-up" data-aos-anchor-placement="bottom-bottom">
+                <div class="promotion-item row">
                     <div class="col-md-6">
-                        <img src="../img/jack.png" alt="">
+                        <img src="" alt="">
                     </div>
                     <div class="col-md-6">
-                        <h3>Ưu đãi hấp dẫn</h3>
+                        <h3>Attractive offers</h3>
                         <p>
-                            Công ty cam kết cung cấp giá vé phù hợp, nhiều lựa chọn vận chuyển cùng các chương trình khuyến mãi hấp dẫn. Đội ngũ chăm sóc 24/7 luôn sẵn sàng hỗ trợ để mang đến trải nghiệm tốt nhất cho quý khách.
+                            FLYEZY is committed to providing reasonable fares, many transportation options and attractive promotions. The 24/7 customer care team is always ready to support to bring the best experience to you.
                         </p>
                     </div>
                 </div>
-                <div class="promotion-item row" data-aos="fade-up" data-aos-anchor-placement="bottom-bottom">
+                <div class="promotion-item row">
                     <div class="col-md-6">
-                        <img src="../img/Messi.jpg" alt="">
+                        <img src="" alt="">
                     </div>
                     <div class="col-md-6">
-                        <h3>An bình khám phá</h3>
+                        <h3>Peaceful discovery</h3>
                         <p>
-                            Công ty cam kết đảm bảo an toàn tuyệt đối cho khách hàng. Đội ngũ lái xe được đào tạo chuyên nghiệp, phương tiện luôn được bảo trì định kỳ và trang bị các thiết bị an toàn tiêu chuẩn, để mỗi chuyến đi của quý khách diễn ra suôn sẻ và bình an.
+                            FLYEZY is committed to ensuring absolute safety for customers. The team of drivers are professionally trained, vehicles are always periodically maintained and equipped with standard safety equipment, so that each of your trips goes smoothly and safely.
                         </p>
                     </div>
                 </div>
@@ -357,10 +362,10 @@
                  height: 150px">
             </div>
         </div>
-        <div class="main-container" style="height: 100vh">
+        <div class="main-container" >
             <div id="statistics">
-                <h1 class="statistics-heading">Thông tin thống kê</h1>
-                <div class="stat-item" data-aos="fade-up">
+                <p class="statistics-heading" style="font-size: 30px">About Us</p>
+                <div class="stat-item">
                     <div class="stat-icon"><i class="fas fa-users"></i></div>
                     <h3>100,000+</h3>
                     <p>Người dùng</p>
@@ -368,15 +373,15 @@
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="#ffffff" d="M144 0a80 80 0 1 1 0 160A80 80 0 1 1 144 0zM512 0a80 80 0 1 1 0 160A80 80 0 1 1 512 0zM0 298.7C0 239.8 47.8 192 106.7 192h42.7c15.9 0 31 3.5 44.6 9.7c-1.3 7.2-1.9 14.7-1.9 22.3c0 38.2 16.8 72.5 43.3 96c-.2 0-.4 0-.7 0H21.3C9.6 320 0 310.4 0 298.7zM405.3 320c-.2 0-.4 0-.7 0c26.6-23.5 43.3-57.8 43.3-96c0-7.6-.7-15-1.9-22.3c13.6-6.3 28.7-9.7 44.6-9.7h42.7C592.2 192 640 239.8 640 298.7c0 11.8-9.6 21.3-21.3 21.3H405.3zM224 224a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zM128 485.3C128 411.7 187.7 352 261.3 352H378.7C452.3 352 512 411.7 512 485.3c0 14.7-11.9 26.7-26.7 26.7H154.7c-14.7 0-26.7-11.9-26.7-26.7z"/></svg>
                     </div>
                 </div>
-                <div class="stat-item" data-aos="fade-up" data-aos-delay="100">
+                <div class="stat-item">
                     <div class="stat-icon"><i class="fas fa-route"></i></div>
                     <h3>5,000K+</h3>
-                    <p>Chuyến Bay</p>
+                    <p>FLIGHT</p>
                     <div class="icon">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#ffffff" d="M512 96c0 50.2-59.1 125.1-84.6 155c-3.8 4.4-9.4 6.1-14.5 5H320c-17.7 0-32 14.3-32 32s14.3 32 32 32h96c53 0 96 43 96 96s-43 96-96 96H139.6c8.7-9.9 19.3-22.6 30-36.8c6.3-8.4 12.8-17.6 19-27.2H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320c-53 0-96-43-96-96s43-96 96-96h39.8c-21-31.5-39.8-67.7-39.8-96c0-53 43-96 96-96s96 43 96 96zM117.1 489.1c-3.8 4.3-7.2 8.1-10.1 11.3l-1.8 2-.2-.2c-6 4.6-14.6 4-20-1.8C59.8 473 0 402.5 0 352c0-53 43-96 96-96s96 43 96 96c0 30-21.1 67-43.5 97.9c-10.7 14.7-21.7 28-30.8 38.5l-.6 .7zM128 352a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zM416 128a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>
                     </div>
                 </div>
-                <div class="stat-item" data-aos="fade-up" data-aos-delay="200">
+                <div class="stat-item">
                     <div class="stat-icon"><i class="fas fa-bus-alt"></i></div>
                     <h3>3000+</h3>
                     <p>Phương tiện</p>
@@ -384,10 +389,10 @@
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#ffffff" d="M381 114.9L186.1 41.8c-16.7-6.2-35.2-5.3-51.1 2.7L89.1 67.4C78 73 77.2 88.5 87.6 95.2l146.9 94.5L136 240 77.8 214.1c-8.7-3.9-18.8-3.7-27.3 .6L18.3 230.8c-9.3 4.7-11.8 16.8-5 24.7l73.1 85.3c6.1 7.1 15 11.2 24.3 11.2l137.7 0c5 0 9.9-1.2 14.3-3.4L535.6 212.2c46.5-23.3 82.5-63.3 100.8-112C645.9 75 627.2 48 600.2 48l-57.4 0c-20.2 0-40.2 4.8-58.2 14L381 114.9zM0 480c0 17.7 14.3 32 32 32l576 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 448c-17.7 0-32 14.3-32 32z"/></svg>
                     </div>
                 </div>
-                <div class="stat-item" data-aos="fade-up" data-aos-delay="300">
+                <div class="stat-item">
                     <div class="stat-icon"><i class="fas fa-headset"></i></div>
                     <h3>24/7</h3>
-                    <p>Hỗ trợ khách hàng</p>
+                    <p>Customer Support</p>
                     <div class="icon">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#ffffff" d="M256 48C141.1 48 48 141.1 48 256v40c0 13.3-10.7 24-24 24s-24-10.7-24-24V256C0 114.6 114.6 0 256 0S512 114.6 512 256V400.1c0 48.6-39.4 88-88.1 88L313.6 488c-8.3 14.3-23.8 24-41.6 24H240c-26.5 0-48-21.5-48-48s21.5-48 48-48h32c17.8 0 33.3 9.7 41.6 24l110.4 .1c22.1 0 40-17.9 40-40V256c0-114.9-93.1-208-208-208zM144 208h16c17.7 0 32 14.3 32 32V352c0 17.7-14.3 32-32 32H144c-35.3 0-64-28.7-64-64V272c0-35.3 28.7-64 64-64zm224 0c35.3 0 64 28.7 64 64v48c0 35.3-28.7 64-64 64H352c-17.7 0-32-14.3-32-32V240c0-17.7 14.3-32 32-32h16z"/></svg>
                     </div>
@@ -399,14 +404,14 @@
 
         <div class="main-container" id="body-2">
 
-            <div style="display: ${empty param.id ? '' : 'none'};margin: 130px 0">
-                <h1 style="margin-bottom: 20px; text-align: center;">NEWS</h1>
+            <div style="display: ${empty param.id ? '' : 'none'};margin: 60px 0">
+                <h1 style="margin-bottom: 30px; text-align: center; font-size: 30px">NEWS</h1>
                 <div class="news-container">
                     <% 
                         AirlineManageDAO amd = new AirlineManageDAO();
                         List<News> listNew = (List<News>) request.getAttribute("listNew");
                         if (listNew != null) {
-                            for (int i = listNew.size() - 1; i >= 0; i--) {
+                            for (int i = listNew.size() - 1; i >= listNew.size()-4; i--) {
                                 News n = listNew.get(i);
                     %>
                     <div class="news-item" onclick="viewNews('<%= n.getId() %>');">
@@ -417,9 +422,11 @@
                             <p><%= n.getContent() %></p>
                         </div>
 
-                        <div   style="margin-top: 19%;margin-left: 63%;">
-                            <img src="<%=amd.getImageById(n.getAirline_id())%>" style="width: 17%;height: 17%;">
-                            <p style="margin-top: -16%;margin-left: 20%;"><%= amd.getNameById(n.getAirline_id()) %></p>
+                        <div   style="margin-top: 7%;margin-left: 3%;">
+                            <img src="<%=amd.getImageById(n.getAirline_id())%>" style="width: 12%; height: 100%;">
+                            <p style="margin-top: -8%;
+                               margin-left: 14%;
+                               font-size: 16px;"><%= amd.getNameById(n.getAirline_id()) %></p>
                         </div>
 
                     </div>
@@ -428,31 +435,22 @@
                        }
                     %>
                 </div>
+                <div style="width: 100%; text-align: center; margin-top: 20px; ">
+                    <a href="News" style="font-size: 20px; color: #3C6E57">More >></a>
+                </div>
             </div>
 
 
         </div>
-
-
-
     </div>
 
-
-
     <%@include file="footer.jsp" %> 
-    <script src="js/locationBox.js" type="text/javascript"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
     <script>
-                        AOS.init();
-                        window.addEventListener("load", () => {
-                            const loader = document.querySelector(".loader");
-                            loader.classList.add("loader-hidden");
-                            loader.addEventListener("transitionend", () => {
-                                document.body.removeChild(loader);
-                            });
-                        });
-    </script>
-    <script>
+        function viewNews(newsId) {
+            window.location.href = 'News?id=' + newsId;
+        }
+
         const passengersInput = document.getElementById('passengers');
         const adultCountInput = document.getElementById('adult-count');
         const childCountInput = document.getElementById('child-count');
@@ -545,8 +543,6 @@
 
             // Hide the location list after selection
             document.getElementById(inputId + '-locations').style.display = 'none';
-
-
         }
 
         // Filter locations based on input value
@@ -628,7 +624,7 @@
             var formattedToday = today.getFullYear() + '-' +
                     ('0' + (today.getMonth() + 1)).slice(-2) + '-' +
                     ('0' + today.getDate()).slice(-2);
-            
+
             // Initialize datepicker for departureDate
             $('#departureDate').datepicker({
                 format: 'yyyy-mm-dd', // Custom date format
@@ -695,16 +691,6 @@
 
     </script>
 
-    <script>
-        function viewNews(newsId) {
-            window.location.href = 'News?id=' + newsId;
-        }
-    </script>
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-
-    <!-- Bootstrap Datepicker JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 </body>
 </html>
 

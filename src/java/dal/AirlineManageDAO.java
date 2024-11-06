@@ -310,8 +310,8 @@ public class AirlineManageDAO extends DBConnect {
 //        int n = dao.createAirline(airline);
 //        System.out.println("n= " + n);
 //        dao.deleteAirline(228);
-        dao.updateAirline(new Airline(9, "abccc", "ab.jpg", "abcccccc", 1));
-        dao.changeStatus(9, 2);
+//        dao.updateAirline(new Airline(9, "abccc", "ab.jpg", "abcccccc", 1));
+//        dao.changeStatus(9, 2);
         for (Airline airline1 : dao.getAllAirline()) {
             System.out.println(airline1);
         }

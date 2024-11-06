@@ -37,6 +37,7 @@
         <%@include file="header.jsp" %>
         <%@include file="admin-sideBar.jsp" %>
         <div id="main-content">
+            <div style="margin-bottom: 30px; color:#3C6E57 "><h2>PLANE CATEGORY MANAGEMENT</h2></div>
             <!-- DuongNT: Filter category of plane -->
             <div class="filterController" style="width: 100%">
                 <form action="planeCategoryController" method="get" style="margin-bottom: 20px;">
