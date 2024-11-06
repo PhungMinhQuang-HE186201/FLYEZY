@@ -14,6 +14,7 @@
 <%@page import="model.Baggages" %>
 <%@page import="model.Airport" %>
 <%@page import="model.Accounts" %>
+<%@page import="model.Discount" %>
 <%@page import="model.Airline" %>
 <%@page import="model.Location" %>
 <%@page import="model.Country" %>
@@ -30,6 +31,7 @@
 <%@page import="dal.LocationDAO" %>
 <%@page import="dal.CountryDAO" %>
 <%@page import="dal.TicketDAO" %>
+<%@page import="dal.DiscountDAO" %>
 <%@page import="dal.BaggageManageDAO" %>
 <!DOCTYPE html>
 <html>
@@ -226,6 +228,7 @@
             Location dsl = ld.getLocationById(dsa.getLocationId());
             Country dsc = cd.getCountryById(dsl.getCountryId());
             
+            DiscountDAO dd = new DiscountDAO();
         %>
 
         <div class="container" style="margin-top: 50px;">
@@ -568,6 +571,11 @@
                             <span>Baggage</span>
                             <span id="totalBaggage">= 0 ₫</span> 
                         </div>
+                        <div>
+                            <%if(currentAcc != null){%>
+                            <a class="btn btn-success" style="text-decoration: none" onclick="openDiscountModal()" >Choose Discounts</a>
+                            <%}%>
+                        </div>  
                         <div class="ticket-total">
                             <span>Total Price:</span>
                             <span id="totalPrice">
@@ -709,10 +717,30 @@
             </div>
             <% } %>
         </div>
-
-
+        <%-- modal chọn discount --%>
+        <div class="modal fade " id="discount">  tabindex="-1" aria-labelledby="DiscountModalLabel" aria-hidden="true">
+            <div class="modal-dialog" style="min-width: 45%">
+                <div class="modal-content">
+                    <div class="modal-header" style="padding:5px 5px;">
+                        <button type="button" class="close" style="font-size: 30px; margin-right: 12px;" data-dismiss="modal">&times;</button>
+                        <h4 style="margin-left: 12px">Choose Discount</h4>
+                        <div>
+                            <%for(Discount ls : dd.getDiscountByAirlineId(airlineId)){%>
+                            <label>
+                                <input type="radio" name="discount" value="<%=ls.getPercentage()%>" />
+                                Discount <%= ls.getId()%>: <%= ls.getPercentage()%>%
+                            </label><br />
+                            <%}%>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <script>
+            function openDiscountModal() {
+                $("#discount").modal('show');
+            }
             function handleSeatClick(seat, seatColor, i) {
                 if (seatColor === '#FFF') {
                     selectSeat(seat, i);
