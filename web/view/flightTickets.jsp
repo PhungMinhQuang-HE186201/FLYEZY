@@ -305,7 +305,7 @@
             <div class="col-md-8 flights-container">
                 <%
                 List<FlightDetails> flightTickets = (List<FlightDetails>) request.getAttribute("flightTickets");
-
+                
                 for (FlightDetails fd : flightTickets) {
                     if(fd.getStatusId()==1){
                         int airlineId = fdd.getAirlineIdByFlightDetailId(fd.getId());

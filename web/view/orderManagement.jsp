@@ -124,7 +124,7 @@
                 <input type="hidden" name="action" value="search">
                 <%int airlineId = (int)request.getAttribute("airlineId");%>
                 <input type="hidden" name="airlineId" value="<%=airlineId%>">
-               
+
 
                 <strong class="filterElm">Status:</strong>
                 <select class="filterElm" name="status">
@@ -194,9 +194,12 @@
                         <%= sd.getStatusNameById(o.getStatus_id()) %>
                     </td>
 
-            
+
                     <td><%=od.getAirlineIdByOrder(o.getId())%></td>
                     <td> 
+                        <a href="TicketController?orderId=1<%=o.getId()%>" class="btn btn-warning" style="margin-left: 10px; background-color:green">
+                            View Order Tickets >>
+                        </a>
                         <a href="evaluateController?action=view&orderId=<%=o.getId()%>" class="btn btn-primary" style="margin-left: 10px; background-color:green">
                             Feedback
                         </a>

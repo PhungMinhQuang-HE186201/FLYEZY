@@ -93,15 +93,15 @@
                                 </div>
                                 <div class="form-group">
                                     <label><span class="glyphicon glyphicon-picture"></span>Number of seat:</label>
-                                    <input type="number" class="form-control" name="numberOfSeat" required>
+                                    <input type="number" class="form-control" name="numberOfSeat" min="0" required>
                                 </div>
                                 <div class="form-group">
                                     <label><span class="glyphicon glyphicon-picture"></span>Seat each row:</label>
-                                    <input type="number" class="form-control" name="seatEachRow" required>
+                                    <input type="number" class="form-control" name="seatEachRow" min="1" max="9" required>
                                 </div>
                                 <div class="form-group">
                                     <label><span class="glyphicon glyphicon-picture"></span>Surcharge:</label>
-                                    <input step="0.01" type="number" class="form-control" name="surcharge" required>
+                                    <input step="0.01" type="number" class="form-control" name="surcharge" required min="0" max="1">
                                 </div>
                                 <div class="form-group">
                                     <label><span class="glyphicon glyphicon-info-sign"></span>Info:</label>
@@ -194,15 +194,15 @@
                                         </div>
                                         <div class="form-group">
                                             <label><span class="glyphicon glyphicon-picture"></span>Number of seat:</label>
-                                            <input type="text" class="form-control" name="numberOfSeat" value="<%= sc.getNumberOfSeat() %>" required/>
+                                            <input type="text" class="form-control" name="numberOfSeat" value="<%= sc.getNumberOfSeat() %>" min="0" required/>
                                         </div>
                                         <div class="form-group">
                                             <label><span class="glyphicon glyphicon-picture"></span>Seat each row:</label>
-                                            <input type="number" class="form-control" name="seatEachRow" value="<%= sc.getSeatEachRow() %>" required>
+                                            <input type="number" class="form-control" name="seatEachRow" value="<%= sc.getSeatEachRow() %>" min="1" max="9" required>
                                         </div>
                                         <div class="form-group">
                                             <label><span class="glyphicon glyphicon-picture"></span>Surcharge:</label>
-                                            <input type="number" step="0.01" class="form-control" name="surcharge" value="<%= sc.getSurcharge() %>" required/>
+                                            <input type="number" step="0.01" class="form-control" name="surcharge" value="<%= sc.getSurcharge() %>" required  min="0" max="1"/>
                                         </div>
                                         <div class="form-group">
                                             <label><span class="glyphicon glyphicon-info-sign"></span>Info:</label>

@@ -132,7 +132,7 @@ public class SeatCategoryControllerServlet extends HttpServlet {
         // Process adding/updating seat categories
         String idStr = request.getParameter("id");
         String image = "img/" + request.getParameter("image");
-        String name = request.getParameter("name");
+        String name = request.getParameter("name").trim();
         String numberOfSeatStr = request.getParameter("numberOfSeat");
         String info = request.getParameter("info");
         String seatEachRowStr = request.getParameter("seatEachRow");

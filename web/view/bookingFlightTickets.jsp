@@ -588,10 +588,6 @@
 
 
             <%//Modal chọn ghế
-            TicketDAO td = new TicketDAO();
-            int rowNumber = 1;
-            String[] seatLetters = {"A", "B", "C", "D", "E", "F"}; 
-            int seatIndex = 0;
             for(int j = 1; j<=totalPassengers;j++){ %>
             <div class="modal fade " id="seatModal<%=j%>"  tabindex="-1" aria-labelledby="seatModalLabel" aria-hidden="true">
                 <div class="modal-dialog" style="min-width: 45%">
@@ -604,6 +600,10 @@
                             <div>
                                 <table>
                                     <%
+                                        TicketDAO td = new TicketDAO();
+                                        int rowNumber = 1;
+                                        String[] seatLetters = {"A", "B", "C", "D", "E", "F"}; 
+                                        int seatIndex = 0;
                                         int seatEachRow = sc.getSeatEachRow();
                                         int numberOfSeat = sc.getNumberOfSeat();
                                         String seatCat = sc.getName();
@@ -687,10 +687,10 @@
                                     </div>
                                     <div style="margin-bottom: 10px">
                                         <svg width="40" height="32" viewBox="0 0 40 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <rect x="8.75" y="2.75" width="22.5" height="26.5" rx="2.25" fill="rgb(255, 177, 177)" stroke="#D8D8D8" stroke-width="1.5" stroke-linejoin="round"></rect>
-                                        <rect x="10.25" y="11.75" width="14.5" height="5.5" rx="2.25" transform="rotate(90 10.25 11.75)" fill="#B8B8B8" stroke="#D8D8D8" stroke-width="1.5" stroke-linejoin="round"></rect>
-                                        <rect x="35.25" y="11.75" width="14.5" height="5.5" rx="2.25" transform="rotate(90 35.25 11.75)" fill="#B8B8B8" stroke="#D8D8D8" stroke-width="1.5" stroke-linejoin="round"></rect>
-                                        <rect x="8.75" y="22.75" width="22.5" height="6.5" rx="2.25" fill="rgb(255, 177, 177)" stroke="#D8D8D8" stroke-width="1.5" stroke-linejoin="round"></rect>
+                                        <rect x="8.75" y="2.75" width="22.5" height="26.5" rx="2.25" fill="#D8D8D8" stroke="#B8B8B8" stroke-width="1.5" stroke-linejoin="round"></rect>
+                                        <rect x="10.25" y="11.75" width="14.5" height="5.5" rx="2.25" transform="rotate(90 10.25 11.75)" fill="#D8D8D8" stroke="#B8B8B8" stroke-width="1.5" stroke-linejoin="round"></rect>
+                                        <rect x="35.25" y="11.75" width="14.5" height="5.5" rx="2.25" transform="rotate(90 35.25 11.75)" fill="#D8D8D8" stroke="##B8B8B8" stroke-width="1.5" stroke-linejoin="round"></rect>
+                                        <rect x="8.75" y="22.75" width="22.5" height="6.5" rx="2.25" fill="#D8D8D8" stroke="#B8B8B8" stroke-width="1.5" stroke-linejoin="round"></rect>
                                         </svg>
                                         Booked Seat
                                     </div>

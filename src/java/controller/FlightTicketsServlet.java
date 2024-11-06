@@ -79,7 +79,14 @@ public class FlightTicketsServlet extends HttpServlet {
         int i = (idd != null) ? idd : -1;
         Accounts acc = ad.getAccountsById(i);
         request.setAttribute("account", acc);
-
+        try {
+            int adultTickets = Integer.parseInt(request.getParameter("adult"));
+            int childTickets = Integer.parseInt(request.getParameter("child"));
+            int infantTickets = Integer.parseInt(request.getParameter("infant"));
+            request.setAttribute("totalPassengers", (adultTickets + childTickets + infantTickets));
+        } catch (Exception e) {
+            System.out.println(e);
+        }
         String depAStr = request.getParameter("departure");
         String desAStr = request.getParameter("destination");
         String depDateStr = request.getParameter("departureDate");
@@ -118,11 +125,10 @@ public class FlightTicketsServlet extends HttpServlet {
             Timestamp landing = new Timestamp(calendar.getTimeInMillis());
             Date landingDate = new Date(landing.getTime());
             Time landingTime = Time.valueOf(landing.toLocalDateTime().toLocalTime());
-            System.out.println(landingDate +""+ landingTime);
+            System.out.println(landingDate + "" + landingTime);
 
             String reDateStr = request.getParameter("returnDate");
             request.setAttribute("reDate", reDateStr);
-            String seatCategory = request.getParameter("seatCategory");
             try {
                 int depA = Integer.parseInt(depAStr);
                 int desA = Integer.parseInt(desAStr);

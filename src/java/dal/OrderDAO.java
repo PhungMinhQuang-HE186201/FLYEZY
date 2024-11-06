@@ -101,10 +101,10 @@ public class OrderDAO extends DBConnect {
 
     public List<Order> getAllOrderByAirlineId(int airlineId) {
         List<Order> list = new ArrayList<>();
-        String sql = "select distinct o.* from flyezy.order o\n"
-                + "join ticket t on t.Order_id = o.id\n"
-                + "join flight_detail fd on fd.id = t.Flight_Detail_id\n"
-                + "join flight f on f.id = fd.Flightid\n"
+        String sql = "select distinct o.* from flyezy.Order o\n"
+                + "join Ticket t on t.Order_id = o.id\n"
+                + "join Flight_Detail fd on fd.id = t.Flight_Detail_id\n"
+                + "join Flight f on f.id = fd.Flightid\n"
                 + "where f.Airline_id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);

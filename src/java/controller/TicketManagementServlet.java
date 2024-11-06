@@ -95,8 +95,18 @@ public class TicketManagementServlet extends HttpServlet {
         CountryDAO cd = new CountryDAO();
         SeatCategoryDAO scd = new SeatCategoryDAO();
         PlaneCategoryDAO pcd = new PlaneCategoryDAO();
-
         HttpSession session = request.getSession();
+
+        Integer idd = (Integer) session.getAttribute("id");
+        if (idd == null) {
+            response.sendRedirect("login");
+            return;
+        } else {
+            int i = (idd != null) ? idd : -1;
+            Accounts acc = ad.getAccountsById(i);
+            request.setAttribute("account", acc);
+        }
+
         String action = request.getParameter("action");
         String flightDetailIdStr = request.getParameter("flightDetailID");
         int flightDetailId = Integer.parseInt(flightDetailIdStr);
@@ -130,16 +140,6 @@ public class TicketManagementServlet extends HttpServlet {
         request.setAttribute("flightDetail", flightDetail);
         PlaneCategory planeCatrgory = pcd.getPlaneCategoryById(flightDetail.getPlaneCategoryId());
         request.setAttribute("planeCatrgory", planeCatrgory);
-
-        Integer idd = (Integer) session.getAttribute("id");
-        if (idd == null) {
-            response.sendRedirect("login");
-            return;
-        } else {
-            int i = (idd != null) ? idd : -1;
-            Accounts acc = ad.getAccountsById(i);
-            request.setAttribute("account", acc);
-        }
 
         List<Ticket> ticketList = td.getAllTicketsById(flightDetailID);
         request.setAttribute("ticketList", ticketList);
@@ -176,15 +176,7 @@ public class TicketManagementServlet extends HttpServlet {
                     && fPhoneNumber.isEmpty()
                     && orderCode == null || orderCode.isEmpty();
             List<Ticket> ticketSearchList;
-//            if (allFieldsEmpty) {
-//                // Get all tickets by flightDetailId
-//                ticketSearchList = td.getAllTicketsById(flightDetailId);
-//            } //            List<Accounts> accountList = ad.searchAccounts(fRole, fName, fPhoneNumber);
-            //            request.setAttribute("accountList", accountList);
-//            else {
-                // Proceed with filtered search
-                ticketSearchList = td.searchTickets(passengerType, statusTicket, fName, fPhoneNumber, flightDetailId, flightType, orderCode);
-//            }
+            ticketSearchList = td.searchTickets(passengerType, statusTicket, fName, fPhoneNumber, flightDetailId, flightType, orderCode);
             request.setAttribute("ticketList", ticketSearchList);
             request.getRequestDispatcher("view/ticketManagement.jsp").forward(request, response);
         }

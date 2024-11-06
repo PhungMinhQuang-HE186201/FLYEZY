@@ -236,8 +236,8 @@ public class TicketDAO extends DBConnect {
 
     public Ticket getTicketByCode(String code, int flightDetailID, int seatCategoryId) {
         String sql = "SELECT * FROM Ticket t "
-            + "WHERE code = ? AND Flight_Detail_id = ? "
-            + "AND (Statusid = 10 OR Statusid = 12) AND Seat_Categoryid = ?";
+                + "WHERE code = ? AND Flight_Detail_id = ? "
+                + "AND (Statusid = 10 OR Statusid = 12) AND Seat_Categoryid = ?";
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -423,16 +423,6 @@ public class TicketDAO extends DBConnect {
         return n;
     }
 
-    public static void main(String[] args) {
-        TicketDAO td = new TicketDAO();
-        AirlineManageDAO ad = new AirlineManageDAO();
-        //tcd.confirmSuccessAllTicketsByOrderId(1);
-        //System.out.println(td.createTicket("C9", 1, 7, 2, "HIHI", 0, null, Date.valueOf("2000-10-10"), null, 0, 1, 1));
-        System.out.println(td.getAllTicketCodesById(4, 1));
-//        System.out.println(tcd.getTicketByCode("B1", 4, 8));
-//        System.out.println(td.searchTickets("", "", "", "", 1, "", "FJA84IUTJ"));
-    }
-
     public int getPriceById(int ticketId) {
         String sql = "select t.totalprice from Ticket t where Id = ?";
         try {
@@ -447,4 +437,15 @@ public class TicketDAO extends DBConnect {
         }
         return 0;
     }
+
+    public static void main(String[] args) {
+        TicketDAO td = new TicketDAO();
+        AirlineManageDAO ad = new AirlineManageDAO();
+        //tcd.confirmSuccessAllTicketsByOrderId(1);
+        //System.out.println(td.createTicket("C9", 1, 7, 2, "HIHI", 0, null, Date.valueOf("2000-10-10"), null, 0, 1, 1));
+        System.out.println(td.getAllTicketCodesById(4, 1));
+//        System.out.println(tcd.getTicketByCode("B1", 4, 8));
+//        System.out.println(td.searchTickets("", "", "", "", 1, "", "FJA84IUTJ"));
+    }
+
 }
