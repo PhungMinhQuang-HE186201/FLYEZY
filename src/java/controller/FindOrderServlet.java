@@ -42,8 +42,7 @@ public class FindOrderServlet extends HttpServlet {
         if (order != null) {
             request.setAttribute("order", order);
             if(contactInfo != null && (contactInfo.equals(order.getContactEmail()) 
-                    || contactInfo.equals(order.getContactPhone()) 
-                    || contactInfo.equals(order.getContactName()))){
+                    || contactInfo.equals(order.getContactPhone()))){
                  request.setAttribute("isVerified", true);
             }else{
                 request.setAttribute("isVerified", false);
