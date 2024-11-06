@@ -909,7 +909,8 @@
             }
 
             function updateTotalPrice(totalBaggage) {
-                var a = <%= (fd.getPrice() * (sc.getSurcharge()+1)+ ((m==2)?fd2.getPrice() * (sc2.getSurcharge()+1):0)) * (adultTicket * ptd.getPassengerTypePriceById(1) + childTicket* ptd.getPassengerTypePriceById(2) + infantTicket* ptd.getPassengerTypePriceById(3)) %>;
+                var a = <%= (fd.getPrice() * (sc.getSurcharge()+1)+ ((m==2)?fd2.getPrice() * (sc2.getSurcharge()+1):0)) * 
+                                (adultTicket * ptd.getPassengerTypePriceById(1) + childTicket* ptd.getPassengerTypePriceById(2) + infantTicket* ptd.getPassengerTypePriceById(3)) %>;
                 var total = a + totalBaggage;
                 document.getElementById("totalPrice").innerText = new Intl.NumberFormat('vi-VN', {style: 'currency', currency: 'VND'}).format(total);
             }

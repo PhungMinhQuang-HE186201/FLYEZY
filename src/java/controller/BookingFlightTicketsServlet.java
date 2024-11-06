@@ -193,6 +193,8 @@ public class BookingFlightTicketsServlet extends HttpServlet {
             }
             o = od.getOrderByCode(orderCode);
             email.sendOrderEmail(o.getContactEmail(), o);
+            request.setAttribute("ORDERID", o.getId());
+            request.setAttribute("price", o.getTotalPrice());
             request.getRequestDispatcher("view/successfulBooking.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();

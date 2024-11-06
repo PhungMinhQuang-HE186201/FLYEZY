@@ -398,7 +398,7 @@
                     <div class="order-total-section" style="font-size: 1.2em;">
                         <div class="order-actions" style="margin-top: 10px;text-align: right">
                             <%if(o.getStatus_id()==12){%>
-                            <button type="submit" class="btn btn-success" id="togglePaymentBtn">PAY NOW</button>
+                            <button type="submit" class="btn btn-success" id="togglePaymentBtn<%=o.getId()%>" onclick="paymentMedthodDisplay(<%=o.getId()%>)">PAY NOW</button>
                             <%}%>
                             <% if (td.countNumberTicketNotCancel(o.getId()) == 0) { %>
                             <a class="btn btn-danger" style="text-decoration: none; display: none;" onclick="openModalOrder(<%= o.getId() %>)">Cancel Order</a>
@@ -423,7 +423,7 @@
                 </div>
                 <br>
             </div>
-            <div id="payment_methods" style="display: none;">
+            <div id="payment_methods<%=o.getId()%>" style="display: none;">
                 <h2>Payments Method</h2>
                 <div class="payment-options">
                     <div class="payment-option">
@@ -652,14 +652,15 @@
                 return false;
             });
 
-            document.getElementById('togglePaymentBtn').addEventListener('click', function () {
-                var paymentMethods = document.getElementById('payment_methods');
+            function paymentMedthodDisplay(id) {
+                var paymentMethods = document.getElementById("payment_methods"+id);
                 if (paymentMethods.style.display === 'none' || paymentMethods.style.display === '') {
                     paymentMethods.style.display = 'block';
                 } else {
                     paymentMethods.style.display = 'none';
                 }
-            });
+            }
+
         </script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>

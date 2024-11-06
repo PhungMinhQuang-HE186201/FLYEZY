@@ -68,8 +68,6 @@ public class VnpayServletController2 extends HttpServlet {
         OrderDAO od = new OrderDAO();
         AccountsDAO ad = new AccountsDAO();
         if (idd == null) {
-            response.sendRedirect("login");
-            return;
         } else {
             int i = (idd != null) ? idd : -1;
             Accounts acc = ad.getAccountsById(i);

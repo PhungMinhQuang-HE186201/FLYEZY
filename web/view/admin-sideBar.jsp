@@ -43,6 +43,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="OrderController" class="<%= currentPage.equals("/flyezy/view/orderManagement.jsp") ? "current-page" : "" %>">
+                        Order Management
+                    </a>
+                </li>
+                <li>
                     <a href="feedbackController" class="<%= currentPage.equals("/flyezy/view/Feedback.jsp") ? "current-page" : "" %>">
                         Feedback Management
                     </a>

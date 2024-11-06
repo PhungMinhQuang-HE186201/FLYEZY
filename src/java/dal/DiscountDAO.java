@@ -25,7 +25,7 @@ public class DiscountDAO extends DBConnect {
 
     public List<Discount> getAll() {
         List<Discount> ls = new ArrayList<>();
-        String sql = "SELECT * FROM flyezy.discount;";
+        String sql = "SELECT * FROM flyezy.Discount;";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
@@ -49,7 +49,7 @@ public class DiscountDAO extends DBConnect {
 
     public List<Discount> getDiscountByAirlineId(int aid) {
         List<Discount> ls = new ArrayList<>();
-        String sql = "SELECT * FROM flyezy.discount WHERE Airline_id = ?";
+        String sql = "SELECT * FROM flyezy.Discount WHERE Airline_id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, aid); // Đặt tham số cho câu lệnh chuẩn bị
@@ -73,7 +73,7 @@ public class DiscountDAO extends DBConnect {
     }
 
     public void addNew(Discount discount) {
-        String sql = "INSERT INTO discount (code, percentage, minimum_order_value, date_created, valid_until, Airline_id, Status_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Discount (code, percentage, minimum_order_value, date_created, valid_until, Airline_id, Status_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -100,7 +100,7 @@ public class DiscountDAO extends DBConnect {
     }
 
     public void updateDiscount(Discount discount, int id) {
-        String sql = "UPDATE discount SET code = ?, percentage = ?, minimum_order_value = ?, date_created = ?, valid_until = ?, Airline_id = ? WHERE id = ?";
+        String sql = "UPDATE Discount SET code = ?, percentage = ?, minimum_order_value = ?, date_created = ?, valid_until = ?, Airline_id = ? WHERE id = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, discount.getCode()); // Thêm dòng này để cập nhật code
@@ -123,7 +123,7 @@ public class DiscountDAO extends DBConnect {
     }
 
     public void updateStatus(int id, int status) {
-        String sql = "UPDATE discount SET Status_id = ? WHERE id = ?";
+        String sql = "UPDATE Discount SET Status_id = ? WHERE id = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, status);
@@ -139,7 +139,7 @@ public class DiscountDAO extends DBConnect {
     }
 
     public String getAirlineNameById(int id) {
-        String sql = "SELECT Name FROM flyezy.airline WHERE id = ?";
+        String sql = "SELECT name FROM flyezy.Airline WHERE id = ?";
         String name = null;
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);

@@ -111,48 +111,9 @@
         <%@include file="header.jsp" %>
         <%@include file="admin-sideBar.jsp" %>
         <div style="margin-left: 210px;margin-top: 60px;margin-bottom: -100px " /> 
-
-        <%
-            Flights flight = (Flights)request.getAttribute("flight");
-            Airport airportDep =(Airport)request.getAttribute("airportDep");
-            Airport airportDes =(Airport)request.getAttribute("airportDes");
-            FlightDetails flightDetail = (FlightDetails)request.getAttribute("flightDetail");
-            Location locationDep = (Location)request.getAttribute("locationDep");
-            Location locationDes = (Location)request.getAttribute("locationDes");
-            Country countryDep = (Country)request.getAttribute("countryDep");
-            Country countryDes = (Country)request.getAttribute("countryDes");
-            PlaneCategory planeCatrgory = (PlaneCategory)request.getAttribute("planeCatrgory");
-        %>
         <div>
             <div style="margin-left: 5%">
-                <a href="flightDetailManagement?flightId=${requestScope.flight.getId()}&airlineId=${requestScope.airlineId}" class="btn btn-warning" >Back</a>  
                 <h2>Order Management</h2>
-            </div>
-            <div class="flight-card">
-                <div class="flight-info">
-                    <div class="flight-section">
-                        <i class="fas fa-plane-departure"></i>
-                        <div class="details">
-                            <p><strong><%=airportDep.getName()%></strong> </p>
-                            <p>(<%=locationDep.getName()%>, <%=countryDep.getName()%>)</p>
-                        </div>
-                    </div>
-                    <div class="flight-section middle">
-                        <i class="fas fa-plane"></i>
-                        <p><%=planeCatrgory.getName()%></p>
-                        <p>
-                            <i class="fas fa-calendar-alt"></i> <%=flightDetail.getDate()%> <%=flightDetail.getTime()%>
-                            <i class="fas fa-clock" style="margin-left: 20px"></i> <%=flight.getMinutes()%> min
-                        </p>
-                    </div>
-                    <div class="flight-section">
-                        <i class="fas fa-plane-arrival"></i>
-                        <div class="details">
-                            <p><strong><%=airportDes.getName()%></strong></p>
-                            <p>(<%=locationDes.getName()%>, <%=countryDes.getName()%>)</p>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -161,14 +122,16 @@
             <form action="OrderController" method="get" style="margin-bottom: 20px;">
 
                 <input type="hidden" name="action" value="search">
-                <input type="hidden" name="flightDetailID" value="${param.flightDetailID}">
+                <%int airlineId = (int)request.getAttribute("airlineId");%>
+                <input type="hidden" name="airlineId" value="<%=airlineId%>">
+               
 
                 <strong class="filterElm">Status:</strong>
                 <select class="filterElm" name="status">
                     <option value="" ${param.status == null ? 'selected' : ''}>All</option>
                     <c:set var="counter" value="0" />
                     <c:forEach items="${requestScope.listStatus}" var="status">
-                        <c:if test="${counter < 3}">
+                        <c:if test="${counter < 2}">
                             <option value="${status.id}" ${param.status != null && (param.status == status.id) ? 'selected' : ''}>${status.name}</option>
                             <c:set var="counter" value="${counter + 1}" />
                         </c:if>
@@ -180,7 +143,7 @@
                 <input class="filterElm" value="${param.keyword}" type="text" placeholder="Enter contact name or phone or mail here..." name="keyword" style="margin-left:5px;width: 23%"/>
                 <input type="submit" class="btn btn-info" name="submit" value="Search" style="margin-right: 5px">
 
-                <a class="btn btn-danger" href="OrderController?flightDetailID=${param.flightDetailID}">Cancel</a>
+                <a class="btn btn-danger" href="OrderController">Cancel</a>
             </form>
 
 
@@ -197,6 +160,7 @@
                     <th>Payment Type</th>
                     <th>Created_at</th>
                     <th>Status</th>
+                    <th>Airline id</th>
                     <th style="width: 25%">Actions</th>
                 </tr>
             </thead>
@@ -222,23 +186,7 @@
                     <td><%=o.getContactPhone()%></td>
                     <td><%=o.getContactEmail()%></td>
                     <td><%=NumberFormat.getInstance().format(o.getTotalPrice())%></td>
-                    <% 
-                        boolean found = false; 
-                        for (Accounts acc : listAcc) {
-                            if (acc.getId() == o.getAccountsId()) { 
-                                found = true; 
-                    %>
-                    <td><%= (acc.getName() != null) ? acc.getName() : "null" %></td>
-                    <%
-                                break;
-                            }
-                        }
-                        if (!found) {
-                    %>
-                    <td>null</td>
-                    <% 
-                        }
-                    %>
+                    <td><%=ad.getAccountNameById(o.getAccountsId())%></td>
                     <%String paymentName = ptd.getPaymentTypeNameById(o.getPaymentTypesId());%>
                     <td><%=paymentName%></td>
                     <td><%=o.getCreated_at()%></td>
@@ -246,52 +194,9 @@
                         <%= sd.getStatusNameById(o.getStatus_id()) %>
                     </td>
 
-
-
-                    <td>
-                        <a class="btn btn-info" style="text-decoration: none" id="myBtn<%= o.getId() %>" onclick="openModal(<%= o.getId() %>)">Change status</a>
-                        <div class="modal fade" id="myModal<%= o.getId() %>" role="dialog">
-                            <div class="modal-dialog">
-                                <!-- Modal content-->
-                                <div class="modal-content">
-                                    <div class="modal-header" style="padding:5px 5px;">
-                                        <button type="button" class="close" style="font-size: 30px; margin-right: 12px;" data-dismiss="modal">&times;</button>
-                                        <h4 style="margin-left: 12px">Change status</h4>
-                                    </div>
-                                    <div class="modal-body" style="padding:40px 50px;">
-                                        <form role="form" action="OrderController" method="post">
-                                            <input type="hidden" name="action" value="changeStatus"/>
-                                            <input type="hidden" name="orderId" value="<%=o.getId()%>"/>
-                                            <input type="hidden" name="flightDetailId" value="<%=o.getFlightDetailId()%>"/>
-                                            <input type="hidden" name="createdAt" value=""/>
-                                            <div class="row">
-                                                <div class="form-group col-md-4">
-                                                    <label for="usrname"><span class="glyphicon glyphicon-globe"></span>ID:</label>
-                                                    <input type="text" class="form-control" id="usrname" name="id" value="<%= o.getId() %>" readonly="">
-                                                </div>
-                                                <div class="form-group col-md-8">
-                                                    <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Status:</label></div>
-                                                    <select name="statusId" value="" style="height:  34px">
-                                                        <%List<Status> statusList = sd.getStatusOfOrder();
-                                                            for(Status status : statusList){%>
-                                                        <option value="<%=status.getId()%>" <%=(o.getStatus_id() == status.getId())?"selected":""%>><%=status.getName()%></option>"
-                                                        <%}%>
-                                                    </select>
-                                                </div>                    
-
-                                            </div>
-                                            <button type="submit" class="btn btn-success btn-block">
-                                                Confirm
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>  
-                        <a href="TicketController?action=search&flightDetailID=${param.flightDetailID}&flightType=&passengerType=&statusTicket=&fName=&fPhoneNumber=&orderId=<%=o.getId()%>" class="btn btn-primary" style="margin-left: 10px;">
-                            Order Tickets
-                            <span style="margin-left: 8px" class="glyphicon glyphicon-menu-right"></span>
-                        </a>
+            
+                    <td><%=od.getAirlineIdByOrder(o.getId())%></td>
+                    <td> 
                         <a href="evaluateController?action=view&orderId=<%=o.getId()%>" class="btn btn-primary" style="margin-left: 10px; background-color:green">
                             Feedback
                         </a>
