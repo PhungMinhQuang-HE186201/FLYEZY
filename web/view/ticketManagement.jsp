@@ -185,6 +185,47 @@
                     margin: 10px 0;
                 }
             }
+            .seat-category-list {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .seat-category-item {
+                background-color: #f0f0f0;
+                border-radius: 0.5rem;
+                padding: 1rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                min-width: 200px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            }
+
+            .seat-category-item:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+
+            .seat-category-name {
+                font-weight: bold;
+                color: #333;
+            }
+
+            .seat-category-count {
+                background-color: #e0e0e0;
+                border-radius: 0.25rem;
+                padding: 0.25rem 0.5rem;
+                font-size: 0.875rem;
+                color: #666;
+            }
+
+            .seat-category-count span:first-child {
+                font-weight: bold;
+                color: #4a4a4a;
+            }
         </style>
 
     </head>
@@ -201,6 +242,7 @@
   Country countryDep = (Country)request.getAttribute("countryDep");
   Country countryDes = (Country)request.getAttribute("countryDes");
   PlaneCategory planeCatrgory = (PlaneCategory)request.getAttribute("planeCatrgory");
+  List<SeatCategory> seatList =(List<SeatCategory>)request.getAttribute("seatList");
         %>
         <div id="main-content" style="padding:15vh 0vw 15vh 16vw; margin: 0">
             <div class="filterController col-md-12" style="width: 100%">
@@ -264,14 +306,23 @@
                 <strong>Phone number: </strong>
                 <input class="filterElm" type="number" name="fPhoneNumber" value="${param.fPhoneNumber}" placeholder="Enter phone number">
                 <strong>Order code: </strong>
-                
+
                 <input class="filterElm" type="text" name="orderCode" value="${param.orderCode}" placeholder="Enter order code">
                 <button class="btn btn-info" type="submit">
                     Search
                 </button>
                 <a class="btn btn-danger" href="TicketController?flightDetailID=${flightDetailID}">Cancle</a>
             </form>
-
+            <div class="seat-category-list">
+                <%for(SeatCategory s : seatList){%>
+                <div class="seat-category-item">
+                    <span class="seat-category-name"><%=s.getName()%></span>
+                    <span class="seat-category-count">
+                        <span><%=s.getCountSeat()%></span>/<span><%=s.getNumberOfSeat()%></span>
+                    </span>
+                </div>
+                <%}%>
+            </div>
 
 
 

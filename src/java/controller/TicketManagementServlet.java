@@ -153,8 +153,7 @@ public class TicketManagementServlet extends HttpServlet {
         List<Status> statusTicketList = sd.getStatusOfTicket();
         request.setAttribute("statusTicketList", statusTicketList);
 
-        int planeCategoryID = fdd.getPlaneCategoryIdFromFlightDetail(flightDetailID);
-        List<SeatCategory> seatList = scd.getNameAndNumberOfSeat(planeCategoryID);
+        List<SeatCategory> seatList = scd.getNameAndNumberOfSeat(flightDetailID);
         request.setAttribute("seatList", seatList);
 
         if (action == null) {
@@ -249,8 +248,7 @@ public class TicketManagementServlet extends HttpServlet {
         List<Status> statusTicketList = sd.getStatusOfTicket();
         request.setAttribute("statusTicketList", statusTicketList);
 
-        int planeCategoryID = fdd.getPlaneCategoryIdFromFlightDetail(flightDetailID);
-        List<SeatCategory> seatList = scd.getNameAndNumberOfSeat(planeCategoryID);
+        List<SeatCategory> seatList = scd.getNameAndNumberOfSeat(flightDetailID);
         request.setAttribute("seatList", seatList);
 
         String action = request.getParameter("action");
