@@ -72,14 +72,11 @@ public class QRCodeServletController extends HttpServlet {
         TicketDAO td = new TicketDAO();
         AccountsDAO ad = new AccountsDAO();
         Integer idd = (Integer) session.getAttribute("id");
-        if (idd == null) {
-            response.sendRedirect("login");
-            return;
-        } else {
+
             int i = (idd != null) ? idd : -1;
             Accounts acc = ad.getAccountsById(i);
             request.setAttribute("account", acc);
-        }
+        
         int orderID = (int) session.getAttribute("orderID");
         od.successfullPayment(orderID, 1);
         td.confirmSuccessAllTicketsByOrderId(orderID);
@@ -101,14 +98,11 @@ public class QRCodeServletController extends HttpServlet {
         Integer idd = (Integer) session.getAttribute("id");
         AccountsDAO ad = new AccountsDAO();
         OrderDAO od = new OrderDAO();
-        if (idd == null) {
-            response.sendRedirect("login");
-            return;
-        } else {
+
             int i = (idd != null) ? idd : -1;
             Accounts acc = ad.getAccountsById(i);
             request.setAttribute("account", acc);
-        }
+        
         String orderID = request.getParameter("orderID");
         if (orderID != null) {
             int orderId = Integer.parseInt(orderID);

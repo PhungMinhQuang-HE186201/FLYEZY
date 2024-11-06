@@ -98,9 +98,10 @@ public class TicketDAO extends DBConnect {
     }
 
     public void cancelAllTicketsByOrderId(int orderId) {
-        String sql = "UPDATE Ticket SET Statusid = 7 WHERE Order_id = ?";
+        String sql = "UPDATE Ticket SET Statusid = 7, cancelled_at = ? WHERE Order_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, orderId);
+            ps.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+            ps.setInt(2, orderId);
             ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();

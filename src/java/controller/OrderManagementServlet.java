@@ -58,101 +58,51 @@ public class OrderManagementServlet extends HttpServlet {
         } else {
             Accounts acc = ad.getAccountsById(idd);
             request.setAttribute("account", acc);
-        }
-        String flightDetailIdStr = request.getParameter("flightDetailID");
-        int flightDetailId = Integer.parseInt(flightDetailIdStr);
-        if (request.getAttribute("flightDetailID") == null) {
-            int flightDetailID = Integer.parseInt(request.getParameter("flightDetailID"));
-            request.setAttribute("flightDetailID", flightDetailID);
-        }
-        int flightDetailID = (int) request.getAttribute("flightDetailID");
 
-        int airlineId = fdd.getAirlineIdByFlightDetailId(flightDetailId);
-        Flights flight = fdd.getFlightByFlightDetailId(flightDetailId);
+            String flightDetailIdStr = request.getParameter("flightDetailID");
 
-        Airport airportDep = aid.getAirportById(flight.getDepartureAirportId());
-        request.setAttribute("airportDep", airportDep);
-        Location locationDep = ld.getLocationById(airportDep.getId());
-        request.setAttribute("locationDep", locationDep);
-        Country countryDep = cd.getCountryById(locationDep.getCountryId());
-        request.setAttribute("countryDep", countryDep);
+            OrderDAO od = new OrderDAO();
 
-        Airport airportDes = aid.getAirportById(flight.getDestinationAirportId());
-        request.setAttribute("airportDes", airportDes);
-        Location locationDes = ld.getLocationById(airportDes.getId());
-        request.setAttribute("locationDes", locationDes);
-        Country countryDes = cd.getCountryById(locationDes.getCountryId());
-        request.setAttribute("countryDes", countryDes);
-
-        FlightDetails flightDetail = fdd.getFlightDetailsByID(flightDetailId);
-        request.setAttribute("flightDetail", flightDetail);
-        PlaneCategory planeCatrgory = pcd.getPlaneCategoryById(flightDetail.getPlaneCategoryId());
-        request.setAttribute("planeCatrgory", planeCatrgory);
-        
-        OrderDAO od = new OrderDAO();
-
-        int numberOfItem = od.getNumberOfOrdersByFlightDetail(flightDetailId);
-            int numOfPage = (int) Math.ceil((double) numberOfItem / 5);
             String idx = request.getParameter("index");
-            int index =1;
-            if(idx!=null){
+            int index = 1;
+            if (idx != null) {
                 index = Integer.parseInt(idx);
             }
             request.setAttribute("index", index);
-            request.setAttribute("numOfPage", numOfPage);
-            
-        List<Order> listOrder = od.getAllOrdersByFlightDetailWithPaging(flightDetailId,index);
-        String submit = request.getParameter("submit");
-        if (submit == null) {
-            listOrder = od.getAllOrdersByFlightDetail(flightDetailID);
-            listOrder = od.getAllOrdersByFlightDetailWithPaging(flightDetailId,index);
-        } else {
-            // Search for airlines based on keyword and status
-            String keyword = request.getParameter("keyword") != null ? request.getParameter("keyword").trim() : null;
-            String code = request.getParameter("code") != null ? request.getParameter("code").trim() : null;
-            String statusParam = request.getParameter("status");
-            int statusId = -1;
+            request.setAttribute("airlineId", acc.getAirlineId());
 
-            // Ensure status is a valid integer
-            if (statusParam != null && !statusParam.isEmpty()) {
-                try {
-                    statusId = Integer.parseInt(statusParam);
-                } catch (NumberFormatException e) {
-                    // Log the error and handle it accordingly (e.g., set statusId to null or default)
-                    System.out.println("Invalid status ID format: " + e.getMessage());
+            List<Order> listOrder;
+            String submit = request.getParameter("submit");
+            if (submit == null) {
+                listOrder = od.getAllOrderByAirlineId(acc.getAirlineId());
+            } else {
+                // Search for airlines based on keyword and status
+                String keyword = request.getParameter("keyword") != null ? request.getParameter("keyword").trim() : null;
+                String code = request.getParameter("code") != null ? request.getParameter("code").trim() : null;
+                String statusParam = request.getParameter("status");
+                int statusId = -1;
+                // Ensure status is a valid integer
+                if (statusParam != null && !statusParam.isEmpty()) {
+                    try {
+                        statusId = Integer.parseInt(statusParam);
+                    } catch (NumberFormatException e) {
+                        // Log the error and handle it accordingly (e.g., set statusId to null or default)
+                        System.out.println("Invalid status ID format: " + e.getMessage());
+                    }
                 }
+
+                listOrder = od.searchOrder(statusId, code, keyword,acc.getAirlineId());
             }
-
-
-            listOrder = od.searchOrder(statusId, code, keyword, flightDetailId,index);
+            List<Status> listStatus = statusDao.getStatusOfOrder();
+            request.setAttribute("listOrder", listOrder);
+            request.setAttribute("listStatus", listStatus);
+            request.getRequestDispatcher("view/orderManagement.jsp").forward(request, response);
         }
-        List<Status> listStatus = statusDao.getStatusOfOrder();
-        request.setAttribute("airlineId", airlineId);
-        request.setAttribute("flight", flight);
-        request.setAttribute("listOrder", listOrder);
-        request.setAttribute("flightDetailId", flightDetailId);
-        request.setAttribute("listStatus", listStatus);
-        request.getRequestDispatcher("view/orderManagement.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String action = request.getParameter("action");
-
-        if ("changeStatus".equals(action)) {
-            int orderId = Integer.parseInt(request.getParameter("orderId"));
-            int flightDetailId = Integer.parseInt(request.getParameter("flightDetailId"));
-            int statusId = Integer.parseInt(request.getParameter("statusId"));
-
-            // Update status logic
-            od.updateOrderStatus(orderId, statusId);
-            if (statusId == 10) {
-                td.confirmSuccessAllTicketsByOrderId(orderId);
-            }
-            // Redirect to the order page after update
-            response.sendRedirect("OrderController?flightDetailID=" + flightDetailId);
-        }
     }
 
     /**
