@@ -68,7 +68,7 @@
                     <button class="btn btn-info" type="submit">
                         Search
                     </button>
-                    <a class="btn btn-danger" href="evaluateController?action=view&orderId=${orderId}">Cancel</a>
+                    <a class="btn btn-danger" href="feedbackController">Cancel</a>
                 </form>
 
 
