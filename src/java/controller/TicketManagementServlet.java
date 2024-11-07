@@ -110,7 +110,7 @@ public class TicketManagementServlet extends HttpServlet {
         String action = request.getParameter("action");
         String flightDetailIdStr = request.getParameter("flightDetailID");
         int flightDetailId = Integer.parseInt(flightDetailIdStr);
-        
+
         if (request.getAttribute("flightDetailID") == null) {
             int flightDetailID = Integer.parseInt(request.getParameter("flightDetailID"));
             request.setAttribute("flightDetailID", flightDetailID);
@@ -156,6 +156,9 @@ public class TicketManagementServlet extends HttpServlet {
 
         List<SeatCategory> seatList = scd.getNameAndNumberOfSeat(flightDetailID);
         request.setAttribute("seatList", seatList);
+        
+        List<SeatCategory> seatCategoryList = scd.getAllSeatCategoryByFlightDetailId(flightDetailID);
+        request.setAttribute("seatCategoryList", seatCategoryList);
 
         if (action == null) {
             request.getRequestDispatcher("view/ticketManagement.jsp").forward(request, response);
@@ -246,6 +249,9 @@ public class TicketManagementServlet extends HttpServlet {
         List<SeatCategory> seatList = scd.getNameAndNumberOfSeat(flightDetailID);
         request.setAttribute("seatList", seatList);
 
+        List<SeatCategory> seatCategoryList = scd.getAllSeatCategoryByFlightDetailId(flightDetailID);
+        request.setAttribute("seatCategoryList", seatCategoryList);
+
         String action = request.getParameter("action");
         if (action == null) {
             request.getRequestDispatcher("view/ticketManagement.jsp").forward(request, response);
@@ -253,6 +259,11 @@ public class TicketManagementServlet extends HttpServlet {
             int status = Integer.parseInt(request.getParameter("statusID"));
             int id = Integer.parseInt(request.getParameter("id"));
             sd.changeStatusTicket(id, status);
+            response.sendRedirect("TicketController?flightDetailID=" + flightDetailID);
+        } else if (action.equals("create")) {
+            String code = request.getParameter("code");
+            int seatCategoryId = Integer.parseInt(request.getParameter("seatCategory"));
+            td.createMaintainenceSeat(code, flightDetailID,seatCategoryId);
             response.sendRedirect("TicketController?flightDetailID=" + flightDetailID);
         }
     }

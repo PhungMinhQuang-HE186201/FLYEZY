@@ -45,6 +45,37 @@ public class SeatCategoryDAO extends DBConnect {
         return null;
     }
 
+    public List<SeatCategory> getAllSeatCategoryByFlightDetailId(int id) {
+        List<SeatCategory> ls = new ArrayList<>();
+        String sql = "select sc.* from flyezy.Seat_Category sc\n"
+                + "left join flyezy.Plane_Category pc on pc.id = sc.Plane_Categoryid\n"
+                + "left join flyezy.Flight_Detail fd on fd.Plane_Categoryid = pc.id\n"
+                + "where fd.id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                SeatCategory sc = new SeatCategory(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getInt("numberOfSeat"),
+                        rs.getString("image"),
+                        rs.getString("info"),
+                        rs.getInt("seatEachRow"),
+                        rs.getFloat("surcharge"),
+                        rs.getInt("Plane_Categoryid"),
+                        rs.getInt("Status_id")
+                );
+                ls.add(sc);
+            }
+            return ls;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public SeatCategory getSeatCategoryById(int id) {
         String sql = "SELECT * FROM Seat_Category WHERE id = ?";
         try {
@@ -69,15 +100,15 @@ public class SeatCategoryDAO extends DBConnect {
         }
         return null;
     }
-    
-     public SeatCategory getNameBySeatCategoryId(int id) {
+
+    public SeatCategory getNameBySeatCategoryId(int id) {
         String sql = "SELECT name FROM Seat_Category WHERE id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-               rs.getString("name");
+                rs.getString("name");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -228,7 +259,6 @@ public class SeatCategoryDAO extends DBConnect {
         String sql = "SELECT DISTINCT s.name, s.numberOfSeat, s.numberOfSeat-COUNT(t.Seat_Categoryid) AS countSeat\n"
                 + " FROM Seat_Category s\n"
                 + " JOIN Ticket t ON s.id = t.Seat_Categoryid\n"
-                + " Join `Order` o On o.id = t.Order_id\n"
                 + " WHERE t.Flight_Detail_id = ? "
                 + " And t.code IS NOT NULL and (t.Statusid=12 or t.Statusid=10)\n"
                 + " GROUP BY s.name, s.numberOfSeat";

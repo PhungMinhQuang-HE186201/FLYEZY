@@ -46,6 +46,24 @@ public class FeedbackDao extends DBConnect {
         }
         return n;
     }
+    public String getContactPhone(int id) {
+        int n = 0;
+        String sql = "Select contactPhone \n"
+                + "from Feedbacks f Join flyezy.`Order` o On f.Order_id = o.id\n"
+                + "Where o.id = ?";
+        List<String> list = new ArrayList<>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getString(1);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
 
     public void deleteFeedback(int id, int orderId) {
         String sql = "delete from Feedbacks where Accountsid = ? And Order_id=?";

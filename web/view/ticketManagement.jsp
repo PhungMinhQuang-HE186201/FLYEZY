@@ -321,7 +321,44 @@
                         <span><%=s.getCountSeat()%></span>/<span><%=s.getNumberOfSeat()%></span>
                     </span>
                 </div>
+                <button type="button" class="btn btn-success" id="myBtn" onclick="myModal3()">Add New Maintenance Seat</button>
                 <%}%>
+            </div>
+            <div class="modal fade" id="myModal3" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header" style="padding:5px 5px;">
+                            <button type="button" class="close" style="font-size: 30px; margin-right: 12px;" data-dismiss="modal">&times;</button>
+                            <h4 style="margin-left: 12px">Create maintainence seat</h4>
+                        </div>
+                        <div class="modal-body" style="padding:40px 50px;">
+                            <form role="form" action="TicketController" method="post">
+                                <input type="hidden" name="action" value="create"/>
+                                <input type="hidden" name="flightDetailID" value="${flightDetailID}">
+                                <input type="hidden" name="createdAt" value=""/>
+                                <div class="row">
+                                    <div class="form-group col-md-8">
+                                        <label for="name"><span class="glyphicon glyphicon-user"></span>Code</label>
+                                        <input type="text" class="form-control" name="code" value="">
+                                    </div>
+                                    <div class="form-group col-md-8">
+                                        <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Seat Category:</label></div>
+                                        <select name="seatCategory" value="" style="height:  34px">
+                                            <%List<SeatCategory> seatCategoryList = (List<SeatCategory>)request.getAttribute("seatCategoryList");
+                                                            for(SeatCategory seat : seatCategoryList){%>
+                                            <option value="<%=seat.getId()%>"><%=seat.getName()%></option>
+                                            <%}%>
+                                        </select>
+                                    </div> 
+                                </div>
+                                <button type="submit" class="btn btn-success btn-block">
+                                    Confirm
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
 
 
@@ -479,6 +516,9 @@
             }
             function openModal2(id) {
                 $("#myModal2" + id).modal('show');
+            }
+            function myModal3() {
+                $("#myModal3").modal('show');
             }
         </script>
 
