@@ -149,20 +149,21 @@ public class StatusDAO extends DBConnect {
         }
     }
 
-    public void changeStatusRefund(int id, int status) {
+    public void changeStatusRefund(int id, int status,int price) {
         String sql = "UPDATE Refund\n"
-                + "   SET Statusid=?, refundDate = ?"
+                + "   SET Statusid=?,refundPrice=?, refundDate = ?"
                 + " WHERE id=?";
 
         try {
             PreparedStatement pre = conn.prepareStatement(sql);
             pre.setInt(1, status);
+            pre.setInt(2, price);
             if (status == 8) {
-                pre.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
+                pre.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
             } else {
-                pre.setTimestamp(2, null);
+                pre.setTimestamp(3, null);
             }
-            pre.setInt(3, id);
+            pre.setInt(4, id);
 
             pre.executeUpdate();
 
@@ -217,7 +218,7 @@ public class StatusDAO extends DBConnect {
 
     public List<Status> getStatusOfRefund() {
         List<Status> list = new ArrayList<>();
-        String sql = "select * from Status where id = 3 or id = 8 or id = 5 ";
+        String sql = "select * from Status where id = 13 or id = 8 or id = 14 ";
 
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);

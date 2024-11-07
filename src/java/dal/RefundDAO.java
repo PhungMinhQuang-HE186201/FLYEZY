@@ -21,15 +21,21 @@ import java.time.format.DateTimeFormatter;
  */
 public class RefundDAO extends DBConnect {
 
-    public List<Refund> getAllRefund() {
+    public List<Refund> getAllRefund(int airlineID) {
         List<Refund> ls = new ArrayList<>();
-        String sql = "Select * from Refund";
+        String sql = "Select r.id,r.bank,r.bankAccount,r.requestDate,r.refundDate,r.refundPrice,r.Ticketid,r.Statusid\n"
+                + "From Refund r Join Ticket t On r.Ticketid = t.id\n"
+                + "              Join Flight_Detail f on f.id =t.Flight_Detail_id\n"
+                + "              Join Flight f1 on f1.id=f.Flightid\n"
+                + "              Join Airline a On f1.Airline_id=a.id\n"
+                + "              where a.id =?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, airlineID);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Refund refund = new Refund(rs.getInt("id"), rs.getString("bank"), rs.getString("bankAccount"),
-                        rs.getTimestamp("requestDate"), rs.getTimestamp("refundDate"), rs.getInt("Ticketid"),
+                        rs.getTimestamp("requestDate"), rs.getTimestamp("refundDate"), rs.getInt("refundPrice"), rs.getInt("Ticketid"),
                         rs.getInt("Statusid"));
                 ls.add(refund);
             }
@@ -40,24 +46,29 @@ public class RefundDAO extends DBConnect {
         return null;
     }
 
-    public List<Refund> searchRefund(String Status, String requestDateFrom, String requestDateTo, String refundDateFrom, String refundDateTo) {
+    public List<Refund> searchRefund(String Status, String requestDateFrom, String requestDateTo, String refundDateFrom, String refundDateTo,int airlineID) {
         List<Refund> ls = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("Select * from Refund where 1=1");
+        StringBuilder sql = new StringBuilder("Select r.id,r.bank,r.bankAccount,r.requestDate,r.refundDate,r.refundPrice,r.Ticketid,r.Statusid\n"
+                + "From Refund r Join Ticket t On r.Ticketid = t.id\n"
+                + "              Join Flight_Detail f on f.id =t.Flight_Detail_id\n"
+                + "              Join Flight f1 on f1.id=f.Flightid\n"
+                + "              Join Airline a On f1.Airline_id=a.id\n"
+                + "              where a.id = "+airlineID);
 
         if (Status != null && !Status.isEmpty()) {
-            sql.append(" AND Statusid = ?");
+            sql.append(" AND r.Statusid = ?");
         }
         if (requestDateFrom != null && !requestDateFrom.isEmpty()) {
-            sql.append(" AND Date(requestDate) >= ?");
+            sql.append(" AND Date(r.requestDate) >= ?");
         }
         if (requestDateTo != null && !requestDateTo.isEmpty()) {
-            sql.append(" AND Date(requestDate) <= ?");
+            sql.append(" AND Date(r.requestDate) <= ?");
         }
         if (refundDateFrom != null && !refundDateFrom.isEmpty()) {
-            sql.append(" AND Date(refundDate) >= ?");
+            sql.append(" AND Date(r.refundDate) >= ?");
         }
         if (refundDateTo != null && !refundDateTo.isEmpty()) {
-            sql.append(" AND Date(refundDate) <= ?");
+            sql.append(" AND Date(r.refundDate) <= ?");
         }
 
         try {
@@ -83,7 +94,7 @@ public class RefundDAO extends DBConnect {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Refund refund = new Refund(rs.getInt("id"), rs.getString("bank"), rs.getString("bankAccount"),
-                        rs.getTimestamp("requestDate"), rs.getTimestamp("refundDate"), rs.getInt("Ticketid"),
+                        rs.getTimestamp("requestDate"), rs.getTimestamp("refundDate"), rs.getInt("refundPrice"), rs.getInt("Ticketid"),
                         rs.getInt("Statusid"));
                 ls.add(refund);
             }
@@ -92,7 +103,20 @@ public class RefundDAO extends DBConnect {
         }
         return ls;
     }
+    public int getPriceOfTicket(int id){
+         String sql = "Select totalPrice from Ticket t Join Refund r On t.id=r.Ticketid where r.id =?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
 
+        } catch (Exception e) {
+        }
+        return 0;
+    }
     public int createRefund(Refund refund) {
         String sql = "INSERT INTO `flyezy`.`Refund`\n"
                 + "(`bank`,`bankAccount`,`requestDate`,`refundDate`,`refundPrice`,`Ticketid`,`Statusid`)\n"
