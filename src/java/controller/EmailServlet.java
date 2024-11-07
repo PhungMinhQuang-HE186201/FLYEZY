@@ -178,6 +178,57 @@ public class EmailServlet {
         }
     }
 
+     public void sendPaymentSuccessfulbyEmail(String to, Order o) {
+        //Properties: khai bao cac thuoc tinh
+        Properties pro = new Properties();
+        pro.put("mail.smtp.host", "smtp.gmail.com");
+        //port tls 587 
+        pro.put("mail.smtp.port", "587");
+        pro.put("mail.smtp.auth", "true");
+        pro.put("mail.smtp.starttls.enable", "true");
+
+        //create Authenticator
+        Authenticator authen = new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(from, passWord);
+            }
+        };
+
+        //sesion
+        Session session = Session.getInstance(pro, authen);
+
+        //send email
+        //final String to = "chunloveptht@gmail.com";
+        //create to message email
+        MimeMessage msg = new MimeMessage(session);
+        try {
+            //content style
+            msg.addHeader("Content-type", "text/HTML");
+            //the person send and receiver:
+            msg.setFrom(from);
+            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
+            //The subject of email
+            msg.setSubject("Payment Successful Notification", "UTF-8");
+            //date
+            msg.setSentDate(new Date());
+            //quy dinh email phan hoi
+            //msg.setReplyTo(InternetAddress.parse(from, false));
+
+            //content
+            msg.setContent("The customer: <b>" + o.getContactName() + "</b><br>"
+               + "Your code order is: " + o.getCode() + "<br>"
+               + "You have paid successfully price of flight is: " + o.getTotalPrice() + "VND<br>"
+               + "Please to check in your flight on time.", 
+               "text/html");
+
+            //send email
+            Transport.send(msg);
+        } catch (MessagingException ex) {
+            ex.printStackTrace();
+        }
+     }
+    
     public static void main(String[] args) {
         EmailServlet email = new EmailServlet();
         String otp = email.generateOTP(6);

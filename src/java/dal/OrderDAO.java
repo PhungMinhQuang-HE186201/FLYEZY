@@ -315,7 +315,36 @@ public class OrderDAO extends DBConnect {
         }
         return false;
     }
-
+    
+     public Order getOrderByOrderId(int id) {
+        String sql = "select * from flyezy.Order where id= ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Order a = new Order(
+                rs.getInt("id"),
+                        rs.getString("code"),
+                        rs.getString("contactName"),
+                        rs.getString("contactPhone"),
+                        rs.getString("contactEmail"),
+                        rs.getInt("totalPrice"),
+                        rs.getInt("Accounts_id"),
+                        rs.getInt("Payment_Types_id"),
+                        rs.getTimestamp("paymentTime"),
+                        rs.getTimestamp("created_at"),
+                        rs.getInt("Discount_id"),
+                        rs.getInt("Status_id")
+                );
+               return a;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+    
     public boolean successfullPayment(int orderId, int paymentType) {
         String sql = "UPDATE flyezy.Order SET Payment_Types_id = ?, paymentTime = ?,  Status_id = 10 WHERE id = ?";
         try {
