@@ -42,12 +42,12 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form id="addProductForm" action="airlineManagement" method="POST">
+                        <form id="addProductForm" action="airlineManagement" method="POST" onsubmit="return validateNameAndInfoInput(0)">
                             <input type="hidden" name="action" value="add">
                             <!-- Name -->
                             <div class="form-group">
                                 <label for="nameInput"><span class="glyphicon glyphicon-plane"></span> Airline Name:</label>
-                                <input pattern="^[\p{L}\s]+$" type="text" class="form-control" id="nameInput" name="airlineName" required>
+                                <input pattern="^[\p{L}\s]+$" type="text" id="name0" class="form-control" id="nameInput" name="airlineName" required>
                                 <div id="nameError" class="error"></div>
                             </div>
 
@@ -68,7 +68,7 @@
                             <div class="form-group">
                                 <label><span class="glyphicon glyphicon-info-sign"></span> Information:</label>
                                 <div class="editor-container">
-                                    <textarea pattern="^[\p{L}\s]+$" class="editor" name="airlineInfo"></textarea>
+                                    <textarea id="info0" pattern="^[\p{L}\s]+$" class="editor" name="airlineInfo"></textarea>
                                 </div>
                             </div>  
                         </form>
@@ -221,12 +221,12 @@
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="airlineManagement" method="POST">
+                                            <form action="airlineManagement" method="POST" onsubmit="return validateNameAndInfoInput(${airline.getId()})">
                                                 <input type="hidden" name="action" value="update"/>
                                                 <!-- Name -->
                                                 <div class="form-group">
                                                     <label for="nameInput" style="text-align: left; display: block;"><span class="glyphicon glyphicon-plane"></span> Airline Name:</label>
-                                                    <input pattern="^[\p{L}\s]+$" type="text" class="form-control" id="nameInput" name="airlineName" value="${airline.getName()}" required>
+                                                    <input pattern="^[\p{L}\s]+$" type="text" id="name${airline.getId()}" class="form-control" id="nameInput" name="airlineName" value="${airline.getName()}" required>
                                                     <div id="nameError" class="error"></div>
                                                 </div>
 
@@ -247,7 +247,7 @@
                                                 <div class="form-group">
                                                     <label><span class="glyphicon glyphicon-info-sign"></span> Information:</label>
                                                     <div class="editor-container">
-                                                        <textarea pattern="^[\p{L}\s]+$" class="editor" name="airlineInfo">${airline.getInfo()}</textarea>
+                                                        <textarea pattern="^[\p{L}\s]+$" id="info${airline.getId()}" class="editor" name="airlineInfo">${airline.getInfo()}</textarea>
                                                     </div>
                                                 </div>
                                                 <input type="hidden" value="${airline.getId()}" name="airlineId">
@@ -369,7 +369,7 @@
                                                                             <!-- Weight -->
                                                                             <div class="form-group" style="display: flex">
                                                                                 <label style="width: 10%" for="nameInput" style="display: flex; justify-content: start;">Weight:</label>
-                                                                                <input pattern="^\d{1,3}(\.\d+)?$" style="width: 40%" type="text" class="form-control" id="nameInput" value="${baggage.weight}" name="baggageWeight" required> 
+                                                                                <input readonly pattern="^\d{1,3}(\.\d+)?$" style="width: 40%" type="text" class="form-control" id="nameInput" value="${baggage.weight}" name="baggageWeight" required> 
                                                                                 <div style="margin-left: 10px">kg</div>
                                                                                 <div id="nameError" class="error"></div>
                                                                             </div>
@@ -385,7 +385,7 @@
                                                                             <div class="modal-footer" style="text-align: right;">
                                                                                 <button type="submit" class="btn btn-primary" >Update</button>
                                                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-
+                                                                                <input type="hidden" name="airlineIdBaggage" value="${airline.id}">
                                                                             </div>
                                                                         </form>
 
@@ -446,6 +446,16 @@
         </div>
 
         <script>
+            function validateNameAndInfoInput(i) {
+                const name = document.getElementById("name" + i).value.trim();
+                const info = document.getElementById("info" + i).value.trim();
+
+                if (name === "" || info === "") {
+                    alert("Please enter valid content. Do not enter spaces only.");
+                    return false;
+                }
+                return true;
+            }
             function toggleBaggageDetails(airlineId) {
 
                 var detailsRow = document.getElementById('baggage-details-' + airlineId);

@@ -160,7 +160,6 @@
                         <th>Email</th>
                         <th>Rated star</th>
                         <th>Comment</th>
-                        <th>Date</th>
                         <th>Create At</th>
                         <th>Update at</th>
                         <th>Status</th>
@@ -179,7 +178,6 @@
                         <td><%=ad.getAccountEmailById(f.getAccountsid())%></td>
                         <td><%=f.getRatedStar()%></td>
                         <td><%=f.getComment()%></td>
-                        <td><%=f.getDate()%></td>
                         <td><%=f.getCreated_at()%></td>
                         <td><%=f.getUpdated_at()%></td>
                         <td><%=sd.getStatusNameById(f.getStatusid())%></td>

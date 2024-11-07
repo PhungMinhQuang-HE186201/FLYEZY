@@ -211,7 +211,7 @@ public class SeatCategoryDAO extends DBConnect {
 
     public List<SeatCategory> getNameAndNumberOfSeat(int id) {
         String sql = "SELECT DISTINCT s.name, s.numberOfSeat, s.numberOfSeat-COUNT(t.Seat_Categoryid) AS countSeat\n"
-                + "FROM Seat_category s\n"
+                + "FROM Seat_Category s\n"
                 + "JOIN Ticket t ON s.id = t.Seat_Categoryid\n"
                 + "WHERE t.Flight_Detail_id = ?\n"
                 + "GROUP BY s.name, s.numberOfSeat";

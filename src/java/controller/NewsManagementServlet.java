@@ -6,17 +6,15 @@ package controller;
 
 import dal.AccountsDAO;
 import dal.NewsCategoryDAO;
+import dal.NewsDAO;
 import dal.NewsManageDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import jakarta.servlet.http.Part;
-import java.io.File;
 import java.util.List;
 import model.Accounts;
 import model.NewCategory;
@@ -107,8 +105,8 @@ public class NewsManagementServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         NewsManageDAO nd = new NewsManageDAO();
-        NewsCategoryDAO nc = new NewsCategoryDAO();
-
+        NewsCategoryDAO ncd = new NewsCategoryDAO();
+        NewsDAO newdao = new NewsDAO();
         String action = request.getParameter("action");
         if (action.equals("create")) {
             String Title = request.getParameter("Title");
@@ -124,7 +122,11 @@ public class NewsManagementServlet extends HttpServlet {
         } else if (action.equals("update")) {
             String Title = request.getParameter("title");
             int id = Integer.parseInt(request.getParameter("id"));
-            String image = "img/" + request.getParameter("image"); 
+            News current = newdao.getNewsById(id);
+            String image = current.getImage();
+            if(request.getParameter("image")!=null && !request.getParameter("image").trim().isEmpty()){
+                image = "img/" + request.getParameter("image"); 
+            } 
             String Content = request.getParameter("content");
             int newCategory = Integer.parseInt(request.getParameter("category"));
             int accountId = Integer.parseInt(request.getParameter("accountId"));

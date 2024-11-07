@@ -233,10 +233,23 @@ public class BaggageManageDAO extends DBConnect {
         return price;
     }
 
+    public boolean checkWeightExists(float weight, int airlineId) {
+        String sql = "SELECT * FROM Baggages WHERE weight = ? and Airlineid = ?";
+        try (PreparedStatement prepare = conn.prepareStatement(sql)) {
+            prepare.setFloat(1, weight);
+            prepare.setInt(2, airlineId);
+            ResultSet resultSet = prepare.executeQuery();
+            return resultSet.next();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return false;
+    }
+
     public static void main(String[] args) {
         BaggageManageDAO dao = new BaggageManageDAO();
 
-        System.out.println(dao.getPriceBaggagesById(4));
+        System.out.println(dao.checkWeightExists(80,4));
 
     }
 }

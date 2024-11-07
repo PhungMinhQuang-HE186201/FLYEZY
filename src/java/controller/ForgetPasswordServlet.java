@@ -77,7 +77,7 @@ public class ForgetPasswordServlet extends HttpServlet {
         String email = request.getParameter("email");
         //if email not exist show error 
         if (!ad.checkEmailExist(email)) {
-            request.setAttribute("error", "Email của bạn không tồn tại!");
+            request.setAttribute("error", "Your email is not existed!");
             request.getRequestDispatcher("view/forgetPassword.jsp").forward(request, response);
         } else {
             //get id from request to change password
@@ -89,7 +89,8 @@ public class ForgetPasswordServlet extends HttpServlet {
             ad.changePassword(idByEmail, newPassword);
             //send new password for user by email
             e.sendPasswordEmail(email, newPassword);
-            response.sendRedirect("login");
+            request.setAttribute("notice", "New password is sent to your email!");
+            request.getRequestDispatcher("view/login.jsp").forward(request, response);
         }
 
     }

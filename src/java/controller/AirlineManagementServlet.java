@@ -18,7 +18,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.Airline;
-import model.Baggages;
 
 /**
  *
@@ -96,11 +95,11 @@ public class AirlineManagementServlet extends HttpServlet {
     private void addAirline(HttpServletRequest request) {
         try {
             // Lấy thông tin từ request
-            String airlineName = request.getParameter("airlineName");
+            String airlineName = request.getParameter("airlineName").trim();
             //get image path
             String airlineImage = "img/" + request.getParameter("airlineImage");
             //get info
-            String airlineInfo = request.getParameter("airlineInfo");
+            String airlineInfo = request.getParameter("airlineInfo").trim();
 
             Airline airline = new Airline(airlineName, airlineImage,airlineInfo);
 
@@ -147,9 +146,9 @@ public class AirlineManagementServlet extends HttpServlet {
     private void updateAirline(HttpServletRequest request) {
         try {
             int airlineId = Integer.parseInt(request.getParameter("airlineId"));
-            String airlineName = request.getParameter("airlineName");
-            String airlineImage = "img/" + request.getParameter("airlineImage");
-            String airlineInfo = request.getParameter("airlineInfo");
+            String airlineName = request.getParameter("airlineName").trim();
+            String airlineImage = "img/" + request.getParameter("airlineImage").trim();
+            String airlineInfo = request.getParameter("airlineInfo").trim();
             if (airlineImage.equals("img/")) {
                 airlineImage = airlineManageDao.getAirlineById(airlineId).getImage();
             }

@@ -76,7 +76,7 @@
                         <h4 class="modal-title" style="font-weight:bold;">Update profile</h4>
                     </div>
                     <div class="modal-body">
-                        <form action="infoUpdateServlet" method="post" >
+                        <form action="infoUpdateServlet" method="post" onsubmit="return validateNameInput()" >
                             <div class="row">
                                 <div class="form-group col-md-6">
                                     <label for="image" class="control-label">Avatar</label>
@@ -93,7 +93,7 @@
                             <div class="form-group">
                                 <label for="name" class="control-label">Full name:</label>
                                 <input type="text" name="name" value="${requestScope.account.name}" class="form-control" 
-                                       pattern="^[\p{L}\s]+$" required />
+                                       pattern="^[\p{L}\s]+$" id="nameInput" required />
                             </div>
                             <div class="form-group">
                                 <label for="birth" class="control-label">Date of birth:</label>
@@ -124,6 +124,15 @@
             </div>
         </div>
         <script>
+            function validateNameInput() {
+                const nameInput = document.getElementById("nameInput").value.trim();
+
+                if (nameInput === "") {
+                    alert("Please enter valid content. Do not enter spaces only.");
+                    return false;
+                }
+                return true;
+            }
             function validateImageInput(input, id) {
                 const filePath = input.value;
                 const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;

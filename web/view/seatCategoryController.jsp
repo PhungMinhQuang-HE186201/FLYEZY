@@ -71,7 +71,7 @@
                             <h4 style="float:left;margin-left: 12px">Add New Seat Category</h4>
                         </div>
                         <div class="modal-body" style="padding:40px 50px;">
-                            <form role="form" action="seatCategoryController" method="post">
+                            <form role="form" action="seatCategoryController" method="post" onsubmit="return validateNameAndInfoInput(0)">
                                 <div class="row">
                                     <input type="hidden" value="<%= pc.getId() %>" name="planeCategoryId"/>
                                     <input type="hidden" value="1" name="status"/>
@@ -89,7 +89,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label><span class="glyphicon glyphicon-user"></span>Name:</label>
-                                    <input pattern="^[\p{L}\d\s]+$" type="text" class="form-control" name="name" required/>
+                                    <input pattern="^[\p{L}\d\s]+$" id="name0" type="text" class="form-control" name="name" required/>
                                 </div>
                                 <div class="form-group">
                                     <label><span class="glyphicon glyphicon-picture"></span>Number of seat:</label>
@@ -106,7 +106,7 @@
                                 <div class="form-group">
                                     <label><span class="glyphicon glyphicon-info-sign"></span>Info:</label>
                                     <div class="editor-container">
-                                        <textarea pattern="^[\p{L}\d\s]+$" class="editor" name="info"></textarea>
+                                        <textarea pattern="^[\p{L}\d\s]+$" id="info0" class="editor" name="info"></textarea>
                                     </div>
                                 </div>
                                 <button type="submit" class="btn btn-success btn-block">
@@ -170,7 +170,7 @@
                                     <h4 style="margin-left: 12px">Update</h4>
                                 </div>
                                 <div class="modal-body" style="padding:40px 50px;">
-                                    <form role="form" action="seatCategoryController" method="post">
+                                    <form role="form" action="seatCategoryController" method="post" onsubmit="return validateNameAndInfoInput(<%= sc.getId() %>)">
                                         <div class="row">
                                             <input type="hidden" value="<%= sc.getPlane_Categoryid() %>" name="planeCategoryId"/>
                                             <input type="hidden" value="<%= sc.getStatusId() %>" name="status"/>
@@ -190,7 +190,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label><span class="glyphicon glyphicon-user"></span>Name:</label>
-                                            <input pattern="^[\p{L}\d\s]+$" type="text" class="form-control" name="name" value="<%= sc.getName() %>" required/>
+                                            <input pattern="^[\p{L}\d\s]+$" id="name<%= sc.getId() %>" type="text" class="form-control" name="name" value="<%= sc.getName() %>" required/>
                                         </div>
                                         <div class="form-group">
                                             <label><span class="glyphicon glyphicon-picture"></span>Number of seat:</label>
@@ -207,7 +207,7 @@
                                         <div class="form-group">
                                             <label><span class="glyphicon glyphicon-info-sign"></span>Info:</label>
                                             <div class="editor-container">
-                                                <textarea pattern="^[\p{L}\d\s]+$" type="text" class="editor" name="info" ><%= sc.getInfo() %></textarea>
+                                                <textarea pattern="^[\p{L}\d\s]+$" id="info<%= sc.getId() %>" type="text" class="editor" name="info" ><%= sc.getInfo() %></textarea>
                                             </div>
                                         </div>
                                         <button type="submit" class="btn btn-success btn-block">
@@ -255,6 +255,16 @@
             $("#myModalSeatCategory" + id).modal('show');
         }
         ;
+        function validateNameAndInfoInput(i) {
+                const name = document.getElementById("name" + i).value.trim();
+                const info = document.getElementById("info" + i).value.trim();
+
+                if (name === "" || info === "") {
+                    alert("Please enter valid content. Do not enter spaces only.");
+                    return false;
+                }
+                return true;
+            }
 
         // func change seat category status
         let changeSeatCategoryStatusUrl = "";

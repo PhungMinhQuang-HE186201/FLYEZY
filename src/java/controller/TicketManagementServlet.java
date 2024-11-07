@@ -110,6 +110,7 @@ public class TicketManagementServlet extends HttpServlet {
         String action = request.getParameter("action");
         String flightDetailIdStr = request.getParameter("flightDetailID");
         int flightDetailId = Integer.parseInt(flightDetailIdStr);
+        
         if (request.getAttribute("flightDetailID") == null) {
             int flightDetailID = Integer.parseInt(request.getParameter("flightDetailID"));
             request.setAttribute("flightDetailID", flightDetailID);
@@ -168,12 +169,6 @@ public class TicketManagementServlet extends HttpServlet {
             String orderCode = request.getParameter("orderCode").trim();
             request.setAttribute("orderCode", orderCode);
 
-            boolean allFieldsEmpty = (flightType == null || flightType.isEmpty())
-                    && (passengerType == null || passengerType.isEmpty())
-                    && (statusTicket == null || statusTicket.isEmpty())
-                    && fName.isEmpty()
-                    && fPhoneNumber.isEmpty()
-                    && orderCode == null || orderCode.isEmpty();
             List<Ticket> ticketSearchList;
             ticketSearchList = td.searchTickets(passengerType, statusTicket, fName, fPhoneNumber, flightDetailId, flightType, orderCode);
             request.setAttribute("ticketList", ticketSearchList);

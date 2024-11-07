@@ -12,17 +12,12 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.util.List;
 import model.Accounts;
-import model.Airline;
-import model.Status;
 import dal.AccountsDAO;
 import dal.FeedbackDao;
 import dal.StatusDAO;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.Date;
 import model.Feedbacks;
 
 /**
@@ -122,7 +117,7 @@ public class evaluteControllerServlet extends HttpServlet {
                 request.setAttribute("comment", comment);
                 request.getRequestDispatcher("view/evaluate.jsp").forward(request, response);
             } else if (action.equals("update")) {
-                String comment = request.getParameter("editor");
+                String comment = request.getParameter("editor").trim();
                 if (comment == "") {
                     comment = " ";
                 } else {

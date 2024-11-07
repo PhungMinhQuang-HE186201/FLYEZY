@@ -99,9 +99,9 @@ public class BookingFlightTicketsServlet extends HttpServlet {
         Integer id = (Integer) session.getAttribute("id");
         int totalPrice = 0;
         try {
-            String pContactName = request.getParameter("pContactName");
-            String pContactPhoneNumber = request.getParameter("pContactPhoneNumber");
-            String pContactEmail = request.getParameter("pContactEmail");
+            String pContactName = request.getParameter("pContactName").trim();
+            String pContactPhoneNumber = request.getParameter("pContactPhoneNumber").trim();
+            String pContactEmail = request.getParameter("pContactEmail").trim();
 
             int adultTicket = Integer.parseInt(request.getParameter("adultTicket"));
             int childTicket = Integer.parseInt(request.getParameter("childTicket"));
@@ -131,7 +131,7 @@ public class BookingFlightTicketsServlet extends HttpServlet {
 
             for (int i = 1; i <= totalPassengers; i++) {
                 int pSex = Integer.parseInt(request.getParameter("pSex" + i));
-                String pName = request.getParameter("pName" + i);
+                String pName = request.getParameter("pName" + i).trim();
                 Date pDob = Date.valueOf(request.getParameter("pDob" + i));
 
                 String code = request.getParameter("code" + i);
@@ -153,16 +153,13 @@ public class BookingFlightTicketsServlet extends HttpServlet {
                         }
                     }
                     if (i >= adultTicket + 1 && i <= adultTicket + childTicket) {
-                        System.out.println("i'm child");
                         td.createTicket(code, flightDetailId, seatCategoryId, 2, pName, pSex, null, pDob, null, (int) (commonPrice * ptd.getPassengerTypePriceById(2)), o.getId(), 2);
                         td.createTicket(code2, flightDetailId2, seatCategoryId2, 2, pName, pSex, null, pDob, null, (int) (commonPrice2 * ptd.getPassengerTypePriceById(2)), o.getId(), 3);
                     } else if (i >= adultTicket + childTicket + 1) {
-                        System.out.println("i'm infant");
                         td.createTicket(code, flightDetailId, seatCategoryId, 3, pName, pSex, null, pDob, null, (int) (commonPrice * ptd.getPassengerTypePriceById(3)), o.getId(), 2);
                         td.createTicket(null, flightDetailId2, seatCategoryId2, 3, pName, pSex, null, pDob, null, (int) (commonPrice2 * ptd.getPassengerTypePriceById(3)), o.getId(), 3);
                     } else {
-                        System.out.println("i'm adult");
-                        String pPhoneNumber = request.getParameter("pPhoneNumber" + i);
+                        String pPhoneNumber = request.getParameter("pPhoneNumber" + i).trim();
                         Integer pBaggages = request.getParameter("pBaggages" + i).equals("0") ? null : Integer.parseInt(request.getParameter("pBaggages" + i));
                         Integer pBaggages2 = request.getParameter("pBaggages" + (totalPassengers + i)).equals("0") ? null : Integer.parseInt(request.getParameter("pBaggages" + (totalPassengers + i)));
                         int pBPrice = ((pBaggages != null) ? bmd.getPriceBaggagesById(pBaggages) : 0);
@@ -177,7 +174,7 @@ public class BookingFlightTicketsServlet extends HttpServlet {
                     } else if (i >= adultTicket + childTicket + 1) {
                         td.createTicket(code, flightDetailId, seatCategoryId, 3, pName, pSex, null, pDob, null, (int) (commonPrice * ptd.getPassengerTypePriceById(3)), o.getId(), 1);
                     } else {
-                        String pPhoneNumber = request.getParameter("pPhoneNumber" + i);
+                        String pPhoneNumber = request.getParameter("pPhoneNumber" + i).trim();
                         Integer pBaggages = request.getParameter("pBaggages" + i).equals("0") ? null : Integer.parseInt(request.getParameter("pBaggages" + i));
                         int pBPrice = ((pBaggages != null) ? bmd.getPriceBaggagesById(pBaggages) : 0);
                         totalPrice += pBPrice;

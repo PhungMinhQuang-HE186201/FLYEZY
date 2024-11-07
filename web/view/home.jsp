@@ -545,6 +545,21 @@
             document.getElementById(inputId + '-locations').style.display = 'none';
         }
 
+        function validateSelection(inputId) {
+            const displayInput = document.getElementById(inputId + 'Display');
+            const hiddenInput = document.getElementById(inputId);
+
+            if (!hiddenInput.value) {
+                displayInput.value = '';
+                alert("Please select a location from the list.");
+            }
+        }
+
+        document.getElementById("fromDisplay").addEventListener("blur", function () {
+            validateSelection('from');
+        });
+        
+
         // Filter locations based on input value
         function filterLocations(type) {
             const input = document.getElementById(type + 'Display');

@@ -110,7 +110,7 @@
     <body>
         <%@include file="header.jsp" %>
         <%@include file="admin-sideBar.jsp" %>
-        <div style="margin-left: 210px;margin-top: 60px;margin-bottom: -100px " /> 
+        <div style="margin-left: 210px;margin-top: 7%;margin-bottom: -100px " /> 
         <div>
             <div style="margin-left: 5%">
                 <h2>Order Management</h2>
@@ -160,7 +160,6 @@
                     <th>Payment Type</th>
                     <th>Created_at</th>
                     <th>Status</th>
-                    <th>Airline id</th>
                     <th style="width: 25%">Actions</th>
                 </tr>
             </thead>
@@ -193,15 +192,9 @@
                     <td style="font-weight: bold; <%= (o.getStatus_id() == 12) ? "color: #FFA500;" : (o.getStatus_id() == 10) ? "color: #228B22;" : "" %>">
                         <%= sd.getStatusNameById(o.getStatus_id()) %>
                     </td>
-
-
-                    <td><%=od.getAirlineIdByOrder(o.getId())%></td>
                     <td> 
-                        <a href="TicketController?orderId=1<%=o.getId()%>" class="btn btn-warning" style="margin-left: 10px; background-color:green">
+                        <a href="TicketController?orderId=1<%=o.getId()%>" class="btn btn-primary" style="margin-left: 10px;">
                             View Order Tickets >>
-                        </a>
-                        <a href="evaluateController?action=view&orderId=<%=o.getId()%>" class="btn btn-primary" style="margin-left: 10px; background-color:green">
-                            Feedback
                         </a>
                     </td>
                 </tr>

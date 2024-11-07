@@ -10,7 +10,6 @@ import dal.OrderDAO;
 import dal.StatusDAO;
 import dal.TicketDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -21,8 +20,7 @@ import java.util.List;
 import model.Accounts;
 import model.FlightDetails;
 import model.Order;
-import model.Status;
-import model.Ticket;
+
 
 /**
  *

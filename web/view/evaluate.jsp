@@ -109,8 +109,8 @@
         <div style="margin-top: 120px;margin-bottom: 68.5px" class="container">
             <form method="get" action="evaluateController"> 
                 <div class="rating">
-                    <h1 style="margin-bottom: 25px;">Đánh giá dịch vụ</h1>
-                    <p>Chất lượng chuyến đi: 
+                    <h1 style="margin-bottom: 25px;">Service Review</h1>
+                    <p>Quality of trip: 
                         <span class="star"  data-value="1">
                             <svg style="margin-bottom: 5px" class="selected" onclick="chooseStar(this)" width="20px" height="20px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="white" d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></svg>
                         </span>
@@ -126,7 +126,7 @@
                         <span class="star" data-value="5">
                             <svg style="margin-bottom: 5px" class="selected" onclick="chooseStar(this)" width="20px" height="20px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="white" d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></svg>
                         </span>
-                        <span style="color: #ffb91e" id="star-text">Tuyệt vời</span>
+                        <span style="color: #ffb91e" id="star-text">Very good</span>
                     </p>
                 </div>  
                 <input type="hidden" id="rating-value" name="ratingValue" value="5"/>
@@ -153,6 +153,16 @@
                                 ClassicEditor.create(document.querySelector('#editor')).catch(error => {
                                     console.error(error);
                                 });
+                                function validateComment() {
+                                    const comment = document.getElementById("editor").value.trim();
+
+                                    if (comment.length < 4) {
+                                        alert("Content must contain at least 4 characters.");
+                                        return false;
+                                    }
+                                    alert("ok");
+                                    return true;
+                                }
                                 function chooseStar(star) {
                                     const stars = document.querySelectorAll('.star svg');
                                     const ratingValue = parseInt(star.parentElement.getAttribute('data-value'));
@@ -172,19 +182,19 @@
                                     ratingValueInput.value = ratingValue;
                                     switch (ratingValue) {
                                         case 1:
-                                            starText.textContent = "Rất tệ";
+                                            starText.textContent = "Very Bad";
                                             break;
                                         case 2:
-                                            starText.textContent = "Tệ";
+                                            starText.textContent = "Bad";
                                             break;
                                         case 3:
-                                            starText.textContent = "Bình thường";
+                                            starText.textContent = "Normal";
                                             break;
                                         case 4:
-                                            starText.textContent = "Tốt";
+                                            starText.textContent = "Good";
                                             break;
                                         case 5:
-                                            starText.textContent = "Tuyệt vời";
+                                            starText.textContent = "Very Good";
                                             break;
                                         default:
                                             starText.textContent = "";
