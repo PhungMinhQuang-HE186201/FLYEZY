@@ -39,7 +39,7 @@
                         </div>
 
 
-                        <div   style="margin-top: 13%;margin-left: 3%;">
+                        <div   style="margin-top: 9%;margin-left: 3%;">
                             <img src="<%=amd.getImageById(n.getAirline_id())%>" style="width: 12%; height: 100%;">
                             <p style="margin-top: -8%;
                                margin-left: 14%;

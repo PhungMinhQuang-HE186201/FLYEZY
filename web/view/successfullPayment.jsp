@@ -10,7 +10,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="shortcut icon" type="image/jpg" href="image/logo-icon.png" />
-        <title>Thanh toán thành công</title>
+        <title>Successful Payment</title>
         <style>
             .box {
                 background-color: #fff;
@@ -52,11 +52,11 @@
             }
             .button {
                 display: inline-block;
-                color: rgb(71, 143, 192);
+                color: #3C6E57;
                 font-size: 16px;
                 padding: 10px 20px;
                 text-decoration: none;
-                border:2px solid rgb(71, 143, 192);
+                border:2px solid #3C6E57;
                 border-radius: 5px;
                 margin-top: 20px;
                 transition: background-color 0.3s;
@@ -64,44 +64,7 @@
             .button:hover {
                 color: white;
                 text-decoration: none;
-                background-color: rgb(71, 143, 192);
-            }
-            .loader {
-                background-image: url('image/background.png');
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100vw;
-                height: 100vh;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                z-index: 9999;
-                transition: all 3s;
-            }
-
-            .loader-hidden {
-                opacity: 0;
-                visibility: hidden;
-            }
-
-            .loader::after {
-                content: "";
-                width: 75px;
-                height: 75px;
-                border: 15px solid white;
-                border-top-color: var(--tripoveMainColor) ;
-                border-radius: 50%;
-                animation: loading 2s ease infinite;
-            }
-
-            @keyframes loading {
-                from {
-                    transform: rotate(0turn);
-                }
-                to {
-                    transform: rotate(1turn);
-                }
+                background-color: #3C6E57;
             }
         </style>
     </head>
@@ -117,14 +80,5 @@
         </div>
         <div class="loader" style=" background-image: url('image/background.png')"></div>
         <%@include file="footer.jsp" %>
-        <script>
-            window.addEventListener("load", () => {
-                const loader = document.querySelector(".loader");
-                loader.classList.add("loader-hidden");
-                loader.addEventListener("transitionend", () => {
-                    document.body.removeChild("loader");
-                });
-            });
-        </script>
     </body>
 </html>

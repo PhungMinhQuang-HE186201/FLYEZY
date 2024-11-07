@@ -146,7 +146,7 @@
                 <input type="hidden" name="airlineId" value="<%= aid %>" >
             </div>
         </form>
-        <table class="entity" style="margin-left: 210px; position: relative; left: 104px; top: -2px; width: 1339.5px; transition: none;" >
+        <table class="entity" style="margin-left: 210px; position: relative; left: 104px; top: -2px; transition: none;" >
             <thead>
                 <tr>
                     <th>Date</th>

@@ -289,7 +289,7 @@
                             <label for="sortDefaultAirline" >Default</label>
                         </div>
                         <%for(Airline a : (List<Airline>)amd.getAllAirline()){
-                            if(a.getName().equals("Empty"))continue;
+                            if(a.getName().equals("FLYEZY")) continue;
                         %>
                         <div>
                             <input type="radio" id="<%=a.getName()%>" name="sortAirlines" value="<%=a.getName()%>" onchange="sortAirlines(this.value)">
@@ -376,6 +376,10 @@
                         <div style="text-align: center; font-size: 20px">Select Ticket Class</div>
                         <div class="ticket-category-list" style="display: flex; flex-wrap: wrap;">
                             <% 
+                                String adultNumbers = request.getParameter("adult");
+                                String childNumbers = request.getParameter("child");
+                                String infantNumbers = request.getParameter("infant");
+                                int totalPassengers = Integer.parseInt(adultNumbers) + Integer.parseInt(childNumbers) + Integer.parseInt(infantNumbers);
                                 int activated = 0;
                                 for(int i = 0; i<ticketCatList.size(); i++){
                                     if(ticketCatList.get(i).getStatusId()==1){
@@ -389,6 +393,7 @@
                                 <div class="ticket-category-head" style="background-color: <%= colors[i] %>;">
                                     <%=ticketCatList.get(i).getName()%>
                                     <div style="font-size: 25px"><%= NumberFormat.getInstance().format(fd.getPrice()*(1+ticketCatList.get(i).getSurcharge()))%> ₫</div>
+                                    <div style="font-size: 25px"><%=scd.getNumberOfEmptySeat(fd.getId(),ticketCatList.get(i).getId())%></div>
                                 </div>
                                 <div class="ticket-category-body" style="border: 2px solid <%= colors[i] %>; padding: 12px 12px;; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;min-height: 85%">
                                     <div>
@@ -407,7 +412,18 @@
                                         <input type="hidden" name="adult" value="${param.adult}"/>
                                         <input type="hidden" name="child" value="${param.child}"/>
                                         <input type="hidden" name="infant" value="${param.infant}"/>
+                                        <%    
+                                        if(totalPassengers<= scd.getNumberOfEmptySeat(fd.getId(),ticketCatList.get(i).getId())){
+                                        %>
                                         <button style="background-color: <%= colors[i] %>;" type="submit">Buy Ticket</button>
+                                        <%
+                                            } else {
+                                        %>
+                                        <button style="background-color: #aaa" disabled >SOLD OUT</button>
+                                        <%
+                                        }
+                                        %>
+
                                     </form>
                                     <% } else if("roundTrip".equals(request.getParameter("flightType")) && request.getParameter("flightDetailId")==null){
                                     %>
@@ -421,7 +437,18 @@
                                         <input type="hidden" name="adult" value="${param.adult}"/>
                                         <input type="hidden" name="child" value="${param.child}"/>
                                         <input type="hidden" name="infant" value="${param.infant}"/>
+                                        <%    
+                                        if(totalPassengers<= scd.getNumberOfEmptySeat(fd.getId(),ticketCatList.get(i).getId())){
+                                        %>
                                         <button style="background-color: <%= colors[i] %>;" type="submit">Select Departure Ticket</button>
+                                        <%
+                                            } else {
+                                        %>
+                                        <button style="background-color: #aaa" disabled >SOLD OUT</button>
+                                        <%
+                                        }
+                                        %>
+
                                     </form>
                                     <% } else if("roundTrip".equals(request.getParameter("flightType")) && request.getParameter("flightDetailId")!=null){ %>
                                     <form class="ticket-category-form" action="bookingFlightTickets" style="display: flex; justify-content: center; ">
@@ -432,7 +459,17 @@
                                         <input type="hidden" name="adult" value="${param.adult}"/>
                                         <input type="hidden" name="child" value="${param.child}"/>
                                         <input type="hidden" name="infant" value="${param.infant}"/>
-                                        <button style="background-color: <%= colors[i] %>;" type="submit">Select Return Ticket</button>
+                                        <%    
+                                        if(totalPassengers<= scd.getNumberOfEmptySeat(fd.getId(),ticketCatList.get(i).getId())){
+                                        %>
+                                        <button style="background-color: <%= colors[i] %>;" type="submit">Select Return Ticket</button>                                        
+                                        <%
+                                        } else {
+                                        %>
+                                        <button style="background-color: #aaa" disabled >SOLD OUT</button>
+                                        <%
+                                        }
+                                        %>
                                     </form>
                                     <%}%>
                                 </div>

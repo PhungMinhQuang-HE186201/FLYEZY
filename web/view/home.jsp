@@ -223,7 +223,7 @@
                                     <!-- From Field -->
                                     <div class="col-md-2" style="padding-right: 0px">
                                         <p style="color: black; margin: 0; font-size: 12px">FROM</p>
-                                        <input type="text" style="height: 100%;font-size: 18px" class="form-control" id="fromDisplay" onclick="showLocationList('from')" oninput="filterLocations('from')" placeholder="FROM" required>
+                                        <input type="text" readonly style="height: 100%;font-size: 18px" class="form-control" id="fromDisplay" onclick="showLocationList('from')" oninput="filterLocations('from')" placeholder="FROM" required>
                                         <input type="hidden" id="from" name="departure">
                                         <div id="from-locations" class="location-list">
                                             <%                
@@ -246,7 +246,7 @@
                                     <!-- To Field -->
                                     <div class="col-md-2" style="padding-right: 0px">
                                         <p style="color: black; margin: 0; font-size: 12px">TO</p>
-                                        <input type="text" style="height: 100%;font-size: 18px" class="form-control" id="toDisplay" onclick="showLocationList('to')" oninput="filterLocations('to')" placeholder="TO" required>
+                                        <input type="text" readonly style="height: 100%;font-size: 18px" class="form-control" id="toDisplay" onclick="showLocationList('to')" oninput="filterLocations('to')" placeholder="TO" required>
                                         <input type="hidden" id="to" name="destination">
                                         <div id="to-locations" class="location-list">
                                             <%                
@@ -336,7 +336,7 @@
             <div id="promotion">
                 <div class="promotion-item row">
                     <div class="col-md-6">
-                        <img src="" alt="">
+                        <img src="img/home1.jpg" alt="">
                     </div>
                     <div class="col-md-6">
                         <h3>Attractive offers</h3>
@@ -347,7 +347,7 @@
                 </div>
                 <div class="promotion-item row">
                     <div class="col-md-6">
-                        <img src="" alt="">
+                        <img src="img/home2.jpg" alt="">
                     </div>
                     <div class="col-md-6">
                         <h3>Peaceful discovery</h3>
@@ -545,21 +545,6 @@
             document.getElementById(inputId + '-locations').style.display = 'none';
         }
 
-        function validateSelection(inputId) {
-            const displayInput = document.getElementById(inputId + 'Display');
-            const hiddenInput = document.getElementById(inputId);
-
-            if (!hiddenInput.value) {
-                displayInput.value = '';
-                alert("Please select a location from the list.");
-            }
-        }
-
-        document.getElementById("fromDisplay").addEventListener("blur", function () {
-            validateSelection('from');
-        });
-        
-
         // Filter locations based on input value
         function filterLocations(type) {
             const input = document.getElementById(type + 'Display');
@@ -632,7 +617,6 @@
                 returnDateInput.removeAttribute("required");
             }
         }
-        // Assuming you have jQuery and Bootstrap Datepicker included
         $(document).ready(function () {
             // Get today's date
             var today = new Date();

@@ -405,10 +405,12 @@
                             <% } else { %>
                             <a class="btn btn-danger" style="text-decoration: none;" onclick="openModalOrder(<%= o.getId() %>)">Cancel Order</a>
                             <% } %>
-                            <% FeedbackDao fd1 = new FeedbackDao(); 
+                            <% 
+                               
+                               FeedbackDao fd1 = new FeedbackDao(); 
                                Integer idd = (Integer) session.getAttribute("id"); 
                                Feedbacks f = fd1.getFeedbakByOrderId(o.getId(), idd); 
-                               if (f == null) { %>
+                                    if (f == null) { %>
                             <a href="evaluateController?orderId=<%= o.getId() %>">
                                 <button class="btn btn-outline-secondary">Feedback</button>
                             </a>
@@ -416,7 +418,8 @@
                             <a href="evaluateController?action=viewUpdate&orderId=<%= o.getId() %>">
                                 <button class="btn btn-outline-secondary">Update Feedback</button>
                             </a>
-                            <% } %>
+                            <% }
+                            %>
                         </div>
                     </div>
 
@@ -653,7 +656,7 @@
             });
 
             function paymentMedthodDisplay(id) {
-                var paymentMethods = document.getElementById("payment_methods"+id);
+                var paymentMethods = document.getElementById("payment_methods" + id);
                 if (paymentMethods.style.display === 'none' || paymentMethods.style.display === '') {
                     paymentMethods.style.display = 'block';
                 } else {
