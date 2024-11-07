@@ -81,25 +81,25 @@ public class FeedbackManagementServlet extends HttpServlet {
             return;
         } else {
             Accounts acc = ad.getAccountsById(idd);
+            request.setAttribute("airlineID", acc.getAirlineId());
             request.setAttribute("account", acc);
-        }
-        String action = request.getParameter("action");
-
-        if (action == null) {
-            List<Feedbacks> feedbackList = fd.getAllFeedback();
-            List<Status> statusList = sd.getStatusOfFeedback();
-            request.setAttribute("feedbackList", feedbackList);
-            request.setAttribute("statusList", statusList);
-            request.getRequestDispatcher("view/Feedback.jsp").forward(request, response);
-        } else if (action.equals("search")) {
-            String fStaus = request.getParameter("fStaus");
-            String fStar = request.getParameter("fStar");
-            String fEmail = request.getParameter("fEmail");
-            List<Feedbacks> feedbackList = fd.searchFeedback2(fStaus, fStar, fEmail);
-            List<Status> statusList = sd.getStatusOfFeedback();
-            request.setAttribute("feedbackList", feedbackList);
-            request.setAttribute("statusList", statusList);
-            request.getRequestDispatcher("view/Feedback.jsp").forward(request, response);
+            String action = request.getParameter("action");
+            if (action == null) {
+                List<Feedbacks> feedbackList = fd.getAllFeedback(acc.getAirlineId());
+                List<Status> statusList = sd.getStatusOfFeedback();
+                request.setAttribute("feedbackList", feedbackList);
+                request.setAttribute("statusList", statusList);
+                request.getRequestDispatcher("view/Feedback.jsp").forward(request, response);
+            } else if (action.equals("search")) {
+                String fStaus = request.getParameter("fStaus");
+                String fStar = request.getParameter("fStar");
+                String fEmail = request.getParameter("fEmail");
+                List<Feedbacks> feedbackList = fd.searchFeedback2(fStaus, fStar, fEmail, acc.getAirlineId());
+                List<Status> statusList = sd.getStatusOfFeedback();
+                request.setAttribute("feedbackList", feedbackList);
+                request.setAttribute("statusList", statusList);
+                request.getRequestDispatcher("view/Feedback.jsp").forward(request, response);
+            }
         }
     }
 

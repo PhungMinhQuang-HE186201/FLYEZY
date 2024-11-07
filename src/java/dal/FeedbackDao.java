@@ -112,12 +112,20 @@ public class FeedbackDao extends DBConnect {
         }
         return list;
     }
-    public List<Feedbacks> getAllFeedback() {
+
+    public List<Feedbacks> getAllFeedback(int id) {
         int n = 0;
-        String sql = "Select * from Feedbacks";
+        String sql = "Select Distinct f.id,f.Accountsid,f.ratedStar,f.comment,f.date,f.created_at,f.updated_at,f.Statusid,f.Order_id\n"
+                + "From Feedbacks f Join `flyezy`.`Order` o On f.Order_id= o.id\n"
+                + "                Join  Ticket t On t.Order_id= o.id\n"
+                + "                Join  Flight_Detail f1 on f1.id=t.Flight_Detail_id\n"
+                + "                Join Flight f2 on f2.id=f1.Flightid\n"
+                + "                Join Airline a on a.id=f2.Airline_id\n"
+                + "                Where f2.Airline_id =?";
         List<Feedbacks> list = new ArrayList<>();
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Feedbacks f = new Feedbacks(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getString(4), rs.getTimestamp(5), rs.getTimestamp(6), rs.getTimestamp(7), rs.getInt(8), rs.getInt(9));
@@ -128,6 +136,7 @@ public class FeedbackDao extends DBConnect {
         }
         return list;
     }
+
     public void updateFeedback(Feedbacks feedbacks) {
         String sql = "UPDATE Feedbacks\n"
                 + "   SET ratedStar = ?\n"
@@ -189,19 +198,26 @@ public class FeedbackDao extends DBConnect {
         }
         return ls;
     }
-    public List<Feedbacks> searchFeedback2(String Status, String Star, String Email) {
+
+    public List<Feedbacks> searchFeedback2(String Status, String Star, String Email, int id) {
         List<Feedbacks> ls = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT f.id,f.Accountsid,f.ratedStar,f.comment,f.date,f.created_at,f.updated_at,f.Statusid,f.Order_id,a.email FROM Feedbacks f\n"
-                + "              join Accounts a On f.Accountsid=a.id WHERE 1=1");
+        StringBuilder sql = new StringBuilder("Select Distinct f.id,f.Accountsid,f.ratedStar,f.comment,f.date,f.created_at,f.updated_at,f.Statusid,f.Order_id\n"
+                + "From Feedbacks f Join `flyezy`.`Order` o On f.Order_id= o.id\n"
+                + "                Join  Ticket t On t.Order_id= o.id\n"
+                + "                Join  Flight_Detail f1 on f1.id=t.Flight_Detail_id\n"
+                + "                Join Flight f2 on f2.id=f1.Flightid\n"
+                + "                Join Airline a on a.id=f2.Airline_id\n"
+                + "                Join Accounts a1 on a1.id=f.Accountsid\n"
+                + "                Where f2.Airline_id = " + id);
 
         if (Status != null && !Status.isEmpty()) {
-            sql.append(" AND Statusid = ?");
+            sql.append(" AND f.Statusid = ?");
         }
         if (Star != null && !Star.isEmpty()) {
             sql.append(" AND ratedStar = ?");
         }
         if (Email != null && !Email.isEmpty()) {
-            sql.append(" AND email LIKE ?");
+            sql.append(" AND a1.email LIKE ?");
         }
 
         try {
@@ -216,7 +232,7 @@ public class FeedbackDao extends DBConnect {
                 ps.setInt(i++, star);
             }
             if (Email != null && !Email.isEmpty()) {
-                ps.setString(i++, "%" + Email + "%");
+                ps.setString(i++, "%" + Email.trim() + "%");
             }
 
             ResultSet rs = ps.executeQuery();
@@ -229,6 +245,7 @@ public class FeedbackDao extends DBConnect {
         }
         return ls;
     }
+
     public static void main(String[] args) {
         FeedbackDao fd = new FeedbackDao();
         List<Feedbacks> list = fd.getFeedbakByOrderId2(1);
