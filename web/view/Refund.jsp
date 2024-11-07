@@ -23,7 +23,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Account Management</title>
+        <title>Refund Management</title>
         <link rel="shortcut icon" type="image/png" href="img/flyezy-logo3.png" />
         <link rel="stylesheet" href="css/styleAdminController.css">
         <link rel="stylesheet" href="css/styleGeneral.css"/>
@@ -90,6 +90,7 @@
                         <th>Bank Account</th>
                         <th>Request Date</th>
                         <th>Refund Date</th>
+                        <th>Refund Price</th>
                         <th>Ticket ID</th>
                         <th>Status</th>
                         <th style="padding: 0 55px; min-width: 156px">Actions</th>
@@ -108,6 +109,7 @@
                         <td><%=r.getBankAccount()%></td>
                         <td><%=r.getRequestDate()%></td>
                         <td><%=r.getRefundDate()%></td>
+                        <td><%=r.getRefundPrice()%></td>
                         <td><%=r.getTicketid()%></td>
                         <td><%=sd.getStatusNameById(r.getStatusid())%></td>
                         <td>
@@ -129,6 +131,12 @@
                                                     <div class="form-group col-md-4">
                                                         <label for="usrname"><span class="glyphicon glyphicon-globe"></span>ID:</label>
                                                         <input type="text" class="form-control" id="usrname" name="id" value="<%= r.getId() %>" readonly="">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label for="usrname"><span class="bi bi-cash"></span>Refund:</label>
+                                                        <%RefundDAO rd1 = new RefundDAO();
+                                                          int maxPrice = rd1.getPriceOfTicket(r.getId());%>
+                                                        <input type="number" class="form-control" id="usrname" name="price" value="<%= r.getRefundPrice() %>" min="0" max="<%=maxPrice%>">
                                                     </div>
                                                     <div class="form-group col-md-8">
                                                         <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Status:</label></div>
@@ -154,35 +162,6 @@
                     <%}%>
                 </tbody>
             </table>
-            <div style="">
-                <nav aria-label="...">
-                    <ul class="pagination">
-                        <c:if test="${index != 1}">    
-                            <li class="page-item">
-                                <a class="page-link" href="accountController?index=${index -1}">Previous</a>
-                            </li>
-                        </c:if>    
-                        <c:forEach begin="1" end ="${numOfPage}" var="i">
-                            <c:if test="${index == i}">
-                                <li class="page-item active">
-                                    <a class="page-link" href="accountController?index=${i}">${i}</a>
-                                </li>
-                            </c:if>
-
-                            <c:if test="${index != i}">
-                                <li class="page-item">
-                                    <a class="page-link" href="accountController?index=${i}">${i}</a>
-                                </li>
-                            </c:if>
-                        </c:forEach>
-                        <c:if test="${index != numOfPage}">    
-                            <li class="page-item">
-                                <a class="page-link" href="accountController?index=${index +1}">Next</a>
-                            </li>
-                        </c:if> 
-                    </ul>
-                </nav>
-            </div>
         </div>
 
         <!-- change status Modal -->

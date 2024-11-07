@@ -131,7 +131,7 @@ public class TicketDAO extends DBConnect {
     }
 
     public void rejectTicketRefundById(int refundID) {
-        String sql = "UPDATE Ticket SET Statusid = 5 WHERE id = (SELECT ticketID FROM Refund WHERE id = ?)";
+        String sql = "UPDATE Ticket SET Statusid = 14 WHERE id = (SELECT ticketID FROM Refund WHERE id = ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, refundID);
             ps.executeUpdate();
