@@ -11,6 +11,8 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Ticket;
 
 /**
@@ -51,6 +53,39 @@ public class TicketDAO extends DBConnect {
         return null;
     }
 
+    public  List<Ticket> getAllTicketSuccessfulPaymentByOrderId(int orderId){
+         List<Ticket> ls = new ArrayList<>();
+        String sql  = "SELECT * FROM flyezy.ticket where Order_id = ? and Statusid = 10;";
+        try {
+             PreparedStatement pre = conn.prepareStatement(sql);
+             pre.setInt(1, orderId);
+        ResultSet rs = pre.executeQuery();
+            while (rs.next()) {
+                Ticket t = new Ticket(rs.getInt("id"),
+                        rs.getInt("Flight_Detail_id"),
+                        rs.getInt("Seat_Categoryid"),
+                        rs.getInt("Passenger_Typesid"),
+                        rs.getString("code"),
+                        rs.getString("pName"),
+                        rs.getInt("pSex"),
+                        rs.getString("pPhoneNumber"),
+                        rs.getDate("pDob"),
+                        rs.getInt("Baggagesid"),
+                        rs.getInt("totalPrice"),
+                        rs.getInt("Order_id"),
+                        rs.getInt("Statusid"),
+                        rs.getInt("Flight_Type_id"),
+                        rs.getTimestamp("cancelled_at"));
+                ls.add(t);
+            }
+            return ls;
+        } catch (SQLException ex) {
+           ex.printStackTrace();
+        }
+       return null;
+    }
+    
+    
     public void confirmSuccessAllTicketsByOrderId(int orderId) {
 
         String sql = "UPDATE Ticket SET Statusid = 10 where Order_id=? and Statusid = 12";

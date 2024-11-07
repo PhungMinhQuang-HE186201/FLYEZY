@@ -69,6 +69,21 @@ public class SeatCategoryDAO extends DBConnect {
         }
         return null;
     }
+    
+     public SeatCategory getNameBySeatCategoryId(int id) {
+        String sql = "SELECT name FROM Seat_Category WHERE id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+               rs.getString("name");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public boolean addSeatCategory(SeatCategory sc) {
         String sql = "INSERT INTO Seat_Category (name, numberOfSeat, image, info, seatEachRow, surcharge, Plane_Categoryid, Status_id) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)";
