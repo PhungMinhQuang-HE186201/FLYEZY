@@ -33,7 +33,7 @@
             </div>
             <ul id="header-nav1" style="font-weight: 520">
                 <li "><a href="home" >HOME</a></li>
-                    <c:if test="${requestScope.account.getRoleId()==3}">
+                    <c:if test="${requestScope.account == null || requestScope.account.getRoleId()==3}">
                     <li>
                         <a href="${requestScope.account == null ? 'findOrder' : 'buyingHistory'}">TICKETS</a>
                     </li>
@@ -52,7 +52,6 @@
                 <li "><a href="News">NEWS</a></li>
                 <li "><a href="#footer" >CONTACT</a></li>
             </ul>
-
 
             <c:if test="${requestScope.account==null}">
                 <div id="header-nav2">
