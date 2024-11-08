@@ -393,7 +393,6 @@
                                 <div class="ticket-category-head" style="background-color: <%= colors[i] %>;">
                                     <%=ticketCatList.get(i).getName()%>
                                     <div style="font-size: 25px"><%= NumberFormat.getInstance().format(fd.getPrice()*(1+ticketCatList.get(i).getSurcharge()))%> ₫</div>
-                                    <div style="font-size: 25px"><%=scd.getNumberOfEmptySeat(fd.getId(),ticketCatList.get(i).getId())%></div>
                                 </div>
                                 <div class="ticket-category-body" style="border: 2px solid <%= colors[i] %>; padding: 12px 12px;; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;min-height: 85%">
                                     <div>
