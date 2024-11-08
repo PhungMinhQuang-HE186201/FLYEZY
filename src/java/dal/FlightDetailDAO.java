@@ -218,14 +218,12 @@ public class FlightDetailDAO extends DBConnect {
         return -1;
     }
 
-    public List<FlightDetails> getAllDetailByFlightId(int flightid, int index) {
+    public List<FlightDetails> getAllDetailByFlightId(int flightid) {
         List<FlightDetails> ls = new ArrayList<>();
-        String sql = "SELECT * FROM flyezy.Flight_Detail WHERE flightid = ? "
-                + " LIMIT 5 OFFSET ?";
+        String sql = "SELECT * FROM flyezy.Flight_Detail WHERE flightid = ? ";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, flightid);
-            ps.setInt(2, (index - 1) * 5);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 FlightDetails flightDetail = new FlightDetails();
@@ -341,15 +339,13 @@ public class FlightDetailDAO extends DBConnect {
         }
     }
 
-    public List<FlightDetails> searchByStatus(int statusId, int flightId, int index) {
+    public List<FlightDetails> searchByStatus(int statusId, int flightId) {
         List<FlightDetails> flightDetails = new ArrayList<>();
-        String query = "SELECT * FROM Flight_Detail WHERE status_id = ? AND flightid = ?"
-                + " LIMIT 5 OFFSET 0";
+        String query = "SELECT * FROM Flight_Detail WHERE status_id = ? AND flightid = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, statusId);
             ps.setInt(2, flightId);
-            ps.setInt(3, (index - 1) * 5);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -370,15 +366,13 @@ public class FlightDetailDAO extends DBConnect {
         return flightDetails;
     }
 
-    public List<FlightDetails> searchByDate(Date date, int flightId, int index) {
+    public List<FlightDetails> searchByDate(Date date, int flightId) {
         List<FlightDetails> flightDetails = new ArrayList<>();
-        String query = "SELECT * FROM Flight_Detail WHERE date = ? AND flightid = ?"
-                + " LIMIT 5 OFFSET 0";
+        String query = "SELECT * FROM Flight_Detail WHERE date = ? AND flightid = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setDate(1, date);
             ps.setInt(2, flightId);
-            ps.setInt(3, (index - 1) * 5);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -398,16 +392,14 @@ public class FlightDetailDAO extends DBConnect {
         return flightDetails;
     }
 
-    public List<FlightDetails> searchByTimeRange(Time fromTime, Time toTime, int flightId, int index) {
+    public List<FlightDetails> searchByTimeRange(Time fromTime, Time toTime, int flightId) {
         List<FlightDetails> flightDetails = new ArrayList<>();
-        String query = "SELECT * FROM Flight_Detail WHERE time BETWEEN ? AND ? AND flightid = ?"
-                + " LIMIT 5 OFFSET ?";
+        String query = "SELECT * FROM Flight_Detail WHERE time BETWEEN ? AND ? AND flightid = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setTime(1, fromTime);
             ps.setTime(2, toTime);
             ps.setInt(3, flightId);
-            ps.setInt(4, (index - 1) * 5);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
