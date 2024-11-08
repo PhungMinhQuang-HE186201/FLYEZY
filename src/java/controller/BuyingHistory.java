@@ -19,7 +19,6 @@ import model.Accounts;
 import model.FlightDetails;
 import model.Order;
 
-
 /**
  *
  * @author PMQUANG
@@ -54,7 +53,16 @@ public class BuyingHistory extends HttpServlet {
             if (code != null && !code.isEmpty()) {
                 listOrder = od.getListOrderByCodeAndAccountId(code.trim(), idd);
             } else {
-                listOrder = od.getAllOrdersByAccountId(idd);
+                String idx = request.getParameter("index");
+                int index = 1;
+                if (idx != null) {
+                    index = Integer.parseInt(idx);
+                }
+                int numberOfItem = od.getNumberAllOrdersByAccountId(idd);
+                int numOfPage = (int) Math.ceil((double) numberOfItem / 2);
+                request.setAttribute("index", index);
+                request.setAttribute("numOfPage", numOfPage);
+                listOrder = od.getAllOrdersByAccountId(idd,index);
             }
         }
         request.setAttribute("listOrder", listOrder);

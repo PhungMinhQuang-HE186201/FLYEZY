@@ -554,7 +554,40 @@
                     %>
                 </tbody>
             </table>
+            <%String flightDetailID = request.getParameter("flightDetailID");
+               String action = request.getParameter("action");
+               if(action==null &&flightDetailID!=null){
+               int FDetailID= Integer.parseInt(flightDetailID);%>
+            <div style="">
+                <nav aria-label="...">
+                    <ul class="pagination">
+                        <c:if test="${index != 1}">    
+                            <li class="page-item">
+                                <a class="page-link" href="TicketController?index=${index -1}&flightDetailID=<%=FDetailID%>">Previous</a>
+                            </li>
+                        </c:if>    
+                        <c:forEach begin="1" end ="${numOfPage}" var="i">
+                            <c:if test="${index == i}">
+                                <li class="page-item active">
+                                    <a class="page-link" href="TicketController?index=${i}&flightDetailID=<%=FDetailID%>">${i}</a>
+                                </li>
+                            </c:if>
 
+                            <c:if test="${index != i}">
+                                <li class="page-item">
+                                    <a class="page-link" href="TicketController?index=${i}&flightDetailID=<%=FDetailID%>">${i}</a>
+                                </li>
+                            </c:if>
+                        </c:forEach>
+                        <c:if test="${index != numOfPage}">    
+                            <li class="page-item">
+                                <a class="page-link" href="TicketController?index=${index +1}&flightDetailID=<%=FDetailID%>">Next</a>
+                            </li>
+                        </c:if> 
+                    </ul>
+                </nav>
+            </div>
+            <%}%>
         </div>
 
         <!-- delete Modal -->
