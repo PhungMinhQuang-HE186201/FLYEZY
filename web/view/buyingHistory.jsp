@@ -155,9 +155,7 @@
             .status-label.cancelled {
                 background-color: #dc3545;
             }
-            .status-label.refund {
-                background-color: #28a745;
-            }
+
             .status-label.rejection {
                 background-color: #dc3545;
             }
@@ -168,9 +166,6 @@
                 background-color: #ffc107;
             }
             .status-label.canceled {
-                background-color: #28a745;
-            }
-            .status-label.refund {
                 background-color: #28a745;
             }
             .status-label.rejection {
@@ -380,7 +375,7 @@
                             <a class="btn btn-danger" style="text-decoration: none; margin-top: 5px;" onclick="openModalTicket(<%= t.getId() %>,<%= o.getId() %>)">Cancel ticket</a>
 
                             <% }
-                            if (o.getStatus_id() == 10 && t.getStatusid() == 7 && o.getPaymentTime() != null && t.getCancelled_at() != null 
+                            if ((o.getStatus_id() == 10 || o.getStatus_id() == 7) && t.getStatusid() == 7 && o.getPaymentTime() != null && t.getCancelled_at() != null 
                                 && o.getPaymentTime().compareTo(t.getCancelled_at()) < 0) { // vé bị huỷ trước lúc thanh toán sẽ không cho phép refund
                             %>
                             <a class="btn btn-warning" style="text-decoration: none; margin-top: 5px;" onclick="openModalRequestRefund(<%= t.getId() %>,<%= o.getId() %>)">Request refund</a>

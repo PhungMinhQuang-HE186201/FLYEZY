@@ -22,9 +22,11 @@ public class LoginDAO extends DBConnect {
             ResultSet rs = st.executeQuery();
 
             if (rs.next()) {
-                return true;
-            } else {
-                return false;
+                String email = rs.getString("email");
+                String phoneNumber = rs.getString("phoneNumber");
+                if (emailOrPhoneNumber.equals(email) || emailOrPhoneNumber.equals(phoneNumber)) {
+                    return true; // Chỉ trả về true nếu khớp chính xác
+                }
             }
         } catch (SQLException e) {
         }
@@ -59,9 +61,9 @@ public class LoginDAO extends DBConnect {
             st.setString(1, emailOrPhoneNumber);
             st.setString(2, emailOrPhoneNumber);
             ResultSet rs = st.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
         } catch (SQLException e) {
@@ -72,7 +74,7 @@ public class LoginDAO extends DBConnect {
     public static void main(String[] args) {
         LoginDAO a = new LoginDAO();
 
-        System.out.println(a.checkPassword("0966486473", "KIymfC4XfLDNFnygtZuXNQ=="));
+        System.out.println(a.checkUsername("td2k416@gmail.com"));
     }
 
 }
