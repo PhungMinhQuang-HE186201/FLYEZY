@@ -362,7 +362,7 @@
                                     <div style="padding: 15px">
                                         <div class="passenger-info-input-box">
                                             <div class="passenger-info-input-title">Full Name:</div> 
-                                            <input type="text" pattern="^[\p{L}\s]+$" name="pContactName" value="<%=(currentAcc!=null)?currentAcc.getName():""%>" required/>
+                                            <input type="text" pattern="^[\p{L}\s]+$" name="pContactName" id="name0" value="<%=(currentAcc!=null)?currentAcc.getName():""%>" required/>
                                         </div>
                                         <div class="passenger-info-input-box">
                                             <div class="passenger-info-input-title">Phone number:</div>
@@ -400,7 +400,7 @@
                                                 <option value="1">Mr</option>
                                                 <option value="0">Mrs</option>
                                             </select>
-                                            <input type="text" pattern="^[\p{L}\s]+$" name="pName<%=i%>" required/>
+                                            <input type="text" pattern="^[\p{L}\s]+$" id="name<%=i%>" name="pName<%=i%>" required/>
                                         </div>
                                         <div class="passenger-info-input-box">
                                             <div class="passenger-info-input-title">Date of birth:</div>
@@ -478,7 +478,7 @@
                                                 <option value="1">Boy</option>
                                                 <option value="0">Girl</option>
                                             </select>
-                                            <input type="text" pattern="^[\p{L}\s]+$" name="pName<%=i%>" required/>
+                                            <input type="text" pattern="^[\p{L}\s]+$" id="name<%=i%>" name="pName<%=i%>" required/>
                                         </div>
                                         <div class="passenger-info-input-box">
                                             <div class="passenger-info-input-title">Date of birth:</div>
@@ -527,7 +527,7 @@
                                                 <option value="1">Boy</option>
                                                 <option value="0">Girl</option>
                                             </select>
-                                            <input type="text" pattern="^[\p{L}\s]+$" name="pName<%=i%>" required/>
+                                            <input type="text" pattern="^[\p{L}\s]+$" id="name<%=i%>" name="pName<%=i%>" required/>
                                         </div>
                                         <div class="passenger-info-input-box">
                                             <div class="passenger-info-input-title">Date of birth:</div>
@@ -587,7 +587,7 @@
                     </div>
                     <div style="width: 100%">
                         <button style="width: 100%; background-color:  #9DC567; padding: 10px 30px; border: none; border-radius: 8px; color: white"
-                                onclick="submitPassengerForm()"
+                                onclick="submitPassengerForm(<%=totalPassengers%>)"
                                 >SUBMIT</button>
                     </div>
 
@@ -709,8 +709,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" onclick="confirmSeatSelection('<%=j%>')">Confirm</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Confirm</button>
                         </div>
                     </div>
                 </div>
@@ -738,6 +737,17 @@
         </div>
 
         <script>
+            function validateNameInput(totalPassenger) {
+                for (var psg = 0; psg <= totalPassenger; psg++) {
+                    const name = document.getElementById("name" + psg).value.trim();
+                    if (name === "") {
+                        alert("Please enter a valid name for passenger " + psg + ". Do not enter spaces only.");
+                        return false;
+                    }
+                }
+                return true;
+            }
+
             function openDiscountModal() {
                 $("#discount").modal('show');
             }
@@ -871,17 +881,15 @@
                 return true;
             }
 
-            function submitPassengerForm() {
+            function submitPassengerForm(totalPassenger) {
                 const form = document.getElementById("passengerForm");
-                if (form.checkValidity() && validateSelectTicket()) {
+                if (form.checkValidity() && validateSelectTicket()  && validateNameInput(totalPassenger)) {
                     form.submit();
                 } else {
                     form.reportValidity();
                 }
 
             }
-
-
             function updateTotalBaggage() {
                 var totalBaggage = 0;
                 var baggageId = 0;
