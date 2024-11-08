@@ -201,7 +201,7 @@
                     <form id="input-form" action="flightTickets" method="GET" class="row g-1" onsubmit="return validateLocations(event)">
                         <div class="form-container" style="margin: 0 auto">
                             <div class="row form-input">
-                                <div style="display: flex; margin-bottom: 20px">
+                                <div style="display: flex;">
                                     <div style="display: flex; align-items: center; font-size: 16px; margin-right: 20px">
                                         <input type="radio" id="oneWay" name="flightType" value="oneWay" style="transform: scale(1.5);" checked onclick="toggleReturnDate()">
                                         <label for="oneWay" style="color: black;margin: 0; margin-left: 10px">One-way</label>
@@ -211,15 +211,15 @@
                                         <label for="roundTrip" style="color: black;margin: 0; margin-left: 10px">Round-trip</label>
                                     </div>
                                 </div>
-                                <h3 id="errorMessage" style="color: red;margin-bottom: 10px"></h3> 
+                                <p id="errorMessage" style="font-size: 16px; color: red;"></p> 
                                 <%if(request.getAttribute("account") != null && ((Accounts)request.getAttribute("account")).getRoleId() != 3){
                                 %>
-                                <h3 style="color: red;margin-bottom: 10px">Please use customer account to use the service.</h3> 
+                                <p style="font-size: 16px;color: red;">Please use customer account to use the service.</p> 
                                 <%
                                     }
                                 %>
 
-                                <div class="row" style="height: 55px">
+                                <div class="row" style="height: 55px; margin-top: 20px">
                                     <!-- From Field -->
                                     <div class="col-md-2" style="padding-right: 0px">
                                         <p style="color: black; margin: 0; font-size: 12px">FROM</p>

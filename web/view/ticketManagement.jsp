@@ -90,7 +90,7 @@
                 align-items: flex-start;
             }
             .details {
-                width: 50%; /* Đảm bảo hai khối có kích thước vừa đủ */
+                width: 50%;
                 margin: 0 0 0 26%;
             }
             .details p {
@@ -188,44 +188,97 @@
             .seat-category-list {
                 display: flex;
                 flex-wrap: wrap;
-                gap: 1rem;
-                padding: 1rem;
+                gap: 1.5rem;
+                width: fit-content;
+                padding: 2rem;
+                background-color: #f8f9fa;
+                border-radius: 1.25rem;
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
             }
 
             .seat-category-item {
-                background-color: #f0f0f0;
-                border-radius: 0.5rem;
-                padding: 1rem;
+                background: linear-gradient(135deg, #ffffff, #f0f4f8);
+                border-radius: 1rem;
+                padding: 1.5rem;
                 display: flex;
+                align-items: flex-start;
                 justify-content: space-between;
-                align-items: center;
-                min-width: 200px;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+                min-width: 240px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
+                border: 1px solid rgba(0, 0, 0, 0.05);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .seat-category-item::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(90deg, #BADF6C, #3C6E57);
+                transition: height 0.3s ease;
             }
 
             .seat-category-item:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                transform: translateY(-6px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            }
+
+            .seat-category-item:hover::before {
+                height: 6px;
             }
 
             .seat-category-name {
-                font-weight: bold;
-                color: #333;
+                font-size: 1.7rem;
+                font-weight: 700;
+                color: #3C6E57;
+                margin-bottom: 0.75rem;
+                transition: color 0.3s ease;
+            }
+
+            .seat-category-item:hover .seat-category-name {
+                color: #BADF6C;
             }
 
             .seat-category-count {
-                background-color: #e0e0e0;
-                border-radius: 0.25rem;
-                padding: 0.25rem 0.5rem;
-                font-size: 0.875rem;
-                color: #666;
+                display: flex;
+                align-items: center;
+                font-size: 1.7rem;
+                font-weight: 500;
+                color: #34495e;
+                background-color: rgba(186, 223, 108, 0.2);
+                border-radius: 2rem;
+                padding: 0.5rem 1rem;
+                transition: background-color 0.3s ease;
+            }
+
+            .seat-category-item:hover .seat-category-count {
+                background-color: rgba(60, 110, 87, 0.2);
+            }
+
+            .seat-category-count span {
+                font-size: 1.8rem;
+                font-weight: 700;
             }
 
             .seat-category-count span:first-child {
-                font-weight: bold;
-                color: #4a4a4a;
+                color: #3C6E57;
+                margin-right: 0.25rem;
             }
+
+            .seat-category-count span:nth-child(2) {
+                color: #7f8c8d;
+                margin: 0 0.25rem;
+            }
+
+            .seat-category-count span:last-child {
+                color: #34495e;
+                margin-left: 0.25rem;
+            }
+
         </style>
 
     </head>
@@ -233,30 +286,33 @@
         <%@include file="header.jsp" %>
         <%@include file="admin-sideBar.jsp" %>
         <%
-  Flights flight = (Flights)request.getAttribute("flight");
-  Airport airportDep =(Airport)request.getAttribute("airportDep");
-  Airport airportDes =(Airport)request.getAttribute("airportDes");
-  FlightDetails flightDetail = (FlightDetails)request.getAttribute("flightDetail");
-  Location locationDep = (Location)request.getAttribute("locationDep");
-  Location locationDes = (Location)request.getAttribute("locationDes");
-  Country countryDep = (Country)request.getAttribute("countryDep");
-  Country countryDes = (Country)request.getAttribute("countryDes");
-  PlaneCategory planeCatrgory = (PlaneCategory)request.getAttribute("planeCatrgory");
-  List<SeatCategory> seatList =(List<SeatCategory>)request.getAttribute("seatList");
+        Flights flight = (Flights)request.getAttribute("flight");
+        Airport airportDep =(Airport)request.getAttribute("airportDep");
+        Airport airportDes =(Airport)request.getAttribute("airportDes");
+        FlightDetails flightDetail = (FlightDetails)request.getAttribute("flightDetail");
+        Location locationDep = (Location)request.getAttribute("locationDep");
+        Location locationDes = (Location)request.getAttribute("locationDes");
+        Country countryDep = (Country)request.getAttribute("countryDep");
+        Country countryDes = (Country)request.getAttribute("countryDes");
+        PlaneCategory planeCatrgory = (PlaneCategory)request.getAttribute("planeCatrgory");
+        List<SeatCategory> seatList =(List<SeatCategory>)request.getAttribute("seatList");
         %>
-        <div id="main-content" style="padding:15vh 0vw 15vh 16vw; margin: 0">
-            <div class="filterController col-md-12" style="width: 100%">
+        <div id="main-content" style="padding:15vh 0vw 15vh 17vw; margin: 0">
+
+            <div class="filterController col-md-12" style="width: 100%;padding: 0">
                 <c:choose>
                     <c:when test="${not empty requestScope.orderId}">
                         <!-- Back button for orderID -->
-                        <a href="OrderController" class="btn btn-warning">Back</a>
+                        <a href="OrderController" class="btn btn-warning"><< Back to Orders Management</a>
                     </c:when>
                     <c:otherwise>
                         <!-- Back button for flightDetailID -->
-                        <a href="flightDetailManagement?flightId=${requestScope.flight.getId()}&airlineId=${requestScope.airlineId}" class="btn btn-warning">Back</a>
+                        <a href="flightDetailManagement?flightId=${requestScope.flight.getId()}&airlineId=${requestScope.airlineId}" class="btn btn-warning"> << Back</a>
                     </c:otherwise>
                 </c:choose>
-            </div>  
+            </div>
+            <div style="margin: 45px 0 18px 0; color:#3C6E57; "><h2>TICKETS MANAGEMENT</h2></div>
+
             <%if(airportDep != null && locationDep != null && countryDep != null && airportDes != null && locationDes != null && countryDes != null){%>
             <div class="flight-card">
                 <div class="flight-info">
@@ -285,7 +341,7 @@
                 </div>
             </div>
             <%}%>
-            <form action="TicketController" method="get" style="margin-bottom: 20px;">
+            <form action="TicketController" method="get"">
                 <input type="hidden" name="action" value="search">
                 <input type="hidden" name="flightDetailID" value="${flightDetailID}">
                 <strong class="filterElm">Flight Type</strong>
@@ -321,18 +377,19 @@
                 <button class="btn btn-info" type="submit">
                     Search
                 </button>
-                <a class="btn btn-danger" href="TicketController?flightDetailID=${flightDetailID}">Cancle</a>
+                <a class="btn btn-danger" href="TicketController?flightDetailID=${flightDetailID}">Cancel</a>
+
             </form>
-            <div class="seat-category-list">
-                <%for(SeatCategory s : seatList){%>
-                <div class="seat-category-item">
-                    <span class="seat-category-name"><%=s.getName()%></span>
+            <div class="seat-category-list" style="display: flex; align-items:  center">
+                <% for(SeatCategory s : seatList) { %>
+                <div class="seat-category-item" style="display: flex">
+                    <span class="seat-category-name"><%= s.getName() %></span>
                     <span class="seat-category-count">
-                        <span><%=s.getCountSeat()%></span>/<span><%=s.getNumberOfSeat()%></span>
+                        <span><%= s.getCountSeat() %></span>/<span><%= s.getNumberOfSeat() %></span>
                     </span>
                 </div>
-                <button type="button" class="btn btn-success" id="myBtn" onclick="myModal3()">Add New Maintenance Seat</button>
-                <%}%>
+                <% } %>
+                <button type="button" class="btn btn-success" id="myBtn" style="height: fit-content" onclick="myModal3()">Add New Maintenance Seat</button>
             </div>
             <div class="modal fade" id="myModal3" role="dialog">
                 <div class="modal-dialog">
@@ -391,7 +448,7 @@
                         <th>Flight Type</th>
                         <th>Total Price</th>
                         <th>Status</th>
-                        <th style="padding: 0 55px; min-width: 156px">Actions</th>
+                        <th style="padding: 0 20px;">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -464,7 +521,7 @@
                                 </div>
                             </div>
                             <!--order in4 modal-->
-                            <a class="btn btn-warning" style="text-decoration: none;width: 65%;" id="myBtn2<%= list.getId() %>" onclick="openModal2(<%= list.getId() %>)">Order Information <span style="margin-left: 8px" class="glyphicon glyphicon-menu-right"></span></a>
+                            <a class="btn btn-warning" style="text-decoration: none;width: 65%;" id="myBtn2<%= list.getId() %>" onclick="openModal2(<%= list.getId() %>)">Order Information</a>
                             <div class="modal fade" id="myModal2<%= list.getId() %>" role="dialog">
                                 <div class="modal-dialog modal-lg">
                                     <!-- Modal content-->

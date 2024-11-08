@@ -72,7 +72,6 @@ public class FlightTicketsServlet extends HttpServlet {
         AccountsDAO ad = new AccountsDAO();
         FlightDetailDAO fdd = new FlightDetailDAO();
         FlightManageDAO fd = new FlightManageDAO();
-        FlightTypeDAO ftd = new FlightTypeDAO();
         HttpSession session = request.getSession();
 
         Integer idd = (Integer) session.getAttribute("id");

@@ -111,11 +111,7 @@
         <%@include file="header.jsp" %>
         <%@include file="admin-sideBar.jsp" %>
         <div style="margin-left: 210px;margin-top: 7%;margin-bottom: -100px " /> 
-        <div>
-            <div style="margin-left: 5%">
-                <h2>Order Management</h2>
-            </div>
-        </div>
+        <div style="margin-bottom: 25px; color:#3C6E57; margin-left: 61px "><h2>ORDERS MANAGEMENT</h2></div>
 
         <input type="hidden" name="flightDetailID">
         <div class="filterController col-md-12" style="width: 100%; margin-left: 5%">

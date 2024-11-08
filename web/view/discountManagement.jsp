@@ -32,14 +32,14 @@
         <%
              int id = (int)request.getAttribute("airlineid");
         %>
-        <h2  style="color: rgb(60, 110, 87); position: relative; left: 351px; top: 106px; transition: none; cursor: move;">Discount Management</h2>
+        <div style="margin: 113px 0 0 250px; color:#3C6E57; "><h2>DISCOUNTS MANAGEMENT</h2></div>
         <div class="container">
-            <div style="display: flex; margin-top: 100px">
-                <button type="button" style="position: relative; left: 210px; top: 15px; transition: none; cursor: default;" class="btn btn-success" data-toggle="modal" data-target="#add-<%=id%>" >Add New Discount</button>
+            <div style="display: flex;">
+                <button type="button" style="position: relative; left: 60px; top: 15px; transition: none; cursor: default;" class="btn btn-success" data-toggle="modal" data-target="#add-<%=id%>" >Add New Discount</button>
             </div>
         </div>
         <div class="container">
-            <table class="entity" style="margin-left: 210px; margin-top: 50px" border="1" >
+            <table class="entity" style="margin-left: 60px; margin-top: 50px" border="1" >
 
                 <thead>
                     <tr>
