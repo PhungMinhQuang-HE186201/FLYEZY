@@ -246,9 +246,18 @@
         %>
         <div id="main-content" style="padding:15vh 0vw 15vh 16vw; margin: 0">
             <div class="filterController col-md-12" style="width: 100%">
-                <a href="flightDetailManagement?flightId=${requestScope.flight.getId()}&airlineId=${requestScope.airlineId}" class="btn btn-warning" >Back</a>
-            </div>   
-
+                <c:choose>
+                    <c:when test="${not empty requestScope.orderId}">
+                        <!-- Back button for orderID -->
+                        <a href="OrderController" class="btn btn-warning">Back</a>
+                    </c:when>
+                    <c:otherwise>
+                        <!-- Back button for flightDetailID -->
+                        <a href="flightDetailManagement?flightId=${requestScope.flight.getId()}&airlineId=${requestScope.airlineId}" class="btn btn-warning">Back</a>
+                    </c:otherwise>
+                </c:choose>
+            </div>  
+            <%if(airportDep != null && locationDep != null && countryDep != null && airportDes != null && locationDes != null && countryDes != null){%>
             <div class="flight-card">
                 <div class="flight-info">
                     <div class="flight-section">
@@ -275,6 +284,7 @@
                     </div>
                 </div>
             </div>
+            <%}%>
             <form action="TicketController" method="get" style="margin-bottom: 20px;">
                 <input type="hidden" name="action" value="search">
                 <input type="hidden" name="flightDetailID" value="${flightDetailID}">

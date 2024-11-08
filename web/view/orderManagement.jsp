@@ -157,8 +157,9 @@
                     <th>Contact Mail</th>
                     <th>Total Price</th>
                     <th>Account</th>
-                    <th>Payment Type</th>
                     <th>Created_at</th>
+                    <th>Payment Type</th>
+                    <th>Payment Time</th>
                     <th>Status</th>
                     <th style="width: 25%">Actions</th>
                 </tr>
@@ -187,13 +188,14 @@
                     <td><%=NumberFormat.getInstance().format(o.getTotalPrice())%></td>
                     <td><%=ad.getAccountNameById(o.getAccountsId())%></td>
                     <%String paymentName = ptd.getPaymentTypeNameById(o.getPaymentTypesId());%>
-                    <td><%=paymentName%></td>
                     <td><%=o.getCreated_at()%></td>
+                    <td><%=paymentName%></td>
+                    <td><%=o.getPaymentTime()%></td>     
                     <td style="font-weight: bold; <%= (o.getStatus_id() == 12) ? "color: #FFA500;" : (o.getStatus_id() == 10) ? "color: #228B22;" : "" %>">
                         <%= sd.getStatusNameById(o.getStatus_id()) %>
                     </td>
                     <td> 
-                        <a href="TicketController?orderId=1<%=o.getId()%>" class="btn btn-primary" style="margin-left: 10px;">
+                        <a href="TicketController?orderId=<%=o.getId()%>" class="btn btn-primary" style="margin-left: 10px;">
                             View Order Tickets >>
                         </a>
                     </td>
