@@ -51,6 +51,71 @@ public class TicketDAO extends DBConnect {
         return null;
     }
 
+    public List<Ticket> getAllTicketSuccessfulPaymentByOrderId(int orderId) {
+        List<Ticket> ls = new ArrayList<>();
+        String sql = "SELECT * FROM flyezy.ticket where Order_id = ? and Statusid = 10;";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setInt(1, orderId);
+            ResultSet rs = pre.executeQuery();
+            while (rs.next()) {
+                Ticket t = new Ticket(rs.getInt("id"),
+                        rs.getInt("Flight_Detail_id"),
+                        rs.getInt("Seat_Categoryid"),
+                        rs.getInt("Passenger_Typesid"),
+                        rs.getString("code"),
+                        rs.getString("pName"),
+                        rs.getInt("pSex"),
+                        rs.getString("pPhoneNumber"),
+                        rs.getDate("pDob"),
+                        rs.getInt("Baggagesid"),
+                        rs.getInt("totalPrice"),
+                        rs.getInt("Order_id"),
+                        rs.getInt("Statusid"),
+                        rs.getInt("Flight_Type_id"),
+                        rs.getTimestamp("cancelled_at"));
+                ls.add(t);
+            }
+            return ls;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    public void createMaintainenceSeat(String code, int flightDetailID,int seatCategoryId) {
+        String sql = "Insert into Ticket (code,Statusid,Flight_Detail_id,Seat_Categoryid)\n"
+                + "Value(?,?,?,?)";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, code);
+            ps.setInt(2, 12);
+            ps.setInt(3, flightDetailID);
+            ps.setInt(4, seatCategoryId);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String getContactPhone(int id) {
+        int n = 0;
+        String sql = "Select contactPhone \n"
+                + "from Feedbacks f Join flyezy.`Order` o On f.Order_id = o.id\n"
+                + "Where o.id = ?";
+        List<String> list = new ArrayList<>();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getString(1);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
     public void confirmSuccessAllTicketsByOrderId(int orderId) {
 
         String sql = "UPDATE Ticket SET Statusid = 10 where Order_id=? and Statusid = 12";
@@ -98,7 +163,7 @@ public class TicketDAO extends DBConnect {
     }
 
     public void cancelAllTicketsByOrderId(int orderId) {
-        String sql = "UPDATE Ticket SET Statusid = 7, cancelled_at = ? WHERE Order_id = ?";
+        String sql = "UPDATE Ticket SET Statusid = 7, cancelled_at = ? WHERE Order_id = ? and (Statusid = 10 or Statusid = 12)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
             ps.setInt(2, orderId);
@@ -131,7 +196,7 @@ public class TicketDAO extends DBConnect {
     }
 
     public void rejectTicketRefundById(int refundID) {
-        String sql = "UPDATE Ticket SET Statusid = 5 WHERE id = (SELECT ticketID FROM Refund WHERE id = ?)";
+        String sql = "UPDATE Ticket SET Statusid = 14 WHERE id = (SELECT ticketID FROM Refund WHERE id = ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, refundID);
             ps.executeUpdate();
@@ -336,7 +401,7 @@ public class TicketDAO extends DBConnect {
             sql.append(" AND pPhoneNumber LIKE ?");
         }
         if (orderCode != null && !orderCode.isEmpty()) {
-            sql.append(" AND o.code = ?");
+            sql.append(" AND o.code LIKE ?");
         }
 
         try {
@@ -363,7 +428,7 @@ public class TicketDAO extends DBConnect {
                 ps.setString(i++, "%" + vp + "%");
             }
             if (orderCode != null && !orderCode.isEmpty()) {
-                ps.setString(i++, orderCode);
+                ps.setString(i++, "%" + orderCode + "%");
             }
 
             ResultSet rs = ps.executeQuery();

@@ -45,6 +45,37 @@ public class SeatCategoryDAO extends DBConnect {
         return null;
     }
 
+    public List<SeatCategory> getAllSeatCategoryByFlightDetailId(int id) {
+        List<SeatCategory> ls = new ArrayList<>();
+        String sql = "select sc.* from flyezy.Seat_Category sc\n"
+                + "left join flyezy.Plane_Category pc on pc.id = sc.Plane_Categoryid\n"
+                + "left join flyezy.Flight_Detail fd on fd.Plane_Categoryid = pc.id\n"
+                + "where fd.id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                SeatCategory sc = new SeatCategory(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getInt("numberOfSeat"),
+                        rs.getString("image"),
+                        rs.getString("info"),
+                        rs.getInt("seatEachRow"),
+                        rs.getFloat("surcharge"),
+                        rs.getInt("Plane_Categoryid"),
+                        rs.getInt("Status_id")
+                );
+                ls.add(sc);
+            }
+            return ls;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public SeatCategory getSeatCategoryById(int id) {
         String sql = "SELECT * FROM Seat_Category WHERE id = ?";
         try {
@@ -63,6 +94,21 @@ public class SeatCategoryDAO extends DBConnect {
                         rs.getInt("Plane_Categoryid"),
                         rs.getInt("Status_id")
                 );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public SeatCategory getNameBySeatCategoryId(int id) {
+        String sql = "SELECT name FROM Seat_Category WHERE id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                rs.getString("name");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -209,16 +255,17 @@ public class SeatCategoryDAO extends DBConnect {
         return name;  // Trả về tên, nếu không có giá trị sẽ trả về null
     }
 
-    public List<SeatCategory> getNameAndNumberOfSeat(int id) {
+    public List<SeatCategory> getNameAndNumberOfSeat(int flightDetailId) {
         String sql = "SELECT DISTINCT s.name, s.numberOfSeat, s.numberOfSeat-COUNT(t.Seat_Categoryid) AS countSeat\n"
-                + "FROM Seat_category s\n"
-                + "JOIN Ticket t ON s.id = t.Seat_Categoryid\n"
-                + "WHERE t.Flight_Detail_id = ?\n"
-                + "GROUP BY s.name, s.numberOfSeat";
+                + " FROM Seat_Category s\n"
+                + " JOIN Ticket t ON s.id = t.Seat_Categoryid\n"
+                + " WHERE t.Flight_Detail_id = ? "
+                + " And t.code IS NOT NULL and (t.Statusid=12 or t.Statusid=10)\n"
+                + " GROUP BY s.name, s.numberOfSeat";
         List<SeatCategory> ls = new ArrayList<>();
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
-            prepare.setInt(1, id);  // Đặt giá trị id vào câu lệnh SQL
+            prepare.setInt(1, flightDetailId);  // Đặt giá trị id vào câu lệnh SQL
             ResultSet resultSet = prepare.executeQuery();
             while (resultSet.next()) {
                 String name = resultSet.getString("name");
@@ -231,22 +278,45 @@ public class SeatCategoryDAO extends DBConnect {
         }
         return ls;
     }
-    
-    public boolean isDuplicateSeatCategoryName(String name, int planeCategoryId) {
-    String sql = "SELECT * FROM Seat_Category WHERE name = ? AND Plane_Categoryid = ?";
-    try (PreparedStatement ps = conn.prepareStatement(sql)) {
-        ps.setString(1, name);
-        ps.setInt(2, planeCategoryId);
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            return true;
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-    return false; 
-}
 
+    public int getNumberOfEmptySeat(int flightDetailId, int seatCategoryId) {
+        String sql = "SELECT (s.numberOfSeat - COUNT(t.id)) AS ticketCount \n"
+                + "FROM Seat_Category s\n"
+                + "LEFT JOIN Ticket t ON s.id = t.Seat_Categoryid\n"
+                + "  AND t.Flight_Detail_id = ?\n"
+                + "  AND t.code IS NOT NULL\n"
+                + "  AND (t.Statusid = 12 OR t.Statusid = 10)\n"
+                + "WHERE s.id = ?;";
+        int ticketCount = 0;
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            prepare.setInt(1, flightDetailId);
+            prepare.setInt(2, seatCategoryId);
+            ResultSet resultSet = prepare.executeQuery();
+            if (resultSet.next()) {
+                ticketCount = resultSet.getInt("ticketCount");
+                return ticketCount;
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return ticketCount;
+    }
+
+    public boolean isDuplicateSeatCategoryName(String name, int planeCategoryId) {
+        String sql = "SELECT * FROM Seat_Category WHERE name = ? AND Plane_Categoryid = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, name);
+            ps.setInt(2, planeCategoryId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
     public static void main(String[] args) {
         SeatCategoryDAO scd = new SeatCategoryDAO();
@@ -261,6 +331,6 @@ public class SeatCategoryDAO extends DBConnect {
 //        sc.setPlane_Categoryid(2);
 //        sc.setStatusId(1);
 //        scd.updateSeatCategory(sc);
-        System.out.println(scd.getSeatCategoryById(1));
+        System.out.println(scd.getNumberOfEmptySeat(4, 2));
     }
 }

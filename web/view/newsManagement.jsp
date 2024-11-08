@@ -74,7 +74,7 @@
 
 
 
-
+            <!-- modal add new -->
             <div class="modal fade" id="News" tabindex="-1" role="dialog" aria-labelledby="addModal" aria-hidden="true" >
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -85,7 +85,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form id="addNews" action="newsManagement" method="POST" >
+                            <form id="addNews" action="newsManagement" method="POST" onsubmit="return validateNameInput()" >
                                 <input type="hidden" name="action" value="create">
                                 <input type="hidden" name="accountId" value="${requestScope.account.getId()}">
                                 <input type="hidden" name="airlineId" value="${requestScope.account.getAirlineId()}">
@@ -129,7 +129,7 @@
                                 <div class="form-group">
                                     <label><span class="glyphicon glyphicon-info-sign"></span> Content:</label>
                                     <div class="editor-container">
-                                        <textarea class="editor" name="Content" ></textarea>
+                                        <textarea class="editor" id="news-content" name="Content" ></textarea>
                                     </div>
                                 </div>  
                             </form>
@@ -183,11 +183,12 @@
                                 <td><%=ad.getAccountNameById(list.getAccountId())%></td>
 
                                 <td>
+                                    <!-- delete modal -->
                                     <button class="btn btn-info" data-toggle="modal" data-target="#update-news-<%= list.getId() %>">Update</button>
                                     <input type="hidden" value="<%= list.getId() %>" name="id">
                                     <a class="btn btn-danger" onclick="doDelete('<%= list.getId() %>')">Delete</a>
 
-
+                                    <!-- update -->
                                     <div class="modal fade" id="update-news-<%= list.getId() %>" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog" role="document">
                                             <div class="modal-content">
@@ -198,7 +199,7 @@
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <form  action="newsManagement" method="POST" >
+                                                    <form  action="newsManagement" method="POST" onsubmit="return validateNameInputForUpdate(<%= list.getId() %>)">
                                                         <input type="hidden" name="action" value="update">
                                                         <input type="hidden" name="accountId" value="${requestScope.account.getId()}">
                                                         <input type="hidden" name="airlineId" value="${requestScope.account.getAirlineId()}">
@@ -206,7 +207,7 @@
 
                                                         <div class="form-group">
                                                             <label for="nameInput"><span class="glyphicon glyphicon-plane"></span> Title:</label>
-                                                            <input type="text" class="form-control" id="nameInput" name="title"  value="<%= list.getTitle() %>" required>
+                                                            <input type="text" class="form-control" id="nameInput<%= list.getId() %>" name="title"  value="<%= list.getTitle() %>" required>
                                                         </div>
 
                                                         <div class="row">
@@ -242,7 +243,7 @@
                                                         <div class="form-group">
                                                             <label><span class="glyphicon glyphicon-info-sign"></span> Content:</label>
                                                             <div class="editor-container">
-                                                                <textarea class="editor" name="content"  maxlength="500"><%= list.getContent() %> </textarea>
+                                                                <textarea class="editor" name="content" id="news-content<%= list.getId() %>"  maxlength="500"><%= list.getContent() %> </textarea>
                                                             </div>
                                                         </div>  
 
@@ -301,6 +302,28 @@
                     document.body.appendChild(form);
                     form.submit();
                 }
+            }
+
+            function validateNameInput() {
+                const nameInput = document.getElementById("nameInput").value.trim();
+                const newsContent = document.getElementById("news-content").value.trim();
+
+                if (nameInput === "" || newsContent==="") {
+                    alert("Please enter valid content. Do not enter spaces only.");
+                    return false;
+                }
+                return true;
+            }
+            
+            function validateNameInputForUpdate(i) {
+                const nameInput = document.getElementById("nameInput"+i).value.trim();
+                const newsContent = document.getElementById("news-content"+i).value.trim();
+
+                if (nameInput === "" || newsContent==="") {
+                    alert("Please enter valid content. Do not enter spaces only.");
+                    return false;
+                }
+                return true;
             }
 
             function displayImage(input) {

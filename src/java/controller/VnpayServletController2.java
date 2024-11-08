@@ -28,6 +28,9 @@ import dal.Config;
 import jakarta.servlet.http.HttpSession;
 import model.Accounts;
 import dal.OrderDAO;
+import dal.TicketDAO;
+import model.Order;
+import model.Ticket;
 /**
  *
  * @author Fantasy
@@ -67,6 +70,7 @@ public class VnpayServletController2 extends HttpServlet {
         Integer idd = (Integer) session.getAttribute("id");
         OrderDAO od = new OrderDAO();
         AccountsDAO ad = new AccountsDAO();
+        EmailServlet email = new EmailServlet();
         if (idd == null) {
         } else {
             int i = (idd != null) ? idd : -1;
@@ -77,6 +81,8 @@ public class VnpayServletController2 extends HttpServlet {
         if (code.equals("00")) {
             int orderID1 = (int) session.getAttribute("orderID");
             od.successfullPayment(orderID1,2);
+            Order or = od.getOrderByOrderId(orderID1);
+            email.sendPaymentSuccessfulbyEmail(or.getContactEmail(), or);
             request.getRequestDispatcher("view/successfullPayment.jsp").forward(request, response);
         }else{
             request.getRequestDispatcher("view/failedPayment.jsp").forward(request, response);

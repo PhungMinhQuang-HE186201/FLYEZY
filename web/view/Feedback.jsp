@@ -15,11 +15,12 @@
 <%@page import="model.Status"%>
 <%@page import="dal.AirlineManageDAO"%>
 <%@page import="dal.StatusDAO"%>
+<%@page import="dal.FeedbackDao"%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Account Management</title>
+        <title>Feedback Management</title>
         <link rel="shortcut icon" type="image/png" href="img/flyezy-logo3.png" />
         <link rel="stylesheet" href="css/styleAdminController.css">
         <link rel="stylesheet" href="css/styleGeneral.css"/>
@@ -68,7 +69,7 @@
                     <button class="btn btn-info" type="submit">
                         Search
                     </button>
-                    <a class="btn btn-danger" href="evaluateController?action=view&orderId=${orderId}">Cancel</a>
+                    <a class="btn btn-danger" href="feedbackController">Cancel</a>
                 </form>
 
 
@@ -160,18 +161,18 @@
                         <th>Email</th>
                         <th>Rated star</th>
                         <th>Comment</th>
-                        <th>Date</th>
                         <th>Create At</th>
                         <th>Update at</th>
                         <th>Status</th>
                         <th>Order Id</th>
-                        <th style="padding: 0 55px; min-width: 156px">Actions</th>
+                        <th>Contact</th>
                     </tr>
                 </thead>
                 <tbody>
                     <%
                       AccountsDAO ad = new AccountsDAO();
                       StatusDAO sd = new StatusDAO();
+                      FeedbackDao fbd = new FeedbackDao();
                       List<Feedbacks> list = (List<Feedbacks>)request.getAttribute("feedbackList");
                       for(Feedbacks f : list){
                     %>
@@ -179,51 +180,12 @@
                         <td><%=ad.getAccountEmailById(f.getAccountsid())%></td>
                         <td><%=f.getRatedStar()%></td>
                         <td><%=f.getComment()%></td>
-                        <td><%=f.getDate()%></td>
                         <td><%=f.getCreated_at()%></td>
                         <td><%=f.getUpdated_at()%></td>
                         <td><%=sd.getStatusNameById(f.getStatusid())%></td>
                         <td><%=f.getOrder_id()%></td>
                         <td>
-                            <a class="btn btn-info" style="text-decoration: none" id="myBtn<%= f.getId() %>" onclick="openModal(<%= f.getId() %>)">Change status</a>
-                            <div class="modal fade" id="myModal<%= f.getId() %>" role="dialog">
-                                <div class="modal-dialog">
-                                    <!-- Modal content-->
-                                    <div class="modal-content">
-                                        <div class="modal-header" style="padding:5px 5px;">
-                                            <button type="button" class="close" style="font-size: 30px; margin-right: 12px;" data-dismiss="modal">&times;</button>
-                                            <h4 style="margin-left: 12px">Change status</h4>
-                                        </div>
-                                        <div class="modal-body" style="padding:40px 50px;">
-                                            <form role="form" action="feedbackController" method="post">
-                                                <input type="hidden" name="action" value="changeStatus"/>
-                                                <input type="hidden" name="feedBackId" value="<%=f.getId()%>">
-                                                <input type="hidden" name="orderId" value="<%=f.getOrder_id()%>">
-                                                <input type="hidden" name="createdAt" value=""/>
-                                                <div class="row">
-                                                    <div class="form-group col-md-4">
-                                                        <label for="usrname"><span class="glyphicon glyphicon-globe"></span>ID:</label>
-                                                        <input type="text" class="form-control" id="usrname" name="id" value="<%= f.getId() %>" readonly="">
-                                                    </div>
-                                                    <div class="form-group col-md-8">
-                                                        <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Status:</label></div>
-                                                        <select name="statusID" value="" style="height:  34px">
-                                                            <%List<Status> statusList = (List<Status>)request.getAttribute("statusList");
-                                                            for(Status status : statusList){%>
-                                                               <option value="<%=status.getId()%>" <%=(f.getStatusid() == status.getId())?"selected":""%>><%=status.getName()%></option>"
-                                                            <%}%>
-                                                        </select>
-                                                    </div>                    
-
-                                                </div>
-                                                <button type="submit" class="btn btn-success btn-block">
-                                                    Confirm
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <%=fbd.getContactPhone(f.getOrder_id())%>
                         </td>
                     </tr>
                     <%}%>

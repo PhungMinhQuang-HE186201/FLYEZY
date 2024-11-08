@@ -33,13 +33,25 @@
             </div>
             <ul id="header-nav1" style="font-weight: 520">
                 <li "><a href="home" >HOME</a></li>
-                <li>
-                    <a href="${requestScope.account == null ? 'findOrder' : 'buyingHistory'}">TICKETS</a>
-                </li>
+                    <c:if test="${requestScope.account == null || requestScope.account.getRoleId()==3}">
+                    <li>
+                        <a href="${requestScope.account == null ? 'findOrder' : 'buyingHistory'}">TICKETS</a>
+                    </li>
+                </c:if>
+                <c:if test="${requestScope.account.getRoleId()==1}">
+                    <li><a href="accountController">MANAGE</a></li>
+                    </c:if>
+
+                <c:if test="${requestScope.account.getRoleId()==2}">
+                    <li><a href="airlineController">MANAGE</a></li>
+                    </c:if>
+
+                <c:if test="${requestScope.account.getRoleId()==4}">
+                    <li><a href="discountManagement">MANAGE</a></li>
+                    </c:if>
                 <li "><a href="News">NEWS</a></li>
                 <li "><a href="#footer" >CONTACT</a></li>
             </ul>
-
 
             <c:if test="${requestScope.account==null}">
                 <div id="header-nav2">
@@ -55,18 +67,20 @@
                     </div>
                     <ul id="header-subnav" style="display: none;">
                         <li><a href="info">Account Information</a></li>
-                        <c:if test="${requestScope.account.getRoleId()==1}">
+                            <c:if test="${requestScope.account.getRoleId()==1}">
                             <li><a href="accountController">Manage</a></li>
-                        </c:if>
+                            </c:if>
 
                         <c:if test="${requestScope.account.getRoleId()==2}">
                             <li><a href="airlineController">Manage</a></li>
-                        </c:if>
-                            
+                            </c:if>
+
                         <c:if test="${requestScope.account.getRoleId()==4}">
                             <li><a href="discountManagement">Manage</a></li>
-                        </c:if>
-                        <li><a href="buyingHistory">Ticket Buying History</a></li>
+                            </c:if>
+                            <c:if test="${requestScope.account.getRoleId()==3}">
+                            <li><a href="buyingHistory">Ticket Buying History</a></li>
+                            </c:if>
                         <li><a href="changePassword">Change Password</a></li>
                         <li><a style="color: red;" href="logout">Log out</a></li>
                     </ul>
@@ -80,7 +94,7 @@
             };
 
             function checkScroll() {
-                if (window.location.pathname.endsWith("/home")||window.location.pathname.endsWith("/")) {
+                if (window.location.pathname.endsWith("/home") || window.location.pathname.endsWith("/")) {
                     if (window.scrollY === 0) {
                         document.getElementById("header").classList.add("transparent-header");
                     } else {

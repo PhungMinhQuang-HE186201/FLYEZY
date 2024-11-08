@@ -80,25 +80,8 @@ public class LoginServlet extends HttpServlet {
             String u = request.getParameter("user").trim();
             String p = request.getParameter("pass").trim();
             String r = request.getParameter("rem");
-
             String encode = ec.encryptAES(p, SECRET_KEY);
 
-            Cookie cu = new Cookie("cuser", u);
-            Cookie cp = new Cookie("cpass", p);
-            Cookie cr = new Cookie("crem", r);
-            if (r != null) {
-                cu.setMaxAge(60 * 60 * 24 * 7);//7 days
-                cp.setMaxAge(60 * 60 * 24 * 7);
-                cr.setMaxAge(60 * 60 * 24 * 7);
-            } else {
-                cu.setMaxAge(0);
-                cp.setMaxAge(0);
-                cr.setMaxAge(0);
-            }
-            //save to browser
-            response.addCookie(cu);
-            response.addCookie(cp);
-            response.addCookie(cr);
             LoginDAO ld = new LoginDAO();
             AccountsDAO ad = new AccountsDAO();
             HttpSession session = request.getSession();
@@ -112,7 +95,22 @@ public class LoginServlet extends HttpServlet {
                 request.setAttribute("error", "Tài khoản của bạn đã bị khóa");
                 request.getRequestDispatcher("view/login.jsp").forward(request, response);
             } else {
-
+                Cookie cu = new Cookie("cuser", u);
+                Cookie cp = new Cookie("cpass", p);
+                Cookie cr = new Cookie("crem", r);
+                if (r != null) {
+                    cu.setMaxAge(60 * 60 * 24 * 7);//7 days
+                    cp.setMaxAge(60 * 60 * 24 * 7);
+                    cr.setMaxAge(60 * 60 * 24 * 7);
+                } else {
+                    cu.setMaxAge(0);
+                    cp.setMaxAge(0);
+                    cr.setMaxAge(0);
+                }
+                //save to browser
+                response.addCookie(cu);
+                response.addCookie(cp);
+                response.addCookie(cr);
                 int id = ad.getIdByEmailOrPhoneNumber(u);
                 session.setAttribute("id", id);
                 response.sendRedirect("home");

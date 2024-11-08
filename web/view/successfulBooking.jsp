@@ -9,6 +9,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <link href="/vnpay_jsp/assets/bootstrap.min.css" rel="stylesheet"/>
         <!-- Custom styles for this template -->
         <link href="/vnpay_jsp/assets/jumbotron-narrow.css" rel="stylesheet">      

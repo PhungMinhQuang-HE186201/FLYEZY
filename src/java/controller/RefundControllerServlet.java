@@ -91,7 +91,7 @@ public class RefundControllerServlet extends HttpServlet {
             Accounts acc = ad.getAccountsById(i);
             request.setAttribute("account", acc);
 
-            List<Refund> refundList = rd.getAllRefund();
+            List<Refund> refundList = rd.getAllRefund(acc.getAirlineId());
             request.setAttribute("refundList", refundList);
 
             List<Status> statusList = sd.getStatusOfRefund();
@@ -106,7 +106,7 @@ public class RefundControllerServlet extends HttpServlet {
                 String fDateTo = request.getParameter("fDateTo");
                 String fDateFrom1 = request.getParameter("fDateFrom1");
                 String fDateTo1 = request.getParameter("fDateTo1");
-                List<Refund> refundListSearch = rd.searchRefund(fStaus, fDateFrom, fDateTo, fDateFrom1, fDateTo1);
+                List<Refund> refundListSearch = rd.searchRefund(fStaus, fDateFrom, fDateTo, fDateFrom1, fDateTo1,acc.getAirlineId());
                 request.setAttribute("refundList", refundListSearch);
                 request.getRequestDispatcher("view/Refund.jsp").forward(request, response);
             }
@@ -129,13 +129,14 @@ public class RefundControllerServlet extends HttpServlet {
         String action = request.getParameter("action");
         if (action.equals("changeStatus")) {
             StatusDAO sd = new StatusDAO();
+            int  price = Integer.parseInt(request.getParameter("price"));
             int statusID = Integer.parseInt(request.getParameter("statusID"));
             int refundID = Integer.parseInt(request.getParameter("refundId"));
-            sd.changeStatusRefund(refundID, statusID);
+            sd.changeStatusRefund(refundID, statusID,price);
             if (statusID == 8) {
                 td.completeTicketRefundById(refundID);
             }
-            else if(statusID == 5){
+            else if(statusID == 14){
                 td.rejectTicketRefundById(refundID);
             }
             response.sendRedirect("RefundController");

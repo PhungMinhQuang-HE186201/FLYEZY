@@ -71,6 +71,7 @@ public class QRCodeServletController extends HttpServlet {
         OrderDAO od = new OrderDAO();
         TicketDAO td = new TicketDAO();
         AccountsDAO ad = new AccountsDAO();
+        EmailServlet email = new EmailServlet();
         Integer idd = (Integer) session.getAttribute("id");
 
             int i = (idd != null) ? idd : -1;
@@ -80,6 +81,8 @@ public class QRCodeServletController extends HttpServlet {
         int orderID = (int) session.getAttribute("orderID");
         od.successfullPayment(orderID, 1);
         td.confirmSuccessAllTicketsByOrderId(orderID);
+          Order or = od.getOrderByOrderId(orderID);
+            email.sendPaymentSuccessfulbyEmail(or.getContactEmail(), or);
         request.getRequestDispatcher("view/successfullPayment.jsp").forward(request, response);
     }
 

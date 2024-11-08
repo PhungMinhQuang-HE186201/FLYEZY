@@ -153,76 +153,75 @@ public class OrderDAO extends DBConnect {
     }
 
     public List<Order> searchOrder(int statusId, String code, String keyword, int airlineId) {
-    List<Order> list = new ArrayList<>();
-    StringBuilder sql = new StringBuilder(
-            "SELECT distinct o.* FROM flyezy.Order o "
-            + "JOIN ticket t ON t.Order_id = o.id "
-            + "JOIN flight_detail fd ON fd.id = t.Flight_Detail_id "
-            + "JOIN flight f ON f.id = fd.Flightid "
-            + "WHERE f.Airline_id = ? "
-    );
+        List<Order> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder(
+                "SELECT distinct o.* FROM flyezy.Order o "
+                + "JOIN ticket t ON t.Order_id = o.id "
+                + "JOIN flight_detail fd ON fd.id = t.Flight_Detail_id "
+                + "JOIN flight f ON f.id = fd.Flightid "
+                + "WHERE f.Airline_id = ? "
+        );
 
-    // Use a list to hold parameter values
-    List<Object> parameters = new ArrayList<>();
-    parameters.add(airlineId); // airlineId is mandatory
+        // Use a list to hold parameter values
+        List<Object> parameters = new ArrayList<>();
+        parameters.add(airlineId); // airlineId is mandatory
 
-    // Append condition for code if provided
-    if (code != null && !code.trim().isEmpty()) {
-        sql.append("AND o.code LIKE ? ");
-        parameters.add("%" + code + "%");
-    }
-
-    // Append condition for statusId if provided
-    if (statusId != -1) { // Assuming -1 means "no filter"
-        sql.append("AND o.Status_id = ? ");
-        parameters.add(statusId);
-    }
-
-    // Append condition for keyword if provided
-    if (keyword != null && !keyword.trim().isEmpty()) {
-        sql.append("AND (o.contactName LIKE ? OR o.contactPhone LIKE ? OR o.contactEmail LIKE ?) ");
-        String keywordPattern = "%" + keyword + "%";
-        parameters.add(keywordPattern);
-        parameters.add(keywordPattern);
-        parameters.add(keywordPattern);
-    }
-
-    try {
-        // Prepare the SQL statement
-        PreparedStatement ps = conn.prepareStatement(sql.toString());
-
-        // Set the parameters in the prepared statement
-        for (int i = 0; i < parameters.size(); i++) {
-            ps.setObject(i + 1, parameters.get(i)); // Use setObject for dynamic types
+        // Append condition for code if provided
+        if (code != null && !code.trim().isEmpty()) {
+            sql.append("AND o.code LIKE ? ");
+            parameters.add("%" + code + "%");
         }
 
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            Order o = new Order(
-                    rs.getInt("id"),
-                    rs.getString("code"),
-                    rs.getString("contactName"),
-                    rs.getString("contactPhone"),
-                    rs.getString("contactEmail"),
-                    rs.getInt("totalPrice"),
-                    rs.getInt("Accounts_id"),
-                    rs.getInt("Payment_Types_id"),
-                    rs.getTimestamp("paymentTime"),
-                    rs.getTimestamp("created_at"),
-                    rs.getInt("Discount_id"),
-                    rs.getInt("Status_id")
-            );
-            list.add(o);
+        // Append condition for statusId if provided
+        if (statusId != -1) { // Assuming -1 means "no filter"
+            sql.append("AND o.Status_id = ? ");
+            parameters.add(statusId);
         }
-        return list;
 
-    } catch (Exception e) {
-        e.printStackTrace();
+        // Append condition for keyword if provided
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            sql.append("AND (o.contactName LIKE ? OR o.contactPhone LIKE ? OR o.contactEmail LIKE ?) ");
+            String keywordPattern = "%" + keyword + "%";
+            parameters.add(keywordPattern);
+            parameters.add(keywordPattern);
+            parameters.add(keywordPattern);
+        }
+
+        try {
+            // Prepare the SQL statement
+            PreparedStatement ps = conn.prepareStatement(sql.toString());
+
+            // Set the parameters in the prepared statement
+            for (int i = 0; i < parameters.size(); i++) {
+                ps.setObject(i + 1, parameters.get(i)); // Use setObject for dynamic types
+            }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Order o = new Order(
+                        rs.getInt("id"),
+                        rs.getString("code"),
+                        rs.getString("contactName"),
+                        rs.getString("contactPhone"),
+                        rs.getString("contactEmail"),
+                        rs.getInt("totalPrice"),
+                        rs.getInt("Accounts_id"),
+                        rs.getInt("Payment_Types_id"),
+                        rs.getTimestamp("paymentTime"),
+                        rs.getTimestamp("created_at"),
+                        rs.getInt("Discount_id"),
+                        rs.getInt("Status_id")
+                );
+                list.add(o);
+            }
+            return list;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return !list.isEmpty() ? list : null;
     }
-
-    return !list.isEmpty() ? list : null;
-}
-
 
     public List<Order> getAllOrdersByFlightDetail(int flightDetailId) {
         List<Order> list = new ArrayList<>();
@@ -314,6 +313,35 @@ public class OrderDAO extends DBConnect {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public Order getOrderByOrderId(int id) {
+        String sql = "select * from flyezy.Order where id= ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Order a = new Order(
+                        rs.getInt("id"),
+                        rs.getString("code"),
+                        rs.getString("contactName"),
+                        rs.getString("contactPhone"),
+                        rs.getString("contactEmail"),
+                        rs.getInt("totalPrice"),
+                        rs.getInt("Accounts_id"),
+                        rs.getInt("Payment_Types_id"),
+                        rs.getTimestamp("paymentTime"),
+                        rs.getTimestamp("created_at"),
+                        rs.getInt("Discount_id"),
+                        rs.getInt("Status_id")
+                );
+                return a;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 
     public boolean successfullPayment(int orderId, int paymentType) {
@@ -536,8 +564,8 @@ public class OrderDAO extends DBConnect {
         }
         return null; // Return null if no order is found
     }
-    
-    public List<Order> getOrdersAccountId( int accountId) {
+
+    public List<Order> getOrdersAccountId(int accountId) {
         List<Order> list = new ArrayList<>();
         String sql = "select * from flyezy.Order\n"
                 + "where Accounts_id = ?";
@@ -562,12 +590,12 @@ public class OrderDAO extends DBConnect {
                 list.add(o);
             }
             return list;
-            
+
         } catch (Exception e) {
         }
         return null;
     }
-    
+
     public List<Order> getOrdersByStatusAndAccountId(int statusId, int accountId) {
         List<Order> list = new ArrayList<>();
         String sql = "select * from flyezy.Order\n"
@@ -640,6 +668,17 @@ public class OrderDAO extends DBConnect {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public void cancelOrderById(int id) {
+        String sql = "UPDATE flyezy.Order SET Status_id = 7 WHERE id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {

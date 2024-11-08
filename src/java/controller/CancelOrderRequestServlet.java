@@ -77,7 +77,8 @@ public class CancelOrderRequestServlet extends HttpServlet {
             response.sendRedirect("buyingHistory");
         }
         else{
-            response.sendRedirect("findOrder");
+            request.setAttribute("notice", "You have cancelled order successful");
+            request.getRequestDispatcher("view/findOrder.jsp").forward(request, response);
         }
         
     }
@@ -98,6 +99,7 @@ public class CancelOrderRequestServlet extends HttpServlet {
             int orderId = Integer.parseInt(orderIdStr);
             Order o = od.getOrderById(orderId);
             td.cancelAllTicketsByOrderId(orderId);
+            od.cancelOrderById(orderId);
             if(o.getPaymentTime() == null){
                  od.updateTotalPrice(orderId, od.getTotalPriceAllTickets(orderId) - od.getTotalPriceCancelledTicket(orderId));
             }

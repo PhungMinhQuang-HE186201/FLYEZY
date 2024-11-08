@@ -7,10 +7,7 @@ package controller;
 import dal.AccountsDAO;
 import dal.FlightDetailDAO;
 import dal.OrderDAO;
-import dal.StatusDAO;
-import dal.TicketDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -21,8 +18,7 @@ import java.util.List;
 import model.Accounts;
 import model.FlightDetails;
 import model.Order;
-import model.Status;
-import model.Ticket;
+
 
 /**
  *
@@ -31,11 +27,9 @@ import model.Ticket;
 @WebServlet(name = "BuyingHistory", urlPatterns = {"/buyingHistory"})
 public class BuyingHistory extends HttpServlet {
 
-    StatusDAO statusDao = new StatusDAO();
     AccountsDAO ad = new AccountsDAO();
     OrderDAO od = new OrderDAO();
     FlightDetailDAO fdd = new FlightDetailDAO();
-    TicketDAO td = new TicketDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)

@@ -13,7 +13,7 @@
     <body>
         <div class="container">
             <h1 style="margin-bottom: 30px">
-                Đặt lại mật khẩu<a
+                Reset Password<a
                     style="
                     float: right;
                     font-size: 25px;
@@ -31,18 +31,18 @@
                     <i style="font-size: 20px;color: #3c6e57;" class="bi bi-arrow-90deg-left"></i>
                 </a>
             </div>
-            <form action="ForgetPassword" method="post">
+            <form action="forgetPassword" method="post">
                 <div class="form-group">
                     <input type="email" name="email" required />
-                    <label for="">Email của bạn</label>
+                    <label for="">Your email:</label>
 
                 </div>
                 <p id="capslock-warning" style="display: none; margin-bottom: 30px">⚠️ Caps Lock is on</p>
                 <h5 style="color: red">${requestScope.error}</h5><br>
                 <div class="button">
-                    <input id="submit" type="submit" value="Nhận email" /><br /><br />
+                    <input id="submit" type="submit" value="Receive Email" /><br /><br />
                 </div>
-                Bạn đã nhớ ra mật khẩu? <a class="letDoIt" href="login">Đăng nhập</a>
+                Did you remember the password? <a class="letDoIt" href="login">Login</a>
             </form>
         </div>
         <script>

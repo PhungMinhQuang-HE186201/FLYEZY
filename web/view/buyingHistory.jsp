@@ -33,6 +33,10 @@
 <%@page import="model.SeatCategory"%>
 <%@page import="model.Baggages"%>
 <%@page import="model.Feedbacks"%>
+
+<%@page import="java.sql.Time"%>
+<%@page import="java.time.LocalTime"%>
+<%@page import="java.time.format.DateTimeFormatter"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -151,9 +155,7 @@
             .status-label.cancelled {
                 background-color: #dc3545;
             }
-            .status-label.refund {
-                background-color: #28a745;
-            }
+
             .status-label.rejection {
                 background-color: #dc3545;
             }
@@ -164,9 +166,6 @@
                 background-color: #ffc107;
             }
             .status-label.canceled {
-                background-color: #28a745;
-            }
-            .status-label.refund {
                 background-color: #28a745;
             }
             .status-label.rejection {
@@ -317,7 +316,7 @@
                             </span>
                         </div>
                     </div>
-
+                    <%LocalTime desTime = null;%>
                     <% int count = 1; int total = 0;%>
                     <% for(Ticket t : listTicketInOrder) { %>
                     <% id = t.getId(); %>
@@ -336,8 +335,13 @@
                             <% for(FlightDetails detail : fdd.getAll()) {
                             if(detail.getId() == t.getFlightDetailId()) { %>
 
+                            <%Flights f = fdd.getFlightByFlightDetailId(detail.getId());
+                            LocalTime departureTime = detail.getTime().toLocalTime();
+                            LocalTime destinationTime = departureTime.plusMinutes(f.getMinutes());
+                            desTime = destinationTime;
+                            %>
                             <!-- Flight route icon -->
-                            <div><i class="fas fa-plane"></i> <%= fd.getDepartureByFlight(od.getFlightIdByOrder(o.getId())) %> to <%= fd.getDestinationByFlight(od.getFlightIdByOrder(o.getId())) %></div>
+                            <div><i class="fas fa-plane"></i> <%= fd.getDepartureByFlight(detail.getFlightId()) %> to <%= fd.getDestinationByFlight(detail.getFlightId()) %></div>
 
                             <!-- Date and Time with icons -->
                             <div>
@@ -371,7 +375,7 @@
                             <a class="btn btn-danger" style="text-decoration: none; margin-top: 5px;" onclick="openModalTicket(<%= t.getId() %>,<%= o.getId() %>)">Cancel ticket</a>
 
                             <% }
-                            if (o.getStatus_id() == 10 && t.getStatusid() == 7 && o.getPaymentTime() != null && t.getCancelled_at() != null 
+                            if ((o.getStatus_id() == 10 || o.getStatus_id() == 7) && t.getStatusid() == 7 && o.getPaymentTime() != null && t.getCancelled_at() != null 
                                 && o.getPaymentTime().compareTo(t.getCancelled_at()) < 0) { // vé bị huỷ trước lúc thanh toán sẽ không cho phép refund
                             %>
                             <a class="btn btn-warning" style="text-decoration: none; margin-top: 5px;" onclick="openModalRequestRefund(<%= t.getId() %>,<%= o.getId() %>)">Request refund</a>
@@ -403,12 +407,18 @@
                             <% if (td.countNumberTicketNotCancel(o.getId()) == 0) { %>
                             <a class="btn btn-danger" style="text-decoration: none; display: none;" onclick="openModalOrder(<%= o.getId() %>)">Cancel Order</a>
                             <% } else { %>
-                            <a class="btn btn-danger" style="text-decoration: none;" onclick="openModalOrder(<%= o.getId() %>)">Cancel Order</a>
+                            <a class="btn btn-danger" style="text-decoration: none;" onclick="openModalOrder(<%= o.getId() %>)">Cancel Order</a>                         
                             <% } %>
-                            <% FeedbackDao fd1 = new FeedbackDao(); 
-                               Integer idd = (Integer) session.getAttribute("id"); 
-                               Feedbacks f = fd1.getFeedbakByOrderId(o.getId(), idd); 
-                               if (f == null) { %>
+                            <%LocalTime currentTime = LocalTime.now();%>
+                            
+                            <% if (currentTime.isAfter(desTime)) { %>
+                            <% 
+                                FeedbackDao fd1 = new FeedbackDao(); 
+                                Integer idd = (Integer) session.getAttribute("id"); 
+                                Feedbacks f = fd1.getFeedbakByOrderId(o.getId(), idd); 
+
+                                if (f == null) { 
+                            %>
                             <a href="evaluateController?orderId=<%= o.getId() %>">
                                 <button class="btn btn-outline-secondary">Feedback</button>
                             </a>
@@ -416,6 +426,7 @@
                             <a href="evaluateController?action=viewUpdate&orderId=<%= o.getId() %>">
                                 <button class="btn btn-outline-secondary">Update Feedback</button>
                             </a>
+                            <% } %>
                             <% } %>
                         </div>
                     </div>
@@ -653,7 +664,7 @@
             });
 
             function paymentMedthodDisplay(id) {
-                var paymentMethods = document.getElementById("payment_methods"+id);
+                var paymentMethods = document.getElementById("payment_methods" + id);
                 if (paymentMethods.style.display === 'none' || paymentMethods.style.display === '') {
                     paymentMethods.style.display = 'block';
                 } else {

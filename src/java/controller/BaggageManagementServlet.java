@@ -77,10 +77,11 @@ public class BaggageManagementServlet extends HttpServlet {
     private void addBaggage(HttpServletRequest request) {
         try {
             float baggageWeight = Float.parseFloat(request.getParameter("baggageWeight"));
-            int baggagePrice = Integer.parseInt(request.getParameter("baggagePrice"));
-            int airlineIdBaggage = Integer.parseInt(request.getParameter("airlineIdBaggage"));
-            baggageManageDao.createBaggages(new Baggages(baggageWeight, baggagePrice, airlineIdBaggage));
-
+            int baggagePrice = Integer.parseInt(request.getParameter("baggagePrice").trim());
+            int airlineId = Integer.parseInt(request.getParameter("airlineIdBaggage"));
+            if (!baggageManageDao.checkWeightExists(baggageWeight, airlineId)) {
+                baggageManageDao.createBaggages(new Baggages(baggageWeight, baggagePrice, airlineId));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -92,9 +93,9 @@ public class BaggageManagementServlet extends HttpServlet {
             int baggageId = Integer.parseInt(request.getParameter("baggageId"));
             int baggageStatus = Integer.parseInt(request.getParameter("baggageStatus"));
             int newStatus = 1;
-            if(baggageStatus == 1){
+            if (baggageStatus == 1) {
                 newStatus = 2;
-            }else if(baggageStatus == 2){
+            } else if (baggageStatus == 2) {
                 newStatus = 1;
             }
             baggageManageDao.changeStatus(baggageId, newStatus);
@@ -109,8 +110,10 @@ public class BaggageManagementServlet extends HttpServlet {
             float baggageWeight = Float.parseFloat(request.getParameter("baggageWeight"));
             int baggagePrice = Integer.parseInt(request.getParameter("baggagePrice"));
             int baggageId = Integer.parseInt(request.getParameter("baggageId"));
-            baggageManageDao.updateBaggage(new Baggages(baggageId, baggageWeight, baggagePrice));
-
+            int airlineId = Integer.parseInt(request.getParameter("airlineIdBaggage"));
+            if (baggageManageDao.getWeight(baggageId) == baggageWeight || !baggageManageDao.checkWeightExists(baggageWeight, airlineId)) {
+                baggageManageDao.updateBaggage(new Baggages(baggageId, baggageWeight, baggagePrice));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

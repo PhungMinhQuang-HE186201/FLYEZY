@@ -43,7 +43,8 @@ public class CancelTicketRequestServlet extends HttpServlet {
             request.setAttribute("account", acc);
             response.sendRedirect("buyingHistory");
         }else{
-            response.sendRedirect("findOrder");
+            request.setAttribute("notice", "You have cancelled ticket successful");
+            request.getRequestDispatcher("view/findOrder.jsp").forward(request, response);
         }
 
         
@@ -60,6 +61,9 @@ public class CancelTicketRequestServlet extends HttpServlet {
             request.setAttribute("orderId", orderId);
             Order o = od.getOrderById(orderId);
             td.cancelTicketById(ticketId);
+            if(td.countNumberTicketNotCancel(orderId) == 0){
+                od.cancelOrderById(orderId);
+            }
             if(o.getPaymentTime()==null){
                 od.updateTotalPrice(orderId, od.getTotalPriceAllTickets(orderId) - od.getTotalPriceCancelledTicket(orderId));
             }

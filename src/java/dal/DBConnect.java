@@ -36,7 +36,7 @@ public class DBConnect extends EncodeController {
     }
 
     public DBConnect() {
-        this("jdbc:mysql://localhost:3306/flyezy", "root", "1234");
+        this("jdbc:mysql://localhost:3306/flyezy", "root", "root");
     }
 
     public ResultSet getData(String sql) {

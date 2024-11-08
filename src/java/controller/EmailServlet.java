@@ -4,7 +4,13 @@
  */
 package controller;
 
+import dal.FlightDetailDAO;
+import dal.FlightManageDAO;
+import dal.LocationDAO;
+import dal.SeatCategoryDAO;
+import dal.TicketDAO;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 import javax.mail.Authenticator;
@@ -15,11 +21,22 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import model.FlightDetails;
+import model.Flights;
+import model.Location;
 import model.Order;
+import model.SeatCategory;
+import model.Ticket;
 
 public class EmailServlet {
 
-   final String from = "flyezy.work@gmail.com";
+    SeatCategoryDAO seat = new SeatCategoryDAO();
+    TicketDAO td = new TicketDAO();
+    FlightDetailDAO fd = new FlightDetailDAO();
+    FlightManageDAO fmd = new FlightManageDAO();
+    LocationDAO l = new LocationDAO();
+    
+    final String from = "flyezy.work@gmail.com";
     //pass flyezySWP2024
     final String passWord = "ylis mjup krwy nrck";
 
@@ -166,10 +183,76 @@ public class EmailServlet {
 
             //content
             msg.setContent("The customer: <b>" + o.getContactName() + "</b><br>"
-               + "Your code order is: " + o.getCode() + "<br>"
-               + "The total cost of your flight: " + o.getTotalPrice() + "<br>"
-               + "Please make the payment at least 10 days before the flight.", 
-               "text/html");
+                    + "Your code order is: " + o.getCode() + "<br>"
+                    + "The total cost of your flight: " + o.getTotalPrice() + "<br>"
+                    + "Please make the payment at least 10 days before the flight.",
+                    "text/html");
+
+            //send email
+            Transport.send(msg);
+        } catch (MessagingException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void sendPaymentSuccessfulbyEmail(String to, Order o) {
+        //Properties: khai bao cac thuoc tinh
+        Properties pro = new Properties();
+        pro.put("mail.smtp.host", "smtp.gmail.com");
+        //port tls 587 
+        pro.put("mail.smtp.port", "587");
+        pro.put("mail.smtp.auth", "true");
+        pro.put("mail.smtp.starttls.enable", "true");
+
+        //create Authenticator
+        Authenticator authen = new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(from, passWord);
+            }
+        };
+
+        //sesion
+        Session session = Session.getInstance(pro, authen);
+
+        //send email
+        //final String to = "chunloveptht@gmail.com";
+        //create to message email
+        MimeMessage msg = new MimeMessage(session);
+        try {
+            //content style
+            msg.addHeader("Content-type", "text/HTML");
+            //the person send and receiver:
+            msg.setFrom(from);
+            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
+            //The subject of email
+            msg.setSubject("Payment Successful Notification", "UTF-8");
+            //date
+            msg.setSentDate(new Date());
+            //quy dinh email phan hoi
+            //msg.setReplyTo(InternetAddress.parse(from, false));
+
+            //content
+            StringBuilder content = new StringBuilder();
+            content.append("The customer: <b>" + o.getContactName() + "</b><br>"
+                    + "Your code order is: " + o.getCode() + "<br>"
+                    + "You have paid successfully total price of flight is: " + o.getTotalPrice() + " VND<br>"
+                    + "Payment time: "+ o.getPaymentTime()+ "<br>");
+            List<Ticket> ticket = td.getAllTicketSuccessfulPaymentByOrderId(o.getId());
+            for (Ticket t : ticket) {
+                FlightDetails f = fd.getFlightDetailsByID(t.getFlightDetailId());
+                Flights fl = fmd.getFlightById(f.getFlightId());
+                Location dep = l.getLocationById(fl.getDepartureAirportId());
+                Location des = l.getLocationById(fl.getDestinationAirportId());
+                content.append("<br> Ticket has seat type: <b>" + seat.getSeatCategoryNameById(t.getSeat_Categoryid()) + "</b><br>"
+                        +"Your position on the flight is: " + t.getCode() + "<br>"
+                        +"Flight date: " + f.getDate() + "<br>"
+                        +"The flight time is: " + f.getTime() + "<br>"
+                        +"The flight have departure from " + dep.getName() + " to destination " + des.getName()+ "<br>"        
+                );
+            }
+            content.append("Please check in for your flight on time.");
+            msg.setContent(content.toString(), "text/html; charset=UTF-8");
 
             //send email
             Transport.send(msg);

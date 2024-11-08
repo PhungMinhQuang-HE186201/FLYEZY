@@ -30,7 +30,7 @@
             .modal-body span{
                 margin-right: 5px
             }
-            
+
         </style>
     </head>
     <body>
@@ -70,7 +70,7 @@
                             <h4 style="margin-left: 12px">Add New Plane Category</h4>
                         </div>
                         <div class="modal-body" style="padding:40px 50px;">
-                            <form role="form" action="planeCategoryController" method="post">
+                            <form role="form" action="planeCategoryController" method="post" onsubmit="return validateNameAndInfoInput(0)">
                                 <div class="row">
                                     <input type="hidden" value="${account.getAirlineId()}" name="airlineId"/>
                                     <input type="hidden" class="form-control" name="status" value="1"/>
@@ -85,12 +85,12 @@
                                 </div>
                                 <div class="form-group">
                                     <label><span class="glyphicon glyphicon-user"></span>Name:</label>
-                                    <input pattern="^[\p{L}\d\s]+$" type="text" class="form-control" name="name" required>
+                                    <input pattern="^[\p{L}\d\s]+$" id="name0" type="text" class="form-control" name="name" required>
                                 </div>
                                 <div class="form-group">
                                     <label><span class="glyphicon glyphicon-info-sign"></span>Info:</label>
                                     <div class="editor-container">
-                                        <textarea pattern="^[\p{L}\d\s]+$" class="editor" name="info"></textarea>
+                                        <textarea pattern="^[\p{L}\d\s]+$" id="info0" class="editor" name="info"></textarea>
                                     </div>
                                 </div>  
                                 <button type="submit" class="btn btn-success btn-block">
@@ -141,7 +141,7 @@
                             </a>
                         </td>
                     </tr>
-                    
+
                     <!-- Modal for updating plane category -->
                 <div class="modal fade" id="myModal<%= pc.getId() %>" role="dialog">
                     <div class="modal-dialog">
@@ -152,7 +152,7 @@
                                 <h4 style="margin-left: 12px">Update</h4>
                             </div>
                             <div class="modal-body" style="padding:40px 50px;">
-                                <form role="form" action="planeCategoryController" method="post">
+                                <form role="form" action="planeCategoryController" method="post" onsubmit="return validateNameAndInfoInput(<%= pc.getId() %>)">
                                     <div class="row">
                                         <input type="hidden" value="<%= pc.getAirlineid() %>" name="airlineId"/>
                                         <input type="hidden" class="form-control" name="status" value="<%= pc.getStatusId() %>"/>
@@ -171,12 +171,12 @@
                                     </div>
                                     <div class="form-group">
                                         <label><span class="glyphicon glyphicon-picture"></span>Name:</label>
-                                        <input pattern="^[\p{L}\d\s]+$" type="text" class="form-control" name="name" value="<%= pc.getName() %>" required/>
+                                        <input pattern="^[\p{L}\d\s]+$" id="name<%= pc.getId() %>" type="text" class="form-control" name="name" value="<%= pc.getName() %>" required/>
                                     </div>
                                     <div class="form-group">
                                         <label><span class="glyphicon glyphicon-info-sign"></span>Info:</label>
                                         <div class="editor-container">
-                                            <textarea pattern="^[\p{L}\d\s]+$" type="text" class="editor" name="info"><%= pc.getInfo() %></textarea>
+                                            <textarea pattern="^[\p{L}\d\s]+$" id="info<%= pc.getId() %>" type="text" class="editor" name="info"><%= pc.getInfo() %></textarea>
                                         </div>
 
                                     </div>  
@@ -217,13 +217,24 @@
             function openModal(id) {
                 $("#myModal" + id).modal('show');
             }
-            
+
             $(document).ready(function () {
             <% if (request.getAttribute("result") != null) { %>
                 successful("<%= request.getAttribute("result").toString()%>");
             <% } %>
 
             });
+
+            function validateNameAndInfoInput(i) {
+                const name = document.getElementById("name" + i).value.trim();
+                const info = document.getElementById("info" + i).value.trim();
+
+                if (name === "" || info === "") {
+                    alert("Please enter valid content. Do not enter spaces only.");
+                    return false;
+                }
+                return true;
+            }
 
             //func change plane category status
             let changePlaneCategoryStatusUrl = "";
@@ -242,7 +253,7 @@
                 window.location = changePlaneCategoryStatusUrl;
             };
 
-            
+
 
             window.onload = function () {
                 if (window.location.protocol === 'file:') {
@@ -315,6 +326,8 @@
                             console.error(error);
                         });
             });
+
+
         </script>
     </body>
 </html>
