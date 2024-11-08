@@ -419,15 +419,18 @@ public class OrderDAO extends DBConnect {
         return codes;
     }
 
-    public String getCodeByOrderId(int id) {
+    public String getCodeByOrderId(Integer id) {
+        // Kiểm tra xem id có null không, nếu có thì trả về null hoặc chuỗi trống
+        if (id == null) {
+            return null;
+        }
 
-        String sql = "SELECT code FROM flyezy.Order where id = ?";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
+        String sql = "SELECT code FROM flyezy.Order WHERE id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                return (rs.getString("code"));
+                return rs.getString("code");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -684,7 +687,7 @@ public class OrderDAO extends DBConnect {
     public static void main(String[] args) {
         OrderDAO dao = new OrderDAO();
         //dao.createOrder(1, "Naruto", "0123", "hello@gmail.com", 10000, null);
-        System.out.println(dao.getTotalPriceCancelledTicket(25));
+        System.out.println(dao.getCodeByOrderId(null));
     }
 
 }

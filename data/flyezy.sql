@@ -1,4 +1,5 @@
 -- MySQL Workbench Forward Engineering
+drop database flyezy;
 
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -712,6 +713,8 @@ INSERT INTO `Flight_Detail` VALUES
 INSERT INTO `flyezy`.`Order` (`id`, `code`, `contactName`, `contactPhone`, `contactEmail`, `totalPrice`, `Accounts_id`, `Payment_Types_id`, `paymentTime`, `created_at`, `Discount_id`, `Status_id`)
 VALUES 
 (1,'13NG3UVQ8','Sơn Tùng MTP','0873232111','td2k416@gmail.com',10280000,5,NULL,NULL,'2024-11-02 10:50:24',NULL,12);
+
+INSERT INTO `flyezy`.`Order` (`code`, `contactName`, `contactPhone`, `contactEmail`, `totalPrice`, `created_at`, `Status_id`) VALUES ('MAINTENANCE', 'MAINTENANCE', '0000000000', 'maintenance@gmail.com', '0', '2024-11-02 10:50:24', '12');
 
 INSERT INTO `Ticket` VALUES 
 (1,1,1,'B1','Nguyễn Thanh Tùng',1,'1230114182','1994-07-05',4,1380000,1,12,2,4,NULL),

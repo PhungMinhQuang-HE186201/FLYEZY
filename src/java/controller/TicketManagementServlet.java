@@ -272,10 +272,22 @@ public class TicketManagementServlet extends HttpServlet {
             sd.changeStatusTicket(id, status);
             response.sendRedirect("TicketController?flightDetailID=" + flightDetailID);
         } else if (action.equals("create")) {
-            String code = request.getParameter("code");
-            int seatCategoryId = Integer.parseInt(request.getParameter("seatCategory"));
-            td.createMaintainenceSeat(code, flightDetailID, seatCategoryId);
-            response.sendRedirect("TicketController?flightDetailID=" + flightDetailID);
+            try {
+                String code = request.getParameter("code");
+                int seatCategoryId = Integer.parseInt(request.getParameter("seatCategory"));
+                List<String> existingCodes = td.getAllTicketCodesAndSeatByFlightDetail(flightDetailID, seatCategoryId);
+                request.setAttribute("existingCodes", existingCodes);
+                if (existingCodes.contains(code)) {
+                    request.getSession().setAttribute("errorMessage", "This seat code already exists.");
+                    response.sendRedirect("TicketController?flightDetailID=" + flightDetailID);
+                } else {
+                    td.createMaintenanceSeat(code, flightDetailID, seatCategoryId);
+                    response.sendRedirect("TicketController?flightDetailID=" + flightDetailID);
+                }
+                
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

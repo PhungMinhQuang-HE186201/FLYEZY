@@ -83,20 +83,6 @@ public class TicketDAO extends DBConnect {
         return null;
     }
 
-    public void createMaintainenceSeat(String code, int flightDetailID,int seatCategoryId) {
-        String sql = "Insert into Ticket (code,Statusid,Flight_Detail_id,Seat_Categoryid)\n"
-                + "Value(?,?,?,?)";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, code);
-            ps.setInt(2, 12);
-            ps.setInt(3, flightDetailID);
-            ps.setInt(4, seatCategoryId);
-            ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public String getContactPhone(int id) {
         int n = 0;
         String sql = "Select contactPhone \n"
@@ -282,6 +268,26 @@ public class TicketDAO extends DBConnect {
         List<String> ls = new ArrayList<>();
         String sql = "SELECT t.code FROM Ticket t "
                 + "JOIN `flyezy`.`Order` o ON t.Order_id = o.id "
+                + "WHERE Flight_Detail_id = ? AND (Statusid = 12 OR Statusid = 10) AND Seat_Categoryid = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, flightDetailID);
+            ps.setInt(2, seatCategoryId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    if (rs.getString("code") != null) {
+                        ls.add(rs.getString("code"));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ls;
+    }
+
+    public List<String> getAllTicketCodesAndSeatByFlightDetail(int flightDetailID, int seatCategoryId) {
+        List<String> ls = new ArrayList<>();
+        String sql = "SELECT t.code,t.Seat_Categoryid FROM Ticket t "
                 + "WHERE Flight_Detail_id = ? AND (Statusid = 12 OR Statusid = 10) AND Seat_Categoryid = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, flightDetailID);
@@ -503,14 +509,52 @@ public class TicketDAO extends DBConnect {
         return 0;
     }
 
+    public int createMaintenanceSeat(String code, int flightDetailId, Integer seatCategoryId) {
+        int n = 0;
+        String sql = "INSERT INTO `flyezy`.`Ticket` \n"
+                + "(`Flight_Detail_id`, `Seat_Categoryid`, `Passenger_Typesid`, `code`, `pName`, `pSex`, `pPhoneNumber`, `pDob`, `Baggagesid`, `totalPrice`, `Order_id`, `Statusid`, `Flight_Type_id`) \n"
+                + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setInt(1, flightDetailId);
+
+            if (seatCategoryId == null) {
+                ps.setNull(2, java.sql.Types.INTEGER);
+            } else {
+                ps.setInt(2, seatCategoryId);
+            }
+
+            ps.setNull(3, java.sql.Types.INTEGER);
+            ps.setString(4, code);
+            ps.setNull(5, java.sql.Types.VARCHAR);
+            ps.setNull(6, java.sql.Types.INTEGER);
+            ps.setNull(7, java.sql.Types.VARCHAR);
+            ps.setNull(8, java.sql.Types.DATE);
+            ps.setNull(9, java.sql.Types.INTEGER);
+            ps.setNull(10, java.sql.Types.DOUBLE);
+            ps.setInt(11, 2);
+            ps.setInt(12, 12);
+            ps.setNull(13, java.sql.Types.INTEGER);
+
+            n = ps.executeUpdate();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return n;
+    }
+
     public static void main(String[] args) {
         TicketDAO td = new TicketDAO();
         AirlineManageDAO ad = new AirlineManageDAO();
         //tcd.confirmSuccessAllTicketsByOrderId(1);
         //System.out.println(td.createTicket("C9", 1, 7, 2, "HIHI", 0, null, Date.valueOf("2000-10-10"), null, 0, 1, 1));
-        System.out.println(td.getAllTicketCodesById(4, 1));
+        //System.out.println(td.getAllTicketCodesById(4, 1));
 //        System.out.println(tcd.getTicketByCode("B1", 4, 8));
 //        System.out.println(td.searchTickets("", "", "", "", 1, "", "FJA84IUTJ"));
+        td.createMaintenanceSeat("A9", 15, 1);
     }
 
 }
