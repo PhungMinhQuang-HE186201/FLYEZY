@@ -79,7 +79,7 @@ public class RegisterServlet extends HttpServlet {
         String name = request.getParameter("name").trim();
         String email = request.getParameter("email").trim();
         String phoneNumber = request.getParameter("phoneNumber").trim();
-        String pass = request.getParameter("pass").trim();
+        String pass = request.getParameter("pass");
         RegisterDAO d = new RegisterDAO();
         if (d.checkPhoneNumberExisted(phoneNumber)) {
             request.setAttribute("existedUsername", "Số điện thoại đã được đăng ký!");

@@ -14,6 +14,7 @@
         <link rel="stylesheet" href="css/styleLoginAndRegister.css" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
         <link rel="stylesheet" href="icon/themify-icons/themify-icons.css" />
+        <script src="js/validation.js"></script>
     </head>
     <body>
         <div class="container">
@@ -31,17 +32,17 @@
             </div>
             <h3 style="color: red">${requestScope.error}</h3>
             <c:set var="cookie" value="${pageContext.request.cookies}" />
-            <form action="register" method="post">
+            <form action="register" method="post" onsubmit="validateNameInput()">
                 <div class="form-group">
-                    <input type="text" name="name" required />
+                    <input type="text" pattern="^[\p{L}\s]+$" name="name" id="name" required />
                     <label for="">Your Name</label>
                 </div>
                 <div class="form-group">
-                    <input type="email" name="email" required />
+                    <input type="email" name="email" id="email" oninput="validateEmail()" required />
                     <label for="">Email</label>
                 </div>
                 <div class="form-group">
-                    <input type="number" name="phoneNumber" id="phoneNumber" oninput="validatePhoneNumber()" required />
+                    <input type="number" name="phoneNumber" id="phoneNumber" oninput="validatePhone(this)" required />
                     <label for="">Phone Number</label>
                 </div>
                 <div class="form-group">
@@ -58,6 +59,7 @@
                         id="confirmPassword"
                         required
                         onkeyup="checkPass()"
+                        required
                         />
                     <label for="">Re-enter Password</label>
                     <svg id="eye-confirm" onclick="toggleConfirmPasswordVisibility()"  style="position: absolute; z-index: 9999; right: 10px; top: 15px; width: 25px; cursor: pointer" onclick="togglePasswordVisibility('confirmPassword', 'eye-confirm')" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
@@ -69,7 +71,8 @@
                     </p></div>
 
                 <br />
-                <span id="phoneError" style="color:red; display:none; margin-bottom: 20px; font-weight: bold">Phone Number is invalid!</span>
+                <span id="phoneError" style="color:red; display:none;">Phone Number is invalid!</span>
+                <span id="emailError" style="color: red; display: none;">Email is must be valid!</span>
                 <p id="capslock-warning" style="display: none; margin-bottom: 20px">⚠️ Caps Lock is on</p>
                 <p style="color: red">${requestScope.existedUsername}</p>
                 <div class="button">
@@ -94,24 +97,30 @@
                     errorPass.style.display = "none";
                 }
             }
-            function validatePhoneNumber() {
-                var phoneNumber = document.getElementById("phoneNumber").value;
-                var phoneError = document.getElementById("phoneError");
+            function validateNameInput() {
+                const nameInput = document.getElementById("name").value.trim();
 
-                var phoneRegex = /^(0[3|5|7|8|9])+([0-9]{8})$/;
-                if (phoneNumber === "") {
-                    submit.disabled = true;
-                    phoneError.style.display = "none";
-                } else if (!phoneNumber.match(phoneRegex)) {
-                    submit.disabled = true;
-                    phoneError.style.display = "block";
+                if (nameInput === "") {
+                    alert("Please enter valid content. Do not enter spaces only.");
+                    return false;
+                }
+                return true;
+            }
+            function validateEmail() {
+                var email = document.getElementById("email").value;
+                var emailError = document.getElementById("emailError");
+
+                var emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{3,}$/;
+                var fptemailRegex = /^[a-zA-Z0-9._%+-]+@fpt\.edu\.vn$/;
+                if (email === "") {
+                    emailError.style.display = "none";
+                } else if (!email.match(emailRegex) && !email.match(fptemailRegex)) {
+                    emailError.style.display = "inline";
                 } else {
-                    submit.disabled = false;
-                    phoneError.style.display = "none";
-
-
+                    emailError.style.display = "none";
                 }
             }
+           
             function CapsCheck(event) {
                 if (event.getModifierState("CapsLock")) {
                     text.style.display = "block";

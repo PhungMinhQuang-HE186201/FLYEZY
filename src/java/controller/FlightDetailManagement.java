@@ -142,11 +142,11 @@ public class FlightDetailManagement extends HttpServlet {
             Country listCountryDes = cou.getCountryById(listLocationDes.getCountryId());
             request.setAttribute("listCountryDes", listCountryDes);
 
-            List<FlightDetails> detail_ls = dao.getAllDetailByFlightId(fid, index);
+            List<FlightDetails> detail_ls = dao.getAllDetailByFlightId(fid);
             List<FlightDetails> searchResults = new ArrayList<>();
 
             if (action != null && action.equals("cancel")) {
-                searchResults = dao.getAllDetailByFlightId(fid, index);
+                searchResults = dao.getAllDetailByFlightId(fid);
                 request.setAttribute("listFlightDetails", searchResults);
             } else if (action != null && action.equals("search")) {
 
@@ -156,18 +156,18 @@ public class FlightDetailManagement extends HttpServlet {
                 String toSearch = request.getParameter("toSearch");
                 if (statusSearch != null && !statusSearch.isEmpty()) {
                     int status_search = Integer.parseInt(statusSearch);
-                    searchResults = dao.searchByStatus(status_search, fid, index);
+                    searchResults = dao.searchByStatus(status_search, fid);
                 }
 
                 if (dateSearch != null && !dateSearch.isEmpty()) {
                     Date date = Date.valueOf(dateSearch);
-                    searchResults = dao.searchByDate(date, fid, index);
+                    searchResults = dao.searchByDate(date, fid);
 
                 }
                 if (fromSearch != null && toSearch != null && !fromSearch.isEmpty() && !toSearch.isEmpty()) {
                     Time fromTime = Time.valueOf(fromSearch);
                     Time toTime = Time.valueOf(toSearch);
-                    searchResults = dao.searchByTimeRange(fromTime, toTime, fid, index);
+                    searchResults = dao.searchByTimeRange(fromTime, toTime, fid);
                 }
                 request.setAttribute("listFlightDetails", searchResults);
 

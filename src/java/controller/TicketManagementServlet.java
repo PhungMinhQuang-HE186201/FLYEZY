@@ -125,7 +125,16 @@ public class TicketManagementServlet extends HttpServlet {
         if (orderId != -1) {
             ticketList = td.getAllTicketsByOrderId(orderId);
         } else {
-            ticketList = td.getAllTicketsById(flightDetailID);
+            int numberOfItem = td.getNumberOfTicket(flightDetailID);
+            int numOfPage = (int) Math.ceil((double) numberOfItem / 5);
+            String idx = request.getParameter("index");
+            int index = 1;
+            if (idx != null) {
+                index = Integer.parseInt(idx);
+            }
+            request.setAttribute("index", index);
+            request.setAttribute("numOfPage", numOfPage);
+            ticketList = td.getAllTicketsByIdWithPaging(flightDetailID, index);
         }
         request.setAttribute("ticketList", ticketList);
 
@@ -182,9 +191,8 @@ public class TicketManagementServlet extends HttpServlet {
             String fPhoneNumber = request.getParameter("fPhoneNumber").trim();
             String orderCode = request.getParameter("orderCode").trim();
             request.setAttribute("orderCode", orderCode);
-
             List<Ticket> ticketSearchList;
-            ticketSearchList = td.searchTickets(passengerType, statusTicket, fName, fPhoneNumber, flightDetailID, flightType, orderCode);
+            ticketSearchList = td.searchTickets2(passengerType, statusTicket, fName, fPhoneNumber, flightDetailID, flightType, orderCode);
             request.setAttribute("ticketList", ticketSearchList);
             request.getRequestDispatcher("view/ticketManagement.jsp").forward(request, response);
         }

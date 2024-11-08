@@ -33,7 +33,7 @@
 <%@page import="model.SeatCategory"%>
 <%@page import="model.Baggages"%>
 <%@page import="model.Feedbacks"%>
-
+<%@page import="jakarta.servlet.http.HttpSession"%>
 <%@page import="java.sql.Time"%>
 <%@page import="java.time.LocalTime"%>
 <%@page import="java.time.format.DateTimeFormatter"%>
@@ -44,6 +44,7 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="css/styleGeneral.css"/>
         <link href="/vnpay_jsp/assets/bootstrap.min.css" rel="stylesheet"/>
         <!-- for vnpay -->
         <link href="/vnpay_jsp/assets/jumbotron-narrow.css" rel="stylesheet">      
@@ -410,7 +411,7 @@
                             <a class="btn btn-danger" style="text-decoration: none;" onclick="openModalOrder(<%= o.getId() %>)">Cancel Order</a>                         
                             <% } %>
                             <%LocalTime currentTime = LocalTime.now();%>
-                            
+
                             <% if (currentTime.isAfter(desTime)) { %>
                             <% 
                                 FeedbackDao fd1 = new FeedbackDao(); 
@@ -434,6 +435,9 @@
                 </div>
                 <br>
             </div>
+
+
+            
             <div id="payment_methods<%=o.getId()%>" style="display: none;">
                 <h2>Payments Method</h2>
                 <div class="payment-options">
@@ -473,6 +477,39 @@
             </div>
 
             <% } %>
+            <%}%>
+            <%String statusIdParam = request.getParameter("statusId");
+            String code = request.getParameter("code");
+            if(statusIdParam ==null && code==null){%>
+            <div style="width :100%; margin: 0 auto">
+                <nav aria-label="...">
+                    <ul class="pagination">
+                        <c:if test="${index != 1}">    
+                            <li class="page-item">
+                                <a class="page-link" href="buyingHistory?index=${index -1}">Previous</a>
+                            </li>
+                        </c:if>    
+                        <c:forEach begin="1" end ="${numOfPage}" var="i">
+                            <c:if test="${index == i}">
+                                <li class="page-item active">
+                                    <a class="page-link" href="buyingHistory?index=${i}">${i}</a>
+                                </li>
+                            </c:if>
+
+                            <c:if test="${index != i}">
+                                <li class="page-item">
+                                    <a class="page-link" href="buyingHistory?index=${i}">${i}</a>
+                                </li>
+                            </c:if>
+                        </c:forEach>
+                        <c:if test="${index != numOfPage}">    
+                            <li class="page-item">
+                                <a class="page-link" href="buyingHistory?index=${index +1}">Next</a>
+                            </li>
+                        </c:if> 
+                    </ul>
+                </nav>
+            </div>
             <%}%>
         </div>
 

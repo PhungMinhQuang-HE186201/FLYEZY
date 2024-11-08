@@ -75,7 +75,7 @@
         <div id="back" style="margin-left: 18%;margin-top: 110px;margin-bottom: -130px  " > 
             <a href="flightManagement" class="btn btn-warning" >Back</a>
         </div>
-        
+
         <%
              Flights list = (Flights) request.getAttribute("listFlight");
              Airport listAirportDep = (Airport) request.getAttribute("listAirportDep");
@@ -89,7 +89,7 @@
         %>
         <div style="margin-left: 18%;margin-top: 9%; color:#3C6E57 "><h2>FLIGHT DETAIL MANAGEMENT</h2></div>
         <div class="main-container" style="margin-left: 18%;width: 74%;">
-            
+
             <div class="details">
                 <p>Departure: <span> <%= listAirportDep.getName() %> (<%= listLocationDep.getName() %>)</span></p>
                 <p>From:<span> <%= listCountryDep.getName() %>  </span></p>
@@ -261,7 +261,7 @@
                                             for (PlaneCategory category : categories) {
                                                 if(category.getStatusId()==1){
                                         %>
-                                        <option value="<%=category.getId()%>"><%=category.getName()%></option>
+                                        <option value="<%=category.getId()%>"  <%=(category.getName().equals(planeCategoryName) ? "selected" : "")%>><%=category.getName()%></option>
                                         <%
                                             }
                                         }
@@ -298,18 +298,18 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="date">Date:</label>
-                        <input type="date" class="form-control" id="uflightDate-<%=fid%>"   oninput="validateForm(<%=fid%>, 'or')" name="date" required>
-                        <div id="dateError-<%=fid%>" style="display:none; color:red;">Date must be today or later.</div>
+                        <input type="date" class="form-control" id="aflightDate-<%=fid%>"   oninput="validateFormAdd(<%=fid%>, 'or')" name="date" required>
+                        <div id="adateError-<%=fid%>" style="display:none; color:red;">Date must be today or later.</div>
                     </div>
                     <div class="form-group">
                         <label for="time">Time:</label>
-                        <input id="time" type="time" name="time" step="1" required>
-
+                        <input id="time-<%=fid%>" type="time" name="time" step="1" oninput="validateTimeAdd(<%=fid%>)" required>
+                        <div id="timeError-<%=fid%>" style="color: red; display: none;">Time must be greater than or equal to the current time.</div>
                     </div>
                     <div class="form-group">
                         <label for="price">Price:</label>
-                        <input type="number" class="form-control" id="uflightPrice-<%=fid%>"  oninput="validateForm(<%=fid%>, 'or')" name="price" required>
-                        <div id="priceError-<%=fid%>" style="display:none; color:red;">Price must be less than 100,000,000.</div>
+                        <input type="number" class="form-control" id="aflightPrice-<%=fid%>"  oninput="validateFormAdd(<%=fid%>, 'or')" name="price" required>
+                        <div id="apriceError-<%=fid%>" style="display:none; color:red;">Price must be less than 100,000,000.</div>
                     </div>
                     <div class="form-group">
                         <input type="hidden" class="form-control" id="flightId" name="flightId" value="<%=fid%>">
@@ -336,43 +336,18 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" id="submitbtn-<%=fid%>" name="action" value="add" class="btn btn-primary">Add Flight Detail</button>
+                    <button type="submit" id="asubmitbtn-<%=fid%>" name="action" value="add" class="btn btn-primary">Add Flight Detail</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-<div style="margin-left: 315px">
-    <nav aria-label="...">
-        <ul class="pagination">
-            <c:if test="${index != 1}">    
-                <li class="page-item">
-                    <a class="page-link" href="flightDetailManagement?flightId=${fid}&index=${index -1}">Previous</a>
-                </li>
-            </c:if>    
-            <c:forEach begin="1" end ="${numOfPage}" var="i">
-                <c:if test="${index == i}">
-                    <li class="page-item active">
-                        <a class="page-link" href="flightDetailManagement?flightId=${fid}&index=${i}">${i}</a>
-                    </li>
-                </c:if>
 
-                <c:if test="${index != i}">
-                    <li class="page-item">
-                        <a class="page-link" href="flightDetailManagement?flightId=${fid}&index=${i}">${i}</a>
-                    </li>
-                </c:if>
-            </c:forEach>
-            <c:if test="${index != numOfPage}">    
-                <li class="page-item">
-                    <a class="page-link" href="flightDetailManagement?flightId=${fid}&index=${index +1}">Next</a>
-                </li>
-            </c:if> 
-        </ul>
-    </nav>
-</div>
+<script>
+    function validateTimeAdd(id) {
 
-
+    }
+</script>
 <script>
     function validateForm(id, mode) {
         var priceInput = document.getElementById("uflightPrice-" + id).value;
@@ -393,7 +368,48 @@
         priceError.style.display = "none";
         dateError.style.display = "none";
 
-        var isPriceValid = priceInput < maxPrice;
+        var isPriceValid = priceInput <= maxPrice;
+        var isDateValid = inputDate >= currentDate;
+
+        // Hiển thị thông báo lỗi khi cần
+        if (!isPriceValid) {
+            priceError.style.display = "inline";
+        }
+        if (!isDateValid) {
+            dateError.style.display = "inline";
+        }
+
+        // Xử lý logic theo mode
+        if (mode === "or") {
+            // "Hoặc": btnsubmit bị disabled nếu một trong hai điều kiện không hợp lệ
+            btnsubmit.disabled = !isPriceValid || !isDateValid;
+        } else if (mode === "and") {
+            // "Và": btnsubmit bị disabled nếu cả hai điều kiện không hợp lệ
+            btnsubmit.disabled = !isPriceValid && !isDateValid;
+        }
+    }
+</script>
+<script>
+    function validateFormAdd(id, mode) {
+        var priceInput = document.getElementById("aflightPrice-" + id).value;
+        var dateInput = document.getElementById("aflightDate-" + id).value;
+
+        var priceError = document.getElementById("apriceError-" + id);
+        var dateError = document.getElementById("adateError-" + id);
+        var btnsubmit = document.getElementById("asubmitbtn-" + id);
+
+        var maxPrice = 100000000;
+        var currentDate = new Date();
+        var inputDate = new Date(dateInput);
+
+        // Đặt giờ của currentDate về 00:00:00 để so sánh ngày
+        currentDate.setHours(0, 0, 0, 0);
+
+        // Ẩn các thông báo lỗi
+        priceError.style.display = "none";
+        dateError.style.display = "none";
+
+        var isPriceValid = priceInput <= maxPrice;
         var isDateValid = inputDate >= currentDate;
 
         // Hiển thị thông báo lỗi khi cần
