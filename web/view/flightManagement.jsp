@@ -73,7 +73,7 @@
                             
                             <div class="form-group">
                                 <label for="minutesInput"><span class="glyphicon glyphicon-plane"></span> Minutes:</label>
-                                <input type="number" min="0" class="form-control" id="minutesInput" name="minutes" required>
+                                <input type="number" min="0" max="980" class="form-control" id="minutesInput" name="minutes" required>
                             </div>
                             <%
                                 CountryDAO cd = new CountryDAO();
@@ -266,7 +266,7 @@
                                                         <!-- Minutes -->
                                                         <div class="form-group">
                                                             <label for="nameInput" style="text-align: left; display: block;"><span class="glyphicon glyphicon-plane"></span> Minutes:</label>
-                                                            <input type="number" min="0" class="form-control" id="nameInput" name="minutes" value="<%=rsFlightManage.getInt(2)%>" required/>
+                                                            <input type="number" min="0" max="980" class="form-control" id="nameInput" name="minutes" value="<%=rsFlightManage.getInt(2)%>" required/>
                                                         </div>
 
                                                         <div class="row" >

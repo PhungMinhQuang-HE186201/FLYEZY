@@ -400,6 +400,8 @@
                             <h4 style="margin-left: 12px">Create maintainence seat</h4>
                         </div>
                         <div class="modal-body" style="padding:40px 50px;">
+
+
                             <form role="form" action="TicketController" method="post">
                                 <input type="hidden" name="action" value="create"/>
                                 <input type="hidden" name="flightDetailID" value="${flightDetailID}">
@@ -428,6 +430,13 @@
                 </div>
             </div>
 
+            <% 
+                String errorMessage = (String) session.getAttribute("errorMessage");
+                if (errorMessage != null) {
+                    session.removeAttribute("errorMessage");  // Clear the error message after displaying it
+            %>
+            <div class="alert alert-danger" id="errorMessage"><%= errorMessage %></div>
+            <% } %>
 
 
 
@@ -476,7 +485,7 @@
                         <td><%= list.getpPhoneNumber() %></td>
                         <td><%= list.getpDob() %></td>
                         <td><%= bmd.getWeight(list.getBaggagesid()) %></td>
-                        <td><%= od.getCodeByOrderId(list.getOrder_id()) %></td>
+                        <td><%= od.getCodeByOrderId(list.getOrder_id()) == null ? "" : od.getCodeByOrderId(list.getOrder_id())%></td>
                         <td><%= ftd.getNameType(list.getFlight_Type_id()) %></td>
                         <td><%= list.getTotalPrice() %></td>
                         <td><%= sd.getStatusNameById(list.getStatusid()) %></td>
@@ -554,29 +563,43 @@
                     %>
                 </tbody>
             </table>
+            <%String flightDetailID = request.getParameter("flightDetailID");
+               String action = request.getParameter("action");
+               if(action==null &&flightDetailID!=null){
+               int FDetailID= Integer.parseInt(flightDetailID);%>
+            <div style="">
+                <nav aria-label="...">
+                    <ul class="pagination">
+                        <c:if test="${index != 1}">    
+                            <li class="page-item">
+                                <a class="page-link" href="TicketController?index=${index -1}&flightDetailID=<%=FDetailID%>">Previous</a>
+                            </li>
+                        </c:if>    
+                        <c:forEach begin="1" end ="${numOfPage}" var="i">
+                            <c:if test="${index == i}">
+                                <li class="page-item active">
+                                    <a class="page-link" href="TicketController?index=${i}&flightDetailID=<%=FDetailID%>">${i}</a>
+                                </li>
+                            </c:if>
 
-        </div>
-
-        <!-- delete Modal -->
-        <div id="deleteModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="deleteModalLabel">Xác nhận chuyển trạng thái tài khoản tài khoản</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p id="modalMessage">Bạn có chắc chắn muốn xóa tài khoản <strong></strong>?</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Xác nhận</button>
-                    </div>
-                </div>
+                            <c:if test="${index != i}">
+                                <li class="page-item">
+                                    <a class="page-link" href="TicketController?index=${i}&flightDetailID=<%=FDetailID%>">${i}</a>
+                                </li>
+                            </c:if>
+                        </c:forEach>
+                        <c:if test="${index != numOfPage}">    
+                            <li class="page-item">
+                                <a class="page-link" href="TicketController?index=${index +1}&flightDetailID=<%=FDetailID%>">Next</a>
+                            </li>
+                        </c:if> 
+                    </ul>
+                </nav>
             </div>
+            <%}%>
         </div>
+
+
         <script>
             function openModal(id) {
                 $("#myModal" + id).modal('show');
@@ -588,6 +611,7 @@
                 $("#myModal3").modal('show');
             }
         </script>
+
 
     </body>
 </html>

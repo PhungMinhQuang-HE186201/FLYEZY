@@ -296,6 +296,9 @@
                     %>
                 </tbody>
             </table>
+            <%
+                String action = request.getParameter("action");
+             if(action==null){%>
             <div style="">
                 <nav aria-label="...">
                     <ul class="pagination">
@@ -325,6 +328,7 @@
                     </ul>
                 </nav>
             </div>
+            <%}%>
         </div>
 
         <!-- change status Modal -->

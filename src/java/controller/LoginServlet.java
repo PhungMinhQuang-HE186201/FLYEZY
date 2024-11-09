@@ -75,24 +75,24 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         EncodeController ec = new EncodeController();
-        //quanHT: encode password before checkpass
         try {
             String u = request.getParameter("user").trim();
-            String p = request.getParameter("pass").trim();
+            String p = request.getParameter("pass");
             String r = request.getParameter("rem");
+            //quanHT: encode password before checkpass
             String encode = ec.encryptAES(p, SECRET_KEY);
 
             LoginDAO ld = new LoginDAO();
             AccountsDAO ad = new AccountsDAO();
             HttpSession session = request.getSession();
             if (!ld.checkUsername(u)) {
-                request.setAttribute("error", "Tài khoản của bạn không tồn tại!");
+                request.setAttribute("error", "Your account does not exist!");
                 request.getRequestDispatcher("view/login.jsp").forward(request, response);
             } else if (!ld.checkPassword(u, encode)) {
-                request.setAttribute("error", "Mật khẩu của bạn không chính xác!");
+                request.setAttribute("error", "Your password is incorrect!");
                 request.getRequestDispatcher("view/login.jsp").forward(request, response);
             } else if (ld.checkStatus(u)) {
-                request.setAttribute("error", "Tài khoản của bạn đã bị khóa");
+                request.setAttribute("error", "Your account has been deactivated!");
                 request.getRequestDispatcher("view/login.jsp").forward(request, response);
             } else {
                 Cookie cu = new Cookie("cuser", u);
