@@ -37,6 +37,15 @@
             <div style="display: flex;">
                 <button type="button" style="position: relative; left: 60px; top: 15px; transition: none; cursor: default;" class="btn btn-success" data-toggle="modal" data-target="#add-<%=id%>" >Add New Discount</button>
             </div>
+            <%
+        String error = (String) session.getAttribute("duplicateError");
+     if (error != null) {
+            %>
+            <h4 style="color: red;margin: 40px 100px -15px 60px;"><%out.print(error);%></h4>
+            <%
+            session.removeAttribute("duplicateError");
+        }
+            %>
         </div>
         <div class="container">
             <table class="entity" style="margin-left: 60px; margin-top: 50px" border="1" >

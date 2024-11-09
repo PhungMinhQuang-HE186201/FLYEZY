@@ -82,9 +82,9 @@ public class DiscountManagementServlet extends HttpServlet {
             if (id != null) {
                 int sid = Integer.parseInt(id);
                 if ("Activate".equalsIgnoreCase(action)) {
-                    dd.updateStatus(sid, 1); // Cập nhật status_id thành 1 (Active)
+                    dd.updateStatus(sid, 1); 
                 } else if ("Deactivate".equalsIgnoreCase(action)) {
-                    dd.updateStatus(sid, 2); // Cập nhật status_id thành 0 (Inactive)
+                    dd.updateStatus(sid, 2); 
                 }
             }
             if (acc.getRoleId() == 2) {
@@ -114,6 +114,7 @@ public class DiscountManagementServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
         String code = generatePromoCode();
         String uid = request.getParameter("uid");
         String ucode = request.getParameter("ucode");
@@ -137,9 +138,21 @@ public class DiscountManagementServlet extends HttpServlet {
             Date dcreated = Date.valueOf(date_created);
             Date valid = Date.valueOf(valid_until);
             int aid = Integer.parseInt(airline_id);
-            dd.updateDiscount(new Discount(ucode, per, min, dcreated, valid, aid), id);
+
+            boolean isDuplicate = false;
+            for (Discount d : dd.getAll()) {
+                if (ucode.equals(d.getCode()) && d.getId() != id) {
+                    isDuplicate = true;
+                    break;
+                }
+            }
+            if (isDuplicate) {
+                session.setAttribute("duplicateError", "Update failed, this code is existed");
+            } else {
+                dd.updateDiscount(new Discount(ucode, per, min, dcreated, valid, aid), id);
+            }
+            response.sendRedirect("discountManagement");
         }
-        response.sendRedirect("discountManagement");
     }
 
     public static String generatePromoCode() {
