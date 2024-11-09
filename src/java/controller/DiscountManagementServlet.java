@@ -82,9 +82,9 @@ public class DiscountManagementServlet extends HttpServlet {
             if (id != null) {
                 int sid = Integer.parseInt(id);
                 if ("Activate".equalsIgnoreCase(action)) {
-                    dd.updateStatus(sid, 1); 
+                    dd.updateStatus(sid, 1);
                 } else if ("Deactivate".equalsIgnoreCase(action)) {
-                    dd.updateStatus(sid, 2); 
+                    dd.updateStatus(sid, 2);
                 }
             }
             if (acc.getRoleId() == 2) {
@@ -151,8 +151,8 @@ public class DiscountManagementServlet extends HttpServlet {
             } else {
                 dd.updateDiscount(new Discount(ucode, per, min, dcreated, valid, aid), id);
             }
-            response.sendRedirect("discountManagement");
         }
+        response.sendRedirect("discountManagement");
     }
 
     public static String generatePromoCode() {
