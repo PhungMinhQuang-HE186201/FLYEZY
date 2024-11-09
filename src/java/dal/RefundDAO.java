@@ -120,7 +120,7 @@ public class RefundDAO extends DBConnect {
     public int createRefund(Refund refund) {
         String sql = "INSERT INTO `flyezy`.`Refund`\n"
                 + "(`bank`,`bankAccount`,`requestDate`,`refundDate`,`refundPrice`,`Ticketid`,`Statusid`)\n"
-                + "VALUES (?,?,?,?,?,?,3)";
+                + "VALUES (?,?,?,?,?,?,13)";
         int generatedId = -1;  // Giá trị mặc định cho trường hợp không thể lấy được ID
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, refund.getBank());
@@ -131,7 +131,6 @@ public class RefundDAO extends DBConnect {
             preparedStatement.setInt(6, refund.getTicketid());
             preparedStatement.executeUpdate();
 
-            // Lấy airlineId vừa được tạo
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
             if (generatedKeys.next()) {
                 generatedId = generatedKeys.getInt(1);  // Trả về airlineId
@@ -139,10 +138,9 @@ public class RefundDAO extends DBConnect {
                 System.err.println("Creating refund failed, no ID obtained.");
             }
         } catch (SQLException e) {
-            // Xử lý lỗi SQL tại đây
             System.err.println("SQL Error: " + e.getMessage());
             e.printStackTrace();
         }
-        return generatedId;  // Trả về ID hoặc giá trị mặc định -1 nếu có lỗi
+        return generatedId; 
     }
 }

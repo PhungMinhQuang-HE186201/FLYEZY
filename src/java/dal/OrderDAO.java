@@ -745,7 +745,7 @@ public class OrderDAO extends DBConnect {
     }
 
     public int getTotalPriceCancelledTicket(int orderId) {
-        String sql = "SELECT SUM(totalPrice) as total FROM flyezy.Ticket WHERE Order_id = ? and Statusid = 7";
+        String sql = "SELECT SUM(totalPrice) as total FROM flyezy.Ticket WHERE Order_id = ? and (Statusid = 7 or Statusid = 8 or Statusid=13 or Statusid=14)";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, orderId);

@@ -208,7 +208,7 @@ public class TicketDAO extends DBConnect {
     }
 
     public void refundWaitingTicketById(int id) {
-        String sql = "UPDATE Ticket SET Statusid = 3 WHERE id = ?";
+        String sql = "UPDATE Ticket SET Statusid = 13 WHERE id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
