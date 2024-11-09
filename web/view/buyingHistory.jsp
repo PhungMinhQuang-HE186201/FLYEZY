@@ -322,7 +322,10 @@
                         </div>
                     </div>
                     <%LocalTime desTime = null;
-                    LocalDate desDate = null;%>
+                    LocalDate desDate = null;
+                    LocalTime depTime = null;
+                    LocalDate depDate = null;
+                    LocalDateTime currentDateTime = LocalDateTime.now();%>
                     <% int count = 1; int total = 0;%>
                     <% for(Ticket t : listTicketInOrder) { %>
                     <% id = t.getId(); %>
@@ -349,6 +352,8 @@
                             //destination
                             LocalDateTime destinationDateTime = departureDateTime.plusMinutes(f.getMinutes());
                             
+                            depDate = departureDateTime.toLocalDate();
+                            depTime = departureDateTime.toLocalTime();
                             desDate = destinationDateTime.toLocalDate();
                             desTime = destinationDateTime.toLocalTime();
                             %>
@@ -382,8 +387,9 @@
                             <div class="status-label <%= sd.getStatusNameById(t.getStatusid()).toLowerCase() %>">
                                 <%= sd.getStatusNameById(t.getStatusid()) %>
                             </div>
+                            <%LocalDateTime depDateTime = LocalDateTime.of(depDate, depTime);%>
                             <div><strong style="font-size: 16px"><%= currencyFormatter.format(t.getTotalPrice()) %></strong></div>
-                                <% if(t.getStatusid() == 10 || t.getStatusid() == 12) { %>
+                                <% if((t.getStatusid() == 10 || t.getStatusid() == 12) && currentDateTime.isBefore(depDateTime)) { %>
                             <a class="btn btn-danger" style="text-decoration: none; margin-top: 5px;" onclick="openModalTicket(<%= t.getId() %>,<%= o.getId() %>)">Cancel ticket</a>
 
                             <% }
@@ -401,10 +407,16 @@
 
 
 
-                    
+
+                    <%
+                            LocalDateTime desDateTime = LocalDateTime.of(desDate, desTime);
+                            LocalDateTime depDateTime = LocalDateTime.of(depDate, depTime);
+                    %>
                     <div class="list-price" style="text-align: right; padding: 15px 0 "> 
                         <div>Order Tickets: <%=currencyFormatter.format(od.getTotalPriceAllTickets(o.getId())) %></div>
+                        
                         <div>Cancel Tickets: <%=currencyFormatter.format(od.getTotalPriceCancelledTicket(o.getId())) %></div>
+                        
                         <div>Is Paid <%=currencyFormatter.format((o.getPaymentTime()!=null)?o.getTotalPrice():0) %></div>
                         <div class="order-discount">Discount: <%=dd.getPercentageById(o.getDiscountId())%>%</div>
                         <% double totals = od.getTotalPriceAllTickets(o.getId())-od.getTotalPriceCancelledTicket(o.getId());  %>
@@ -417,13 +429,12 @@
                             <%if(o.getStatus_id()==12){%>
                             <button type="submit" class="btn btn-success" id="togglePaymentBtn<%=o.getId()%>" onclick="paymentMedthodDisplay(<%=o.getId()%>)">PAY NOW</button>
                             <%}%>
-                            <% if (td.countNumberTicketNotCancel(o.getId()) == 0) { %>
+                            <% if (td.countNumberTicketNotCancel(o.getId()) == 0 ) { %>
                             <a class="btn btn-danger" style="text-decoration: none; display: none;" onclick="openModalOrder(<%= o.getId() %>)">Cancel Order</a>
                             <% } else { %>
+                            <%if(currentDateTime.isBefore(depDateTime)){%>
                             <a class="btn btn-danger" style="text-decoration: none;" onclick="openModalOrder(<%= o.getId() %>)">Cancel Order</a>                         
-                            <% } %>
-                            <%LocalDateTime currentDateTime = LocalDateTime.now();
-                            LocalDateTime desDateTime = LocalDateTime.of(desDate, desTime);%>
+                            <% }} %>
 
                             <% if (currentDateTime.isAfter(desDateTime) && o.getStatus_id() == 10) { %>
                             <% 

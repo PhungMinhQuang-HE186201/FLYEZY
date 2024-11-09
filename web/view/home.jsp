@@ -223,8 +223,8 @@
                                     <!-- From Field -->
                                     <div class="col-md-2" style="padding-right: 0px">
                                         <p style="color: black; margin: 0; font-size: 12px">FROM</p>
-                                        <input type="text" readonly style="height: 100%;font-size: 18px" class="form-control" id="fromDisplay" onclick="showLocationList('from')" oninput="filterLocations('from')" placeholder="FROM" required>
-                                        <input type="hidden" id="from" name="departure">
+                                        <input type="text" value="Hà Nội" readonly style="height: 100%;font-size: 18px" class="form-control" id="fromDisplay" onclick="showLocationList('from')" oninput="filterLocations('from')" placeholder="FROM" required>
+                                        <input type="hidden" value="1" id="from" name="departure">
                                         <div id="from-locations" class="location-list">
                                             <%                
                                                 for(Location l : locationDao.getAllLocation()) {
@@ -246,8 +246,8 @@
                                     <!-- To Field -->
                                     <div class="col-md-2" style="padding-right: 0px">
                                         <p style="color: black; margin: 0; font-size: 12px">TO</p>
-                                        <input type="text" readonly style="height: 100%;font-size: 18px" class="form-control" id="toDisplay" onclick="showLocationList('to')" oninput="filterLocations('to')" placeholder="TO" required>
-                                        <input type="hidden" id="to" name="destination">
+                                        <input type="text" value="TP. Hồ Chí Minh" readonly style="height: 100%;font-size: 18px" class="form-control" id="toDisplay" onclick="showLocationList('to')" oninput="filterLocations('to')" placeholder="TO" required>
+                                        <input type="hidden" value="2" id="to" name="destination">
                                         <div id="to-locations" class="location-list">
                                             <%                
                                                 for(Location l : locationDao.getAllLocation()) {
@@ -269,11 +269,11 @@
                                     <!-- Departure Date Field -->
                                     <div class="col-md-2" style="padding-right: 0px">
                                         <p style="color: black; margin: 0; font-size: 12px">DEPART</p>
-                                        <input type="text" class="form-control" id="departureDate" name="departureDate" style="height: 100%;font-size: 18px;" placeholder="yyyy-mm-dd" required readonly>
+                                        <input type="text" class="form-control" id="departureDate" name="departureDate" style="height: 100%;font-size: 18px;" placeholder="yyyy-mm-dd" onkeydown="return false;" required >
                                     </div>
                                     <div class="col-md-2" id="returnDateField" style="display:none;padding-right: 0px">
                                         <p style="color: black; margin: 0; font-size: 12px">RETURN</p>
-                                        <input type="text" id="returnDate" class="form-control" name="returnDate" style="height: 100%;font-size: 18px;" placeholder="yyyy-mm-dd" readonly>
+                                        <input type="text" id="returnDate" class="form-control" name="returnDate" style="height: 100%;font-size: 18px;" placeholder="yyyy-mm-dd" onkeydown="return false;">
                                     </div>
 
                                     <!-- Passengers Field -->

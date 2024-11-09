@@ -57,13 +57,6 @@
                 <form action="feedbackController" method="get" style="margin-bottom: 20px;">
                     <input type="hidden" name="action" value="search">
                     <input type="hidden" name="orderId" value="${orderId}">
-                    <strong class="filterElm">Status:</strong>
-                    <select class="filterElm" name="fStaus">
-                        <option value="" ${param.fStaus == null ? 'selected' : ''}>All</option>
-                        <c:forEach items="${statusList}" var="status">
-                            <option value="${status.id}" ${param.fStaus != null && (param.fStaus==status.id) ? 'selected' : ''}>${status.name}</option>
-                        </c:forEach>
-                    </select>
                     <strong>Rated star :</strong>
                     <input class="filterElm" type="number" name="fStar" value="${param.fStar}">
                     <strong>Account email :</strong>
@@ -196,35 +189,7 @@
                     <%}%>
                 </tbody>
             </table>
-            <div style="">
-                <nav aria-label="...">
-                    <ul class="pagination">
-                        <c:if test="${index != 1}">    
-                            <li class="page-item">
-                                <a class="page-link" href="accountController?index=${index -1}">Previous</a>
-                            </li>
-                        </c:if>    
-                        <c:forEach begin="1" end ="${numOfPage}" var="i">
-                            <c:if test="${index == i}">
-                                <li class="page-item active">
-                                    <a class="page-link" href="accountController?index=${i}">${i}</a>
-                                </li>
-                            </c:if>
-
-                            <c:if test="${index != i}">
-                                <li class="page-item">
-                                    <a class="page-link" href="accountController?index=${i}">${i}</a>
-                                </li>
-                            </c:if>
-                        </c:forEach>
-                        <c:if test="${index != numOfPage}">    
-                            <li class="page-item">
-                                <a class="page-link" href="accountController?index=${index +1}">Next</a>
-                            </li>
-                        </c:if> 
-                    </ul>
-                </nav>
-            </div>
+            
         </div>
 
         <!-- change status Modal -->
