@@ -94,7 +94,7 @@ public class DiscountDAO extends DBConnect {
                     int Airlineid = rs.getInt("Airline_id");
                     int Status_id = rs.getInt("Status_id");
 
-                   return new Discount(id, code, percentage, min_order, date_created, valid_until, Airlineid, Status_id);
+                    return new Discount(id, code, percentage, min_order, date_created, valid_until, Airlineid, Status_id);
 
                 }
             }
@@ -141,7 +141,7 @@ public class DiscountDAO extends DBConnect {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();  
+            e.printStackTrace();
         }
 
         return percentage;
@@ -248,22 +248,21 @@ public class DiscountDAO extends DBConnect {
         }
         return list;
     }
-    
-    public boolean isUsedDiscount(int accountId, int discountId){
+
+    public boolean isUsedDiscount(int accountId, int discountId) {
         String sql = "SELECT * from flyezy.Order o where o.Accounts_id = ? and o.Discount_id = ? and (o.Status_id = 10 or o.Status_id = 12)";
         try {
             PreparedStatement prepare = conn.prepareStatement(sql);
-            prepare.setInt(1,accountId);
+            prepare.setInt(1, accountId);
             prepare.setInt(2, discountId);
             ResultSet resultSet = prepare.executeQuery();
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 return true;
             }
         } catch (Exception e) {
         }
         return false;
     }
-    
 
     public static void main(String[] args) {
 

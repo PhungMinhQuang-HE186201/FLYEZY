@@ -92,12 +92,17 @@
                             <!-- Full Name -->
                             <div class="form-group">
                                 <label for="name" class="control-label">Full name:</label>
+                                <% 
+                                    java.util.Calendar calendar = java.util.Calendar.getInstance();
+                                    calendar.add(java.util.Calendar.YEAR, 0);
+                                    String maxDate = new java.text.SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
+                                %>
                                 <input type="text" name="name" value="${requestScope.account.name}" class="form-control" 
                                        pattern="^[\p{L}\s]+$" id="nameInput" required />
                             </div>
                             <div class="form-group">
                                 <label for="birth" class="control-label">Date of birth:</label>
-                                <input type="date" name="birth" value="${requestScope.account.dob}" class="form-control" required />
+                                <input type="date" name="birth" value="${requestScope.account.dob}" class="form-control" required max="<%=maxDate%>" onkeydown="return false;"/>
                             </div>
                             <div class="form-group">
                                 <label for="email" class="control-label">Email:</label>

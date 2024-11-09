@@ -4,30 +4,62 @@
  */
 package controller;
 
+import dal.OrderDAO;
+import dal.TicketDAO;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.time.LocalDate;
-
+import jakarta.servlet.annotation.WebListener;
+import model.Ticket;
 
 /**
  *
  * @author Admin
  */
-public class ScheduledExecutorService {
-    public static void main(String[] args) {
-        java.util.concurrent.ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
+@WebListener
+public class ScheduledExecutorService implements ServletContextListener {
+
+    private java.util.concurrent.ScheduledExecutorService scheduler;
+    private TicketDAO td = new TicketDAO();
+    private OrderDAO od = new OrderDAO();
+
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        scheduler = Executors.newScheduledThreadPool(1);
         Runnable task = () -> {
-            try {
-                updateUnpaidTicket();
-            } catch (Exception e) {
+            System.out.println("Hello 1");
+            List<Integer> alertOverdue = td.getTicketsBeforeOverdue();
+            for (Integer id : alertOverdue) {
+                String email = od.getOrderById(td.getTicketById(id).getOrder_id()).getContactEmail();
+                System.out.println("Gửi mail");
+            }
+            System.out.println("Hello 2");
+            List<Integer> overdueTicket = td.getOverdueTicket();
+            for (Integer id : overdueTicket) {
+                System.out.println(id);
+                td.cancelTicketById(id);
+                Ticket t = td.getTicketById(id);
+                if(td.countNumberTicketNotCancel(t.getOrder_id())<=0){
+                    od.cancelOrderById(t.getOrder_id());
+                }
             }
         };
-       
-        ses.schedule(task, 1, TimeUnit.DAYS);
-        ses.shutdown();
+        scheduler.scheduleAtFixedRate(task, 0, 10, TimeUnit.SECONDS);
     }
-    
-    private static void updateUnpaidTicket(){
-         LocalDate twoDaysLater = LocalDate.now().plusDays(2);
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        if (scheduler != null) {
+            scheduler.shutdown();
+            try {
+                if (!scheduler.awaitTermination(5, TimeUnit.SECONDS)) {
+                    scheduler.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                scheduler.shutdownNow();
+            }
+        }
     }
 }

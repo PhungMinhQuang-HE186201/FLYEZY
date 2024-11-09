@@ -258,8 +258,8 @@
             <!-- Search Bar Section -->
             <div class="row mt-3 mb-3">
                 <div class="col-md-12">
-                    <form action="findOrder" method="get" class="form-inline justify-content-center">
-                        <input type="text" value="${param.code}" class="form-control" name="code" placeholder="Enter code here to search ..." aria-label="Search" style="width: 30%; font-size: 1.2em">
+                    <form action="findOrder" method="get" class="form-inline justify-content-center" onsubmit="return validateCodeInput()">
+                        <input type="text" value="${param.code}" class="form-control" name="code" id="codeInput" placeholder="Enter code here to search ..." aria-label="Search" style="width: 30%; font-size: 1.2em">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" type="submit">
                                 <i class="fa fa-search"></i> 
@@ -447,7 +447,7 @@
             </div>
             <% }else{ %>
             <div class="contact-verification mt-3">
-                <form action="findOrder" method="get">
+                <form action="findOrder" method="get" onsubmit="return validateNameInput()">
                     <input type="hidden" name="code" value="<%= o.getCode() %>">
                     <label for="contactInfo">Please verify your contact information:</label>
                     <input type="text" id="contactInfo" name="contactInfo" class="form-control" placeholder="Enter your contact mail/phone">
@@ -623,6 +623,22 @@
                     }
                 });
             };
+            function validateNameInput() {
+                const nameInput = document.getElementById("contactInfo").value.trim();
+                if (nameInput === "") {
+                    alert("Please enter valid contact. Do not enter spaces only.");
+                    return false;
+                }
+                return true;
+            }
+            function validateCodeInput() {
+                const codeInput = document.getElementById("codeInput").value.trim();
+                if (codeInput === "") {
+                    alert("Please enter valid code. Do not enter spaces only.");
+                    return false;
+                }
+                return true;
+            }
         </script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>

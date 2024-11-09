@@ -495,7 +495,8 @@
             String code = request.getParameter("code");
             if(statusIdParam ==null && code==null){%>
             <div style="width :100%; margin: 0 auto">
-                <nav aria-label="...">
+                <nav aria-label="..." style="width: 100%;
+                     text-align: center;">
                     <ul class="pagination">
                         <c:if test="${index != 1}">    
                             <li class="page-item">

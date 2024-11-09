@@ -8,9 +8,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Date;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import model.Order;
 import model.Ticket;
 
 /**
@@ -50,6 +52,7 @@ public class TicketDAO extends DBConnect {
         }
         return null;
     }
+
     public int getNumberOfTicket(int id) {
         String sql = "SELECT COUNT(*) AS ticket_count FROM Ticket WHERE Flight_Detail_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -63,6 +66,7 @@ public class TicketDAO extends DBConnect {
         }
         return 0;
     }
+
     public List<Ticket> getAllTicketSuccessfulPaymentByOrderId(int orderId) {
         List<Ticket> ls = new ArrayList<>();
         String sql = "SELECT * FROM flyezy.Ticket where Order_id = ? and Statusid = 10;";
@@ -275,14 +279,15 @@ public class TicketDAO extends DBConnect {
         }
         return null;
     }
-    public List<Ticket> getAllTicketsByIdWithPaging(int flightDetailID,int index) {
+
+    public List<Ticket> getAllTicketsByIdWithPaging(int flightDetailID, int index) {
         List<Ticket> ls = new ArrayList<>();
         String sql = "select * from Ticket t \n"
                 + "where Flight_Detail_id= " + flightDetailID + " and Statusid!=9"
                 + " LIMIT 5 OFFSET ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1,(index-1)*5);
+            ps.setInt(1, (index - 1) * 5);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Ticket t = new Ticket(rs.getInt("id"),
@@ -309,6 +314,7 @@ public class TicketDAO extends DBConnect {
         }
         return null;
     }
+
     public List<String> getAllTicketCodesById(int flightDetailID, int seatCategoryId) {
         List<String> ls = new ArrayList<>();
         String sql = "SELECT t.code FROM Ticket t "
@@ -385,26 +391,29 @@ public class TicketDAO extends DBConnect {
     }
 
     public Ticket getTicketById(int id) {
-        String sql = "Select * from Ticket where id =" + id + " and Statusid!=9";
-        try {
-            PreparedStatement st = conn.prepareStatement(sql);
+        String sql = "SELECT * FROM Ticket WHERE id = ? AND Statusid != 9";
+        try (PreparedStatement st = conn.prepareStatement(sql)) {
             st.setInt(1, id);
-            ResultSet rs = st.executeQuery();
-            if (rs.next()) {
-                Ticket t = new Ticket(rs.getInt("id"),
-                        rs.getInt("Seat_Categoryid"),
-                        rs.getInt("Passenger_Typesid"),
-                        rs.getString("code"),
-                        rs.getString("pName"),
-                        rs.getInt("pSex"),
-                        rs.getString("pPhoneNumber"),
-                        rs.getDate("pDob"),
-                        rs.getInt("Baggagesid"),
-                        rs.getInt("totalPrice"),
-                        rs.getInt("Order_id"),
-                        rs.getInt("Statusid"),
-                        rs.getInt("Flight_Type_id"));
-                return t;
+
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    return new Ticket(rs.getInt("id"),
+                            rs.getInt("Flight_Detail_id"),
+                            rs.getInt("Seat_Categoryid"),
+                            rs.getInt("Passenger_Typesid"),
+                            rs.getString("code"),
+                            rs.getString("pName"),
+                            rs.getInt("pSex"),
+                            rs.getString("pPhoneNumber"),
+                            rs.getDate("pDob"),
+                            rs.getInt("Baggagesid"),
+                            rs.getInt("totalPrice"),
+                            rs.getInt("Order_id"),
+                            rs.getInt("Statusid"),
+                            rs.getInt("Flight_Type_id"),
+                            rs.getTimestamp("cancelled_at")
+                    );
+                }
             }
         } catch (SQLException e) {
             System.out.println(e);
@@ -504,6 +513,7 @@ public class TicketDAO extends DBConnect {
         }
         return ls;
     }
+
     public int createTicket(String code, int flightDetailId, int seatCategoryId, int passengerTypeId, String pName, int pSex, String pPhoneNumber, Date pDob, Integer baggageId, int totalPrice, int orderId, int flightTypeId) {
         int n = 0;
         String sql = "INSERT INTO `flyezy`.`Ticket` \n"
@@ -588,15 +598,144 @@ public class TicketDAO extends DBConnect {
         return n;
     }
 
+    public List<Integer> getOverdueTicket() {
+        List<Integer> list = new ArrayList<>();
+        String query = "SELECT t.id, t.pName, t.Seat_Categoryid, t.totalPrice, fd.date, fd.time, o.code, o.created_at, ?, t.Statusid, "
+                + "TIMESTAMPDIFF(SECOND, o.created_at, CONCAT(fd.date, ' ', fd.time)) as flightSubCreate, "
+                + "TIMESTAMPDIFF(SECOND, o.created_at, ?) as nowSubCreate, "
+                + "TIMESTAMPDIFF(SECOND, ?, CONCAT(fd.date, ' ', fd.time)) as flightSubnow "
+                + "FROM flyezy.Ticket t "
+                + "LEFT JOIN flyezy.Order o ON o.id = t.Order_id "
+                + "LEFT JOIN flyezy.Flight_Detail fd ON fd.id = t.Flight_Detail_id "
+                + "WHERE t.Statusid = 12 AND ( "
+                + "  (TIMESTAMPDIFF(SECOND, o.created_at, CONCAT(fd.date, ' ', fd.time)) >= 93600 " //1 ngày 2 giờ
+                + "   AND TIMESTAMPDIFF(SECOND, o.created_at, ?) > 86400) " // 24h 
+                + "  OR (TIMESTAMPDIFF(SECOND, o.created_at, CONCAT(fd.date, ' ', fd.time)) BETWEEN 10800 AND 93600 " // 3 giờ đến 1 ngày 2 giờ
+                + "   AND TIMESTAMPDIFF(SECOND, ?, CONCAT(fd.date, ' ', fd.time)) < 7200) " 
+                + "  OR (TIMESTAMPDIFF(SECOND, o.created_at, CONCAT(fd.date, ' ', fd.time)) <= 10800 "
+                + "   AND ? >= CONCAT(fd.date, ' ', fd.time)) "
+                + ")";
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+
+            for (int i = 1; i <= 6; i++) {
+                ps.setTimestamp(i, now);
+            }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String pName = rs.getString("pName");
+                int seatCategoryId = rs.getInt("Seat_Categoryid");
+                double totalPrice = rs.getDouble("totalPrice");
+                Date flightDate = rs.getDate("date");
+                Time flightTime = rs.getTime("time");
+                String orderCode = rs.getString("code");
+                Timestamp createdAt = rs.getTimestamp("created_at");
+                int statusId = rs.getInt("Statusid");
+                int flightSubCreate = rs.getInt("flightSubCreate");
+                int nowSubCreate = rs.getInt("nowSubCreate");
+                int flightSubnow = rs.getInt("flightSubnow");
+
+                System.out.println("ID: " + id);
+                System.out.println("Name: " + pName);
+                System.out.println("Seat Category ID: " + seatCategoryId);
+                System.out.println("Total Price: " + totalPrice);
+                System.out.println("fDate: " + flightDate);
+                System.out.println("fTime: " + flightTime);
+                System.out.println("Order Code: " + orderCode);
+                System.out.println("o: " + createdAt);
+                System.out.println("Status ID: " + statusId);
+                System.out.println("f - o : " + flightSubCreate);
+                System.out.println("n - o : " + nowSubCreate);
+                System.out.println("f - n : " + flightSubnow);
+                System.out.println("----------");
+
+                list.add(id);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public List<Integer> getTicketsBeforeOverdue() {
+        List<Integer> list = new ArrayList<>();
+        String query = "SELECT t.id, t.pName, t.Seat_Categoryid, t.totalPrice, fd.date, fd.time, o.code, o.created_at, ?, t.Statusid, "
+                + "TIMESTAMPDIFF(SECOND, o.created_at, CONCAT(fd.date, ' ', fd.time)) as flightSubCreate, "
+                + "TIMESTAMPDIFF(SECOND, o.created_at, ?) as nowSubCreate, "
+                + "TIMESTAMPDIFF(SECOND, ?, CONCAT(fd.date, ' ', fd.time)) as flightSubnow "
+                + "FROM flyezy.Ticket t "
+                + "LEFT JOIN flyezy.Order o ON o.id = t.Order_id "
+                + "LEFT JOIN flyezy.Flight_Detail fd ON fd.id = t.Flight_Detail_id "
+                + "WHERE t.Statusid = 12 AND ( "
+                + "  (TIMESTAMPDIFF(SECOND, o.created_at, CONCAT(fd.date, ' ', fd.time)) >= 93600 "
+                + "   AND TIMESTAMPDIFF(SECOND, o.created_at, ?) = 82800) " //sau 23h thì gửi email
+                + "  OR (TIMESTAMPDIFF(SECOND, o.created_at, CONCAT(fd.date, ' ', fd.time)) BETWEEN 10800 AND 93600 "
+                + "   AND TIMESTAMPDIFF(SECOND, ?, CONCAT(fd.date, ' ', fd.time)) = 9000) " // trườc giờ bay 2 tiếng 30 phút
+                + "  OR (TIMESTAMPDIFF(SECOND, o.created_at, CONCAT(fd.date, ' ', fd.time)) <= 7200 "
+                + "   AND TIMESTAMPDIFF(SECOND, ?, CONCAT(fd.date, ' ', fd.time)) = 3600) " // trườc giờ bay 1 tiếng 
+                + ")";
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+
+            for (int i = 1; i <= 6; i++) {
+                ps.setTimestamp(i, now);
+            }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String pName = rs.getString("pName");
+                int seatCategoryId = rs.getInt("Seat_Categoryid");
+                double totalPrice = rs.getDouble("totalPrice");
+                Date flightDate = rs.getDate("date");
+                Time flightTime = rs.getTime("time");
+                String orderCode = rs.getString("code");
+                Timestamp createdAt = rs.getTimestamp("created_at");
+                int statusId = rs.getInt("Statusid");
+                int flightSubCreate = rs.getInt("flightSubCreate");
+                int nowSubCreate = rs.getInt("nowSubCreate");
+                int flightSubnow = rs.getInt("flightSubnow");
+
+                System.out.println("ID: " + id);
+                System.out.println("Name: " + pName);
+                System.out.println("Seat Category ID: " + seatCategoryId);
+                System.out.println("Total Price: " + totalPrice);
+                System.out.println("fDate: " + flightDate);
+                System.out.println("fTime: " + flightTime);
+                System.out.println("Order Code: " + orderCode);
+                System.out.println("o: " + createdAt);
+                System.out.println("Status ID: " + statusId);
+                System.out.println("f - o : " + flightSubCreate);
+                System.out.println("n - o : " + nowSubCreate);
+                System.out.println("f - n : " + flightSubnow);
+                System.out.println("----------");
+
+                list.add(id);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     public static void main(String[] args) {
         TicketDAO td = new TicketDAO();
+        OrderDAO od = new OrderDAO();
         AirlineManageDAO ad = new AirlineManageDAO();
         //tcd.confirmSuccessAllTicketsByOrderId(1);
         //System.out.println(td.createTicket("C9", 1, 7, 2, "HIHI", 0, null, Date.valueOf("2000-10-10"), null, 0, 1, 1));
         //System.out.println(td.getAllTicketCodesById(4, 1));
 //        System.out.println(tcd.getTicketByCode("B1", 4, 8));
 //        System.out.println(td.searchTickets("", "", "", "", 1, "", "FJA84IUTJ"));
-        td.createMaintenanceSeat("A9", 15, 1);
+        System.out.println(new Timestamp(System.currentTimeMillis()));
+
+        td.getOverdueTicket();
     }
 
 }
