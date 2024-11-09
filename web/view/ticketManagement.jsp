@@ -311,6 +311,7 @@
                     </c:otherwise>
                 </c:choose>
             </div>
+            
             <div style="margin: 45px 0 18px 0; color:#3C6E57; "><h2>TICKETS MANAGEMENT</h2></div>
 
             <%if(airportDep != null && locationDep != null && countryDep != null && airportDes != null && locationDes != null && countryDes != null){%>
@@ -341,102 +342,105 @@
                 </div>
             </div>
             <%}%>
-            <form action="TicketController" method="get"">
-                <input type="hidden" name="action" value="search">
-                <input type="hidden" name="flightDetailID" value="${flightDetailID}">
-                <strong class="filterElm">Flight Type</strong>
-                <select class="filterElm" name="flightType">
-                    <option value="" ${param.flightType == null ? 'selected' : ''}>All</option>
-                    <c:forEach items="${flightTypeList}" var="type">
-                        <option value="${type.id}" ${param.flightType != null && (param.flightType==type.id) ? 'selected' : ''}>${type.name}</option>
-                    </c:forEach>
-                </select>
-                <strong class="filterElm">Passenger Type</strong>
-                <select class="filterElm" name="passengerType">
-                    <option value="" ${param.passengerType == null ? 'selected' : ''}>All</option>
-                    <c:forEach items="${passengerTypeList}" var="type">
-                        <option value="${type.id}" ${param.passengerType != null && (param.passengerType==type.id) ? 'selected' : ''}>${type.name}</option>
-                    </c:forEach>
-                </select>
+            <c:if test="${requestScope.flightDetailID != null}">
+                <form action="TicketController" method="get"">
+                    <input type="hidden" name="action" value="search">
+                    <input type="hidden" name="flightDetailID" value="${flightDetailID}">
+                    <strong class="filterElm">Flight Type</strong>
+                    <select class="filterElm" name="flightType">
+                        <option value="" ${param.flightType == null ? 'selected' : ''}>All</option>
+                        <c:forEach items="${flightTypeList}" var="type">
+                            <option value="${type.id}" ${param.flightType != null && (param.flightType==type.id) ? 'selected' : ''}>${type.name}</option>
+                        </c:forEach>
+                    </select>
+                    <strong class="filterElm">Passenger Type</strong>
+                    <select class="filterElm" name="passengerType">
+                        <option value="" ${param.passengerType == null ? 'selected' : ''}>All</option>
+                        <c:forEach items="${passengerTypeList}" var="type">
+                            <option value="${type.id}" ${param.passengerType != null && (param.passengerType==type.id) ? 'selected' : ''}>${type.name}</option>
+                        </c:forEach>
+                    </select>
 
-                <strong class="filterElm">Status</strong>
-                <select class="filterElm" name="statusTicket">
-                    <option value="" ${param.statusTicket == null ? 'selected' : ''}>All</option>
-                    <c:forEach items="${statusTicketList}" var="status">
-                        <option value="${status.id}" ${param.statusTicket != null && (param.statusTicket==status.id) ? 'selected' : ''}>${status.name}</option>
-                    </c:forEach>
-                </select>
-                <strong>Passenger Name: </strong>
-                <input class="filterElm" type="text" name="fName" value="${param.fName}" placeholder="Enter name">
-                <br><br>
-                <strong>Phone number: </strong>
-                <input class="filterElm" type="number" name="fPhoneNumber" value="${param.fPhoneNumber}" placeholder="Enter phone number">
-                <strong>Order code: </strong>
+                    <strong class="filterElm">Status</strong>
+                    <select class="filterElm" name="statusTicket">
+                        <option value="" ${param.statusTicket == null ? 'selected' : ''}>All</option>
+                        <c:forEach items="${statusTicketList}" var="status">
+                            <option value="${status.id}" ${param.statusTicket != null && (param.statusTicket==status.id) ? 'selected' : ''}>${status.name}</option>
+                        </c:forEach>
+                    </select>
+                    <strong>Passenger Name: </strong>
+                    <input class="filterElm" type="text" name="fName" value="${param.fName}" placeholder="Enter name">
+                    <br><br>
+                    <strong>Phone number: </strong>
+                    <input class="filterElm" type="number" name="fPhoneNumber" value="${param.fPhoneNumber}" placeholder="Enter phone number">
+                    <strong>Order code: </strong>
 
-                <input class="filterElm" type="text" name="orderCode" value="${param.orderCode}" placeholder="Enter order code">
-                <button class="btn btn-info" type="submit">
-                    Search
-                </button>
-                <a class="btn btn-danger" href="TicketController?flightDetailID=${flightDetailID}">Cancel</a>
+                    <input class="filterElm" type="text" name="orderCode" value="${param.orderCode}" placeholder="Enter order code">
+                    <button class="btn btn-info" type="submit">
+                        Search
+                    </button>
+                    <a class="btn btn-danger" href="TicketController?flightDetailID=${flightDetailID}">Cancel</a>
 
-            </form>
-            <div class="seat-category-list" style="display: flex; align-items:  center">
-                <% for(SeatCategory s : seatList) { %>
-                <div class="seat-category-item" style="display: flex">
-                    <span class="seat-category-name"><%= s.getName() %></span>
-                    <span class="seat-category-count">
-                        <span><%= s.getCountSeat() %></span>/<span><%= s.getNumberOfSeat() %></span>
-                    </span>
+                </form>
+                <div class="seat-category-list" style="display: flex; align-items:  center">
+                    <% for(SeatCategory s : seatList) { %>
+                    <div class="seat-category-item" style="display: flex">
+                        <span class="seat-category-name"><%= s.getName() %></span>
+                        <span class="seat-category-count">
+                            <span><%= s.getCountSeat() %></span>/<span><%= s.getNumberOfSeat() %></span>
+                        </span>
+                    </div>
+                    <% } %>
+                    <button type="button" class="btn btn-success" id="myBtn" style="height: fit-content" onclick="myModal3()">Add New Maintenance Seat</button>
                 </div>
-                <% } %>
-                <button type="button" class="btn btn-success" id="myBtn" style="height: fit-content" onclick="myModal3()">Add New Maintenance Seat</button>
-            </div>
-            <div class="modal fade" id="myModal3" role="dialog">
-                <div class="modal-dialog">
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header" style="padding:5px 5px;">
-                            <button type="button" class="close" style="font-size: 30px; margin-right: 12px;" data-dismiss="modal">&times;</button>
-                            <h4 style="margin-left: 12px">Create maintainence seat</h4>
-                        </div>
-                        <div class="modal-body" style="padding:40px 50px;">
+                <div class="modal fade" id="myModal3" role="dialog">
+                    <div class="modal-dialog">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header" style="padding:5px 5px;">
+                                <button type="button" class="close" style="font-size: 30px; margin-right: 12px;" data-dismiss="modal">&times;</button>
+                                <h4 style="margin-left: 12px">Create maintainence seat</h4>
+                            </div>
+                            <div class="modal-body" style="padding:40px 50px;">
 
 
-                            <form role="form" action="TicketController" method="post">
-                                <input type="hidden" name="action" value="create"/>
-                                <input type="hidden" name="flightDetailID" value="${flightDetailID}">
-                                <input type="hidden" name="createdAt" value=""/>
-                                <div class="row">
-                                    <div class="form-group col-md-8">
-                                        <label for="name"><span class="glyphicon glyphicon-user"></span>Code</label>
-                                        <input type="text" class="form-control" name="code" value="">
-                                    </div>
-                                    <div class="form-group col-md-8">
-                                        <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Seat Category:</label></div>
-                                        <select name="seatCategory" value="" style="height:  34px">
-                                            <%List<SeatCategory> seatCategoryList = (List<SeatCategory>)request.getAttribute("seatCategoryList");
+                                <form role="form" action="TicketController" method="post">
+                                    <input type="hidden" name="action" value="create"/>
+                                    <input type="hidden" name="flightDetailID" value="${flightDetailID}">
+                                    <input type="hidden" name="createdAt" value=""/>
+                                    <div class="row">
+                                        <div class="form-group col-md-8">
+                                            <label for="name"><span class="glyphicon glyphicon-user"></span>Code</label>
+                                            <input type="text" class="form-control" name="code" value="" pattern="^[A-I][1-9]{1,2}$">
+                                        </div>
+                                        <div class="form-group col-md-8">
+                                            <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Seat Category:</label></div>
+                                            <select name="seatCategory" value="" style="height:  34px">
+                                                <%List<SeatCategory> seatCategoryList = (List<SeatCategory>)request.getAttribute("seatCategoryList");
                                                             for(SeatCategory seat : seatCategoryList){%>
-                                            <option value="<%=seat.getId()%>"><%=seat.getName()%></option>
-                                            <%}%>
-                                        </select>
-                                    </div> 
-                                </div>
-                                <button type="submit" class="btn btn-success btn-block">
-                                    Confirm
-                                </button>
-                            </form>
+                                                <option value="<%=seat.getId()%>"><%=seat.getName()%></option>
+                                                <%}%>
+                                            </select>
+                                        </div> 
+                                    </div>
+                                    <button type="submit" class="btn btn-success btn-block">
+                                        Confirm
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <% 
-                String errorMessage = (String) session.getAttribute("errorMessage");
-                if (errorMessage != null) {
-                    session.removeAttribute("errorMessage");  // Clear the error message after displaying it
-            %>
-            <div class="alert alert-danger" id="errorMessage"><%= errorMessage %></div>
-            <% } %>
+                <% 
+                    String errorMessage = (String) session.getAttribute("errorMessage");
+                    if (errorMessage != null) {
+                        session.removeAttribute("errorMessage");  // Clear the error message after displaying it
+                %>
+                <div class="alert alert-danger" id="errorMessage"><%= errorMessage %></div>
+                <% } %>
+
+            </c:if>
 
 
 
@@ -457,7 +461,7 @@
                         <th>Flight Type</th>
                         <th>Total Price</th>
                         <th>Status</th>
-                        <th style="padding: 0 20px;">Actions</th>
+                        <th style="padding: 0 20px; width: 18%">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -488,47 +492,51 @@
                         <td><%= od.getCodeByOrderId(list.getOrder_id()) == null ? "" : od.getCodeByOrderId(list.getOrder_id())%></td>
                         <td><%= ftd.getNameType(list.getFlight_Type_id()) %></td>
                         <td><%= list.getTotalPrice() %></td>
-                        <td><%= sd.getStatusNameById(list.getStatusid()) %></td>
+                        <td style="font-weight: bold; <%= (list.getStatusid() == 12) ? "color: #FFA500;" : (list.getStatusid() == 10) ? "color: #228B22;" : "" %>">
+                            <%= sd.getStatusNameById(list.getStatusid()) %>
+                        </td>
                         <td>
-                            <!--change status modal-->
-                            <a class="btn btn-info" style="text-decoration: none;width: 65%;margin-bottom: 4%;border-radius: 4px;" id="myBtn<%= list.getId() %>" onclick="openModal(<%= list.getId() %>)">Change status</a>
-                            <div class="modal fade" id="myModal<%= list.getId() %>" role="dialog">
-                                <div class="modal-dialog">
-                                    <!-- Modal content-->
-                                    <div class="modal-content">
-                                        <div class="modal-header" style="padding:5px 5px;">
-                                            <button type="button" class="close" style="font-size: 30px; margin-right: 12px;" data-dismiss="modal">&times;</button>
-                                            <h4 style="margin-left: 12px">Change status</h4>
-                                        </div>
-                                        <div class="modal-body" style="padding:40px 50px;">
-                                            <form role="form" action="TicketController" method="post">
-                                                <input type="hidden" name="action" value="changeStatus"/>
-                                                <input type="hidden" name="flightDetailID" value="${flightDetailID}">
-                                                <input type="hidden" name="createdAt" value=""/>
-                                                <div class="row">
-                                                    <div class="form-group col-md-4">
-                                                        <label for="usrname"><span class="glyphicon glyphicon-globe"></span>ID:</label>
-                                                        <input type="text" class="form-control" id="usrname" name="id" value="<%= list.getId() %>" readonly="">
-                                                    </div>
-                                                    <div class="form-group col-md-8">
-                                                        <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Status:</label></div>
-                                                        <select name="statusID" value="" style="height:  34px">
-                                                            <%List<Status> statusList = (List<Status>)request.getAttribute("statusTicketList");
+                            <c:if test="${requestScope.flightDetailID != null}">
+                                <!--change status modal-->
+                                <a class="btn btn-info" style="text-decoration: none;width: 65%;margin-bottom: 4%;border-radius: 4px;" id="myBtn<%= list.getId() %>" onclick="openModal(<%= list.getId() %>)">Change status</a>
+                                <div class="modal fade" id="myModal<%= list.getId() %>" role="dialog">
+                                    <div class="modal-dialog">
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <div class="modal-header" style="padding:5px 5px;">
+                                                <button type="button" class="close" style="font-size: 30px; margin-right: 12px;" data-dismiss="modal">&times;</button>
+                                                <h4 style="margin-left: 12px">Change status</h4>
+                                            </div>
+                                            <div class="modal-body" style="padding:40px 50px;">
+                                                <form role="form" action="TicketController" method="post">
+                                                    <input type="hidden" name="action" value="changeStatus"/>
+                                                    <input type="hidden" name="flightDetailID" value="${flightDetailID}">
+                                                    <input type="hidden" name="createdAt" value=""/>
+                                                    <div class="row">
+                                                        <div class="form-group col-md-4">
+                                                            <label for="usrname"><span class="glyphicon glyphicon-globe"></span>ID:</label>
+                                                            <input type="text" class="form-control" id="usrname" name="id" value="<%= list.getId() %>" readonly="">
+                                                        </div>
+                                                        <div class="form-group col-md-8">
+                                                            <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Status:</label></div>
+                                                            <select name="statusID" value="" style="height:  34px">
+                                                                <%List<Status> statusList = (List<Status>)request.getAttribute("statusTicketList");
                                                             for(Status status : statusList){%>
-                                                            <option value="<%=status.getId()%>" <%=(list.getStatusid() == status.getId())?"selected":""%>><%=status.getName()%></option>"
-                                                            <%}%>
-                                                        </select>
-                                                    </div>                    
+                                                                <option value="<%=status.getId()%>" <%=(list.getStatusid() == status.getId())?"selected":""%>><%=status.getName()%></option>"
+                                                                <%}%>
+                                                            </select>
+                                                        </div>                    
 
-                                                </div>
-                                                <button type="submit" class="btn btn-success btn-block">
-                                                    Confirm
-                                                </button>
-                                            </form>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-success btn-block">
+                                                        Confirm
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </c:if>
                             <!--order in4 modal-->
                             <a class="btn btn-warning" style="text-decoration: none;width: 65%;" id="myBtn2<%= list.getId() %>" onclick="openModal2(<%= list.getId() %>)">Order Information</a>
                             <div class="modal fade" id="myModal2<%= list.getId() %>" role="dialog">

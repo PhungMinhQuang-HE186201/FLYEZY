@@ -186,6 +186,7 @@ public class FlightManagementServlet extends HttpServlet {
         AccountsDAO accd = new AccountsDAO();
         LocationDAO ld = new LocationDAO();
         CountryDAO cd = new CountryDAO();
+        FlightDetailDAO fd = new FlightDetailDAO();
         String action = request.getParameter("action");
 
         //minutes, departureAirport, destinationAirport, statusId
@@ -240,6 +241,7 @@ public class FlightManagementServlet extends HttpServlet {
                 newStatus = 1;
             }
             fmd.changeStatus(flightId, newStatus);
+            fmd.changestatusFlightDetaol(flightId, newStatus);
             session.setAttribute("result", "Change flight status successfully!");
             response.sendRedirect("flightManagement");
         }

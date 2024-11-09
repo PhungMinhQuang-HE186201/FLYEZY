@@ -84,12 +84,12 @@ public class ChangePasswordServlet extends HttpServlet {
 
         if (!currentPass.equals(pass)) {
 //            request.setAttribute("errorCurrent", "Current password don't duplicated, please enter password again !");
-            session.setAttribute("errorCurrent", "Current password don't duplicated, please enter password again !");
+            session.setAttribute("errorCurrent", "Current password incorrect, please enter password again !");
             response.sendRedirect("changePassword");
         } else {
             if (!newPass.equals(newPass2)) {
 //                request.setAttribute("errorNew", "New password don't duplicated, please enter new password again !");
-                session.setAttribute("errorNew", "New password don't duplicated, please enter new password again !");
+                session.setAttribute("errorNew", "Re enter password not matches with new password , please enter new password again !");
                 response.sendRedirect("changePassword");
             } else {
                 ad.changePassword(idAccount, newPass);

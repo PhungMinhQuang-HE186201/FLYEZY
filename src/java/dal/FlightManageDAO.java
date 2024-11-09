@@ -274,6 +274,21 @@ public class FlightManageDAO extends DBConnect {
         }
     }
 
+    public void changestatusFlightDetaol(int Fid, int newStatus) {
+        String sqlupdate = "UPDATE `flyezy`.`flight_detail`\n"
+                + "SET\n"
+                + "`Status_id` = ? \n"
+                + "WHERE Flightid = ?;";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sqlupdate);
+            pre.setInt(2, Fid);
+            pre.setInt(1, newStatus);
+            pre.executeUpdate();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public void deactivateAllFlightByAirline(int airlineId) {
         String sql = "UPDATE Flight SET Status_id = ? WHERE Airline_id = ?";
         try {
