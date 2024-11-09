@@ -89,7 +89,7 @@
                                 <c:if test="${not empty error}">
                                     <p id="error" class="text-danger"><%= request.getAttribute("error") != null ? request.getAttribute("error") : "" %></p>
                                 </c:if>
-                                <form role="form" action="accountController" method="Post">
+                                <form role="form" action="accountController" method="Post" onsubmit="return validateAddInput()">
                                     <input type="hidden" name="action" value="create"/>
                                     <div class="row" style="margin-bottom: 20px">
 
@@ -127,12 +127,17 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="name"><span class="glyphicon glyphicon-user"></span>Name:</label>
-                                        <input type="text" class="form-control" name="name" pattern="^[\p{L}\s]+$">
+                                        <input type="text" class="form-control" id="nameInput" name="name" pattern="^[\p{L}\s]+$">
                                     </div>
                                     <div class="row">
                                         <div class="form-group col-md-6">
+                                            <% 
+                                                java.util.Calendar calendar = java.util.Calendar.getInstance();
+                                                calendar.add(java.util.Calendar.YEAR, -18);
+                                                String maxDate = new java.text.SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
+                                            %>
                                             <label for="dob"><span class="glyphicon glyphicon-calendar"></span>Date of birth:</label>
-                                            <input type="date" class="form-control" name="dob" required>
+                                            <input type="date" class="form-control" name="dob" required max="<%=maxDate%>" onkeydown="return false;">
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label for="phoneNumber"><span class="glyphicon glyphicon-earphone"></span>Phone number:</label>
@@ -142,16 +147,16 @@
 
                                     <div class="form-group">
                                         <label for="email"><span class="glyphicon glyphicon-envelope"></span>Email:</label>
-                                        <input type="email" class="form-control" name="email" value="">
+                                        <input type="email" class="form-control" name="email" value="" id="emailInput">
                                     </div>
                                     <div class="form-group">
                                         <label for="password"><span class="glyphicon glyphicon-eye-open"></span>Password:</label>
-                                        <input type="password" class="form-control" name="password" value="">
+                                        <input type="password" class="form-control" name="password" value="" pattern="^\d{6}$" required title="Password must be exactly 6 digits">
                                     </div>
 
                                     <div class="form-group">
                                         <label for="address"><span class="glyphicon glyphicon-home"></span>Address:</label>
-                                        <input type="text" class="form-control" name="address" pattern="^[\p{L}\s]+$">
+                                        <input type="text" class="form-control" name="address" pattern="^[\p{L}\s]+$" id="addressInput">
                                     </div>
                                     <button type="submit" class="btn btn-success btn-block">
                                         Confirm
@@ -180,6 +185,7 @@
                 <tbody>
                     <%
                     List<Accounts> accountList = (List<Accounts>) request.getAttribute("accountList");
+                    Accounts myAcc =  (Accounts)request.getAttribute("account");
                     RolesDAO rd = new RolesDAO();
                     SimpleDateFormat sdf = new java.text.SimpleDateFormat("HH:mm dd-MM-yyyy");
                     AirlineManageDAO amd = new AirlineManageDAO();
@@ -198,11 +204,14 @@
                         <td style="background-color: <%= bg %>"><%= list.getUpdated_at() != null ? sdf.format(list.getUpdated_at()) : "" %></td>
 
                         <td style="background-color:  <%=bg%>">
+                            <%if(list.getId() != myAcc.getId()){%>
                             <a class="btn btn-info" style="text-decoration: none" id="myBtn<%= list.getId() %>" onclick="openModal(<%= list.getId() %>)">Update</a>
+
                             <%if(list.getStatus_id()== 1 ){%>
                             <a class="btn btn-success" style="text-decoration: none;" onclick="doActivateDeactivate('<%= list.getId() %>', '<%= list.getName() %>', 'Deactivate')">Activated</a>
                             <%}else{%>
                             <a class="btn btn-danger" style="text-decoration: none" onclick="doActivateDeactivate('<%= list.getId() %>', '<%= list.getName() %>', 'Activate')">Deactivated</a>
+                            <%}%>
                             <%}%>
 
                             <!-- Modal: Update account -->
@@ -224,8 +233,8 @@
                                                         <input type="text" class="form-control" id="usrname" name="id" value="<%= list.getId() %>" readonly="">
                                                     </div>
                                                     <div class="form-group col-md-6">
-                                                        <label for="image<%= list.getId() %>"><span class="glyphicon glyphicon-picture"></span>Avatar:</label>
-                                                        <input type="file" class="form-control" name="image" onchange="displayImage2(this,<%= list.getId() %>)" >
+
+                                                        <input type="hidden" class="form-control" name="image" onchange="displayImage2(this,<%= list.getId() %>)" readonly>
                                                     </div>                      
                                                     <div class="form-group col-md-4">
                                                         <img id="hideImage<%= list.getId() %>" src="<%= list.getImage() %>"  alt="Avatar" class="img-thumbnail" style="width: 100px; height: 100px; float: right;">
@@ -255,12 +264,12 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="name<%= list.getId() %>"><span class="glyphicon glyphicon-user"></span>Name:</label>
-                                                    <input type="text" class="form-control" name="name" value="<%= list.getName() %>" pattern="^[\p{L}\s]+$">
+                                                    <input type="text" class="form-control" name="name" value="<%= list.getName() %>" pattern="^[\p{L}\s]+$" readonly>
                                                 </div>
                                                 <div class="row">
                                                     <div class="form-group col-md-6">
                                                         <label><span class="glyphicon glyphicon-calendar"></span>Date of birth:</label>
-                                                        <input type="date" class="form-control" name="dob" value="<%= list.getDob() %>" required>
+                                                        <input type="date" class="form-control" name="dob" value="<%= list.getDob() %>" required readonly>
                                                     </div>
                                                     <div class="form-group col-md-6">
                                                         <label><span class="glyphicon glyphicon-earphone"></span>Phone number:</label>
@@ -278,7 +287,7 @@
 
                                                 <div class="form-group">
                                                     <label><span class="glyphicon glyphicon-home"></span>Address:</label>
-                                                    <input type="text" class="form-control" name="address" value="<%= list.getAddress() %>" pattern="^[\p{L}\s]+$">
+                                                    <input type="text" class="form-control" name="address" value="<%= list.getAddress() %>" pattern="^[\p{L}\s]+$" readonly>
                                                 </div>
                                                 <button type="submit" class="btn btn-success btn-block">
                                                     Confirm
@@ -411,15 +420,25 @@
             });
 
             function changeRole(i) {
-                var roleNow = document.getElementById("role"+i).value;
+                var roleNow = document.getElementById("role" + i).value;
                 console.log(roleNow);
-                var airlineBox = document.getElementById("airline"+i);
+                var airlineBox = document.getElementById("airline" + i);
                 if (roleNow === "2") {
                     airlineBox.style.display = "block";
                 } else {
                     airlineBox.style.display = "none";
                     airlineBox.value = 1;
                 }
+            }
+            function validateAddInput() {
+                const nameInput = document.getElementById("nameInput").value.trim();
+                const emailInput = document.getElementById("nameInput").value.trim();
+                const AddressInput = document.getElementById("nameInput").value.trim();
+                if (nameInput === "" || emailInput === "" || AddressInput === "") {
+                    alert("Please enter valid Information. Do not enter spaces only.");
+                    return false;
+                }
+                return true;
             }
         </script>
 

@@ -31,17 +31,26 @@ public class FindOrderServlet extends HttpServlet {
         if (code != null) {
             code = code.trim();
         }
-        if(contactInfo != null){
+        if (contactInfo != null) {
             contactInfo = contactInfo.trim();
         }
-        Order order = od.getOrderByCode(code);
-        if (order != null) {
-            request.setAttribute("order", order);
-            if(contactInfo != null && (contactInfo.equals(order.getContactEmail()) 
-                    || contactInfo.equals(order.getContactPhone()))){
-                 request.setAttribute("isVerified", true);
-            }else{
-                request.setAttribute("isVerified", false);
+        if (code != null && !code.isEmpty()) {
+            Order order = od.getOrderByCode(code);
+            if (order != null) {
+
+                request.setAttribute("order", order);
+                if (contactInfo != null && !contactInfo.isEmpty() && (contactInfo.equals(order.getContactEmail())
+                        || contactInfo.equals(order.getContactPhone()))) {
+                    request.setAttribute("isVerified", true);
+                } else if(contactInfo != null && !contactInfo.isEmpty() && !(contactInfo.equals(order.getContactEmail())
+                        || contactInfo.equals(order.getContactPhone()))){
+                    request.setAttribute("isVerified", false);
+                    request.setAttribute("errorContact", "Your contact information is incorrect.");
+                }
+                // Clear any existing error message
+                request.setAttribute("errorMessage", null);
+            } else {
+                request.setAttribute("errorMessage", "Your order code does not exist.");
             }
         }
         request.getRequestDispatcher("view/findOrder.jsp").forward(request, response);

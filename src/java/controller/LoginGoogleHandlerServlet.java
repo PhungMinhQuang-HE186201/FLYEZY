@@ -45,7 +45,7 @@ public class LoginGoogleHandlerServlet extends HttpServlet {
         GoogleLogin gg = new GoogleLogin();
         String accesstoken = gg.getToken(code);
         UserGoogleDto data = gg.getUserInfo(accesstoken);
-        UserGoogleDto acc = new UserGoogleDto(data.getName(), data.getEmail(), "KIymfC4XfLDNFnygtZuXNQ==", "0123", "img/jack.png", 3, 1, new Timestamp(System.currentTimeMillis()), 1);
+        UserGoogleDto acc = new UserGoogleDto(data.getName(), data.getEmail(), "KIymfC4XfLDNFnygtZuXNQ==", "0000000000", "img/jack.png", 3, 1, new Timestamp(System.currentTimeMillis()), 1);
 
         if (!dao.checkEmailExisted(data.getEmail())) {
             dao.addNewGoogleAccount(acc);

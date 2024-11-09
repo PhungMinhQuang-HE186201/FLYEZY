@@ -158,7 +158,9 @@
                             <td><%=r.getRefundDate()%></td>
                             <td><%=r.getRefundPrice()%></td>
                             <td><%=r.getTicketid()%></td>
-                            <td><%=sd.getStatusNameById(r.getStatusid())%></td>
+                            <td style="font-weight: bold; <%= (r.getStatusid() == 3) ? "color: #FFA500;" : (r.getStatusid() == 8) ? "color: #228B22;" : "" %>">
+                                <%=sd.getStatusNameById(r.getStatusid())%>
+                            </td>
                             <td>
                                 <a class="btn btn-info" style="text-decoration: none" id="myBtn<%= r.getId() %>" onclick="openModal(<%= r.getId() %>)">Change status</a>
                                 <div class="modal fade" id="myModal<%= r.getId() %>" role="dialog">

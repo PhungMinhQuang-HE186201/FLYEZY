@@ -15,6 +15,7 @@
 <%@page import="dal.PaymentTypeDAO"%>
 <%@page import="dal.FlightTypeDAO"%>
 <%@page import="dal.StatusDAO"%>
+<%@page import="dal.DiscountDAO"%>
 <%@page import="java.util.List"%>
 <%@page import="model.Flights"%>
 <%@page import="model.Order"%>
@@ -156,6 +157,7 @@
                     <th>Created_at</th>
                     <th>Payment Type</th>
                     <th>Payment Time</th>
+                    <th>Discount</th>
                     <th>Status</th>
                     <th style="width: 25%">Actions</th>
                 </tr>
@@ -170,7 +172,7 @@
                     StatusDAO sd = new StatusDAO();
                     List<Order> listOrder = (List<Order>)request.getAttribute("listOrder");
                     List<Accounts> listAcc = ad.getAllAccounts();
-                        
+                    DiscountDAO dd = new DiscountDAO();    
                     if(listOrder != null){
                         for(Order o : listOrder){
                             
@@ -187,6 +189,7 @@
                     <td><%=o.getCreated_at()%></td>
                     <td><%=paymentName%></td>
                     <td><%=o.getPaymentTime()%></td>     
+                    <td> <%= dd.getPercentageById(o.getDiscountId())%>%</td>
                     <td style="font-weight: bold; <%= (o.getStatus_id() == 12) ? "color: #FFA500;" : (o.getStatus_id() == 10) ? "color: #228B22;" : "" %>">
                         <%= sd.getStatusNameById(o.getStatus_id()) %>
                     </td>

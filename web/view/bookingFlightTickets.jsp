@@ -404,7 +404,12 @@
                                         </div>
                                         <div class="passenger-info-input-box">
                                             <div class="passenger-info-input-title">Date of birth:</div>
-                                            <input type="date" name="pDob<%=i%>" required/>
+                                            <% 
+                                                java.util.Calendar calendarAdult = java.util.Calendar.getInstance();
+                                                calendarAdult.add(java.util.Calendar.YEAR, -12);
+                                                String maxDateAdult = new java.text.SimpleDateFormat("yyyy-MM-dd").format(calendarAdult.getTime());
+                                            %>
+                                            <input type="date" name="pDob<%=i%>" required max="<%=maxDateAdult%>" onkeydown="return false;">
                                         </div>
                                         <div class="passenger-info-input-box">
                                             <div class="passenger-info-input-title">Phone number:</div>
@@ -482,7 +487,12 @@
                                         </div>
                                         <div class="passenger-info-input-box">
                                             <div class="passenger-info-input-title">Date of birth:</div>
-                                            <input type="date" name="pDob<%=i%>" required/>
+                                            <% 
+                                                java.util.Calendar calendarChild = java.util.Calendar.getInstance();
+                                                calendarChild.add(java.util.Calendar.YEAR, -2);
+                                                String maxDateChild = new java.text.SimpleDateFormat("yyyy-MM-dd").format(calendarChild.getTime());
+                                            %>
+                                            <input type="date" name="pDob<%=i%>" required max="<%=maxDateChild%>" onkeydown="return false;">
                                         </div>
                                         <div class="passenger-info-input-box">
                                             <div class="passenger-info-input-title">Select seat:</div>
@@ -531,7 +541,12 @@
                                         </div>
                                         <div class="passenger-info-input-box">
                                             <div class="passenger-info-input-title">Date of birth:</div>
-                                            <input type="date" name="pDob<%=i%>" required/>
+                                            <% 
+                                                java.util.Calendar calendarInfant = java.util.Calendar.getInstance();
+                                                calendarInfant.add(java.util.Calendar.YEAR, 0);
+                                                String maxDateInfant = new java.text.SimpleDateFormat("yyyy-MM-dd").format(calendarInfant.getTime());
+                                            %>
+                                            <input type="date" name="pDob<%=i%>" required max="<%=maxDateInfant%>" onkeydown="return false;">
                                         </div>   
                                     </div>
                                 </div>
@@ -571,11 +586,6 @@
                             <span>Baggage</span>
                             <span id="totalBaggage">= 0 ₫</span> 
                         </div>
-                        <div>
-                            <%if(currentAcc != null){%>
-                            <a class="btn btn-success" style="text-decoration: none" onclick="openDiscountModal()" >Choose Discounts</a>
-                            <%}%>
-                        </div>  
                         <div class="ticket-total">
                             <span>Total Price:</span>
                             <span id="totalPrice">
@@ -716,26 +726,7 @@
             </div>
             <% } %>
         </div>
-        <%-- modal chọn discount --%>
-        <div class="modal fade " id="discount">  tabindex="-1" aria-labelledby="DiscountModalLabel" aria-hidden="true">
-            <div class="modal-dialog" style="min-width: 45%">
-                <div class="modal-content">
-                    <div class="modal-header" style="padding:5px 5px;">
-                        <button type="button" class="close" style="font-size: 30px; margin-right: 12px;" data-dismiss="modal">&times;</button>
-                        <h4 style="margin-left: 12px">Choose Discount</h4>
-                        <div>
-                            <%for(Discount ls : dd.getDiscountByAirlineId(airlineId)){%>
-                            <label>
-                                <input type="radio" name="discount" value="<%=ls.getPercentage()%>" />
-                                Discount <%= ls.getId()%>: <%= ls.getPercentage()%>%
-                            </label><br />
-                            <%}%>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+    
         <script>
             function validateNameInput(totalPassenger) {
                 for (var psg = 0; psg <= totalPassenger; psg++) {
@@ -748,9 +739,6 @@
                 return true;
             }
 
-            function openDiscountModal() {
-                $("#discount").modal('show');
-            }
             function handleSeatClick(seat, seatColor, i) {
                 if (seatColor === '#FFF') {
                     selectSeat(seat, i);
@@ -883,7 +871,7 @@
 
             function submitPassengerForm(totalPassenger) {
                 const form = document.getElementById("passengerForm");
-                if (form.checkValidity() && validateSelectTicket()  && validateNameInput(totalPassenger)) {
+                if (form.checkValidity() && validateSelectTicket() && validateNameInput(totalPassenger)) {
                     form.submit();
                 } else {
                     form.reportValidity();

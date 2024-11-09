@@ -13,8 +13,10 @@
 <%@page import="model.Accounts"%>
 <%@page import="model.Feedbacks"%>
 <%@page import="model.Status"%>
+<%@page import="model.Order"%>
 <%@page import="dal.AirlineManageDAO"%>
 <%@page import="dal.StatusDAO"%>
+<%@page import="dal.OrderDAO"%>
 <%@page import="dal.FeedbackDao"%>
 <!DOCTYPE html>
 <html>
@@ -158,35 +160,38 @@
             <table class="entity" >
                 <thead>
                     <tr>
-                        <th>Email</th>
+                        <th>Order</th>
+
+                        <th>Contact Phone</th>
+                        <th>Contact Email</th>
                         <th>Rated star</th>
                         <th>Comment</th>
                         <th>Create At</th>
                         <th>Update at</th>
-                        <th>Status</th>
-                        <th>Order Id</th>
-                        <th>Contact</th>
+
                     </tr>
                 </thead>
                 <tbody>
                     <%
                       AccountsDAO ad = new AccountsDAO();
                       StatusDAO sd = new StatusDAO();
+                      OrderDAO od = new OrderDAO();
                       FeedbackDao fbd = new FeedbackDao();
                       List<Feedbacks> list = (List<Feedbacks>)request.getAttribute("feedbackList");
                       for(Feedbacks f : list){
                     %>
                     <tr>
+                        <td><%=((Order)(od.getOrderByOrderId(f.getOrder_id()))).getCode()%></td>
+                        <td>
+                            <%=fbd.getContactPhone(f.getOrder_id())%>
+                        </td>
                         <td><%=ad.getAccountEmailById(f.getAccountsid())%></td>
                         <td><%=f.getRatedStar()%></td>
                         <td><%=f.getComment()%></td>
                         <td><%=f.getCreated_at()%></td>
                         <td><%=f.getUpdated_at()%></td>
-                        <td><%=sd.getStatusNameById(f.getStatusid())%></td>
-                        <td><%=f.getOrder_id()%></td>
-                        <td>
-                            <%=fbd.getContactPhone(f.getOrder_id())%>
-                        </td>
+
+
                     </tr>
                     <%}%>
                 </tbody>

@@ -4,6 +4,7 @@
  */
 package controller;
 
+import dal.AccountsDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -11,23 +12,19 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.util.List;
+import dal.DiscountDAO;
 import dal.OrderDAO;
-import dal.AccountsDAO;
-import dal.TicketDAO;
 import jakarta.servlet.http.HttpSession;
 import model.Accounts;
+import model.Discount;
 import model.Order;
 
 /**
  *
- * @author Fantasy
+ * @author Admin
  */
-@WebServlet(name = "QRCodeServletController", urlPatterns = {"/QRCodeController"})
-public class QRCodeServletController extends HttpServlet {
+@WebServlet(name = "discountApplyServlet", urlPatterns = {"/discountApplyServlet"})
+public class discountApplyServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -46,10 +43,10 @@ public class QRCodeServletController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet QRCodeServletController</title>");
+            out.println("<title>Servlet discountApplyServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet QRCodeServletController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet discountApplyServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -67,35 +64,38 @@ public class QRCodeServletController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        OrderDAO od = new OrderDAO();
-        TicketDAO td = new TicketDAO();
+        DiscountDAO dd = new DiscountDAO();
         AccountsDAO ad = new AccountsDAO();
-        EmailServlet email = new EmailServlet();
-        Integer idd = (Integer) session.getAttribute("id");
+        OrderDAO od = new OrderDAO();
+        HttpSession session = request.getSession();
 
+        Integer idd = (Integer) session.getAttribute("id");
         int i = (idd != null) ? idd : -1;
         Accounts acc = ad.getAccountsById(i);
         request.setAttribute("account", acc);
 
         int orderID = (int) session.getAttribute("orderID");
-        String discountIdStr = request.getParameter("discountId");
-        String lastPriceStr = request.getParameter("totalCost");
-        try {
-            if (discountIdStr != null && !discountIdStr.isEmpty()) {
-                int discountId = Integer.parseInt(discountIdStr);
-                od.updateDiscountOrder(discountId, orderID);
-                double lastPriceDouble = Double.parseDouble(lastPriceStr);
-                int lastPrice = (int) Math.round(lastPriceDouble);
-                od.updatetotalPriceOfOrder(orderID, lastPrice);
-            }
-            od.successfullPayment(orderID, 1);
-            td.confirmSuccessAllTicketsByOrderId(orderID);
-            Order or = od.getOrderByOrderId(orderID);
-            email.sendPaymentSuccessfulbyEmail(or.getContactEmail(), or);
-            request.getRequestDispatcher("view/successfullPayment.jsp").forward(request, response);
-        } catch (Exception e) {
-            e.printStackTrace();  // Prints detailed stack trace to the console
+        Order o = od.getOrderById(orderID);
+
+        String discountcode = request.getParameter("discountcode").trim();
+        double percentages = dd.getPercentageByCode(discountcode);
+        Discount discount = dd.getDiscountByCode(discountcode, o.getTotalPrice(), o.getCreated_at(), od.getAirlineIdByOrder(orderID));
+        if (discount != null && discount.getStatus_id()==1 && !dd.isUsedDiscount(i, discount.getId())) {
+            request.setAttribute("successfulDiscount", "Successful apply " + discount.getCode() + " " + discount.getPercentage()+"%");
+            request.setAttribute("discountId", discount.getId());
+            double priceAfterDiscount = o.getTotalPrice() - (o.getTotalPrice() * (percentages / 100));
+
+            request.setAttribute("email", o.getContactEmail());
+            request.setAttribute("phone", o.getContactPhone());
+            request.setAttribute("totalCost", priceAfterDiscount);
+
+            request.getRequestDispatcher("view/paymen-QRCode.jsp").forward(request, response);
+        } else {
+            request.setAttribute("failedDiscount", "Your discount is not existed or have been used before");
+            request.setAttribute("email", o.getContactEmail());
+            request.setAttribute("phone", o.getContactPhone());
+            request.setAttribute("totalCost", o.getTotalPrice());
+            request.getRequestDispatcher("view/paymen-QRCode.jsp").forward(request, response);
         }
 
     }
@@ -111,25 +111,8 @@ public class QRCodeServletController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        Integer idd = (Integer) session.getAttribute("id");
-        AccountsDAO ad = new AccountsDAO();
-        OrderDAO od = new OrderDAO();
 
-        int i = (idd != null) ? idd : -1;
-        Accounts acc = ad.getAccountsById(i);
-        request.setAttribute("account", acc);
-
-        String orderID = request.getParameter("orderID");
-        if (orderID != null) {
-            int orderId = Integer.parseInt(orderID);
-            Order o = od.getOrderById(orderId);
-            session.setAttribute("orderID", orderId);
-            request.setAttribute("email", o.getContactEmail());
-            request.setAttribute("phone", o.getContactPhone());
-            request.setAttribute("totalCost", o.getTotalPrice());
-            request.getRequestDispatcher("view/paymen-QRCode.jsp").forward(request, response);
-        }
+        response.sendRedirect("discountApplyServlet");
     }
 
     /**

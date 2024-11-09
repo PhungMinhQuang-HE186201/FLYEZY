@@ -20,6 +20,7 @@
 <%@page import="dal.SeatCategoryDAO"%>
 <%@page import="dal.BaggageManageDAO"%>
 <%@page import="dal.FeedbackDao"%>
+<%@page import="dal.DiscountDAO"%>
 <%@page import="java.util.List"%>
 <%@page import="model.Status"%>
 <%@page import="model.Order"%>
@@ -36,6 +37,8 @@
 <%@page import="jakarta.servlet.http.HttpSession"%>
 <%@page import="java.sql.Time"%>
 <%@page import="java.time.LocalTime"%>
+<%@page import="java.time.LocalDate"%>
+<%@page import="java.time.LocalDateTime"%>
 <%@page import="java.time.format.DateTimeFormatter"%>
 <!DOCTYPE html>
 <html>
@@ -246,6 +249,7 @@
             PlaneCategoryDAO pcd = new PlaneCategoryDAO();
             SeatCategoryDAO scd = new SeatCategoryDAO();
             BaggageManageDAO bmd = new BaggageManageDAO();
+            DiscountDAO dd = new DiscountDAO();
             
             List<Order> listOrder = (List<Order>)request.getAttribute("listOrder");
             List<FlightDetails> listFlightDetails = (List<FlightDetails>)request.getAttribute("listFlightDetails");
@@ -317,7 +321,8 @@
                             </span>
                         </div>
                     </div>
-                    <%LocalTime desTime = null;%>
+                    <%LocalTime desTime = null;
+                    LocalDate desDate = null;%>
                     <% int count = 1; int total = 0;%>
                     <% for(Ticket t : listTicketInOrder) { %>
                     <% id = t.getId(); %>
@@ -337,9 +342,15 @@
                             if(detail.getId() == t.getFlightDetailId()) { %>
 
                             <%Flights f = fdd.getFlightByFlightDetailId(detail.getId());
+                            //departure
+                            LocalDate departureDate = detail.getDate().toLocalDate();
                             LocalTime departureTime = detail.getTime().toLocalTime();
-                            LocalTime destinationTime = departureTime.plusMinutes(f.getMinutes());
-                            desTime = destinationTime;
+                            LocalDateTime departureDateTime = LocalDateTime.of(departureDate, departureTime);
+                            //destination
+                            LocalDateTime destinationDateTime = departureDateTime.plusMinutes(f.getMinutes());
+                            
+                            desDate = destinationDateTime.toLocalDate();
+                            desTime = destinationDateTime.toLocalTime();
                             %>
                             <!-- Flight route icon -->
                             <div><i class="fas fa-plane"></i> <%= fd.getDepartureByFlight(detail.getFlightId()) %> to <%= fd.getDestinationByFlight(detail.getFlightId()) %></div>
@@ -390,13 +401,14 @@
 
 
 
-
+                    
                     <div class="list-price" style="text-align: right; padding: 15px 0 "> 
                         <div>Order Tickets: <%=currencyFormatter.format(od.getTotalPriceAllTickets(o.getId())) %></div>
                         <div>Cancel Tickets: <%=currencyFormatter.format(od.getTotalPriceCancelledTicket(o.getId())) %></div>
                         <div>Is Paid <%=currencyFormatter.format((o.getPaymentTime()!=null)?o.getTotalPrice():0) %></div>
-                        <div class="order-discount">Discount: 0%</div>
-                        <div class="order-total"><strong style="font-size: 1.2em;">Total: <%=currencyFormatter.format(od.getTotalPriceAllTickets(o.getId())-od.getTotalPriceCancelledTicket(o.getId())) %></strong></div>
+                        <div class="order-discount">Discount: <%=dd.getPercentageById(o.getDiscountId())%>%</div>
+                        <% double totals = od.getTotalPriceAllTickets(o.getId())-od.getTotalPriceCancelledTicket(o.getId());  %>
+                        <div class="order-total"><strong style="font-size: 1.2em;">Total: <%=currencyFormatter.format(totals - (totals * (dd.getPercentageById(o.getDiscountId())/100))) %></strong></div>
                     </div>
 
 
@@ -410,9 +422,10 @@
                             <% } else { %>
                             <a class="btn btn-danger" style="text-decoration: none;" onclick="openModalOrder(<%= o.getId() %>)">Cancel Order</a>                         
                             <% } %>
-                            <%LocalTime currentTime = LocalTime.now();%>
+                            <%LocalDateTime currentDateTime = LocalDateTime.now();
+                            LocalDateTime desDateTime = LocalDateTime.of(desDate, desTime);%>
 
-                            <% if (currentTime.isAfter(desTime)) { %>
+                            <% if (currentDateTime.isAfter(desDateTime) && o.getStatus_id() == 10) { %>
                             <% 
                                 FeedbackDao fd1 = new FeedbackDao(); 
                                 Integer idd = (Integer) session.getAttribute("id"); 
