@@ -49,12 +49,14 @@ public class OrderDAO extends DBConnect {
         return null;
     }
 
-    public List<Order> getAllOrdersByAccountId(int accountId) {
+    public List<Order> getAllOrdersByAccountId(int accountId,int index) {
         List<Order> list = new ArrayList<>();
-        String sql = "select * from flyezy.Order where Accounts_id=? order by id desc";
+        String sql = "select * from flyezy.Order where Accounts_id=? order by id desc"
+                + " LIMIT 2 OFFSET ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, accountId);
+            ps.setInt(2, (index-1)*2);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Order o = new Order(
@@ -79,7 +81,36 @@ public class OrderDAO extends DBConnect {
         }
         return null;
     }
+    public int getNumberAllOrdersByAccountId(int accountId) {
+        List<Order> list = new ArrayList<>();
+        String sql = "select * from flyezy.Order where Accounts_id=? order by id desc";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, accountId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Order o = new Order(
+                        rs.getInt("id"),
+                        rs.getString("code"),
+                        rs.getString("contactName"),
+                        rs.getString("contactPhone"),
+                        rs.getString("contactEmail"),
+                        rs.getInt("totalPrice"),
+                        rs.getInt("Accounts_id"),
+                        rs.getInt("Payment_Types_id"),
+                        rs.getTimestamp("paymentTime"),
+                        rs.getTimestamp("created_at"),
+                        rs.getInt("Discount_id"),
+                        rs.getInt("Status_id")
+                );
+                list.add(o);
+            }
+            return list.size();
 
+        } catch (Exception e) {
+        }
+        return 0;
+    }
     public int getAirlineIdByOrder(int id) {
         String sql = "select o.id,f.Airline_id from flyezy.Order o\n"
                 + "join Ticket t on t.Order_id = o.id\n"
@@ -419,15 +450,18 @@ public class OrderDAO extends DBConnect {
         return codes;
     }
 
-    public String getCodeByOrderId(int id) {
+    public String getCodeByOrderId(Integer id) {
+        // Kiểm tra xem id có null không, nếu có thì trả về null hoặc chuỗi trống
+        if (id == null) {
+            return null;
+        }
 
-        String sql = "SELECT code FROM flyezy.Order where id = ?";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
+        String sql = "SELECT code FROM flyezy.Order WHERE id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                return (rs.getString("code"));
+                return rs.getString("code");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -684,7 +718,7 @@ public class OrderDAO extends DBConnect {
     public static void main(String[] args) {
         OrderDAO dao = new OrderDAO();
         //dao.createOrder(1, "Naruto", "0123", "hello@gmail.com", 10000, null);
-        System.out.println(dao.getTotalPriceCancelledTicket(25));
+        System.out.println(dao.getCodeByOrderId(null));
     }
 
 }
