@@ -14,7 +14,7 @@
 <html>  
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Phương tiện</title>
+        <title>Airline Management</title>
         <link rel="shortcut icon" type="image/jpg" href="image/logo-icon.png" />
         <link rel="stylesheet" href="css/styleAdminController.css">
         <link rel="stylesheet" href="css/styleGeneral.css"/>
