@@ -53,7 +53,7 @@ public class TicketDAO extends DBConnect {
 
     public List<Ticket> getAllTicketSuccessfulPaymentByOrderId(int orderId) {
         List<Ticket> ls = new ArrayList<>();
-        String sql = "SELECT * FROM flyezy.ticket where Order_id = ? and Statusid = 10;";
+        String sql = "SELECT * FROM flyezy.Ticket where Order_id = ? and Statusid = 10;";
         try {
             PreparedStatement pre = conn.prepareStatement(sql);
             pre.setInt(1, orderId);

@@ -156,9 +156,9 @@ public class OrderDAO extends DBConnect {
         List<Order> list = new ArrayList<>();
         StringBuilder sql = new StringBuilder(
                 "SELECT distinct o.* FROM flyezy.Order o "
-                + "JOIN ticket t ON t.Order_id = o.id "
-                + "JOIN flight_detail fd ON fd.id = t.Flight_Detail_id "
-                + "JOIN flight f ON f.id = fd.Flightid "
+                + "JOIN Ticket t ON t.Order_id = o.id "
+                + "JOIN Flight_Detail fd ON fd.id = t.Flight_Detail_id "
+                + "JOIN Flight f ON f.id = fd.Flightid "
                 + "WHERE f.Airline_id = ? "
         );
 

@@ -127,7 +127,7 @@
                     <option value="" ${param.status == null ? 'selected' : ''}>All</option>
                     <c:set var="counter" value="0" />
                     <c:forEach items="${requestScope.listStatus}" var="status">
-                        <c:if test="${counter < 2}">
+                        <c:if test="${counter < 3}">
                             <option value="${status.id}" ${param.status != null && (param.status == status.id) ? 'selected' : ''}>${status.name}</option>
                             <c:set var="counter" value="${counter + 1}" />
                         </c:if>

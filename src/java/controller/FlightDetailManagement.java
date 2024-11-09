@@ -84,99 +84,102 @@ public class FlightDetailManagement extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        doPost(request, response);
         HttpSession session = request.getSession();
-        Integer idd = (Integer) session.getAttribute("id");
-        FlightDetailDAO fdd = new FlightDetailDAO();
-        if (idd == null) {
-            response.sendRedirect("login");
-            return;
-        } else {
-            Accounts acc = ad.getAccountsById(idd);
-            request.setAttribute("account", acc);
-        }
-
-        String airlineId = request.getParameter("airlineId");
-        if (airlineId != null) {
-            request.setAttribute("aid", airlineId);
-        }
-
-        String flightid = request.getParameter("flightId");
-
-        if (flightid != null) {
-            int fid = Integer.parseInt(flightid);
-            request.setAttribute("fid", flightid);
-            request.setAttribute("flightid", fid);
-            int numberOfItem = fdd.getNumberOfFlightDetail(fid);
-            int numOfPage = (int) Math.ceil((double) numberOfItem / 5);
-            String idx = request.getParameter("index");
-            int index = 1;
-            if (idx != null) {
-                index = Integer.parseInt(idx);
-            }
-            request.setAttribute("index", index);
-            request.setAttribute("numOfPage", numOfPage);
-            String action = request.getParameter("action");
-
-            Flights listFlight = fmd.getFlightById(fid);
-            request.setAttribute("listFlight", listFlight);
-
-            Airline a = airline.getAirlineById(listFlight.getAirlineId());
-            request.setAttribute("a", a);
-
-            Airport listAirportDep = air.getAirportById(listFlight.getDepartureAirportId());
-            request.setAttribute("listAirportDep", listAirportDep);
-
-            Location listLocationDep = loc.getLocationById(listAirportDep.getLocationId());
-            request.setAttribute("listLocationDep", listLocationDep);
-
-            Country listCountryDep = cou.getCountryById(listLocationDep.getCountryId());
-            request.setAttribute("listCountryDep", listCountryDep);
-
-            Airport listAirportDes = air.getAirportById(listFlight.getDestinationAirportId());
-            request.setAttribute("listAirportDes", listAirportDes);
-
-            Location listLocationDes = loc.getLocationById(listAirportDes.getLocationId());
-            request.setAttribute("listLocationDes", listLocationDes);
-
-            Country listCountryDes = cou.getCountryById(listLocationDes.getCountryId());
-            request.setAttribute("listCountryDes", listCountryDes);
-
-            List<FlightDetails> detail_ls = dao.getAllDetailByFlightId(fid, index);
-            List<FlightDetails> searchResults = new ArrayList<>();
-
-            if (action != null && action.equals("cancel")) {
-                searchResults = dao.getAllDetailByFlightId(fid, index);
-                request.setAttribute("listFlightDetails", searchResults);
-            } else if (action != null && action.equals("search")) {
-
-                String statusSearch = request.getParameter("statusSearch");
-                String dateSearch = request.getParameter("dateSearch");
-                String fromSearch = request.getParameter("fromSearch");
-                String toSearch = request.getParameter("toSearch");
-                if (statusSearch != null && !statusSearch.isEmpty()) {
-                    int status_search = Integer.parseInt(statusSearch);
-                    searchResults = dao.searchByStatus(status_search, fid, index);
-                }
-
-                if (dateSearch != null && !dateSearch.isEmpty()) {
-                    Date date = Date.valueOf(dateSearch);
-                    searchResults = dao.searchByDate(date, fid, index);
-
-                }
-                if (fromSearch != null && toSearch != null && !fromSearch.isEmpty() && !toSearch.isEmpty()) {
-                    Time fromTime = Time.valueOf(fromSearch);
-                    Time toTime = Time.valueOf(toSearch);
-                    searchResults = dao.searchByTimeRange(fromTime, toTime, fid, index);
-                }
-                request.setAttribute("listFlightDetails", searchResults);
-
+        try {
+            Integer idd = (Integer) session.getAttribute("id");
+            FlightDetailDAO fdd = new FlightDetailDAO();
+            if (idd == null) {
+                response.sendRedirect("login");
+                return;
             } else {
-                request.setAttribute("listFlightDetails", detail_ls);
+                Accounts acc = ad.getAccountsById(idd);
+                request.setAttribute("account", acc);
             }
-        }
 
-        request.getRequestDispatcher("view/flightDetailsManagement.jsp").forward(request, response);
+            String airlineId = request.getParameter("airlineId");
+            if (airlineId != null) {
+                request.setAttribute("aid", airlineId);
+            }
+
+            String flightid = request.getParameter("flightId");
+
+            if (flightid != null) {
+                int fid = Integer.parseInt(flightid);
+                request.setAttribute("fid", flightid);
+                request.setAttribute("flightid", fid);
+                int numberOfItem = fdd.getNumberOfFlightDetail(fid);
+                int numOfPage = (int) Math.ceil((double) numberOfItem / 5);
+                String idx = request.getParameter("index");
+                int index = 1;
+                if (idx != null) {
+                    index = Integer.parseInt(idx);
+                }
+                request.setAttribute("index", index);
+                request.setAttribute("numOfPage", numOfPage);
+                String action = request.getParameter("action");
+
+                Flights listFlight = fmd.getFlightById(fid);
+                request.setAttribute("listFlight", listFlight);
+
+                Airline a = airline.getAirlineById(listFlight.getAirlineId());
+                request.setAttribute("a", a);
+
+                Airport listAirportDep = air.getAirportById(listFlight.getDepartureAirportId());
+                request.setAttribute("listAirportDep", listAirportDep);
+
+                Location listLocationDep = loc.getLocationById(listAirportDep.getLocationId());
+                request.setAttribute("listLocationDep", listLocationDep);
+
+                Country listCountryDep = cou.getCountryById(listLocationDep.getCountryId());
+                request.setAttribute("listCountryDep", listCountryDep);
+
+                Airport listAirportDes = air.getAirportById(listFlight.getDestinationAirportId());
+                request.setAttribute("listAirportDes", listAirportDes);
+
+                Location listLocationDes = loc.getLocationById(listAirportDes.getLocationId());
+                request.setAttribute("listLocationDes", listLocationDes);
+
+                Country listCountryDes = cou.getCountryById(listLocationDes.getCountryId());
+                request.setAttribute("listCountryDes", listCountryDes);
+
+                List<FlightDetails> detail_ls = dao.getAllDetailByFlightId(fid, index);
+                List<FlightDetails> searchResults = new ArrayList<>();
+
+                if (action != null && action.equals("cancel")) {
+                    searchResults = dao.getAllDetailByFlightId(fid, index);
+                    request.setAttribute("listFlightDetails", searchResults);
+                } else if (action != null && action.equals("search")) {
+
+                    String statusSearch = request.getParameter("statusSearch");
+                    String dateSearch = request.getParameter("dateSearch");
+                    String fromSearch = request.getParameter("fromSearch");
+                    String toSearch = request.getParameter("toSearch");
+                    if (statusSearch != null && !statusSearch.isEmpty()) {
+                        int status_search = Integer.parseInt(statusSearch);
+                        searchResults = dao.searchByStatus(status_search, fid, index);
+                    }
+
+                    if (dateSearch != null && !dateSearch.isEmpty()) {
+                        Date date = Date.valueOf(dateSearch);
+                        searchResults = dao.searchByDate(date, fid, index);
+
+                    }
+                    if (fromSearch != null && toSearch != null && !fromSearch.isEmpty() && !toSearch.isEmpty()) {
+                        Time fromTime = Time.valueOf(fromSearch);
+                        Time toTime = Time.valueOf(toSearch);
+                        searchResults = dao.searchByTimeRange(fromTime, toTime, fid, index);
+                    }
+                    request.setAttribute("listFlightDetails", searchResults);
+
+                } else {
+                    request.setAttribute("listFlightDetails", detail_ls);
+                }
+            }
+
+            request.getRequestDispatcher("view/flightDetailsManagement.jsp").forward(request, response);
+        } catch (Exception e) {
+            response.sendRedirect("home");
+        }
     }
 
     /**

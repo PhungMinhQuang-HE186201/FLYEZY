@@ -93,7 +93,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label><span class="glyphicon glyphicon-picture"></span>Number of seat:</label>
-                                    <input type="number" class="form-control" name="numberOfSeat" min="0" required>
+                                    <input type="number" class="form-control" name="numberOfSeat" min="0" max="300" required>
                                 </div>
                                 <div class="form-group">
                                     <label><span class="glyphicon glyphicon-picture"></span>Seat each row:</label>
@@ -194,7 +194,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label><span class="glyphicon glyphicon-picture"></span>Number of seat:</label>
-                                            <input type="text" class="form-control" name="numberOfSeat" value="<%= sc.getNumberOfSeat() %>" min="0" required/>
+                                            <input type="number" class="form-control" name="numberOfSeat" value="<%= sc.getNumberOfSeat() %>" min="0" max="300" required/>
                                         </div>
                                         <div class="form-group">
                                             <label><span class="glyphicon glyphicon-picture"></span>Seat each row:</label>
