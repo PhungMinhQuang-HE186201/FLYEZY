@@ -4,7 +4,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title>Register</title>
+        <title>Reset Password</title>
         <link rel="shortcut icon" type="image/jpg" href="image/logo-icon.png" />
         <link rel="stylesheet" href="css/styleLoginAndRegister.css" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">

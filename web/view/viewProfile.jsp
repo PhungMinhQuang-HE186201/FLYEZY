@@ -12,7 +12,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title>Thông tin cá nhân</title>
+        <title>Account Information</title>
         <link rel="shortcut icon" type="image/jpg" href="image/logo-icon.png" />
         <link rel="stylesheet" href="css/styleInfo.css" />
         <script src="js/validation.js"></script>
@@ -101,7 +101,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="email" class="control-label">Email:</label>
-                                <input type="email" name="email" value="${requestScope.account.email}" class="form-control" required/>
+                                <input type="email" name="email" value="${requestScope.account.email}" class="form-control" readonly=""/>
                             </div>
                             <div class="form-group">
                                 <label for="phone" class="control-label">Phone number:</label>

@@ -15,7 +15,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="shortcut icon" type="image/png" href="img/flyezy-logo3.png"/>
         <link rel="stylesheet" href="css/styleNews.css"/>
-        <title>JSP Page</title>
+        <title>News</title>
     </head>
     <body>
         <%@ include file="header.jsp" %>
