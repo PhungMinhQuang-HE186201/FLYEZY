@@ -1,6 +1,7 @@
 -- MySQL Workbench Forward Engineering
 drop database flyezy;
 
+SET GLOBAL max_connections = 2000; 
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
@@ -179,30 +180,20 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- Table `flyezy`.`Discount`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `flyezy`.`Discount` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `code` VARCHAR(45) NOT NULL,
-  `percentage` DECIMAL(5,2) NOT NULL,
-  `minimum_order_value` INT NOT NULL,
-  `date_created` TIMESTAMP NOT NULL,
-  `valid_until` TIMESTAMP NOT NULL,
-  `Airline_id` INT NOT NULL,
-  `Status_id` INT NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  `code` varchar(45) NOT NULL,
+  `percentage` decimal(5,2) NOT NULL,
+  `minimum_order_value` int NOT NULL,
+  `date_created` timestamp NOT NULL,
+  `valid_until` timestamp NOT NULL,
+  `Airline_id` int NOT NULL,
+  `Status_id` int NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_Discount_Airline1_idx` (`Airline_id` ASC) VISIBLE,
-  INDEX `fk_Discount_Status1_idx` (`Status_id` ASC) VISIBLE,
-  CONSTRAINT `fk_Discount_Airline1`
-    FOREIGN KEY (`Airline_id`)
-    REFERENCES `flyezy`.`Airline` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Discount_Status1`
-    FOREIGN KEY (`Status_id`)
-    REFERENCES `flyezy`.`Status` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+  KEY `fk_Discount_Airline1_idx` (`Airline_id`),
+  KEY `fk_Discount_Status1_idx` (`Status_id`),
+  CONSTRAINT `fk_Discount_Airline1` FOREIGN KEY (`Airline_id`) REFERENCES `Airline` (`id`),
+  CONSTRAINT `fk_Discount_Status1` FOREIGN KEY (`Status_id`) REFERENCES `Status` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
@@ -299,36 +290,22 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- Table `flyezy`.`Flight`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `flyezy`.`Flight` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `minutes` INT NULL DEFAULT NULL,
-  `departureAirportid` INT NOT NULL,
-  `destinationAirportid` INT NOT NULL,
-  `Status_id` INT NOT NULL,
-  `Airline_id` INT NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  `minutes` int DEFAULT NULL,
+  `departureAirportid` int NOT NULL,
+  `destinationAirportid` int NOT NULL,
+  `Status_id` int NOT NULL,
+  `Airline_id` int NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `FKFlight90325` (`departureAirportid` ASC) VISIBLE,
-  INDEX `FKFlight563127` (`destinationAirportid` ASC) VISIBLE,
-  INDEX `fk_Flight_Status1_idx` (`Status_id` ASC) VISIBLE,
-  INDEX `fk_Flight_Airline1_idx` (`Airline_id` ASC) VISIBLE,
-  CONSTRAINT `FKFlight563127`
-    FOREIGN KEY (`destinationAirportid`)
-    REFERENCES `flyezy`.`Airport` (`id`),
-  CONSTRAINT `FKFlight90325`
-    FOREIGN KEY (`departureAirportid`)
-    REFERENCES `flyezy`.`Airport` (`id`),
-  CONSTRAINT `fk_Flight_Status1`
-    FOREIGN KEY (`Status_id`)
-    REFERENCES `flyezy`.`Status` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Flight_Airline1`
-    FOREIGN KEY (`Airline_id`)
-    REFERENCES `flyezy`.`Airline` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+  KEY `FKFlight90325` (`departureAirportid`),
+  KEY `FKFlight563127` (`destinationAirportid`),
+  KEY `fk_Flight_Status1_idx` (`Status_id`),
+  KEY `fk_Flight_Airline1_idx` (`Airline_id`),
+  CONSTRAINT `fk_Flight_Airline1` FOREIGN KEY (`Airline_id`) REFERENCES `Airline` (`id`),
+  CONSTRAINT `fk_Flight_Status1` FOREIGN KEY (`Status_id`) REFERENCES `Status` (`id`),
+  CONSTRAINT `FKFlight563127` FOREIGN KEY (`destinationAirportid`) REFERENCES `Airport` (`id`),
+  CONSTRAINT `FKFlight90325` FOREIGN KEY (`departureAirportid`) REFERENCES `Airport` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
@@ -362,33 +339,21 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- Table `flyezy`.`Flight_Detail`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `flyezy`.`Flight_Detail` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `date` DATE NULL DEFAULT NULL,
-  `time` TIME NULL DEFAULT NULL,
-  `price` INT NULL DEFAULT NULL,
-  `Flightid` INT NOT NULL,
-  `Plane_Categoryid` INT NOT NULL,
-  `Status_id` INT NOT NULL,
+ `id` int NOT NULL AUTO_INCREMENT,
+  `date` date DEFAULT NULL,
+  `time` time DEFAULT NULL,
+  `price` int DEFAULT NULL,
+  `Flightid` int NOT NULL,
+  `Plane_Categoryid` int NOT NULL,
+  `Status_id` int NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `FKFlight_Det484575` (`Flightid` ASC) VISIBLE,
-  INDEX `FKFlight_Det564449` (`Plane_Categoryid` ASC) VISIBLE,
-  INDEX `fk_Flight_Detail_Status1_idx` (`Status_id` ASC) VISIBLE,
-  CONSTRAINT `FKFlight_Det484575`
-    FOREIGN KEY (`Flightid`)
-    REFERENCES `flyezy`.`Flight` (`id`),
-  CONSTRAINT `FKFlight_Det564449`
-    FOREIGN KEY (`Plane_Categoryid`)
-    REFERENCES `flyezy`.`Plane_Category` (`id`),
-  CONSTRAINT `fk_Flight_Detail_Status1`
-    FOREIGN KEY (`Status_id`)
-    REFERENCES `flyezy`.`Status` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-AUTO_INCREMENT=16
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
+  KEY `FKFlight_Det484575` (`Flightid`),
+  KEY `FKFlight_Det564449` (`Plane_Categoryid`),
+  KEY `fk_Flight_Detail_Status1_idx` (`Status_id`),
+  CONSTRAINT `fk_Flight_Detail_Status1` FOREIGN KEY (`Status_id`) REFERENCES `Status` (`id`),
+  CONSTRAINT `FKFlight_Det484575` FOREIGN KEY (`Flightid`) REFERENCES `Flight` (`id`),
+  CONSTRAINT `FKFlight_Det564449` FOREIGN KEY (`Plane_Categoryid`) REFERENCES `Plane_Category` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- -----------------------------------------------------
 -- Table `flyezy`.`Flight_Type`
@@ -692,23 +657,12 @@ INSERT INTO `flyezy`.`News_Category` (`name`) VALUES
 ('News'),
 ('Promotion');
 
-INSERT INTO `Flight` VALUES (1,120,1,2,1,3),(2,120,2,1,1,3),(3,360,1,3,1,3),(4,360,3,1,1,3),(5,360,2,3,1,3),(6,360,3,2,1,3),(7,300,1,4,1,2),(8,300,4,1,1,2),(9,300,2,6,1,2),(10,300,6,2,1,2),(11,120,2,1,1,2),(12,120,1,2,1,4),(13,120,2,1,1,4);
-INSERT INTO `Flight_Detail` VALUES
- (1,'2024-10-01','14:30:00',1200000,1,1,3),
- (2,'2024-10-02','15:45:00',1350000,1,2,3),
- (3,'2024-10-03','10:00:00',1500000,1,3,3),
- (4,'2024-11-10','12:10:52',1200000,1,1,1),
- (5,'2024-11-10','01:00:00',1200000,11,4,1),
- (6,'2024-11-10','22:00:00',1200000,11,4,1),
- (7,'2024-11-11','09:00:00',1250000,11,4,1),
- (8,'2024-11-02','12:46:00',1250000,1,1,1),
- (9,'2024-11-10','00:00:00',1100000,12,14,1),
- (10,'2024-11-10','13:00:00',1050000,12,13,1),
- (11,'2024-11-10','14:00:00',1050000,13,14,1),
- (12,'2024-11-10','09:00:00',1150000,12,15,1),
- (13,'2024-11-10','02:30:00',1050000,13,13,1),
- (14,'2024-11-10','11:30:00',1200000,13,15,1),
- (15,'2024-11-10','15:00:00',1200000,2,1,1);
+INSERT INTO `Flight` VALUES (1,120,1,2,1,3),(2,120,2,1,1,3),(3,360,1,3,1,3),(4,360,3,1,1,3),(5,360,2,3,1,3),(6,360,3,2,1,3),(7,300,1,4,1,2),(8,300,4,1,1,2),(9,300,2,6,1,2),(10,300,6,2,1,2),(11,120,2,1,1,2),(12,120,1,2,1,4),(13,120,2,1,1,4),(15,120,1,2,1,2);
+INSERT INTO `Flight_Detail` VALUES (1,'2024-10-01','14:30:00',1200000,1,1,3),(2,'2024-10-02','15:45:00',1350000,1,2,3),(3,'2024-10-03','10:00:00',1500000,1,3,3),(4,'2024-11-10','12:10:52',1200000,1,1,1),(5,'2024-11-10','01:00:00',1200000,11,4,1),(6,'2024-11-10','22:00:00',1200000,11,4,1),(7,'2024-11-11','09:00:00',1250000,11,4,1),(8,'2024-11-02','12:46:00',1250000,1,1,1),(9,'2024-11-10','00:00:00',1100000,12,14,1),(10,'2024-11-10','13:00:00',1050000,12,15,1),(11,'2024-11-10','14:00:00',1050000,13,14,1),(12,'2024-11-10','09:00:00',1150000,12,15,1),(13,'2024-11-10','02:30:00',1050000,13,15,1),(14,'2024-11-10','11:30:00',1200000,13,15,1),(15,'2024-11-10','15:00:00',1200000,2,1,1),(16,'2024-11-11','05:00:00',1200000,1,1,1),(17,'2024-11-11','07:00:00',1250000,1,2,1),(18,'2024-11-11','08:00:00',1300000,1,3,1),(19,'2024-11-11','14:00:00',1240000,1,1,1),(20,'2024-11-11','16:00:00',1260000,1,1,1),(21,'2024-11-11','02:00:00',1100000,12,14,1),(22,'2024-11-11','06:30:00',1150000,12,15,1),(23,'2024-11-11','22:20:00',1200000,12,14,1),(24,'2024-11-11','23:00:00',1250000,13,14,1),(25,'2024-11-11','07:00:00',1160000,13,14,1),(26,'2024-11-11','10:00:00',1450000,15,5,1),(27,'2024-11-11','16:00:00',1400000,15,4,1),(28,'2024-11-11','09:00:00',1250000,15,4,1),(29,'2024-11-11','23:00:00',1400000,11,4,1),(30,'2024-11-11','10:00:00',2000000,11,4,1),(31,'2024-11-11','15:00:00',1260000,11,5,1),(32,'2024-11-11','22:00:00',1200000,2,1,1),(33,'2024-11-11','14:00:00',1500000,2,2,1);
+
+
+ INSERT INTO `Discount` VALUES (1,'VNAIRLINE1',10.00,3000000,'2024-11-09 00:00:00','2024-11-12 00:00:00',2,1),(2,'VNAIRLINE2',20.00,5000000,'2024-11-08 00:00:00','2024-11-09 00:00:00',2,1),(3,'BAMBOO0001',10.00,2000000,'2024-11-09 00:00:00','2024-11-12 00:00:00',3,1),(4,'BAMBOO0002',20.00,4000000,'2024-11-06 00:00:00','2024-11-09 00:00:00',3,1);
+
 
 INSERT INTO `flyezy`.`Order` (`id`, `code`, `contactName`, `contactPhone`, `contactEmail`, `totalPrice`, `Accounts_id`, `Payment_Types_id`, `paymentTime`, `created_at`, `Discount_id`, `Status_id`)
 VALUES 
