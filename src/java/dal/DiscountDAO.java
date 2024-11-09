@@ -6,6 +6,7 @@ package dal;
 
 import com.mysql.cj.jdbc.PreparedStatementWrapper;
 import dal.DBConnect;
+import java.sql.Timestamp;
 import model.Discount;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,8 +14,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.ArrayList;
 import java.sql.Date;
-import model.Status;
-import java.util.Random;
+
 import model.Airline;
 
 /**
@@ -67,9 +67,84 @@ public class DiscountDAO extends DBConnect {
                 ls.add(new Discount(id, code, percentage, min_order, date_created, valid_until, Airlineid, Status_id));
             }
         } catch (Exception ex) {
-            ex.printStackTrace(); 
+            ex.printStackTrace();
         }
-        return ls; 
+        return ls;
+    }
+
+    public Discount getDiscountByCode(String dcode, int totalPrice, Timestamp create_at, int airlineId) {
+        String sql = "SELECT * FROM Discount d "
+                + "WHERE d.code = ? AND ? > d.minimum_order_value AND d.date_created <= ? <= d.valid_until AND d.Airline_id = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, dcode);
+            ps.setInt(2, totalPrice);
+            ps.setTimestamp(3, create_at);
+            ps.setInt(4, airlineId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int id = rs.getInt("id");
+                    String code = rs.getString("code");
+                    Double percentage = rs.getDouble("percentage");
+                    int min_order = rs.getInt("minimum_order_value");
+                    Date date_created = rs.getDate("date_created");
+                    Date valid_until = rs.getDate("valid_until");
+                    int Airlineid = rs.getInt("Airline_id");
+                    int Status_id = rs.getInt("Status_id");
+
+                   return new Discount(id, code, percentage, min_order, date_created, valid_until, Airlineid, Status_id);
+
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public double getPercentageById(int id) {
+        double percentage = 0.0;
+        String sql = "SELECT percentage FROM Discount WHERE id = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    percentage = rs.getDouble("percentage");
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return percentage;
+    }
+
+    public double getPercentageByCode(String code) {
+        double percentage = 0.0;
+        String sql = "SELECT percentage FROM Discount WHERE code = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, code);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    percentage = rs.getDouble("percentage");
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();  
+        }
+
+        return percentage;
     }
 
     public void addNew(Discount discount) {
@@ -173,17 +248,26 @@ public class DiscountDAO extends DBConnect {
         }
         return list;
     }
+    
+    public boolean isUsedDiscount(int accountId, int discountId){
+        String sql = "SELECT * from flyezy.Order o where o.Accounts_id = ? and o.Discount_id = ? and (o.Status_id = 10 or o.Status_id = 12)";
+        try {
+            PreparedStatement prepare = conn.prepareStatement(sql);
+            prepare.setInt(1,accountId);
+            prepare.setInt(2, discountId);
+            ResultSet resultSet = prepare.executeQuery();
+            while(resultSet.next()){
+                return true;
+            }
+        } catch (Exception e) {
+        }
+        return false;
+    }
+    
 
     public static void main(String[] args) {
+
         DiscountDAO dal = new DiscountDAO();
-        double percentage = 75; // Phần trăm giảm giá
-        int minOrder = 1; // Giá trị đơn hàng tối thiểu
-
-        int aid = 1;
-        int sid = 1;
-
-        Date dateCreated = Date.valueOf("2024-8-31");
-        Date validUntil = Date.valueOf("2024-11-30");
-        dal.updateDiscount(new Discount("con me no", percentage, minOrder, dateCreated, validUntil, aid, sid), 1);
+        System.out.println(dal.isUsedDiscount(7, 7));
     }
 }

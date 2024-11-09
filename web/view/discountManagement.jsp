@@ -99,24 +99,25 @@
                                     <div class="mb-3">
                                         <input type="hidden" id="id" name="uid" class="form-control" value="<%=discount.getId()%>" readonly>
                                         <label for="percentages" class="form-label">Code:</label>
-                                        <input type="text" id="code" name="ucode" class="form-control" value="<%=discount.getCode()%>" >
+                                        <input type="text" id="code" pattern="^[A-Z0-9]{10}$" name="ucode" class="form-control" value="<%=discount.getCode()%>" required >
                                     </div>
                                     <div class="mb-3">
                                         <label for="percentages" class="form-label">Percentage:</label>
-                                        <input type="number" id="percentages1-<%=discount.getId()%>" name="percentages" class="form-control"  oninput="validatePercentage_update(<%=discount.getId()%>)" value="<%=discount.getPercentage()%>">
+                                        <input type="number" id="percentages1-<%=discount.getId()%>" name="percentages" class="form-control"  oninput="validatePercentage_update(<%=discount.getId()%>)" 
+                                               value="<%=discount.getPercentage()%>" readonly>
                                         <span id="percentageError1-<%=discount.getId()%>" style="color: red; display: none;">Percentage cannot exceed 100%</span>
                                     </div>
                                     <div class="mb-3">
                                         <label for="min_order" class="form-label">Minimum Order:</label>
-                                        <input type="number" id="min_order" name="min_order" class="form-control" value="<%=discount.getMin_order()%>">
+                                        <input type="number" min="0" max="50000000" id="min_order" name="min_order" class="form-control" value="<%=discount.getMin_order()%>" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="date_created" class="form-label">Date Created:</label>
-                                        <input type="date" id="date1-<%=discount.getId()%>" name="date_created" class="form-control" value="<%=discount.getDate_created()%>" oninput="validateDates_update(<%=discount.getId()%>)">
+                                        <input type="date" id="date1-<%=discount.getId()%>" name="date_created" class="form-control" value="<%=discount.getDate_created()%>" oninput="validateDates_update(<%=discount.getId()%>)" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="valid_until" class="form-label">Valid Until:</label>
-                                        <input type="date" id="date2-<%=discount.getId()%>" name="valid_until" class="form-control" value="<%=discount.getValid_until()%>" oninput="validateDates_update(<%=discount.getId()%>)">
+                                        <input type="date" id="date2-<%=discount.getId()%>" name="valid_until" class="form-control" value="<%=discount.getValid_until()%>" oninput="validateDates_update(<%=discount.getId()%>)" required>
                                         <div id="dateError-<%=discount.getId()%>" class="text-danger mt-1" style="display: none;">"Date Created" must be earlier than "Valid Until".</div>
                                     </div>
                                     <div class="mb-3">
@@ -151,15 +152,15 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="min_order" class="form-label">Minimum Order:</label>
-                                        <input type="number" id="min_order" name="min_order" class="form-control" required>
+                                        <input type="number" min="0" max="50000000" id="min_order" name="min_order" class="form-control" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="date_created" class="form-label">Date Created:</label>
-                                        <input type="date" id="date3-<%=id%>" name="date_created" class="form-control" oninput="validateDates_add(<%=id%>)">
+                                        <input type="date" id="date3-<%=id%>" name="date_created" class="form-control" oninput="validateDates_add(<%=id%>)" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="valid_until" class="form-label">Valid Until:</label>
-                                        <input type="date" id="date4-<%=id%>" name="valid_until" class="form-control"  oninput="validateDates_add(<%=id%>)">
+                                        <input type="date" id="date4-<%=id%>" name="valid_until" class="form-control"  oninput="validateDates_add(<%=id%>)" required>
                                         <div id="Error-<%=id%>" class="text-danger mt-1" style="display: none;">"Date Created" must be earlier than "Valid Until".</div>
                                     </div>
                                     <div class="form-group">

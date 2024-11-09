@@ -20,6 +20,7 @@
 <%@page import="dal.SeatCategoryDAO"%>
 <%@page import="dal.BaggageManageDAO"%>
 <%@page import="dal.FeedbackDao"%>
+<%@page import="dal.DiscountDAO"%>
 <%@page import="java.util.List"%>
 <%@page import="model.Status"%>
 <%@page import="model.Order"%>
@@ -245,6 +246,7 @@
             PlaneCategoryDAO pcd = new PlaneCategoryDAO();
             SeatCategoryDAO scd = new SeatCategoryDAO();
             BaggageManageDAO bmd = new BaggageManageDAO();
+            DiscountDAO dd = new DiscountDAO();
             
             List<Order> listOrder = (List<Order>)request.getAttribute("listOrder");
             List<FlightDetails> listFlightDetails = (List<FlightDetails>)request.getAttribute("listFlightDetails");
@@ -389,13 +391,14 @@
 
 
 
-
+                    
                     <div class="list-price" style="text-align: right; padding: 15px 0 "> 
                         <div>Order Tickets: <%=currencyFormatter.format(od.getTotalPriceAllTickets(o.getId())) %></div>
                         <div>Cancel Tickets: <%=currencyFormatter.format(od.getTotalPriceCancelledTicket(o.getId())) %></div>
                         <div>Is Paid <%=currencyFormatter.format((o.getPaymentTime()!=null)?o.getTotalPrice():0) %></div>
-                        <div class="order-discount">Discount: 0%</div>
-                        <div class="order-total"><strong style="font-size: 1.2em;">Total: <%=currencyFormatter.format(od.getTotalPriceAllTickets(o.getId())-od.getTotalPriceCancelledTicket(o.getId())) %></strong></div>
+                        <div class="order-discount">Discount: <%=dd.getPercentageById(o.getDiscountId())%>%</div>
+                        <% double totals = od.getTotalPriceAllTickets(o.getId())-od.getTotalPriceCancelledTicket(o.getId());  %>
+                        <div class="order-total"><strong style="font-size: 1.2em;">Total: <%=currencyFormatter.format(totals - (totals * (dd.getPercentageById(o.getDiscountId())/100))) %></strong></div>
                     </div>
 
 

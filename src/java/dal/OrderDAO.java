@@ -80,6 +80,25 @@ public class OrderDAO extends DBConnect {
         return null;
     }
 
+    public void updatetotalPriceOfOrder(int orderId, double totalPrice) {
+        PreparedStatement ps = null;
+
+        try {
+            String sql = "UPDATE flyezy.Order SET totalPrice = ? WHERE id = ?";
+            ps = conn.prepareStatement(sql);
+
+            // Thiết lập giá trị cho các tham số
+            ps.setDouble(1, totalPrice);
+            ps.setInt(2, orderId);
+
+            // Thực hiện cập nhật
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } 
+    }
+
     public int getAirlineIdByOrder(int id) {
         String sql = "select o.id,f.Airline_id from flyezy.Order o\n"
                 + "join Ticket t on t.Order_id = o.id\n"
@@ -298,6 +317,29 @@ public class OrderDAO extends DBConnect {
         } catch (Exception e) {
         }
         return 0;
+    }
+
+    public void updateDiscountOrder(int did, int oid) {
+        // Câu lệnh SQL để cập nhật Discount_id trong bảng Order
+        String sql = "UPDATE flyezy.Order SET Discount_id = ? WHERE id = ?";
+
+        // Kết nối với cơ sở dữ liệu và thực hiện cập nhật
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, did);
+            ps.setInt(2, oid);
+
+            int rowsUpdated = ps.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                System.out.println("Discount updated successfully.");
+            } else {
+                System.out.println("No rows updated, maybe the order ID doesn't exist.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean updateOrderStatus(int orderId, int newStatusId) {
@@ -655,6 +697,21 @@ public class OrderDAO extends DBConnect {
         return 0;
     }
 
+    public int getTotalPriceByOrderId(int orderId) {
+        String sql = "SELECT totalPrice FROM flyezy.Order WHERE id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, orderId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("totalPrice");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     public int getTotalPriceCancelledTicket(int orderId) {
         String sql = "SELECT SUM(totalPrice) as total FROM flyezy.Ticket WHERE Order_id = ? and Statusid = 7";
         try {
@@ -683,8 +740,8 @@ public class OrderDAO extends DBConnect {
 
     public static void main(String[] args) {
         OrderDAO dao = new OrderDAO();
-        //dao.createOrder(1, "Naruto", "0123", "hello@gmail.com", 10000, null);
-        System.out.println(dao.getTotalPriceCancelledTicket(25));
+        int cc = dao.getTotalPriceByOrderId(2);
+        System.out.println(cc);
     }
 
 }
