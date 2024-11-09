@@ -161,11 +161,11 @@ public class DiscountManagementServlet extends HttpServlet {
         StringBuilder promoCode = new StringBuilder(10);
 
         for (int i = 0; i < 10; i++) {
-            int index = random.nextInt(CHARACTERS.length()); // Chọn một chỉ số ngẫu nhiên
-            promoCode.append(CHARACTERS.charAt(index)); // Thêm ký tự vào mã
+            int index = random.nextInt(CHARACTERS.length()); 
+            promoCode.append(CHARACTERS.charAt(index)); 
         }
 
-        return promoCode.toString(); // Trả về mã khuyến mãi
+        return promoCode.toString(); 
     }
 
     public static void main(String[] args) {

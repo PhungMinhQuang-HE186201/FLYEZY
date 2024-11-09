@@ -165,6 +165,7 @@
                 %>
                 <%
                     List<FlightDetails> listFlightDetails = (List<FlightDetails>) request.getAttribute("listFlightDetails");
+                     listFlightDetails.sort((fd1, fd2) -> fd2.getDate().compareTo(fd1.getDate()));
                     if (listFlightDetails != null) {
                         for (FlightDetails fd : listFlightDetails) {
                                 String planeCategoryName = planeCategoryDAO.getNameById(fd.getPlaneCategoryId());
@@ -249,7 +250,7 @@
                                 <div class="mb-3">
                                     <label for="flightPrice" class="form-label">Price: </label>
                                     <input type="number" class="form-control" id="uflightPrice-<%=fd.getId()%>"  oninput="validateForm(<%=fd.getId()%>, 'or')" name="price" value="<%= fd.getPrice() %>" required>
-                                    <span id="priceError-<%=fd.getId()%>" style="color:red; display:none;">Price must be less than 100,000,000 VND</span>
+                                    <span id="priceError-<%=fd.getId()%>" style="color:red; display:none;">Price must be positive number and less than 100,000,000 VND</span>
                                 </div>
                                 <div class="mb-3">
                                     <input type="hidden" class="form-control" id="uFlightId" name="flightId" value="<%= fd.getFlightId() %>" required="">
@@ -309,7 +310,7 @@
                     <div class="form-group">
                         <label for="price">Price:</label>
                         <input type="number" class="form-control" id="aflightPrice-<%=fid%>"  oninput="validateFormAdd(<%=fid%>, 'or')" name="price" required>
-                        <div id="apriceError-<%=fid%>" style="display:none; color:red;">Price must be less than 100,000,000.</div>
+                        <div id="apriceError-<%=fid%>" style="display:none; color:red;">Price must be positive number and less than 100,000,000.</div>
                     </div>
                     <div class="form-group">
                         <input type="hidden" class="form-control" id="flightId" name="flightId" value="<%=fid%>">
@@ -368,7 +369,7 @@
         priceError.style.display = "none";
         dateError.style.display = "none";
 
-        var isPriceValid = priceInput <= maxPrice;
+        var isPriceValid = priceInput > 0 && priceInput <= maxPrice;
         var isDateValid = inputDate >= currentDate;
 
         // Hiển thị thông báo lỗi khi cần
@@ -409,9 +410,9 @@
         priceError.style.display = "none";
         dateError.style.display = "none";
 
-        var isPriceValid = priceInput <= maxPrice;
+        var isPriceValid = priceInput > 0 && priceInput <= maxPrice;
         var isDateValid = inputDate >= currentDate;
-        
+
 
         // Hiển thị thông báo lỗi khi cần
         if (!isPriceValid) {
@@ -423,10 +424,8 @@
 
         // Xử lý logic theo mode
         if (mode === "or") {
-            // "Hoặc": btnsubmit bị disabled nếu một trong hai điều kiện không hợp lệ
             btnsubmit.disabled = !isPriceValid || !isDateValid;
         } else if (mode === "and") {
-            // "Và": btnsubmit bị disabled nếu cả hai điều kiện không hợp lệ
             btnsubmit.disabled = !isPriceValid && !isDateValid;
         }
     }
