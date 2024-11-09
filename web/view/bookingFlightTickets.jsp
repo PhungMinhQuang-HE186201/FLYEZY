@@ -404,7 +404,12 @@
                                         </div>
                                         <div class="passenger-info-input-box">
                                             <div class="passenger-info-input-title">Date of birth:</div>
-                                            <input type="date" name="pDob<%=i%>" required/>
+                                            <% 
+                                                java.util.Calendar calendarAdult = java.util.Calendar.getInstance();
+                                                calendarAdult.add(java.util.Calendar.YEAR, -12);
+                                                String maxDateAdult = new java.text.SimpleDateFormat("yyyy-MM-dd").format(calendarAdult.getTime());
+                                            %>
+                                            <input type="date" name="pDob<%=i%>" required max="<%=maxDateAdult%>" onkeydown="return false;">
                                         </div>
                                         <div class="passenger-info-input-box">
                                             <div class="passenger-info-input-title">Phone number:</div>
@@ -482,7 +487,12 @@
                                         </div>
                                         <div class="passenger-info-input-box">
                                             <div class="passenger-info-input-title">Date of birth:</div>
-                                            <input type="date" name="pDob<%=i%>" required/>
+                                            <% 
+                                                java.util.Calendar calendarChild = java.util.Calendar.getInstance();
+                                                calendarChild.add(java.util.Calendar.YEAR, -2);
+                                                String maxDateChild = new java.text.SimpleDateFormat("yyyy-MM-dd").format(calendarChild.getTime());
+                                            %>
+                                            <input type="date" name="pDob<%=i%>" required max="<%=maxDateChild%>" onkeydown="return false;">
                                         </div>
                                         <div class="passenger-info-input-box">
                                             <div class="passenger-info-input-title">Select seat:</div>
@@ -531,7 +541,12 @@
                                         </div>
                                         <div class="passenger-info-input-box">
                                             <div class="passenger-info-input-title">Date of birth:</div>
-                                            <input type="date" name="pDob<%=i%>" required/>
+                                            <% 
+                                                java.util.Calendar calendarInfant = java.util.Calendar.getInstance();
+                                                calendarInfant.add(java.util.Calendar.YEAR, 0);
+                                                String maxDateInfant = new java.text.SimpleDateFormat("yyyy-MM-dd").format(calendarInfant.getTime());
+                                            %>
+                                            <input type="date" name="pDob<%=i%>" required max="<%=maxDateInfant%>" onkeydown="return false;">
                                         </div>   
                                     </div>
                                 </div>
@@ -883,7 +898,7 @@
 
             function submitPassengerForm(totalPassenger) {
                 const form = document.getElementById("passengerForm");
-                if (form.checkValidity() && validateSelectTicket()  && validateNameInput(totalPassenger)) {
+                if (form.checkValidity() && validateSelectTicket() && validateNameInput(totalPassenger)) {
                     form.submit();
                 } else {
                     form.reportValidity();

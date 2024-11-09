@@ -272,6 +272,11 @@
                          ">
                         <h3><%=request.getAttribute("notice")!=null ? request.getAttribute("notice") : ""%></h3>
                     </div>
+                    <% if (request.getAttribute("errorMessage") != null) { %>
+                    <div class="alert alert-danger">
+                        <%= request.getAttribute("errorMessage") %>
+                    </div>
+                    <% } %>
                 </div>
             </div>
 
@@ -283,6 +288,7 @@
                     if (!listTicketInOrder.isEmpty()) { %>
 
                 <% Boolean isVerified = (Boolean) request.getAttribute("isVerified"); %>
+                <% String errorContact = (String) request.getAttribute("errorContact"); %>
                 <% if (isVerified != null && isVerified) { %>
                 <div class="order-card">
                     <div class="order-header">
@@ -445,6 +451,11 @@
                     <input type="hidden" name="code" value="<%= o.getCode() %>">
                     <label for="contactInfo">Please verify your contact information:</label>
                     <input type="text" id="contactInfo" name="contactInfo" class="form-control" placeholder="Enter your contact mail/phone">
+                    <% if (errorContact != null && !errorContact.isEmpty()) { %>
+                    <div class="alert alert-danger mt-2">
+                        <%= errorContact %>
+                    </div>
+                    <% } %>
                     <button type="submit" class="btn btn-primary mt-2">Verify</button>
                 </form>
             </div>

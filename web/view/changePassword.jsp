@@ -59,7 +59,7 @@
                 </div>
                 <div id="errorPass" style="color: red; display: none;">Password must more than 6 characters</div>
                 <div class="button">
-                    <input id="submit" type="submit" value="Đổi mật khẩu" style="width: 37%;"/><br /><br />
+                    <input id="submit" type="submit" value="Đổi mật khẩu" style="width: 26.9%;"/><br /><br />
                 </div>
             </form>
         </div>

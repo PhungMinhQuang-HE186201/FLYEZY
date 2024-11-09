@@ -269,11 +269,11 @@
                                     <!-- Departure Date Field -->
                                     <div class="col-md-2" style="padding-right: 0px">
                                         <p style="color: black; margin: 0; font-size: 12px">DEPART</p>
-                                        <input type="text" class="form-control" id="departureDate" name="departureDate" style="height: 100%;font-size: 18px;" placeholder="yyyy-mm-dd" required>
+                                        <input type="text" class="form-control" id="departureDate" name="departureDate" style="height: 100%;font-size: 18px;" placeholder="yyyy-mm-dd" required readonly>
                                     </div>
                                     <div class="col-md-2" id="returnDateField" style="display:none;padding-right: 0px">
                                         <p style="color: black; margin: 0; font-size: 12px">RETURN</p>
-                                        <input type="text" id="returnDate" class="form-control" name="returnDate" style="height: 100%;font-size: 18px;" placeholder="yyyy-mm-dd">
+                                        <input type="text" id="returnDate" class="form-control" name="returnDate" style="height: 100%;font-size: 18px;" placeholder="yyyy-mm-dd" readonly>
                                     </div>
 
                                     <!-- Passengers Field -->

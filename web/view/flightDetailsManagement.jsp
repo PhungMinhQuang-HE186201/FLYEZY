@@ -411,6 +411,7 @@
 
         var isPriceValid = priceInput <= maxPrice;
         var isDateValid = inputDate >= currentDate;
+        
 
         // Hiển thị thông báo lỗi khi cần
         if (!isPriceValid) {
