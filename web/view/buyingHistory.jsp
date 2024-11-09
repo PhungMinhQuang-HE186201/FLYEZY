@@ -437,7 +437,7 @@
             </div>
 
 
-            
+
             <div id="payment_methods<%=o.getId()%>" style="display: none;">
                 <h2>Payments Method</h2>
                 <div class="payment-options">
@@ -482,7 +482,8 @@
             String code = request.getParameter("code");
             if(statusIdParam ==null && code==null){%>
             <div style="width :100%; margin: 0 auto">
-                <nav aria-label="...">
+                <nav aria-label="..." style="width: 100%;
+                     text-align: center;">
                     <ul class="pagination">
                         <c:if test="${index != 1}">    
                             <li class="page-item">

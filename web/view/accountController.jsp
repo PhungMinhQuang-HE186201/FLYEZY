@@ -244,7 +244,8 @@
                                                     </div>
                                                     <div class="form-group col-md-6">
                                                         <div><label for="usrname"><span class="glyphicon glyphicon-knight"></span>Airline:</label></div>
-                                                        <select id="airline<%= list.getId() %>" name="airlineID" value="<%= list.getAirlineId()%>" style="height:  34px;width: 100%;">
+                                                        <select id="airline<%= list.getId() %>" name="airlineID" value="<%= list.getAirlineId()%>" 
+                                                                style="height: 34px; width: 100%; display: <%= (list.getRoleId() != 2) ? "none" : "block" %>;">
                                                             <%
                                                             for(Airline airline : airlineList){%>
                                                             <option value="<%=airline.getId()%>" <%= (list.getAirlineId() == airline.getId()) ? "selected" : "" %>><%=airline.getName()%></option>

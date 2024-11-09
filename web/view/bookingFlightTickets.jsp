@@ -587,7 +587,7 @@
                     </div>
                     <div style="width: 100%">
                         <button style="width: 100%; background-color:  #9DC567; padding: 10px 30px; border: none; border-radius: 8px; color: white"
-                                onclick="submitPassengerForm(<%=totalPassengers%>)"
+                                onclick="submitPassengerForm(<%=adultTicket + childTicket +infantTicket%>)"
                                 >SUBMIT</button>
                     </div>
 
