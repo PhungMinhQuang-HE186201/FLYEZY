@@ -82,9 +82,9 @@ public class DiscountManagementServlet extends HttpServlet {
             if (id != null) {
                 int sid = Integer.parseInt(id);
                 if ("Activate".equalsIgnoreCase(action)) {
-                    dd.updateStatus(sid, 1); 
+                    dd.updateStatus(sid, 1);
                 } else if ("Deactivate".equalsIgnoreCase(action)) {
-                    dd.updateStatus(sid, 2); 
+                    dd.updateStatus(sid, 2);
                 }
             }
             if (acc.getRoleId() == 2) {
@@ -151,8 +151,8 @@ public class DiscountManagementServlet extends HttpServlet {
             } else {
                 dd.updateDiscount(new Discount(ucode, per, min, dcreated, valid, aid), id);
             }
-            response.sendRedirect("discountManagement");
         }
+        response.sendRedirect("discountManagement");
     }
 
     public static String generatePromoCode() {
@@ -161,11 +161,11 @@ public class DiscountManagementServlet extends HttpServlet {
         StringBuilder promoCode = new StringBuilder(10);
 
         for (int i = 0; i < 10; i++) {
-            int index = random.nextInt(CHARACTERS.length()); // Chọn một chỉ số ngẫu nhiên
-            promoCode.append(CHARACTERS.charAt(index)); // Thêm ký tự vào mã
+            int index = random.nextInt(CHARACTERS.length()); 
+            promoCode.append(CHARACTERS.charAt(index)); 
         }
 
-        return promoCode.toString(); // Trả về mã khuyến mãi
+        return promoCode.toString(); 
     }
 
     public static void main(String[] args) {

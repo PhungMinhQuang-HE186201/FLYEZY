@@ -74,14 +74,15 @@ public class DiscountDAO extends DBConnect {
 
     public Discount getDiscountByCode(String dcode, int totalPrice, Timestamp create_at, int airlineId) {
         String sql = "SELECT * FROM Discount d "
-                + "WHERE d.code = ? AND ? > d.minimum_order_value AND d.date_created <= ? <= d.valid_until AND d.Airline_id = ?";
+                + "WHERE d.code = ? AND ? > d.minimum_order_value AND  d.date_created <= ? AND ? <= d.valid_until AND d.Airline_id = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, dcode);
             ps.setInt(2, totalPrice);
             ps.setTimestamp(3, create_at);
-            ps.setInt(4, airlineId);
+            ps.setTimestamp(4, create_at);
+            ps.setInt(5, airlineId);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {

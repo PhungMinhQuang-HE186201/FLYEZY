@@ -165,6 +165,7 @@
                 %>
                 <%
                     List<FlightDetails> listFlightDetails = (List<FlightDetails>) request.getAttribute("listFlightDetails");
+                     listFlightDetails.sort((fd1, fd2) -> fd2.getDate().compareTo(fd1.getDate()));
                     if (listFlightDetails != null) {
                         for (FlightDetails fd : listFlightDetails) {
                                 String planeCategoryName = planeCategoryDAO.getNameById(fd.getPlaneCategoryId());
@@ -368,7 +369,7 @@
         priceError.style.display = "none";
         dateError.style.display = "none";
 
-        var isPriceValid = priceInput <= maxPrice;
+        var isPriceValid = priceInput > 0 && priceInput <= maxPrice;
         var isDateValid = inputDate >= currentDate;
 
         // Hiển thị thông báo lỗi khi cần
@@ -409,9 +410,9 @@
         priceError.style.display = "none";
         dateError.style.display = "none";
 
-        var isPriceValid = priceInput <= maxPrice;
+        var isPriceValid = priceInput > 0 && priceInput <= maxPrice;
         var isDateValid = inputDate >= currentDate;
-        
+
 
         // Hiển thị thông báo lỗi khi cần
         if (!isPriceValid) {
@@ -423,10 +424,8 @@
 
         // Xử lý logic theo mode
         if (mode === "or") {
-            // "Hoặc": btnsubmit bị disabled nếu một trong hai điều kiện không hợp lệ
             btnsubmit.disabled = !isPriceValid || !isDateValid;
         } else if (mode === "and") {
-            // "Và": btnsubmit bị disabled nếu cả hai điều kiện không hợp lệ
             btnsubmit.disabled = !isPriceValid && !isDateValid;
         }
     }
