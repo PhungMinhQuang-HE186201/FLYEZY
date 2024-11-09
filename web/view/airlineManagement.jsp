@@ -114,11 +114,27 @@
                     </button>
                 </div>
             </c:if> 
+            <% 
+                String error = (String) session.getAttribute("error");
+                if (error != null) { 
+            %>
+            <div class="alert alert-danger"><%= error %></div>
+            <% session.removeAttribute("error"); %>
+            <% } %>
+            
+            <% 
+                String success = (String) session.getAttribute("success");
+                if (success != null) { 
+            %>
+            <div class="alert alert-success"><%= success %></div>
+            <% session.removeAttribute("success"); %>
+            <% } %>
 
             <% StatusDAO statusDao = new StatusDAO();
             
             %>
             <div class="row" style="margin: 0">
+
 
                 <div class="col-md-10" id="left-column" style="padding: 0; margin-top: 10px">
                     <table class="entity">
@@ -448,9 +464,9 @@
         <script>
             function validateNameAndInfoInput(i) {
                 const name = document.getElementById("name" + i).value.trim();
-                const info = document.getElementById("info" + i).value.trim();
 
-                if (name === "" || info === "") {
+
+                if (name === "") {
                     alert("Please enter valid content. Do not enter spaces only.");
                     return false;
                 }

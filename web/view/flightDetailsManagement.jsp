@@ -248,7 +248,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="flightPrice" class="form-label">Price: </label>
-                                    <input type="number" class="form-control" id="uflightPrice-<%=fd.getId()%>"  oninput="validateForm(<%=fd.getId()%>, 'or')" name="price" value="<%= fd.getPrice() %>" required>
+                                    <input type="number" min="100000" class="form-control" id="uflightPrice-<%=fd.getId()%>"  oninput="validateForm(<%=fd.getId()%>, 'or')" name="price" value="<%= fd.getPrice() %>" required>
                                     <span id="priceError-<%=fd.getId()%>" style="color:red; display:none;">Price must be less than 100,000,000 VND</span>
                                 </div>
                                 <div class="mb-3">
@@ -308,7 +308,7 @@
                     </div>
                     <div class="form-group">
                         <label for="price">Price:</label>
-                        <input type="number" class="form-control" id="aflightPrice-<%=fid%>"  oninput="validateFormAdd(<%=fid%>, 'or')" name="price" required>
+                        <input type="number" min="100000" class="form-control" id="aflightPrice-<%=fid%>"  oninput="validateFormAdd(<%=fid%>, 'or')" name="price" required>
                         <div id="apriceError-<%=fid%>" style="display:none; color:red;">Price must be less than 100,000,000.</div>
                     </div>
                     <div class="form-group">

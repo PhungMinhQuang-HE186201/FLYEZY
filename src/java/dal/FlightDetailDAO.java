@@ -452,6 +452,29 @@ public class FlightDetailDAO extends DBConnect {
             e.printStackTrace();
         }
     }
+    public boolean deactivateAllFlightDetailByPlaneCategoryId(int id) {
+        String sql = "UPDATE Flight_Detail SET Status_id = 2 WHERE Plane_Categoryid = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    public boolean activateAllFlightDetailByPlaneCategoryId(int id) {
+        String sql = "UPDATE Flight_Detail SET Status_id = 1 WHERE Plane_Categoryid = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
     public void activateAllFlightDetailByAirline(int airlineId) {
         String sql = "UPDATE Flight_Detail fd "

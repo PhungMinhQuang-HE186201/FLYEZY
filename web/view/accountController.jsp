@@ -151,7 +151,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="password"><span class="glyphicon glyphicon-eye-open"></span>Password:</label>
-                                        <input type="password" class="form-control" name="password" value="" pattern="^\d{6}$" required title="Password must be exactly 6 digits">
+                                        <input type="password" class="form-control" name="password" value="" pattern="^\d{6,}$" required title="Password must be at least 6 digits">
                                     </div>
 
                                     <div class="form-group">
@@ -168,7 +168,7 @@
                     </div>
                 </div> 
             </div>
-            <h4 style="color : red">${message}</h4>
+            <h4 style="color : red">${error}</h4>
             <table class="entity" >
                 <thead>
                     <tr>
@@ -308,7 +308,7 @@
             </table>
             <%
                 String action = request.getParameter("action");
-             if(action==null){%>
+             if(action==null || !action.equals("search")){%>
             <div style="">
                 <nav aria-label="...">
                     <ul class="pagination">

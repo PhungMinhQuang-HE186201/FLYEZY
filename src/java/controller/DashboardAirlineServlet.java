@@ -55,9 +55,10 @@ public class DashboardAirlineServlet extends HttpServlet {
             List<Baggages> listBaggage = baggageManageDao.getAllBaggages();
             String submit = request.getParameter("submit");
             if (acc.getRoleId() == 1) {
+                request.setAttribute("manager", "FLYEZY");
                 if (submit == null) {
                     listAirline = airlineManageDao.getAllAirline();
-                    request.setAttribute("manager", "FLYEZY");
+                    
                 } else {
                     // Search for airlines based on keyword and status
                     String keyword = request.getParameter("keyword") != null ? request.getParameter("keyword").trim() : null;

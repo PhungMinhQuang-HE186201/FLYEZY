@@ -5,6 +5,7 @@
 package controller;
 
 import dal.AccountsDAO;
+import dal.FlightDetailDAO;
 import dal.PlaneCategoryDAO;
 import dal.SeatCategoryDAO;
 import java.io.IOException;
@@ -66,6 +67,7 @@ public class PlaneCategoryControllerServlet extends HttpServlet {
             throws ServletException, IOException {
         AccountsDAO ad = new AccountsDAO();
         PlaneCategoryDAO pcd = new PlaneCategoryDAO();
+        FlightDetailDAO fdd = new FlightDetailDAO();
         SeatCategoryDAO scd = new SeatCategoryDAO();
         HttpSession session = request.getSession();
 
@@ -91,9 +93,11 @@ public class PlaneCategoryControllerServlet extends HttpServlet {
             } else if (action.equals("changeStatus")) { //ok
                 int id = Integer.parseInt(request.getParameter("id"));
                 if (pcd.getPlaneCategoryById(id).getStatusId() == 1) {
+                    fdd.deactivateAllFlightDetailByPlaneCategoryId(id);
                     scd.deactivateAllSeatCategoryByPlaneCategoryId(id);
                     pcd.deactivatePlaneCategoryById(id);
                 } else {
+                    fdd.activateAllFlightDetailByPlaneCategoryId(id);
                     scd.activateAllSeatCategoryByPlaneCategoryId(id);
                     pcd.activatePlaneCategoryById(id);
                 }
@@ -132,9 +136,9 @@ public class PlaneCategoryControllerServlet extends HttpServlet {
         AccountsDAO ad = new AccountsDAO();
         PlaneCategoryDAO pcd = new PlaneCategoryDAO();
         String idStr = request.getParameter("id");
-        String name = request.getParameter("name");
+        String name = request.getParameter("name").trim();
         String image = "img/" + request.getParameter("image");
-        String info = request.getParameter("info");
+        String info = request.getParameter("info").trim();
         String airlineIdStr = request.getParameter("airlineId");
         String statusIdStr = request.getParameter("status");
         int airlineId = 0;
@@ -152,8 +156,9 @@ public class PlaneCategoryControllerServlet extends HttpServlet {
                 if (image.equals("img/")) {
                     image = pcd.getPlaneCategoryById(id).getImage();
                 }
+                PlaneCategory oldPc = pcd.getPlaneCategoryById(id);
                 PlaneCategory pc = new PlaneCategory(id, name, image, info, airlineId, statusId);
-                if (!name.equals(pc.getName()) && pcd.isDuplicateCategoryName(name, airlineId)) {
+                if (!name.equals(oldPc.getName()) && pcd.isDuplicateCategoryName(name, airlineId)) {
                     result = "Duplicate plane category name!";
                 } else {
                     pcd.updatePlaneCategoryById(pc);

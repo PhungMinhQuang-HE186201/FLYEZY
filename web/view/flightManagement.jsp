@@ -84,7 +84,7 @@
                                 <div class="form-group col-md-6">
                                     <div class="flight-form-group">
                                         <strong>DEP Country:</strong>
-                                        <select class="flight-select" name="departureCountry" id="departureCountry1">
+                                        <select class="flight-select" name="departureCountry" id="departureCountry1" required>
                                             <option value="">Select Country</option>
                                             <% for (Country c : (List<Country>) request.getAttribute("listC")) { %>
                                             <option value="<%= c.getName() %>"><%= c.getName() %></option>
@@ -92,13 +92,13 @@
                                         </select>
 
                                         <strong>DEP Location:</strong>
-                                        <select class="flight-select" name="departureLocation" id="departureLocation1">
+                                        <select class="flight-select" name="departureLocation" id="departureLocation1" required>
                                             <option value="">Select Location</option>
 
                                         </select>
 
                                         <strong>DEP Airport:</strong>
-                                        <select class="flight-select" name="departureAirport" id="departureAirport1">
+                                        <select class="flight-select" name="departureAirport" id="departureAirport1" required>
                                             <option value="">Select Airport</option>
 
                                         </select>
@@ -108,7 +108,7 @@
                                 <div class="form-group col-md-6">
                                     <div class="flight-form-group">
                                         <strong>DES Country:</strong>
-                                        <select class="flight-select" name="destinationCountry" id="destinationCountry1">
+                                        <select class="flight-select" name="destinationCountry" id="destinationCountry1" required>
                                             <option value="">Select Country</option>
                                             <% for (Country c : (List<Country>) request.getAttribute("listC")) { %>
                                             <option value="<%= c.getName() %>"><%= c.getName() %></option>
@@ -116,14 +116,14 @@
                                         </select>
 
                                         <strong>DES Location:</strong>
-                                        <select class="flight-select" name="destinationLocation" id="destinationLocation1">
+                                        <select class="flight-select" name="destinationLocation" id="destinationLocation1" required>
                                             <option value="">Select Location</option>
 
                                         </select>
 
 
                                         <strong>DES Airport:</strong>
-                                        <select class="flight-select" name="destinationAirport" id="destinationAirport1">
+                                        <select class="flight-select" name="destinationAirport" id="destinationAirport1" required>
                                             <option value="">Select Airport</option>
 
                                         </select>
@@ -272,7 +272,7 @@
                                                         <div class="row" >
                                                             <div class="flight-form-group col-md-6">
                                                                 <strong>DEP Country:</strong>
-                                                                <select class="flight-select" name="departureCountry" id="departureCountry2<%=i%>">
+                                                                <select class="flight-select" name="departureCountry" id="departureCountry2<%=i%>" required>
                                                                     <option value="">Select Country</option>
                                                                     <% for (Country c : (List<Country>) request.getAttribute("listC")) { %>
                                                                     <option value="<%= c.getName() %>" <%= (c.getName().equals(rsFlightManage.getString(5)) ? "selected" : "") %>><%= c.getName() %></option>
@@ -280,7 +280,7 @@
                                                                 </select>
 
                                                                 <strong>DEP Location:</strong>
-                                                                <select class="flight-select" name="departureLocation" id="departureLocation2<%=i%>">
+                                                                <select class="flight-select" name="departureLocation" id="departureLocation2<%=i%>" required>
                                                                     <option value="">Select Location</option>
                                                                     <% for (Location l : (List<Location>) ld.getLocationsByCountryId(cd.getIdByCountryName(rsFlightManage.getString(5)))) { %>
                                                                     <option value="<%= l.getName() %>" <%= (l.getName().equals(rsFlightManage.getString(4)) ? "selected" : "") %>><%= l.getName() %></option>
@@ -288,7 +288,7 @@
                                                                 </select>
 
                                                                 <strong>DEP Airport:</strong>
-                                                                <select class="flight-select" name="departureAirport" id="departureAirport2<%=i%>">
+                                                                <select class="flight-select" name="departureAirport" id="departureAirport2<%=i%>" required>
                                                                     <option value="">Select Airport</option>
                                                                     <% for (Airport ap : (List<Airport>) aird.getAirportsByLocationId(ld.getIdByLocationName(rsFlightManage.getString(4)))) { %>
                                                                     <option value="<%= ap.getName() %>" <%= (ap.getName().equals(rsFlightManage.getString(3)) ? "selected" : "") %>><%= ap.getName() %></option>
@@ -298,7 +298,7 @@
 
                                                             <div class="flight-form-group col-md-6">
                                                                 <strong>DES Country:</strong>
-                                                                <select class="flight-select" name="destinationCountry" id="destinationCountry2<%=i%>">
+                                                                <select class="flight-select" name="destinationCountry" id="destinationCountry2<%=i%>" required>
                                                                     <option value="">Select Country</option>
                                                                     <% for (Country c : (List<Country>) request.getAttribute("listC")) { %>
                                                                     <option value="<%= c.getName() %>" <%= (c.getName().equals(rsFlightManage.getString(8)) ? "selected" : "") %>><%= c.getName() %></option>
@@ -306,7 +306,7 @@
                                                                 </select>
 
                                                                 <strong>DES Location:</strong>
-                                                                <select class="flight-select" name="destinationLocation" id="destinationLocation2<%=i%>">
+                                                                <select class="flight-select" name="destinationLocation" id="destinationLocation2<%=i%>" required>
                                                                     <option >Select Location</option>
                                                                     <% for (Location l : (List<Location>) ld.getLocationsByCountryId(cd.getIdByCountryName(rsFlightManage.getString(8)))) { %>
                                                                     <option value="<%= l.getName() %>" <%= (l.getName().equals(rsFlightManage.getString(7)) ? "selected" : "") %>><%= l.getName() %></option>
@@ -315,7 +315,7 @@
 
 
                                                                 <strong>DES Airport:</strong>
-                                                                <select class="flight-select" name="destinationAirport" id="destinationAirport2<%=i%>">
+                                                                <select class="flight-select" name="destinationAirport" id="destinationAirport2<%=i%>" required>
                                                                     <option>Select Airport</option>
                                                                     <% for (Airport ap : (List<Airport>) aird.getAirportsByLocationId(ld.getIdByLocationName(rsFlightManage.getString(7)))) { %>
                                                                     <option value="<%= ap.getName() %>" <%= (ap.getName().equals(rsFlightManage.getString(6)) ? "selected" : "") %>><%= ap.getName() %></option>

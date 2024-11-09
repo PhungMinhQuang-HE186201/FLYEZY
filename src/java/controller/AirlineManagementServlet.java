@@ -25,13 +25,13 @@ import model.Airline;
  */
 public class AirlineManagementServlet extends HttpServlet {
 
-    AirlineManageDAO airlineManageDao = new AirlineManageDAO();
-    BaggageManageDAO baggageManageDao = new BaggageManageDAO();
-    PlaneCategoryDAO planeCategoryDao = new PlaneCategoryDAO();
-    SeatCategoryDAO seatCategoryDao = new SeatCategoryDAO();
-    FlightManageDAO flightManageDao = new FlightManageDAO();
-    FlightDetailDAO flightDetailDao = new FlightDetailDAO();
-    AccountsDAO accountDao = new AccountsDAO();
+    private AirlineManageDAO airlineManageDao = new AirlineManageDAO();
+    private BaggageManageDAO baggageManageDao = new BaggageManageDAO();
+    private PlaneCategoryDAO planeCategoryDao = new PlaneCategoryDAO();
+    private SeatCategoryDAO seatCategoryDao = new SeatCategoryDAO();
+    private FlightManageDAO flightManageDao = new FlightManageDAO();
+    private FlightDetailDAO flightDetailDao = new FlightDetailDAO();
+    private AccountsDAO accountDao = new AccountsDAO();
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -93,6 +93,7 @@ public class AirlineManagementServlet extends HttpServlet {
     }// </editor-fold>
 
     private void addAirline(HttpServletRequest request) {
+        HttpSession session = request.getSession();
         try {
             // Lấy thông tin từ request
             String airlineName = request.getParameter("airlineName").trim();
@@ -101,11 +102,16 @@ public class AirlineManagementServlet extends HttpServlet {
             //get info
             String airlineInfo = request.getParameter("airlineInfo").trim();
 
-            Airline airline = new Airline(airlineName, airlineImage,airlineInfo);
+            if (airlineManageDao.checkAirlineDuplicated(airlineName)) {
+                session.setAttribute("error", "Airline name already exists. Please choose a different name.");
+                return;
+            }
+            Airline airline = new Airline(airlineName, airlineImage, airlineInfo);
 
             // Thêm airline vào cơ sở dữ liệu
             // Lấy airlineId
             int airlineId = airlineManageDao.createAirline(airline);
+            session.setAttribute("success", "Airline created successfully!");
         } catch (NumberFormatException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -115,11 +121,12 @@ public class AirlineManagementServlet extends HttpServlet {
     }
 
     private void ChangeStatusAirline(HttpServletRequest request) {
+        HttpSession session = request.getSession();
         try {
             int airlineId = Integer.parseInt(request.getParameter("airlineId"));
             int statusId = Integer.parseInt(request.getParameter("airlineStatus"));
             int newStatusId = 1;
-            if(statusId == 1){
+            if (statusId == 1) {
                 baggageManageDao.DeactiveAllByAirline(airlineId);
                 planeCategoryDao.deactivatePlaneCategoryByAirline(airlineId);
                 seatCategoryDao.deactivateAllSeatCategoryByAirline(airlineId);
@@ -127,7 +134,7 @@ public class AirlineManagementServlet extends HttpServlet {
                 flightDetailDao.deactivateAllFlightDetailByAirline(airlineId);
                 accountDao.deactivateAllAccountByAirline(airlineId);
                 newStatusId = 2;
-            }else if(statusId == 2){
+            } else if (statusId == 2) {
                 baggageManageDao.ReactiveAllByAirline(airlineId);
                 planeCategoryDao.activatePlaneCategoryByAirline(airlineId);
                 seatCategoryDao.activateAllSeatCategoryByAirline(airlineId);
@@ -137,6 +144,7 @@ public class AirlineManagementServlet extends HttpServlet {
                 newStatusId = 1;
             }
             airlineManageDao.changeStatus(airlineId, newStatusId);
+            session.setAttribute("success", "Change airline status successfully!");
         } catch (Exception e) {
             // Xử lý lỗi khác
             e.printStackTrace();
@@ -144,6 +152,7 @@ public class AirlineManagementServlet extends HttpServlet {
     }
 
     private void updateAirline(HttpServletRequest request) {
+        HttpSession session = request.getSession();
         try {
             int airlineId = Integer.parseInt(request.getParameter("airlineId"));
             String airlineName = request.getParameter("airlineName").trim();
@@ -152,9 +161,15 @@ public class AirlineManagementServlet extends HttpServlet {
             if (airlineImage.equals("img/")) {
                 airlineImage = airlineManageDao.getAirlineById(airlineId).getImage();
             }
+            Airline a = airlineManageDao.getAirlineById(airlineId);
+            if (!airlineName.equals(a.getName()) && airlineManageDao.checkAirlineDuplicated(airlineName)) {
+                session.setAttribute("error", "Airline name already exists. Please choose a different name.");
+                return;
+            }
 
-            Airline airline = new Airline(airlineId, airlineName, airlineImage,airlineInfo);
+            Airline airline = new Airline(airlineId, airlineName, airlineImage, airlineInfo);
             airlineManageDao.updateAirline(airline);
+            session.setAttribute("success", "Update airline successful!");
         } catch (Exception e) {
             // Xử lý lỗi khác
             e.printStackTrace();

@@ -227,9 +227,8 @@
 
             function validateNameAndInfoInput(i) {
                 const name = document.getElementById("name" + i).value.trim();
-                const info = document.getElementById("info" + i).value.trim();
 
-                if (name === "" || info === "") {
+                if (name === "") {
                     alert("Please enter valid content. Do not enter spaces only.");
                     return false;
                 }

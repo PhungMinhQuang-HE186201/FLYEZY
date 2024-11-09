@@ -52,7 +52,7 @@ public class AirlineManageDAO extends DBConnect {
         }
         return null;
     }
-    
+
     public String getImageById(int id) {
         String sql = "select image from Airline where id = ?";
         try {
@@ -103,13 +103,13 @@ public class AirlineManageDAO extends DBConnect {
         return list.get(0);
     }
 
-     public String getAirportNamedById(int id) {
+    public String getAirportNamedById(int id) {
         String sql = "SELECT name FROM Airline WHERE id = ?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 return rs.getString("name");
             }
         } catch (SQLException ex) {
@@ -117,7 +117,7 @@ public class AirlineManageDAO extends DBConnect {
         }
         return null;
     }
-    
+
     public List<Airline> searchAirline(String name, int statusId) {
         List<Airline> list = new ArrayList<>();
         StringBuilder sql = new StringBuilder("SELECT * FROM Airline WHERE 1=1"); // Base query
@@ -302,6 +302,21 @@ public class AirlineManageDAO extends DBConnect {
         }
     }
 
+    public boolean checkAirlineDuplicated(String name) {
+        String sql = "select * from flyezy.Airline where name = ?";
+        try {
+            PreparedStatement pre = conn.prepareStatement(sql);
+            pre.setString(1, name);
+            ResultSet rs = pre.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
     public static void main(String[] args) {
         AirlineManageDAO dao = new AirlineManageDAO();
 
@@ -312,9 +327,10 @@ public class AirlineManageDAO extends DBConnect {
 //        dao.deleteAirline(228);
 //        dao.updateAirline(new Airline(9, "abccc", "ab.jpg", "abcccccc", 1));
 //        dao.changeStatus(9, 2);
-        for (Airline airline1 : dao.getAllAirline()) {
-            System.out.println(airline1);
-        }
+//        for (Airline airline1 : dao.getAllAirline()) {
+//            System.out.println(airline1);
+//        }
+        System.out.println(dao.checkAirlineDuplicated("vietnam airline"));
 //        System.out.println(dao.getAirlineById(3));
 //        System.out.println(dao.getAirlineBaggages(3));
 
